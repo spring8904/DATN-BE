@@ -5,12 +5,14 @@
 <head>
 
     <meta charset="utf-8" />
-    <title>Analytics | Velzon - Admin & Dashboard Template</title>
+    <title>Dashboard | CourseHUB </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
     <meta content="Themesbrand" name="author" />
+
     <!-- CSS -->
     @include('layouts.partials.css')
+
     @stack('page-css')
 </head>
 
@@ -23,9 +25,10 @@
         </header>
 
         <!-- removeNotificationModal -->
-        <div id="removeNotificationModal" class="modal fade zoomIn" tabindex="-1" aria-hidden="true">
+        {{-- <div id="removeNotificationModal" class="modal fade zoomIn" tabindex="-1" aria-hidden="true">
             @include('layouts.partials.remove-notifice')
-        </div>
+        </div> --}}
+
         <!-- /.modal -->
         <!-- ========== App Menu ========== -->
         <div class="app-menu navbar-menu">
@@ -42,6 +45,7 @@
             <div class="sidebar-background"></div>
         </div>
         <!-- Left Sidebar End -->
+
         <!-- Vertical Overlay-->
         <div class="vertical-overlay"></div>
 
@@ -64,9 +68,11 @@
 
     </div>
     <!-- END layout-wrapper -->
-    @include('layouts.partials.theme-settings')
+
+    {{-- @include('layouts.partials.theme-settings') --}}
     <!-- JAVASCRIPT -->
     @include('layouts.partials.scripts')
+
     @stack('page-scripts')
 </body>
 
