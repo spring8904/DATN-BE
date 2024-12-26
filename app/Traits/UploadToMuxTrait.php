@@ -2,4 +2,11 @@
 
 namespace App\Traits;
 
-trait UploadToMuxTrait {}
+use F9Web\ApiResponseHelpers;
+
+trait UploadToMuxTrait {
+
+    use LoggableTrait, ApiResponseHelpers;
+
+    
+}
