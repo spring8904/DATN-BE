@@ -85,11 +85,11 @@
             <div class="collapse menu-dropdown" id="sidebarRole">
                 <ul class="nav nav-sm flex-column">
                     <li class="nav-item">
-                        <a href="apps-chat.html" class="nav-link" data-key="t-chat">
+                        <a href="{{ route('admin.permissions.index') }}" class="nav-link" data-key="t-chat">
                             Danh sách quyền </a>
                     </li>
                     <li class="nav-item">
-                        <a href="apps-chat.html" class="nav-link" data-key="t-chat">
+                        <a href="{{ route('admin.roles.index') }}" class="nav-link" data-key="t-chat">
                             Danh sách vai trò </a>
                     </li>
                     <li class="nav-item">
@@ -172,7 +172,7 @@
                 </ul>
             </div>
 
-            <a class="nav-link menu-link" href="#sidebarComment" >
+            <a class="nav-link menu-link" href="#sidebarComment">
                 <i class="las la-comment"></i> <span data-key="t-authentication">Quản lý bình luận</span>
             </a>
 
