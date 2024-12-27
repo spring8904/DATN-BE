@@ -5,8 +5,9 @@
 <head>
 
     <meta charset="utf-8" />
-    <title>Dashboard | CourseHUB </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
+    <title> {{ !empty($title) ? $title : 'Dashboard' }} - CourseHUB </title>
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
     <meta content="Themesbrand" name="author" />
 
@@ -74,6 +75,8 @@
     @include('layouts.partials.scripts')
 
     @stack('page-scripts')
+
+    @yield('scripts')
 </body>
 
 </html>
