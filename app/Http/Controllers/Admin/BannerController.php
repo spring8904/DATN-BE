@@ -126,6 +126,8 @@ class BannerController extends Controller
                 ) {
                     $this->deleteImage($imageOld, self::FOLDER);
                 }
+            }else {
+                $data['image'] = $imageOld;
             }
 
             $banner->update($data);
