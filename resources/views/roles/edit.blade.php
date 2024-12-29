@@ -56,8 +56,10 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="card">
-                        <div class="card-header align-items-center d-flex">
+                        <div class="card-header align-items-center d-flex align-content-between">
                             <h4 class="card-title mb-0 flex-grow-1">Vai trò này có các quyền sau:</h4>
+                            <button type="button" id="checkAll" class="btn btn-primary mb-3">Chọn tất cả quyền trong hệ
+                                thống</button>
                         </div>
                         <div class="card-body">
                             <div class="live-preview">
@@ -80,7 +82,8 @@
                                                 data-bs-parent="#accordionWithicon">
                                                 <div class="accordion-body">
                                                     <button type="button" id="selectAll_{{ $loop->iteration }}"
-                                                        class="btn btn-primary mb-3">Chọn tất cả</button>
+                                                        class="btn btn-primary mb-3">Chọn tất cả quyền của Module
+                                                        {{ Str::ucfirst($module) }}</button>
                                                     <div class="row">
                                                         @foreach ($modulePermissions as $permission)
                                                             <div class="col-md-3">
@@ -140,6 +143,18 @@
                     });
                 });
             });
+
+            const checkAllButton = document.getElementById('checkAll');
+            if (checkAllButton) {
+                checkAllButton.addEventListener('click', () => {
+                    const checkboxes = document.querySelectorAll('.form-check-input');
+                    const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+
+                    checkboxes.forEach(checkbox => {
+                        checkbox.checked = !allChecked;
+                    });
+                });
+            }
         });
     </script>
 @endsection

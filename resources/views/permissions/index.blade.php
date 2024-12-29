@@ -39,6 +39,7 @@
                                 @endif
 
                             </div>
+
                             <div class="col-md-12">
                                 <label for="inputEmail4" class="form-label">Mô tả</label>
                                 <input type="text" class="form-control mb-2" placeholder="Nhập mô tả..."
@@ -70,7 +71,8 @@
                                     <thead>
                                         <tr>
                                             <th scope="col">#</th>
-                                            <th scope="col">Vai trò</th>
+                                            <th scope="col">Quyền</th>
+                                            <th scope="col">Mô tả</th>
                                             <th scope="col">Ngày tạo</th>
                                             <th scope="col">Thao tác</th>
                                         </tr>
@@ -82,6 +84,7 @@
                                                 <tr>
                                                     <td class="fw-medium">{{ $loop->iteration }}</td>
                                                     <td>{{ $permission->name }}</td>
+                                                    <td>{{ $permission->description }}</td>
                                                     <td>{{ $permission->created_at }}</td>
                                                     <td>
                                                         <a href="{{ route('admin.permissions.edit', $permission) }}">
@@ -90,10 +93,10 @@
                                                             </button></a>
 
 
-                                                            <a href="{{ route('admin.permissions.destroy', $permission->id) }}"
-                                                                class="sweet-confirm btn btn-sm btn-danger ">
-                                                                <span class="ri-delete-bin-7-line"></span>
-                                                            </a>
+                                                        <a href="{{ route('admin.permissions.destroy', $permission->id) }}"
+                                                            class="sweet-confirm btn btn-sm btn-danger ">
+                                                            <span class="ri-delete-bin-7-line"></span>
+                                                        </a>
                                                     </td>
                                                 </tr>
                                             @endforeach
