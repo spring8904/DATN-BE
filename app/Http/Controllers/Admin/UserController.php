@@ -10,6 +10,7 @@ use App\Traits\LoggableTrait;
 use App\Traits\UploadToCloudinaryTrait;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -23,29 +24,32 @@ class UserController extends Controller
     public function index()
     {
         try {
-
             $title = 'Quản lý thành viên';
             $subTitle = 'Danh sách người dùng';
 
-            $users = User::query()->latest('id')->paginate(10);
-            $countUsers = User::query()->count('id');
-            $userActive = User::query()->where('status', 'active')->count('id');
-            $userInActive = User::query()->where('status', 'inactive')->count('id');
-            $userBlocked = User::query()->where('status', 'blocked')->count('id');
+            $users = User::query()
+                ->whereHas('roles', function ($query) {
+                    $query->where('name', 'student');
+                })
+                ->latest('id')
+                ->paginate(10);
 
-            return view('users.index', compact([
-                'users',
-                'userActive',
-                'userInActive',
-                'userBlocked',
-                'countUsers',
-                'subTitle',
-                'title'
-            ]));
+            $userCounts = User::query()
+                ->whereHas('roles', function ($query) {
+                    $query->where('name', 'student');
+                })
+                ->selectRaw('
+                    count(id) as total_users,
+                    sum(status = "active") as active_users,
+                    sum(status = "inactive") as inactive_users,
+                    sum(status = "blocked") as blocked_users
+                ')
+                ->first();
+
+            return view('users.index', compact('users', 'userCounts', 'subTitle', 'title'));
+
         } catch (\Exception $e) {
-
             $this->logError($e);
-
             return redirect()->back()->with('error', 'Có lỗi xảy ra, vui lòng thử lại sau');
         }
     }
@@ -56,13 +60,15 @@ class UserController extends Controller
     public function create()
     {
         try {
-
             $title = 'Quản lý thành viên';
             $subTitle = 'Thêm mới người dùng';
 
+            $roles = Role::query()->get()->pluck('name')->toArray();
+
             return view('users.create', compact([
                 'title',
-                'subTitle'
+                'subTitle',
+                'roles'
             ]));
         } catch (\Exception $e) {
 
@@ -88,7 +94,9 @@ class UserController extends Controller
 
             $data['code'] = str_replace('-', '', Str::uuid()->toString());
 
-            User::query()->create($data);
+            $user =  User::query()->create($data);
+
+            $user->assignRole($request->role);
 
             DB::commit();
 
@@ -99,6 +107,7 @@ class UserController extends Controller
             if (isset($data['avatar']) && !empty($data['avatar']) && filter_var($data['avatar'], FILTER_VALIDATE_URL)) {
                 $this->deleteImage($data['avatar'], self::FOLDER);
             }
+
 
             $this->logError($e);
 
@@ -141,12 +150,19 @@ class UserController extends Controller
             $title = 'Quản lý thành viên';
             $subTitle = 'Cập nhật người dùng';
 
-            $user = User::query()->findOrFail($id);
+            $user = User::query()
+                ->with('roles')
+                ->findOrFail($id);
+
+            // dd($user->roles->pluck('name')->toArray());
+
+            $roles = Role::query()->get()->pluck('name')->toArray();
 
             return view('users.edit', compact([
                 'user',
                 'title',
-                'subTitle'
+                'subTitle',
+                'roles'
             ]));
         } catch (\Exception $e) {
 
@@ -187,6 +203,12 @@ class UserController extends Controller
             }
 
             $user->update($data);
+
+            if ($request->has('role')) {
+                $user->syncRoles([]);
+
+                $user->assignRole($request->input('role'));
+            }
 
             DB::commit();
 

@@ -4,6 +4,7 @@ namespace App\Http\Requests\Admin\Users;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Spatie\Permission\Models\Role;
 
 class UpdateUserRequest extends FormRequest
 {
@@ -22,10 +23,18 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules(): array
     {
+        $roles = Role::query()->get()->pluck('name')->toArray();
+
+        $roles = array_values($roles);
+
         return [
             'name'       => ['required', 'string', 'min:2', 'max:255', 'regex:/^[\pL\s]+$/u'],
             'email'      => ['required', 'email', Rule::unique('users','email')->ignore($this->route('user')), 'max:255', 'regex:/^[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/'],
-            'avatar'     => ['nullable', 'image', 'max:2000']
+            'avatar'     => ['nullable', 'image', 'max:2000'],
+            'role' => [
+                'required',
+                'in:' . implode(',', $roles),
+            ],
         ];
     }
     public function messages()
@@ -48,6 +57,10 @@ class UpdateUserRequest extends FormRequest
             // Avatar
             'avatar.image'  => 'Hình ảnh đại diện phải là một tệp hình ảnh.',
             'avatar.max'    => 'Hình ảnh đại diện không được vượt quá 2MB.',
+
+            // Vai trò
+            'role.required' => 'Vai trò là bắt buộc.',
+            'role.in'       => 'Vai trò không hợp lệ.',
         ];
     }
 }

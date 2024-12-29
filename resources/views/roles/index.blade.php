@@ -35,7 +35,7 @@
                                         <tr>
                                             <th scope="col">#</th>
                                             <th scope="col">Vai trò</th>
-                                            <th scope="col">Phạm vi</th>
+                                            <th scope="col">Mô tả</th>
                                             <th scope="col">Ngày tạo</th>
                                             <th scope="col">Thao tác</th>
                                         </tr>
@@ -45,13 +45,13 @@
                                             <tr>
                                                 <td class="fw-medium">{{ $loop->iteration }}</td>
                                                 <td>{{ $role->name }}</td>
-                                                <td>{{ $role->guard_name }}</td>
+                                                <td>{{ $role->description }}</td>
                                                 <td>{{ $role->created_at }}</td>
                                                 <td>
                                                     <a class="btn btn-warning"
-                                                        href="{{ route('admin.roles.edit', $role) }}">Sửa</a>
+                                                        href="{{ route('admin.roles.edit', $role) }}"><span class="ri-edit-box-line"></span></a>
                                                     <a class="btn btn-danger sweet-confirm"
-                                                        href="{{ route('admin.roles.destroy', $role) }}">Xoá</a>
+                                                        href="{{ route('admin.roles.destroy', $role) }}"><span class="ri-delete-bin-7-line"></span></a>
                                                 </td>
                                             </tr>
                                         @endforeach

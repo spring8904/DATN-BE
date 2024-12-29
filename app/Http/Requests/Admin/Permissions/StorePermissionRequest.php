@@ -23,7 +23,8 @@ class StorePermissionRequest extends FormRequest
     {
         return [
             'name' => 'required|unique:permissions,name',
-            'guard_name' => 'required',
+            // 'guard_name' => 'required',
+            'description' => 'required|string',
         ];
     }
 
@@ -32,7 +33,8 @@ class StorePermissionRequest extends FormRequest
         return [
             'name.required' => 'Tên quyền không được để trống',
             'name.unique' => 'Tên quyền quyền đã tồn tại',
-            'guard_name.required' => 'Guard name  không được để trống',
+            'description.required' => 'Nhập mô tả của quyền này',
+            // 'guard_name.required' => 'Guard name  không được để trống',
         ];
     }
 }

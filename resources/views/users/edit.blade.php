@@ -70,12 +70,25 @@
                             </div>
                             <div class="col-md-12 mb-3">
                                 <label class="form-label">Avatar mới</label>
-                                <input type="file" name="avatar" id="imageInput" accept="image/*" class="form-control">
+                                <input type="file"  name="avatar" id="imageInput" accept="image/*" class="form-control mb-2">
                                 <img id="imagePreview" style="display: none; max-width: 100%; max-height: 300px;">
                                 @error('avatar')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div> <!-- end col -->
+                            <div class="col-md-12 mb-3">
+                                <label for="">Vai trò</label>
+                                <select name="role" id="" class="form-select mb-2">
+                                    <option value="">Chọn vai trò</option>
+                                    @foreach ($roles as $role)
+                                        <option {{ $user->roles->first()->name == $role ? 'selected' : '' }}  value="{{ $role }}">
+                                            {{ Str::ucfirst($role) }}</option>
+                                    @endforeach
+                                </select>
+                                @error('role')
+                                    <span class="text-danger mt-2">{{ $message }}</span>
+                                @enderror
+                            </div>
                             <div class="col-12">
                                 <div class="text-start">
                                     <button type="submit" class="btn btn-primary">Cập nhật</button>

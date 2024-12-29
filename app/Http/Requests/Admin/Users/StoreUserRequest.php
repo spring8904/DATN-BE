@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin\Users;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Spatie\Permission\Models\Role;
 
 class StoreUserRequest extends FormRequest
 {
@@ -21,12 +22,20 @@ class StoreUserRequest extends FormRequest
      */
     public function rules(): array
     {
+        $roles = Role::query()->get()->pluck('name')->toArray();
+
+        $roles = array_values($roles);
+
         return [
-            'name'       => ['required', 'string','min:2', 'max:255', 'regex:/^[\pL\s]+$/u' ],
+            'name'       => ['required', 'string', 'min:2', 'max:255', 'regex:/^[\pL\s]+$/u'],
             'email'      => ['required', 'email', 'unique:users,email', 'max:255', 'regex:/^[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/'],
             'password'   => ['required', 'string', 'min:8', 'max:255', 'regex:/^(?=.*[A-Z])/'],
             'repassword' => ['required', 'min:8', 'same:password'],
-            'avatar'     => ['nullable', 'image', 'max:2000']
+            'avatar'     => ['nullable', 'image', 'max:2000'],
+            'role' => [
+                'required',
+                'in:' . implode(',', $roles),
+            ],
         ];
     }
     public function messages()
@@ -61,6 +70,10 @@ class StoreUserRequest extends FormRequest
             // Avatar
             'avatar.image'  => 'Hình ảnh đại diện phải là một tệp hình ảnh.',
             'avatar.max'    => 'Hình ảnh đại diện không được vượt quá 2MB.',
+
+            // Role
+            'role.required' => 'Vui lòng chọn vai trò của người dùng',
+            'role.in'       => 'Vai trò không hợp lệ.',
         ];
     }
 }
