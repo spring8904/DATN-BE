@@ -89,7 +89,7 @@
                                                         <a class="btn btn-warning"
                                                             href="{{ route('admin.permissions.edit', $permission) }}">Sửa</a>
                                                         <a class="btn btn-danger sweet-confirm"
-                                                            href="{{ route('admin.permissions.destroy', $permission) }}">Xoá</a>
+                                                            href="{{ route('admin.permissions.destroy', $permission->id) }}">Xoá</a>
                                                     </td>
                                                 </tr>
                                             @endforeach

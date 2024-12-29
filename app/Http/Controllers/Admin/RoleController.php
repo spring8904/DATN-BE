@@ -100,8 +100,9 @@ class RoleController extends Controller
         try {
             $title = 'Quản lý vai trò';
             $subTitle = 'Cập nhật vai trò: ' . $role->name;
-            $permissions = Permission::all()->groupBy('guard_name');
-
+            $permissions = Permission::all()->groupBy(function ($permission) {
+                return explode('.', $permission->name)[0];
+            });
             return view('roles.edit', compact([
                 'title',
                 'subTitle',
@@ -134,8 +135,16 @@ class RoleController extends Controller
 
             $role->update($data);
 
+            $permissions = Permission::whereIn('id', $request->input('permissions', []))
+                ->where('guard_name', $role->guard_name)
+                ->pluck('id');
+
+
+            $role->syncPermissions($permissions);
+
             DB::commit();
-            return redirect()->route('admin.roles.index')->with('success', 'Thao tác thành công');
+
+            return redirect()->back()->with('success', 'Cập nhật vai trò thành công');
         } catch (\Exception $e) {
             DB::rollBack();
 
