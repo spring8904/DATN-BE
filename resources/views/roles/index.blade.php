@@ -48,9 +48,9 @@
                                                 <td>{{ $role->description }}</td>
                                                 <td>{{ $role->created_at }}</td>
                                                 <td>
-                                                    <a class="btn btn-warning"
+                                                    <a class="btn btn-sm btn-warning"
                                                         href="{{ route('admin.roles.edit', $role) }}"><span class="ri-edit-box-line"></span></a>
-                                                    <a class="btn btn-danger sweet-confirm"
+                                                    <a class="btn  btn-sm btn-danger sweet-confirm"
                                                         href="{{ route('admin.roles.destroy', $role) }}"><span class="ri-delete-bin-7-line"></span></a>
                                                 </td>
                                             </tr>

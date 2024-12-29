@@ -9,6 +9,7 @@ use App\Traits\LoggableTrait;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Str;
 
 class RoleController extends Controller
 {
@@ -99,7 +100,7 @@ class RoleController extends Controller
             $title = 'Quản lý vai trò';
             $subTitle = 'Cập nhật vai trò: ' . $role->name;
             $permissions = Permission::all()->groupBy(function ($permission) {
-                return explode('.', $permission->guard_name)[0];
+                return Str::before($permission->name, '.');
             });
 
             return view('roles.edit', compact([

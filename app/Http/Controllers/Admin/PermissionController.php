@@ -8,6 +8,7 @@ use App\Traits\LoggableTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Str;
 
 class PermissionController extends Controller
 {
@@ -19,7 +20,9 @@ class PermissionController extends Controller
     public function index()
     {
         try {
-            $permissions = Permission::all()->groupBy('guard_name');
+            $permissions = Permission::all()->groupBy(function ($permission) {
+                return Str::before($permission->name, '.');
+            });
 
             $title = 'Quản lý quyền';
             $subTitle = 'Danh sách quyền của hệ thống';
