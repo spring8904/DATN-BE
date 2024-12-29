@@ -61,19 +61,19 @@
             <div class="collapse menu-dropdown" id="sidebarAuth">
                 <ul class="nav nav-sm flex-column">
                     <li class="nav-item">
-                        <a href="apps-chat.html" class="nav-link" data-key="t-chat">
+                        <a href="{{ route('admin.users.index') }}" class="nav-link">
                             Danh sách người dùng </a>
                     </li>
                     <li class="nav-item">
-                        <a href="apps-chat.html" class="nav-link" data-key="t-chat">
+                        <a href="apps-chat.html" class="nav-link">
                             Người hướng dẫn </a>
                     </li>
                     <li class="nav-item">
-                        <a href="apps-chat.html" class="nav-link" data-key="t-chat">
+                        <a href="apps-chat.html" class="nav-link">
                             Danh sách quản trị viên </a>
                     </li>
                     <li class="nav-item">
-                        <a href="apps-chat.html" class="nav-link" data-key="t-chat">
+                        <a href="{{ route('admin.users.create') }}" class="nav-link">
                             Thêm mới người dùng </a>
                     </li>
                 </ul>
