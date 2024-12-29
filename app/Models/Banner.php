@@ -18,4 +18,8 @@ class Banner extends Model
         'order',
         'status'
     ];
+    public $attributes = [
+        'status'=>1,
+        'order'=>0,
+    ];
 }
