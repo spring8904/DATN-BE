@@ -28,7 +28,8 @@ class UpdateRoleRequest extends FormRequest
 
         return [
             'name' => 'required|string|max:255|unique:roles,name,' . $role->id,
-            'guard_name' => 'required|in:web,api',
+            // 'guard_name' => 'required|in:web,api',
+            'description' => 'nullable|string|max:255',
             'permissions' => 'nullable|array',
             'permissions.*' => 'exists:permissions,id',
         ];
@@ -40,8 +41,9 @@ class UpdateRoleRequest extends FormRequest
         return [
             'name.required' => 'Vai trò không được để trống',
             'name.unique' => 'Vai trò đã tồn tại',
-            'guard_name.required' => 'Guard name không được để trống',
-            'guard_name.in' => 'Guard name không hợp lệ',
+            // 'guard_name.required' => 'Guard name không được để trống',
+            // 'guard_name.in' => 'Guard name không hợp lệ',
+            'description.max' => 'Mô tả không được dài quá 255 ký tự',
             'permissions.array' => 'Quyền phải là một mảng.',
             'permissions.*.exists' => 'Một hoặc nhiều quyền không tồn tại.',
         ];

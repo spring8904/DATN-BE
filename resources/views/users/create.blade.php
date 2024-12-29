@@ -33,52 +33,65 @@
                         @csrf
                         <div class="col-md-12">
                             <label for="fullname" class="form-label">Họ Và Tên</label>
-                            <input type="text" class="form-control" name="name" id="fullname"
+                            <input type="text" class="form-control mb-2" name="name" id="fullname"
                                 placeholder="Nhập họ và tên của bạn" value="{{ old('name') }}">
                             @error('name')
-                                <span class="text-danger">{{ $message }}</span>
+                                <span class="text-danger mt-2">{{ $message }}</span>
                             @enderror
                         </div>
                         <div class="col-md-12">
                             <label for="inputEmail4" class="form-label">Email</label>
-                            <input type="email" class="form-control" name="email" id="inputEmail4"
+                            <input type="email" class="form-control mb-2" name="email" id="inputEmail4"
                                 placeholder="Nhập email" value="{{ old('email') }}">
                             @error('email')
-                                <span class="text-danger">{{ $message }}</span>
+                                <span class="text-danger mt-2">{{ $message }}</span>
                             @enderror
                         </div>
                         <div class="col-md-6">
                             <label for="passwordInput" class="form-label">Password</label>
                             <div class="position-relative">
-                                <input type="password" class="form-control pe-5" name="password" id="passwordInput"
+                                <input type="password" class="form-control pe-5 mb-2" name="password" id="passwordInput"
                                     placeholder="Nhập password">
                                 <i class="ri-eye-off-line position-absolute end-0 top-50 translate-middle-y pe-3"
                                     id="togglePassword" style="cursor: pointer; color: blue;"></i>
                             </div>
                             @error('password')
-                                <span class="text-danger">{{ $message }}</span>
+                                <span class="text-danger mt-2">{{ $message }}</span>
                             @enderror
                         </div>
                         <div class="col-md-6 position-relative">
                             <label for="repasswordInput" class="form-label">Repassword</label>
                             <div class="position-relative">
-                                <input type="password" class="form-control pe-5" name="repassword" id="repasswordInput"
+                                <input type="password" class="form-control pe-5 mb-2" name="repassword" id="repasswordInput"
                                     placeholder="Nhập lại password">
                                 <i class="ri-eye-off-line position-absolute end-0 top-50 translate-middle-y pe-3"
                                     id="toggleRepassword" style="cursor: pointer; color: blue;"></i>
                             </div>
                             @error('repassword')
-                                <span class="text-danger">{{ $message }}</span>
+                                <span class="text-danger mt-2">{{ $message }}</span>
                             @enderror
                         </div>
                         <div class="col-md-12">
                             <label class="form-label">Avatar</label>
                             <input type="file" name="avatar" id="imageInput" accept="image/*" class="form-control">
-                            <img id="imagePreview" style="display: none; max-width: 100%; max-height: 300px;">
+                            <img class="mt-2" id="imagePreview"
+                                style="display: none; max-width: 100%; max-height: 300px;">
                             @error('avatar')
-                                <span class="text-danger">{{ $message }}</span>
+                                <span class="text-danger mt-2">{{ $message }}</span>
                             @enderror
-                        </div> <!-- end col -->
+                        </div>
+                        <div class="col-md-12">
+                            <label for="">Vai trò</label>
+                            <select name="role" id="" class="form-select mb-2">
+                                <option value="">Chọn vai trò</option>
+                                @foreach ($roles as $role)
+                                    <option {{ old('role') == $role ? 'selected' : '' }} value="{{ $role }}">{{ $role }}</option>
+                                @endforeach
+                            </select>
+                            @error('role')
+                                <span class="text-danger mt-2">{{ $message }}</span>
+                            @enderror
+                        </div>
                         <div class="col-12">
                             <div class="text-end">
                                 <a class="btn btn-success" href="{{ route('admin.users.index') }}">Quay lại</a>

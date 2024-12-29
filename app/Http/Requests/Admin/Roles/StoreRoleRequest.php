@@ -23,7 +23,8 @@ class StoreRoleRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255|unique:roles,name',
-            'guard_name' => 'required|in:web,api',
+            // 'guard_name' => 'required|in:web,api',
+            'description' => 'nullable|string|max:255',
         ];
     }
 
@@ -33,8 +34,9 @@ class StoreRoleRequest extends FormRequest
         return [
             'name.required' => 'Vai trò không được để trống',
             'name.unique' => 'Vai trò đã tồn tại',
-            'guard_name.required' => 'Guard name không được để trống',
-            'guard_name.in' => 'Guard name không hợp lệ',
+            'description.max' => 'Mô tả không được dài quá 255 ký tự',
+            // 'guard_name.required' => 'Guard name không được để trống',
+            // 'guard_name.in' => 'Guard name không hợp lệ',
         ];
     }
 }

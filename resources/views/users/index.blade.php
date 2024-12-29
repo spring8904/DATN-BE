@@ -27,7 +27,7 @@
                 <div class="card text-center h-75">
                     <div class="card-body">
                         <h5 class="card-title">Tổng số khách hàng</h5>
-                        <p class="card-text fs-4">{{ $countUsers ?? 0 }}</p>
+                        <p class="card-text fs-4">{{ $userCounts->total_users ?? 0 }}</p>
                     </div>
                 </div>
             </div>
@@ -35,7 +35,7 @@
                 <div class="card text-center h-75">
                     <div class="card-body">
                         <h5 class="card-title">Khách hàng hoạt động</h5>
-                        <p class="card-text fs-4 text-success">{{ $userActive ?? 0 }}</p>
+                        <p class="card-text fs-4 text-success">{{ $userCounts->active_users ?? 0 }}</p>
                     </div>
                 </div>
             </div>
@@ -43,7 +43,7 @@
                 <div class="card text-center h-75">
                     <div class="card-body">
                         <h5 class="card-title">Khách hàng không hoạt động</h5>
-                        <p class="card-text fs-4 text-warning">{{ $userInActive ?? 0 }}</p>
+                        <p class="card-text fs-4 text-warning">{{ $userCounts->inactive_users ?? 0 }}</p>
                     </div>
                 </div>
             </div>
@@ -51,7 +51,7 @@
                 <div class="card text-center h-75">
                     <div class="card-body">
                         <h5 class="card-title">Khách hàng bị khóa</h5>
-                        <p class="card-text fs-4 text-danger">{{ $userBlocked ?? 0 }}</p>
+                        <p class="card-text fs-4 text-danger">{{ $userCounts->blocked_users ?? 0 }}</p>
                     </div>
                 </div>
             </div>

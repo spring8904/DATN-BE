@@ -29,7 +29,7 @@
                     <div class="card-body">
                         <form action="{{ route('admin.roles.store') }}" method="POST" class="row g-3">
                             @csrf
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <label class="form-label">Tên vai trò</label>
                                 <input type="name" class="form-control mb-2" placeholder="Nhập tên vai trò..."
                                     value="{{ old('name') }}" name="name">
@@ -39,16 +39,13 @@
                                 @endif
 
                             </div>
-                            <div class="col-md-6">
-                                <label for="inputEmail4" class="form-label">Phạm vi</label>
-                                <select name="guard_name" class="form-select mb-2" id="">
-                                    <option value="">Vui lòng chọn</option>
-                                    <option {{ old('guard_name') == 'web' ? 'selected' : '' }} value="web">WEB</option>
-                                    <option {{ old('guard_name') == 'api' ? 'selected' : '' }} value="api">API</option>
-                                </select>
-                                @if ($errors->has('guard_name'))
-                                <span class="text-danger">{{ $errors->first('guard_name') }}</span>
-                            @endif
+                            <div class="col-md-12">
+                                <label for="inputEmail4" class="form-label">Mô tả</label>
+                                <textarea class="form-control mb-2" placeholder="Nhập mô tả..." name="description" id="">{{ old('description') }}</textarea>
+
+                                @if ($errors->has('description'))
+                                    <span class="text-danger">{{ $errors->first('description') }}</span>
+                                @endif
                             </div>
                             {{-- <div class="col-12">
                                 <div class="form-check">
