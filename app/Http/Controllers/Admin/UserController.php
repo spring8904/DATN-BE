@@ -8,11 +8,15 @@ use App\Http\Requests\Admin\Users\UpdateUserRequest;
 use App\Models\User;
 use App\Traits\LoggableTrait;
 use App\Traits\UploadToCloudinaryTrait;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
     use LoggableTrait, UploadToCloudinaryTrait;
+
+    const FOLDER = 'users';
+
     /**
      * Display a listing of the resource.
      */
@@ -74,24 +78,26 @@ class UserController extends Controller
     public function store(StoreUserRequest $request)
     {
         try {
-
-            $validator = $request->validated();
+            DB::beginTransaction();
 
             $data = $request->except('avatar');
 
             if ($request->hasFile('avatar')) {
-                $data['avatar'] = $this->uploadImage($request->file('avatar'));
+                $data['avatar'] = $this->uploadImage($request->file('avatar'), self::FOLDER);
             }
 
             $data['code'] = str_replace('-', '', Str::uuid()->toString());
 
             User::query()->create($data);
 
+            DB::commit();
+
             return redirect()->route('admin.users.index')->with('success', true);
         } catch (\Exception $e) {
+            DB::rollBack();
 
             if (isset($data['avatar']) && !empty($data['avatar']) && filter_var($data['avatar'], FILTER_VALIDATE_URL)) {
-                $this->deleteImage($data['avatar']);
+                $this->deleteImage($data['avatar'], self::FOLDER);
             }
 
             $this->logError($e);
@@ -156,31 +162,37 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, string $id)
     {
         try {
-
             $validator = $request->validated();
 
             $data = $request->except('avatar');
+
+            DB::beginTransaction();
 
             $user = User::query()->findOrFail($id);
 
             $currencyAvatar = $user->avatar;
 
             if ($request->hasFile('avatar')) {
-                $data['avatar'] = $this->uploadImage($request->file('avatar'));
+                $data['avatar'] = $this->uploadImage($request->file('avatar'), self::FOLDER);
+
+                if (
+                    isset($data['avatar']) && !empty($data['avatar'])
+                    && filter_var($data['avatar'], FILTER_VALIDATE_URL)
+                    && !empty($currencyAvatar)
+                ) {
+                    $this->deleteImage($currencyAvatar, self::FOLDER);
+                }
+            } else {
+                $data['avatar'] = $currencyAvatar;
             }
 
             $user->update($data);
 
-            if (
-                isset($data['avatar']) && !empty($data['avatar'])
-                && filter_var($data['avatar'], FILTER_VALIDATE_URL)
-                && !empty($currencyAvatar)
-            ) {
-                $this->deleteImage($currencyAvatar);
-            }
+            DB::commit();
 
             return redirect()->route('admin.users.edit', $id)->with('success', true);
         } catch (\Exception $e) {
+            DB::rollBack();
 
             if (isset($data['avatar']) && !empty($data['avatar']) && filter_var($data['avatar'], FILTER_VALIDATE_URL)) {
                 $this->deleteImage($data['avatar']);
@@ -198,6 +210,7 @@ class UserController extends Controller
     public function destroy(string $id)
     {
         try {
+            DB::beginTransaction();
 
             if (str_contains($id, ',')) {
 
@@ -210,16 +223,21 @@ class UserController extends Controller
                 $data['avatar'] = $user->avatar;
 
                 $user->delete();
+
                 if (isset($data['avatar']) && !empty($data['avatar']) && filter_var($data['avatar'], FILTER_VALIDATE_URL)) {
-                    $this->deleteImage($data['avatar']);
+                    $this->deleteImage($data['avatar'], self::FOLDER);
                 }
             }
+
+            DB::commit();
 
             return response()->json([
                 'status' => 'success',
                 'message' => 'Xóa thành công'
             ]);
         } catch (\Exception $e) {
+
+            DB::rollBack();
 
             $this->logError($e);
 
@@ -242,7 +260,7 @@ class UserController extends Controller
             $user->delete();
 
             if (isset($avatar) && !empty($avatar) && filter_var($avatar, FILTER_VALIDATE_URL)) {
-                $this->deleteImage($avatar);
+                $this->deleteImage($avatar, self::FOLDER);
             }
         }
     }
