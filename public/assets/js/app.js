@@ -26,7 +26,7 @@
     function s() {
         var e;
         document.querySelectorAll(".navbar-nav .collapse") && (e = document.querySelectorAll(".navbar-nav .collapse"), Array.from(e).forEach(function (t) {
-            var a = new bootstrap.Collapse(t, { toggle: !1 });
+            var a = new bootstrap.Collapse(t, {toggle: !1});
             t.addEventListener("show.bs.collapse", function (e) {
                 e.stopPropagation();
                 var e = t.parentElement.closest(".collapse");
@@ -199,133 +199,133 @@
     function e(e) {
         if (e == e) {
             switch (e["data-layout"]) {
-                case "vertical":
+                case"vertical":
                     T("data-layout", "vertical"), sessionStorage.setItem("data-layout", "vertical"), document.documentElement.setAttribute("data-layout", "vertical"), y("vertical"), s();
                     break;
-                case "horizontal":
+                case"horizontal":
                     T("data-layout", "horizontal"), sessionStorage.setItem("data-layout", "horizontal"), document.documentElement.setAttribute("data-layout", "horizontal"), y("horizontal");
                     break;
-                case "twocolumn":
+                case"twocolumn":
                     T("data-layout", "twocolumn"), sessionStorage.setItem("data-layout", "twocolumn"), document.documentElement.setAttribute("data-layout", "twocolumn"), y("twocolumn");
                     break;
-                case "semibox":
+                case"semibox":
                     T("data-layout", "semibox"), sessionStorage.setItem("data-layout", "semibox"), document.documentElement.setAttribute("data-layout", "semibox"), y("semibox");
                     break;
                 default:
                     "vertical" == sessionStorage.getItem("data-layout") && sessionStorage.getItem("data-layout") ? (T("data-layout", "vertical"), sessionStorage.setItem("data-layout", "vertical"), document.documentElement.setAttribute("data-layout", "vertical"), y("vertical"), s()) : "horizontal" == sessionStorage.getItem("data-layout") ? (T("data-layout", "horizontal"), sessionStorage.setItem("data-layout", "horizontal"), document.documentElement.setAttribute("data-layout", "horizontal"), y("horizontal")) : "twocolumn" == sessionStorage.getItem("data-layout") ? (T("data-layout", "twocolumn"), sessionStorage.setItem("data-layout", "twocolumn"), document.documentElement.setAttribute("data-layout", "twocolumn"), y("twocolumn")) : "semibox" == sessionStorage.getItem("data-layout") && (T("data-layout", "semibox"), sessionStorage.setItem("data-layout", "semibox"), document.documentElement.setAttribute("data-layout", "semibox"), y("semibox"))
             }
             switch (e["data-topbar"]) {
-                case "light":
+                case"light":
                     T("data-topbar", "light"), sessionStorage.setItem("data-topbar", "light"), document.documentElement.setAttribute("data-topbar", "light");
                     break;
-                case "dark":
+                case"dark":
                     T("data-topbar", "dark"), sessionStorage.setItem("data-topbar", "dark"), document.documentElement.setAttribute("data-topbar", "dark");
                     break;
                 default:
                     "dark" == sessionStorage.getItem("data-topbar") ? (T("data-topbar", "dark"), sessionStorage.setItem("data-topbar", "dark"), document.documentElement.setAttribute("data-topbar", "dark")) : (T("data-topbar", "light"), sessionStorage.setItem("data-topbar", "light"), document.documentElement.setAttribute("data-topbar", "light"))
             }
             switch ("hidden" === e["data-sidebar-visibility"] ? (T("data-sidebar-visibility", "hidden"), sessionStorage.setItem("data-sidebar-visibility", "hidden"), document.documentElement.setAttribute("data-sidebar-visibility", "hidden")) : (T("data-sidebar-visibility", "show"), sessionStorage.setItem("data-sidebar-visibility", "show"), document.documentElement.setAttribute("data-sidebar-visibility", "show")), e["data-layout-style"]) {
-                case "default":
+                case"default":
                     T("data-layout-style", "default"), sessionStorage.setItem("data-layout-style", "default"), document.documentElement.setAttribute("data-layout-style", "default");
                     break;
-                case "detached":
+                case"detached":
                     T("data-layout-style", "detached"), sessionStorage.setItem("data-layout-style", "detached"), document.documentElement.setAttribute("data-layout-style", "detached");
                     break;
                 default:
                     "detached" == sessionStorage.getItem("data-layout-style") ? (T("data-layout-style", "detached"), sessionStorage.setItem("data-layout-style", "detached"), document.documentElement.setAttribute("data-layout-style", "detached")) : (T("data-layout-style", "default"), sessionStorage.setItem("data-layout-style", "default"), document.documentElement.setAttribute("data-layout-style", "default"))
             }
             switch (e["data-sidebar-size"]) {
-                case "lg":
+                case"lg":
                     T("data-sidebar-size", "lg"), document.documentElement.setAttribute("data-sidebar-size", "lg"), sessionStorage.setItem("data-sidebar-size", "lg");
                     break;
-                case "sm":
+                case"sm":
                     T("data-sidebar-size", "sm"), document.documentElement.setAttribute("data-sidebar-size", "sm"), sessionStorage.setItem("data-sidebar-size", "sm");
                     break;
-                case "md":
+                case"md":
                     T("data-sidebar-size", "md"), document.documentElement.setAttribute("data-sidebar-size", "md"), sessionStorage.setItem("data-sidebar-size", "md");
                     break;
-                case "sm-hover":
+                case"sm-hover":
                     T("data-sidebar-size", "sm-hover"), document.documentElement.setAttribute("data-sidebar-size", "sm-hover"), sessionStorage.setItem("data-sidebar-size", "sm-hover");
                     break;
                 default:
                     "sm" == sessionStorage.getItem("data-sidebar-size") ? (document.documentElement.setAttribute("data-sidebar-size", "sm"), T("data-sidebar-size", "sm"), sessionStorage.setItem("data-sidebar-size", "sm")) : "md" == sessionStorage.getItem("data-sidebar-size") ? (document.documentElement.setAttribute("data-sidebar-size", "md"), T("data-sidebar-size", "md"), sessionStorage.setItem("data-sidebar-size", "md")) : "sm-hover" == sessionStorage.getItem("data-sidebar-size") ? (document.documentElement.setAttribute("data-sidebar-size", "sm-hover"), T("data-sidebar-size", "sm-hover"), sessionStorage.setItem("data-sidebar-size", "sm-hover")) : (document.documentElement.setAttribute("data-sidebar-size", "lg"), T("data-sidebar-size", "lg"), sessionStorage.setItem("data-sidebar-size", "lg"))
             }
             switch (e["data-bs-theme"]) {
-                case "light":
+                case"light":
                     T("data-bs-theme", "light"), document.documentElement.setAttribute("data-bs-theme", "light"), sessionStorage.setItem("data-bs-theme", "light");
                     break;
-                case "dark":
+                case"dark":
                     T("data-bs-theme", "dark"), document.documentElement.setAttribute("data-bs-theme", "dark"), sessionStorage.setItem("data-bs-theme", "dark");
                     break;
                 default:
                     sessionStorage.getItem("data-bs-theme") && "dark" == sessionStorage.getItem("data-bs-theme") ? (sessionStorage.setItem("data-bs-theme", "dark"), document.documentElement.setAttribute("data-bs-theme", "dark"), T("data-bs-theme", "dark")) : (sessionStorage.setItem("data-bs-theme", "light"), document.documentElement.setAttribute("data-bs-theme", "light"), T("data-bs-theme", "light"))
             }
             switch (e["data-layout-width"]) {
-                case "fluid":
+                case"fluid":
                     T("data-layout-width", "fluid"), document.documentElement.setAttribute("data-layout-width", "fluid"), sessionStorage.setItem("data-layout-width", "fluid");
                     break;
-                case "boxed":
+                case"boxed":
                     T("data-layout-width", "boxed"), document.documentElement.setAttribute("data-layout-width", "boxed"), sessionStorage.setItem("data-layout-width", "boxed");
                     break;
                 default:
                     "boxed" == sessionStorage.getItem("data-layout-width") ? (sessionStorage.setItem("data-layout-width", "boxed"), document.documentElement.setAttribute("data-layout-width", "boxed"), T("data-layout-width", "boxed")) : (sessionStorage.setItem("data-layout-width", "fluid"), document.documentElement.setAttribute("data-layout-width", "fluid"), T("data-layout-width", "fluid"))
             }
             switch (e["data-sidebar"]) {
-                case "light":
+                case"light":
                     T("data-sidebar", "light"), sessionStorage.setItem("data-sidebar", "light"), document.documentElement.setAttribute("data-sidebar", "light");
                     break;
-                case "dark":
+                case"dark":
                     T("data-sidebar", "dark"), sessionStorage.setItem("data-sidebar", "dark"), document.documentElement.setAttribute("data-sidebar", "dark");
                     break;
-                case "gradient":
+                case"gradient":
                     T("data-sidebar", "gradient"), sessionStorage.setItem("data-sidebar", "gradient"), document.documentElement.setAttribute("data-sidebar", "gradient");
                     break;
-                case "gradient-2":
+                case"gradient-2":
                     T("data-sidebar", "gradient-2"), sessionStorage.setItem("data-sidebar", "gradient-2"), document.documentElement.setAttribute("data-sidebar", "gradient-2");
                     break;
-                case "gradient-3":
+                case"gradient-3":
                     T("data-sidebar", "gradient-3"), sessionStorage.setItem("data-sidebar", "gradient-3"), document.documentElement.setAttribute("data-sidebar", "gradient-3");
                     break;
-                case "gradient-4":
+                case"gradient-4":
                     T("data-sidebar", "gradient-4"), sessionStorage.setItem("data-sidebar", "gradient-4"), document.documentElement.setAttribute("data-sidebar", "gradient-4");
                     break;
                 default:
                     sessionStorage.getItem("data-sidebar") && "light" == sessionStorage.getItem("data-sidebar") ? (sessionStorage.setItem("data-sidebar", "light"), T("data-sidebar", "light"), document.documentElement.setAttribute("data-sidebar", "light")) : "dark" == sessionStorage.getItem("data-sidebar") ? (sessionStorage.setItem("data-sidebar", "dark"), T("data-sidebar", "dark"), document.documentElement.setAttribute("data-sidebar", "dark")) : "gradient" == sessionStorage.getItem("data-sidebar") ? (sessionStorage.setItem("data-sidebar", "gradient"), T("data-sidebar", "gradient"), document.documentElement.setAttribute("data-sidebar", "gradient")) : "gradient-2" == sessionStorage.getItem("data-sidebar") ? (sessionStorage.setItem("data-sidebar", "gradient-2"), T("data-sidebar", "gradient-2"), document.documentElement.setAttribute("data-sidebar", "gradient-2")) : "gradient-3" == sessionStorage.getItem("data-sidebar") ? (sessionStorage.setItem("data-sidebar", "gradient-3"), T("data-sidebar", "gradient-3"), document.documentElement.setAttribute("data-sidebar", "gradient-3")) : "gradient-4" == sessionStorage.getItem("data-sidebar") && (sessionStorage.setItem("data-sidebar", "gradient-4"), T("data-sidebar", "gradient-4"), document.documentElement.setAttribute("data-sidebar", "gradient-4"))
             }
             switch (e["data-sidebar-image"]) {
-                case "none":
+                case"none":
                     T("data-sidebar-image", "none"), sessionStorage.setItem("data-sidebar-image", "none"), document.documentElement.setAttribute("data-sidebar-image", "none");
                     break;
-                case "img-1":
+                case"img-1":
                     T("data-sidebar-image", "img-1"), sessionStorage.setItem("data-sidebar-image", "img-1"), document.documentElement.setAttribute("data-sidebar-image", "img-1");
                     break;
-                case "img-2":
+                case"img-2":
                     T("data-sidebar-image", "img-2"), sessionStorage.setItem("data-sidebar-image", "img-2"), document.documentElement.setAttribute("data-sidebar-image", "img-2");
                     break;
-                case "img-3":
+                case"img-3":
                     T("data-sidebar-image", "img-3"), sessionStorage.setItem("data-sidebar-image", "img-3"), document.documentElement.setAttribute("data-sidebar-image", "img-3");
                     break;
-                case "img-4":
+                case"img-4":
                     T("data-sidebar-image", "img-4"), sessionStorage.setItem("data-sidebar-image", "img-4"), document.documentElement.setAttribute("data-sidebar-image", "img-4");
                     break;
                 default:
                     sessionStorage.getItem("data-sidebar-image") && "none" == sessionStorage.getItem("data-sidebar-image") ? (sessionStorage.setItem("data-sidebar-image", "none"), T("data-sidebar-image", "none"), document.documentElement.setAttribute("data-sidebar-image", "none")) : "img-1" == sessionStorage.getItem("data-sidebar-image") ? (sessionStorage.setItem("data-sidebar-image", "img-1"), T("data-sidebar-image", "img-1"), document.documentElement.setAttribute("data-sidebar-image", "img-2")) : "img-2" == sessionStorage.getItem("data-sidebar-image") ? (sessionStorage.setItem("data-sidebar-image", "img-2"), T("data-sidebar-image", "img-2"), document.documentElement.setAttribute("data-sidebar-image", "img-2")) : "img-3" == sessionStorage.getItem("data-sidebar-image") ? (sessionStorage.setItem("data-sidebar-image", "img-3"), T("data-sidebar-image", "img-3"), document.documentElement.setAttribute("data-sidebar-image", "img-3")) : "img-4" == sessionStorage.getItem("data-sidebar-image") && (sessionStorage.setItem("data-sidebar-image", "img-4"), T("data-sidebar-image", "img-4"), document.documentElement.setAttribute("data-sidebar-image", "img-4"))
             }
             switch (e["data-layout-position"]) {
-                case "fixed":
+                case"fixed":
                     T("data-layout-position", "fixed"), sessionStorage.setItem("data-layout-position", "fixed"), document.documentElement.setAttribute("data-layout-position", "fixed");
                     break;
-                case "scrollable":
+                case"scrollable":
                     T("data-layout-position", "scrollable"), sessionStorage.setItem("data-layout-position", "scrollable"), document.documentElement.setAttribute("data-layout-position", "scrollable");
                     break;
                 default:
                     sessionStorage.getItem("data-layout-position") && "scrollable" == sessionStorage.getItem("data-layout-position") ? (T("data-layout-position", "scrollable"), sessionStorage.setItem("data-layout-position", "scrollable"), document.documentElement.setAttribute("data-layout-position", "scrollable")) : (T("data-layout-position", "fixed"), sessionStorage.setItem("data-layout-position", "fixed"), document.documentElement.setAttribute("data-layout-position", "fixed"))
             }
             switch (e["data-preloader"]) {
-                case "disable":
+                case"disable":
                     T("data-preloader", "disable"), sessionStorage.setItem("data-preloader", "disable"), document.documentElement.setAttribute("data-preloader", "disable");
                     break;
-                case "enable":
+                case"enable":
                     T("data-preloader", "enable"), sessionStorage.setItem("data-preloader", "enable"), document.documentElement.setAttribute("data-preloader", "enable"), (t = document.getElementById("preloader")) && window.addEventListener("load", function () {
                         t.style.opacity = "0", t.style.visibility = "hidden"
                     });
@@ -337,16 +337,16 @@
                     })) : document.documentElement.setAttribute("data-preloader", "disable")
             }
             switch (e["data-body-image"]) {
-                case "img-1":
+                case"img-1":
                     T("data-body-image", "img-1"), sessionStorage.setItem("data-sidebabodyr-image", "img-1"), document.documentElement.setAttribute("data-body-image", "img-1"), document.getElementById("theme-settings-offcanvas") && document.documentElement.removeAttribute("data-sidebar-image");
                     break;
-                case "img-2":
+                case"img-2":
                     T("data-body-image", "img-2"), sessionStorage.setItem("data-body-image", "img-2"), document.documentElement.setAttribute("data-body-image", "img-2");
                     break;
-                case "img-3":
+                case"img-3":
                     T("data-body-image", "img-3"), sessionStorage.setItem("data-body-image", "img-3"), document.documentElement.setAttribute("data-body-image", "img-3");
                     break;
-                case "none":
+                case"none":
                     T("data-body-image", "none"), sessionStorage.setItem("data-body-image", "none"), document.documentElement.setAttribute("data-body-image", "none");
                     break;
                 default:
@@ -377,13 +377,13 @@
             })
         }), document.getElementById("collapseBgGradient") && Array.from(document.querySelectorAll("#collapseBgGradient .form-check input")).forEach(function (e) {
             var t = document.getElementById("collapseBgGradient");
-            1 == e.checked && new bootstrap.Collapse(t, { toggle: !1 }).show(), document.querySelector("[data-bs-target='#collapseBgGradient']") && document.querySelector("[data-bs-target='#collapseBgGradient']").addEventListener("click", function (e) {
+            1 == e.checked && new bootstrap.Collapse(t, {toggle: !1}).show(), document.querySelector("[data-bs-target='#collapseBgGradient']") && document.querySelector("[data-bs-target='#collapseBgGradient']").addEventListener("click", function (e) {
                 document.getElementById("sidebar-color-gradient").click()
             })
         }), document.querySelectorAll("[data-bs-target='#collapseBgGradient.show']") && Array.from(document.querySelectorAll("[data-bs-target='#collapseBgGradient.show']")).forEach(function (e) {
             e.addEventListener("click", function () {
                 var e = document.getElementById("collapseBgGradient");
-                new bootstrap.Collapse(e, { toggle: !1 }).hide()
+                new bootstrap.Collapse(e, {toggle: !1}).hide()
             })
         }), Array.from(document.querySelectorAll("[name='data-sidebar']")).forEach(function (e) {
             document.querySelector("[data-bs-target='#collapseBgGradient']") && (document.querySelector("#collapseBgGradient .form-check input:checked") ? document.querySelector("[data-bs-target='#collapseBgGradient']").classList.add("active") : document.querySelector("[data-bs-target='#collapseBgGradient']").classList.remove("active"), e.addEventListener("change", function () {
@@ -412,12 +412,12 @@
         Array.from(document.querySelectorAll("#notificationItemsTabContent .tab-pane")).forEach(function (e) {
             0 < e.querySelectorAll(".notification-item").length ? e.querySelector(".view-all") && (e.querySelector(".view-all").style.display = "block") :
                 (e.querySelector(".view-all") && (e.querySelector(".view-all").style.display = "none"),
-                    e.querySelector(".empty-notification-elem") ||
-                    (e.innerHTML +=
-                        '<div class="empty-notification-elem">\t\t\t\t\t\t\t' +
-                        '<div class="w-25 w-sm-50 pt-3 mx-auto">\t\t\t\t\t\t\t\t' +
-                        `<img src="${PATH_ROOT}/assets/images/svg/bell.svg" class="img-fluid" alt="user-pic">\t\t\t\t\t\t\t` +
-                        '</div>\t\t\t\t\t\t\t<div class="text-center pb-5 mt-2">\t\t\t\t\t\t\t\t<h6 class="fs-18 fw-semibold lh-base">Hey! You have no any notifications </h6>\t\t\t\t\t\t\t</div>\t\t\t\t\t\t</div>'))
+                e.querySelector(".empty-notification-elem") ||
+                (e.innerHTML +=
+                    '<div class="empty-notification-elem">\t\t\t\t\t\t\t' +
+                    '<div class="w-25 w-sm-50 pt-3 mx-auto">\t\t\t\t\t\t\t\t' +
+                    `<img src="${PATH_ROOT}/assets/images/svg/bell.svg" class="img-fluid" alt="user-pic">\t\t\t\t\t\t\t` +
+                    '</div>\t\t\t\t\t\t\t<div class="text-center pb-5 mt-2">\t\t\t\t\t\t\t\t<h6 class="fs-18 fw-semibold lh-base">Hey! You have no any notifications </h6>\t\t\t\t\t\t\t</div>\t\t\t\t\t\t</div>'))
         })
     }
 
@@ -425,252 +425,299 @@
         var e;
         "horizontal" !== document.documentElement.getAttribute("data-layout") && (document.getElementById("navbar-nav") && (e = new SimpleBar(document.getElementById("navbar-nav"))) && e.getContentElement(), document.getElementsByClassName("twocolumn-iconview")[0] && (e = new SimpleBar(document.getElementsByClassName("twocolumn-iconview")[0])) && e.getContentElement(), clearTimeout(q))
     }
-    const SESSION_NAMESPACE = "myApp_";
 
-    // Hàm lưu dữ liệu vào sessionStorage với namespace
-    function setSessionData(key, value) {
-        sessionStorage.setItem(SESSION_NAMESPACE + key, value);
+//     // Sử dụng namespace cho dữ liệu sessionStorage
+// const SESSION_NAMESPACE = "myApp_";
+
+// // Hàm lưu dữ liệu vào sessionStorage với namespace
+// function setSessionData(key, value) {
+//     sessionStorage.setItem(SESSION_NAMESPACE + key, value);
+// }
+
+// // Hàm lấy dữ liệu từ sessionStorage với namespace
+// function getSessionData(key) {
+//     return sessionStorage.getItem(SESSION_NAMESPACE + key);
+// }
+
+// // Hàm xóa dữ liệu khỏi sessionStorage với namespace
+// function clearSessionData() {
+//     Object.keys(sessionStorage)
+//         .filter(key => key.startsWith(SESSION_NAMESPACE))
+//         .forEach(key => sessionStorage.removeItem(key));
+// }
+
+// // Hàm khởi tạo sessionStorage
+// function initializeSession() {
+//     if (getSessionData("defaultAttribute")) {
+//         const f = {};
+//         ["data-layout", "data-sidebar-size", "data-bs-theme", "data-layout-width", "data-sidebar", 
+//         "data-sidebar-image", "data-layout-position", "data-layout-style", "data-topbar", 
+//         "data-preloader", "data-body-image"].forEach(attr => {
+//             f[attr] = getSessionData(attr);
+//         });
+//         e(f); // Hàm `e` cần được định nghĩa rõ ràng
+//     } else {
+//         const attributes = document.documentElement.attributes;
+//         const f = {};
+//         Array.from(attributes).forEach(attr => {
+//             if (attr.nodeName && attr.nodeValue) {
+//                 const key = attr.nodeName;
+//                 const value = attr.nodeValue;
+//                 f[key] = value;
+//                 setSessionData(key, value);
+//             }
+//         });
+//         setSessionData("defaultAttribute", JSON.stringify(f));
+//         e(f);
+//     }
+// }
+
+// // Gọi hàm khởi tạo
+// initializeSession();
+
+// // Các phần khác trong mã cần được cấu trúc tương tự
+// document.getElementById("reset-layout")?.addEventListener("click", function () {
+//     clearSessionData();
+//     window.location.reload();
+// });
+
+    // sessionStorage.getItem("defaultAttribute") ? ((f = {})["data-layout"] = sessionStorage.getItem("data-layout"), f["data-sidebar-size"] = sessionStorage.getItem("data-sidebar-size"), f["data-bs-theme"] = sessionStorage.getItem("data-bs-theme"), f["data-layout-width"] = sessionStorage.getItem("data-layout-width"), f["data-sidebar"] = sessionStorage.getItem("data-sidebar"), f["data-sidebar-image"] = sessionStorage.getItem("data-sidebar-image"), f["data-layout-position"] = sessionStorage.getItem("data-layout-position"), f["data-layout-style"] = sessionStorage.getItem("data-layout-style"), f["data-topbar"] = sessionStorage.getItem("data-topbar"), f["data-preloader"] = sessionStorage.getItem("data-preloader"), f["data-body-image"] = sessionStorage.getItem("data-body-image"), e(f)) : (L = document.documentElement.attributes, f = {}, Array.from(L).forEach(function (e) {
+    //     var t;
+    //     e && e.nodeName && "undefined" != e.nodeName && (t = e.nodeName, f[t] = e.nodeValue, sessionStorage.setItem(t, e.nodeValue))
+    // }), sessionStorage.setItem("defaultAttribute", JSON.stringify(f)), e(f), (L = document.querySelector('.btn[data-bs-target="#theme-settings-offcanvas"]')) && L.click()), i(), h = document.getElementById("search-close-options"), v = document.getElementById("search-dropdown"), (I = document.getElementById("search-options")) && (I.addEventListener("focus", function () {
+    //     0 < I.value.length ? (v.classList.add("show"), h.classList.remove("d-none")) : (v.classList.remove("show"), h.classList.add("d-none"))
+    // }), I.addEventListener("keyup", function (e) {
+    //     var o, t;
+    //     0 < I.value.length ? (v.classList.add("show"), h.classList.remove("d-none"), o = I.value.toLowerCase(), t = document.getElementsByClassName("notify-item"), Array.from(t).forEach(function (e) {
+    //         var t, a, n = "";
+    //         e.querySelector("h6") ? (t = e.getElementsByTagName("span")[0].innerText.toLowerCase(), n = (a = e.querySelector("h6").innerText.toLowerCase()).includes(o) ? a : t) : e.getElementsByTagName("span") && (n = e.getElementsByTagName("span")[0].innerText.toLowerCase()), n && (e.style.display = n.includes(o) ? "block" : "none")
+    //     })) : (v.classList.remove("show"), h.classList.add("d-none"))
+    // }), h.addEventListener("click", function () {
+    //     I.value = "", v.classList.remove("show"), h.classList.add("d-none")
+    // }), document.body.addEventListener("click", function (e) {
+    //     "search-options" !== e.target.getAttribute("id") && (v.classList.remove("show"), h.classList.add("d-none"))
+    // })), S = document.getElementById("search-close-options"), w = document.getElementById("search-dropdown-reponsive"), A = document.getElementById("search-options-reponsive"), S && w && A && (A.addEventListener("focus", function () {
+    //     0 < A.value.length ? (w.classList.add("show"), S.classList.remove("d-none")) : (w.classList.remove("show"), S.classList.add("d-none"))
+    // }), A.addEventListener("keyup", function () {
+    //     0 < A.value.length ? (w.classList.add("show"), S.classList.remove("d-none")) : (w.classList.remove("show"), S.classList.add("d-none"))
+    // }), S.addEventListener("click", function () {
+    //     A.value = "", w.classList.remove("show"), S.classList.add("d-none")
+    // }), document.body.addEventListener("click", function (e) {
+    //     "search-options" !== e.target.getAttribute("id") && (w.classList.remove("show"), S.classList.add("d-none"))
+    // })), (L = document.querySelector('[data-toggle="fullscreen"]')) && L.addEventListener("click", function (e) {
+    //     e.preventDefault(), document.body.classList.toggle("fullscreen-enable"), document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement ? document.cancelFullScreen ? document.cancelFullScreen() : document.mozCancelFullScreen ? document.mozCancelFullScreen() : document.webkitCancelFullScreen && document.webkitCancelFullScreen() : document.documentElement.requestFullscreen ? document.documentElement.requestFullscreen() : document.documentElement.mozRequestFullScreen ? document.documentElement.mozRequestFullScreen() : document.documentElement.webkitRequestFullscreen && document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT)
+    // }), document.addEventListener("fullscreenchange", N), document.addEventListener("webkitfullscreenchange", N), document.addEventListener("mozfullscreenchange", N), B = document.getElementsByTagName("HTML")[0], (z = document.querySelectorAll(".light-dark-mode")) && z.length && z[0].addEventListener("click", function (e) {
+    //     B.hasAttribute("data-bs-theme") && "dark" == B.getAttribute("data-bs-theme") ? C("data-bs-theme", "light", "layout-mode-light", B) : C("data-bs-theme", "dark", "layout-mode-dark", B), window.dispatchEvent(x)
+    // }), G(), D(), r(), document.getElementsByClassName("dropdown-item-cart") && (k = document.querySelectorAll(".dropdown-item-cart").length, Array.from(document.querySelectorAll("#page-topbar .dropdown-menu-cart .remove-item-btn")).forEach(function (e) {
+    //     e.addEventListener("click", function (e) {
+    //         k--, this.closest(".dropdown-item-cart").remove(), Array.from(document.getElementsByClassName("cartitem-badge")).forEach(function (e) {
+    //             e.innerHTML = k
+    //         }), F(), document.getElementById("empty-cart") && (document.getElementById("empty-cart").style.display = 0 == k ? "block" : "none"), document.getElementById("checkout-elem") && (document.getElementById("checkout-elem").style.display = 0 == k ? "none" : "block")
+    //     })
+    // }), Array.from(document.getElementsByClassName("cartitem-badge")).forEach(function (e) {
+    //     e.innerHTML = k
+    // }), document.getElementById("empty-cart") && (document.getElementById("empty-cart").style.display = "none"), document.getElementById("checkout-elem") && (document.getElementById("checkout-elem").style.display = "block"), F()), document.getElementsByClassName("notification-check") && (H(), Array.from(document.querySelectorAll(".notification-check input")).forEach(function (t) {
+    //     t.addEventListener("change", function (e) {
+    //         e.target.closest(".notification-item").classList.toggle("active");
+    //         var t = document.querySelectorAll(".notification-check input:checked").length;
+    //         e.target.closest(".notification-item").classList.contains("active"), document.getElementById("notification-actions").style.display = 0 < t ? "block" : "none", document.getElementById("select-content").innerHTML = t
+    //     }), document.getElementById("notificationDropdown").addEventListener("hide.bs.dropdown", function (e) {
+    //         t.checked = !1, document.querySelectorAll(".notification-item").forEach(function (e) {
+    //             e.classList.remove("active")
+    //         }), document.getElementById("notification-actions").style.display = ""
+    //     })
+    // }), document.getElementById("removeNotificationModal").addEventListener("show.bs.modal", function (e) {
+    //     document.getElementById("delete-notification").addEventListener("click", function () {
+    //         Array.from(document.querySelectorAll(".notification-item")).forEach(function (e) {
+    //             e.classList.contains("active") && e.remove()
+    //         }), H(), document.getElementById("NotificationModalbtn-close").click()
+    //     })
+    // })), [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]')).map(function (e) {
+    //     return new bootstrap.Tooltip(e)
+    // }), [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]')).map(function (e) {
+    //     return new bootstrap.Popover(e)
+    // }), document.getElementById("reset-layout") && document.getElementById("reset-layout").addEventListener("click", function () {
+    //     sessionStorage.clear(), window.location.reload()
+    // }), z = document.querySelectorAll("[data-toast]"), Array.from(z).forEach(function (a) {
+    //     a.addEventListener("click", function () {
+    //         var e = {}, t = a.attributes;
+    //         t["data-toast-text"] && (e.text = t["data-toast-text"].value.toString()), t["data-toast-gravity"] && (e.gravity = t["data-toast-gravity"].value.toString()), t["data-toast-position"] && (e.position = t["data-toast-position"].value.toString()), t["data-toast-className"] && (e.className = t["data-toast-className"].value.toString()), t["data-toast-duration"] && (e.duration = t["data-toast-duration"].value.toString()), t["data-toast-close"] && (e.close = t["data-toast-close"].value.toString()), t["data-toast-style"] && (e.style = t["data-toast-style"].value.toString()), t["data-toast-offset"] && (e.offset = t["data-toast-offset"]), Toastify({
+    //             newWindow: !0,
+    //             text: e.text,
+    //             gravity: e.gravity,
+    //             position: e.position,
+    //             className: "bg-" + e.className,
+    //             stopOnFocus: !0,
+    //             offset: {x: e.offset ? 50 : 0, y: e.offset ? 10 : 0},
+    //             duration: e.duration,
+    //             close: "close" == e.close,
+    //             style: "style" == e.style ? {background: "linear-gradient(to right, #0AB39C, #405189)"} : ""
+    //         }).showToast()
+    //     })
+    // }), z = document.querySelectorAll("[data-choices]"), Array.from(z).forEach(function (e) {
+    //     var t = {}, a = e.attributes;
+    //     a["data-choices-groups"] && (t.placeholderValue = "This is a placeholder set in the config"), a["data-choices-search-false"] && (t.searchEnabled = !1), a["data-choices-search-true"] && (t.searchEnabled = !0), a["data-choices-removeItem"] && (t.removeItemButton = !0), a["data-choices-sorting-false"] && (t.shouldSort = !1), a["data-choices-sorting-true"] && (t.shouldSort = !0), a["data-choices-multiple-remove"] && (t.removeItemButton = !0), a["data-choices-limit"] && (t.maxItemCount = a["data-choices-limit"].value.toString()), a["data-choices-limit"] && (t.maxItemCount = a["data-choices-limit"].value.toString()), a["data-choices-editItem-true"] && (t.maxItemCount = !0), a["data-choices-editItem-false"] && (t.maxItemCount = !1), a["data-choices-text-unique-true"] && (t.duplicateItemsAllowed = !1), a["data-choices-text-disabled-true"] && (t.addItems = !1), a["data-choices-text-disabled-true"] ? new Choices(e, t).disable() : new Choices(e, t)
+    // }), z = document.querySelectorAll("[data-provider]"), Array.from(z).forEach(function (e) {
+    //     var t, a, n;
+    //     "flatpickr" == e.getAttribute("data-provider") ? (n = e.attributes, (t = {}).disableMobile = "true", n["data-date-format"] && (t.dateFormat = n["data-date-format"].value.toString()), n["data-enable-time"] && (t.enableTime = !0, t.dateFormat = n["data-date-format"].value.toString() + " H:i"), n["data-altFormat"] && (t.altInput = !0, t.altFormat = n["data-altFormat"].value.toString()), n["data-minDate"] && (t.minDate = n["data-minDate"].value.toString(), t.dateFormat = n["data-date-format"].value.toString()), n["data-maxDate"] && (t.maxDate = n["data-maxDate"].value.toString(), t.dateFormat = n["data-date-format"].value.toString()), n["data-deafult-date"] && (t.defaultDate = n["data-deafult-date"].value.toString(), t.dateFormat = n["data-date-format"].value.toString()), n["data-multiple-date"] && (t.mode = "multiple", t.dateFormat = n["data-date-format"].value.toString()), n["data-range-date"] && (t.mode = "range", t.dateFormat = n["data-date-format"].value.toString()), n["data-inline-date"] && (t.inline = !0, t.defaultDate = n["data-deafult-date"].value.toString(), t.dateFormat = n["data-date-format"].value.toString()), n["data-disable-date"] && ((a = []).push(n["data-disable-date"].value), t.disable = a.toString().split(",")), n["data-week-number"] && ((a = []).push(n["data-week-number"].value), t.weekNumbers = !0), flatpickr(e, t)) : "timepickr" == e.getAttribute("data-provider") && (a = {}, (n = e.attributes)["data-time-basic"] && (a.enableTime = !0, a.noCalendar = !0, a.dateFormat = "H:i"), n["data-time-hrs"] && (a.enableTime = !0, a.noCalendar = !0, a.dateFormat = "H:i", a.time_24hr = !0), n["data-min-time"] && (a.enableTime = !0, a.noCalendar = !0, a.dateFormat = "H:i", a.minTime = n["data-min-time"].value.toString()), n["data-max-time"] && (a.enableTime = !0, a.noCalendar = !0, a.dateFormat = "H:i", a.minTime = n["data-max-time"].value.toString()), n["data-default-time"] && (a.enableTime = !0, a.noCalendar = !0, a.dateFormat = "H:i", a.defaultDate = n["data-default-time"].value.toString()), n["data-time-inline"] && (a.enableTime = !0, a.noCalendar = !0, a.defaultDate = n["data-time-inline"].value.toString(), a.inline = !0), flatpickr(e, a))
+    // }), Array.from(document.querySelectorAll('.dropdown-menu a[data-bs-toggle="tab"]')).forEach(function (e) {
+    //     e.addEventListener("click", function (e) {
+    //         e.stopPropagation(), bootstrap.Tab.getInstance(e.target).show()
+    //     })
+    // }), o(), s(), p(), window.addEventListener("resize", function () {
+    //     q && clearTimeout(q), q = setTimeout(W, 2e3)
+    // })
+    // Namespace cho sessionStorage để tránh xung đột với dữ liệu khác
+const SESSION_NAMESPACE = "myApp_";
+
+// Hàm lưu dữ liệu vào sessionStorage với namespace
+function setSessionData(key, value) {
+    sessionStorage.setItem(SESSION_NAMESPACE + key, value);
+}
+
+// Hàm lấy dữ liệu từ sessionStorage với namespace
+function getSessionData(key) {
+    return sessionStorage.getItem(SESSION_NAMESPACE + key);
+}
+
+// Hàm xóa tất cả dữ liệu trong sessionStorage thuộc namespace
+function clearSessionData() {
+    Object.keys(sessionStorage)
+        .filter(key => key.startsWith(SESSION_NAMESPACE))
+        .forEach(key => sessionStorage.removeItem(key));
+}
+
+// Hàm khởi tạo sessionStorage
+function initializeSession() {
+    // Kiểm tra nếu dữ liệu đã tồn tại trong sessionStorage
+    if (getSessionData("defaultAttribute")) {
+        const f = {};
+        [
+            "data-feather",
+            "data-target",
+            "data-layout",
+            "data-sidebar-size",
+            "data-bs-theme",
+            "data-layout-width",
+            "data-sidebar",
+            "data-sidebar-image",
+            "data-layout-position",
+            "data-layout-style",
+            "data-topbar",
+            "data-preloader",
+            "data-body-image"
+        ].forEach(attr => {
+            f[attr] = getSessionData(attr);
+        });
+
+        // Gọi hàm xử lý (cần được định nghĩa rõ trong ứng dụng của bạn)
+        e(f);
+    } else {
+        // Nếu dữ liệu chưa tồn tại, lấy từ DOM và lưu vào sessionStorage
+        const attributes = document.documentElement.attributes;
+        const f = {};
+        Array.from(attributes).forEach(attr => {
+            if (attr.nodeName && attr.nodeValue) {
+                const key = attr.nodeName;
+                const value = attr.nodeValue;
+                f[key] = value;
+                setSessionData(key, value);
+            }
+        });
+
+        // Lưu trạng thái khởi tạo
+        setSessionData("defaultAttribute", JSON.stringify(f));
+
+        // Gọi hàm xử lý (cần được định nghĩa rõ trong ứng dụng của bạn)
+        e(f);
     }
+}
 
-    // Hàm lấy dữ liệu từ sessionStorage với namespace
-    function getSessionData(key) {
-        return sessionStorage.getItem(SESSION_NAMESPACE + key);
-    }
+// Hàm reset layout và xóa dữ liệu sessionStorage
+function resetLayout() {
+    clearSessionData();
+    window.location.reload();
+}
 
-    // Hàm xóa tất cả dữ liệu trong sessionStorage thuộc namespace
-    function clearSessionData() {
-        Object.keys(sessionStorage)
-            .filter(key => key.startsWith(SESSION_NAMESPACE))
-            .forEach(key => sessionStorage.removeItem(key));
-    }
+// Gọi hàm khởi tạo khi trang được tải
+initializeSession();
 
-    // Hàm khởi tạo sessionStorage
-    function initializeSession() {
-        if (getSessionData("defaultAttribute")) {
-            const f = {};
-            [
-                "data-feather",
-                "data-target",
-                "data-layout",
-                "data-sidebar-size",
-                "data-bs-theme",
-                "data-layout-width",
-                "data-sidebar",
-                "data-sidebar-image",
-                "data-layout-position",
-                "data-layout-style",
-                "data-topbar",
-                "data-preloader",
-                "data-body-image"
-            ].forEach(attr => {
-                f[attr] = getSessionData(attr);
-            });
+// Gắn sự kiện cho nút reset layout
+const resetButton = document.getElementById("reset-layout");
+if (resetButton) {
+    resetButton.addEventListener("click", resetLayout);
+}
 
-            e(f);
+// Ví dụ về xử lý theme (Dark/Light)
+const themeToggle = document.querySelector(".light-dark-mode");
+if (themeToggle) {
+    themeToggle.addEventListener("click", () => {
+        const html = document.documentElement;
+        const currentTheme = html.getAttribute("data-bs-theme");
+
+        // Thay đổi theme và cập nhật sessionStorage
+        if (currentTheme === "dark") {
+            html.setAttribute("data-bs-theme", "light");
+            setSessionData("data-bs-theme", "light");
         } else {
-            const attributes = document.documentElement.attributes;
-            const f = {};
-            Array.from(attributes).forEach(attr => {
-                if (attr.nodeName && attr.nodeValue) {
-                    const key = attr.nodeName;
-                    const value = attr.nodeValue;
-                    f[key] = value;
-                    setSessionData(key, value);
-                }
-            });
-
-            setSessionData("defaultAttribute", JSON.stringify(f));
-            e(f);
+            html.setAttribute("data-bs-theme", "dark");
+            setSessionData("data-bs-theme", "dark");
         }
-    }
+    });
+}
 
-    // Hàm reset layout và xóa dữ liệu sessionStorage
-    function resetLayout() {
-        clearSessionData();
-        window.location.reload();
-    }
+// Ví dụ về xử lý tìm kiếm
+const searchInput = document.getElementById("search-options");
+const searchDropdown = document.getElementById("search-dropdown");
+const searchClose = document.getElementById("search-close-options");
 
-    // Gọi hàm khởi tạo khi trang được tải
-    initializeSession();
-
-    // Gắn sự kiện cho nút reset layout
-    const resetButton = document.getElementById("reset-layout");
-    if (resetButton) {
-        resetButton.addEventListener("click", resetLayout);
-    }
-
-    // Xử lý theme
-    const themeToggle = document.querySelector(".light-dark-mode");
-    if (themeToggle) {
-        themeToggle.addEventListener("click", () => {
-            const html = document.documentElement;
-            const currentTheme = html.getAttribute("data-bs-theme");
-
-            if (currentTheme === "dark") {
-                html.setAttribute("data-bs-theme", "light");
-                setSessionData("data-bs-theme", "light");
-            } else {
-                html.setAttribute("data-bs-theme", "dark");
-                setSessionData("data-bs-theme", "dark");
-            }
-        });
-    }
-
-    // Xử lý tìm kiếm
-    const searchInput = document.getElementById("search-options");
-    const searchDropdown = document.getElementById("search-dropdown");
-    const searchClose = document.getElementById("search-close-options");
-
-    if (searchInput && searchDropdown && searchClose) {
-        searchInput.addEventListener("focus", () => {
-            if (searchInput.value.length > 0) {
-                searchDropdown.classList.add("show");
-                searchClose.classList.remove("d-none");
-            }
-        });
-
-        searchInput.addEventListener("keyup", () => {
-            if (searchInput.value.length > 0) {
-                searchDropdown.classList.add("show");
-                searchClose.classList.remove("d-none");
-
-                const keyword = searchInput.value.toLowerCase();
-                const items = document.querySelectorAll(".notify-item");
-                items.forEach(item => {
-                    const title = item.querySelector("h6")?.innerText.toLowerCase() || "";
-                    const subtitle = item.querySelector("span")?.innerText.toLowerCase() || "";
-
-                    if (title.includes(keyword) || subtitle.includes(keyword)) {
-                        item.style.display = "block";
-                    } else {
-                        item.style.display = "none";
-                    }
-                });
-            } else {
-                searchDropdown.classList.remove("show");
-                searchClose.classList.add("d-none");
-            }
-        });
-
-        searchClose.addEventListener("click", () => {
-            searchInput.value = "";
-            searchDropdown.classList.remove("show");
-            searchClose.classList.add("d-none");
-        });
-
-        document.body.addEventListener("click", event => {
-            if (event.target.getAttribute("id") !== "search-options") {
-                searchDropdown.classList.remove("show");
-                searchClose.classList.add("d-none");
-            }
-        });
-    }
-
-    // Chức năng bật/tắt toàn màn hình
-    function toggleFullscreen() {
-        if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen().catch(err => {
-                console.error(`Lỗi khi bật chế độ toàn màn hình: ${err.message}`);
-            });
-        } else {
-            document.exitFullscreen().catch(err => {
-                console.error(`Lỗi khi thoát chế độ toàn màn hình: ${err.message}`);
-            });
+if (searchInput && searchDropdown && searchClose) {
+    searchInput.addEventListener("focus", () => {
+        if (searchInput.value.length > 0) {
+            searchDropdown.classList.add("show");
+            searchClose.classList.remove("d-none");
         }
-    }
-    // Tìm tất cả các nút có thuộc tính data-toggle="fullscreen"
-    const fullscreenButtons = document.querySelectorAll('[data-toggle="fullscreen"]');
-
-    fullscreenButtons.forEach(button => {
-        button.addEventListener("click", toggleFullscreen);
     });
 
-    //     sessionStorage.getItem("defaultAttribute") ? ((f = {})["data-layout"] = sessionStorage.getItem("data-layout"), f["data-sidebar-size"] = sessionStorage.getItem("data-sidebar-size"), f["data-bs-theme"] = sessionStorage.getItem("data-bs-theme"), f["data-layout-width"] = sessionStorage.getItem("data-layout-width"), f["data-sidebar"] = sessionStorage.getItem("data-sidebar"), f["data-sidebar-image"] = sessionStorage.getItem("data-sidebar-image"), f["data-layout-position"] = sessionStorage.getItem("data-layout-position"), f["data-layout-style"] = sessionStorage.getItem("data-layout-style"), f["data-topbar"] = sessionStorage.getItem("data-topbar"), f["data-preloader"] = sessionStorage.getItem("data-preloader"), f["data-body-image"] = sessionStorage.getItem("data-body-image"), e(f)) : (L = document.documentElement.attributes, f = {}, Array.from(L).forEach(function (e) {
-    //         var t;
-    //         e && e.nodeName && "undefined" != e.nodeName && (t = e.nodeName, f[t] = e.nodeValue, sessionStorage.setItem(t, e.nodeValue))
-    //     }), sessionStorage.setItem("defaultAttribute", JSON.stringify(f)), e(f), (L = document.querySelector('.btn[data-bs-target="#theme-settings-offcanvas"]')) && L.click()), i(), h = document.getElementById("search-close-options"), v = document.getElementById("search-dropdown"), (I = document.getElementById("search-options")) && (I.addEventListener("focus", function () {
-    //         0 < I.value.length ? (v.classList.add("show"), h.classList.remove("d-none")) : (v.classList.remove("show"), h.classList.add("d-none"))
-    //     }), I.addEventListener("keyup", function (e) {
-    //         var o, t;
-    //         0 < I.value.length ? (v.classList.add("show"), h.classList.remove("d-none"), o = I.value.toLowerCase(), t = document.getElementsByClassName("notify-item"), Array.from(t).forEach(function (e) {
-    //             var t, a, n = "";
-    //             e.querySelector("h6") ? (t = e.getElementsByTagName("span")[0].innerText.toLowerCase(), n = (a = e.querySelector("h6").innerText.toLowerCase()).includes(o) ? a : t) : e.getElementsByTagName("span") && (n = e.getElementsByTagName("span")[0].innerText.toLowerCase()), n && (e.style.display = n.includes(o) ? "block" : "none")
-    //         })) : (v.classList.remove("show"), h.classList.add("d-none"))
-    //     }), h.addEventListener("click", function () {
-    //         I.value = "", v.classList.remove("show"), h.classList.add("d-none")
-    //     }), document.body.addEventListener("click", function (e) {
-    //         "search-options" !== e.target.getAttribute("id") && (v.classList.remove("show"), h.classList.add("d-none"))
-    //     })), S = document.getElementById("search-close-options"), w = document.getElementById("search-dropdown-reponsive"), A = document.getElementById("search-options-reponsive"), S && w && A && (A.addEventListener("focus", function () {
-    //         0 < A.value.length ? (w.classList.add("show"), S.classList.remove("d-none")) : (w.classList.remove("show"), S.classList.add("d-none"))
-    //     }), A.addEventListener("keyup", function () {
-    //         0 < A.value.length ? (w.classList.add("show"), S.classList.remove("d-none")) : (w.classList.remove("show"), S.classList.add("d-none"))
-    //     }), S.addEventListener("click", function () {
-    //         A.value = "", w.classList.remove("show"), S.classList.add("d-none")
-    //     }), document.body.addEventListener("click", function (e) {
-    //         "search-options" !== e.target.getAttribute("id") && (w.classList.remove("show"), S.classList.add("d-none"))
-    //     })), (L = document.querySelector('[data-toggle="fullscreen"]')) && L.addEventListener("click", function (e) {
-    //         e.preventDefault(), document.body.classList.toggle("fullscreen-enable"), document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement ? document.cancelFullScreen ? document.cancelFullScreen() : document.mozCancelFullScreen ? document.mozCancelFullScreen() : document.webkitCancelFullScreen && document.webkitCancelFullScreen() : document.documentElement.requestFullscreen ? document.documentElement.requestFullscreen() : document.documentElement.mozRequestFullScreen ? document.documentElement.mozRequestFullScreen() : document.documentElement.webkitRequestFullscreen && document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT)
-    //     }), document.addEventListener("fullscreenchange", N), document.addEventListener("webkitfullscreenchange", N), document.addEventListener("mozfullscreenchange", N), B = document.getElementsByTagName("HTML")[0], (z = document.querySelectorAll(".light-dark-mode")) && z.length && z[0].addEventListener("click", function (e) {
-    //         B.hasAttribute("data-bs-theme") && "dark" == B.getAttribute("data-bs-theme") ? C("data-bs-theme", "light", "layout-mode-light", B) : C("data-bs-theme", "dark", "layout-mode-dark", B), window.dispatchEvent(x)
-    //     }), G(), D(), r(), document.getElementsByClassName("dropdown-item-cart") && (k = document.querySelectorAll(".dropdown-item-cart").length, Array.from(document.querySelectorAll("#page-topbar .dropdown-menu-cart .remove-item-btn")).forEach(function (e) {
-    //         e.addEventListener("click", function (e) {
-    //             k--, this.closest(".dropdown-item-cart").remove(), Array.from(document.getElementsByClassName("cartitem-badge")).forEach(function (e) {
-    //                 e.innerHTML = k
-    //             }), F(), document.getElementById("empty-cart") && (document.getElementById("empty-cart").style.display = 0 == k ? "block" : "none"), document.getElementById("checkout-elem") && (document.getElementById("checkout-elem").style.display = 0 == k ? "none" : "block")
-    //         })
-    //     }), Array.from(document.getElementsByClassName("cartitem-badge")).forEach(function (e) {
-    //         e.innerHTML = k
-    //     }), document.getElementById("empty-cart") && (document.getElementById("empty-cart").style.display = "none"), document.getElementById("checkout-elem") && (document.getElementById("checkout-elem").style.display = "block"), F()), document.getElementsByClassName("notification-check") && (H(), Array.from(document.querySelectorAll(".notification-check input")).forEach(function (t) {
-    //         t.addEventListener("change", function (e) {
-    //             e.target.closest(".notification-item").classList.toggle("active");
-    //             var t = document.querySelectorAll(".notification-check input:checked").length;
-    //             e.target.closest(".notification-item").classList.contains("active"), document.getElementById("notification-actions").style.display = 0 < t ? "block" : "none", document.getElementById("select-content").innerHTML = t
-    //         }), document.getElementById("notificationDropdown").addEventListener("hide.bs.dropdown", function (e) {
-    //             t.checked = !1, document.querySelectorAll(".notification-item").forEach(function (e) {
-    //                 e.classList.remove("active")
-    //             }), document.getElementById("notification-actions").style.display = ""
-    //         })
-    //     }), document.getElementById("removeNotificationModal").addEventListener("show.bs.modal", function (e) {
-    //         document.getElementById("delete-notification").addEventListener("click", function () {
-    //             Array.from(document.querySelectorAll(".notification-item")).forEach(function (e) {
-    //                 e.classList.contains("active") && e.remove()
-    //             }), H(), document.getElementById("NotificationModalbtn-close").click()
-    //         })
-    //     })), [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]')).map(function (e) {
-    //         return new bootstrap.Tooltip(e)
-    //     }), [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]')).map(function (e) {
-    //         return new bootstrap.Popover(e)
-    //     }), document.getElementById("reset-layout") && document.getElementById("reset-layout").addEventListener("click", function () {
-    //         sessionStorage.clear(), window.location.reload()
-    //     }), z = document.querySelectorAll("[data-toast]"), Array.from(z).forEach(function (a) {
-    //         a.addEventListener("click", function () {
-    //             var e = {}, t = a.attributes;
-    //             t["data-toast-text"] && (e.text = t["data-toast-text"].value.toString()), t["data-toast-gravity"] && (e.gravity = t["data-toast-gravity"].value.toString()), t["data-toast-position"] && (e.position = t["data-toast-position"].value.toString()), t["data-toast-className"] && (e.className = t["data-toast-className"].value.toString()), t["data-toast-duration"] && (e.duration = t["data-toast-duration"].value.toString()), t["data-toast-close"] && (e.close = t["data-toast-close"].value.toString()), t["data-toast-style"] && (e.style = t["data-toast-style"].value.toString()), t["data-toast-offset"] && (e.offset = t["data-toast-offset"]), Toastify({
-    //                 newWindow: !0,
-    //                 text: e.text,
-    //                 gravity: e.gravity,
-    //                 position: e.position,
-    //                 className: "bg-" + e.className,
-    //                 stopOnFocus: !0,
-    //                 offset: {x: e.offset ? 50 : 0, y: e.offset ? 10 : 0},
-    //                 duration: e.duration,
-    //                 close: "close" == e.close,
-    //                 style: "style" == e.style ? {background: "linear-gradient(to right, #0AB39C, #405189)"} : ""
-    //             }).showToast()
-    //         })
-    //     }), z = document.querySelectorAll("[data-choices]"), Array.from(z).forEach(function (e) {
-    //         var t = {}, a = e.attributes;
-    //         a["data-choices-groups"] && (t.placeholderValue = "This is a placeholder set in the config"), a["data-choices-search-false"] && (t.searchEnabled = !1), a["data-choices-search-true"] && (t.searchEnabled = !0), a["data-choices-removeItem"] && (t.removeItemButton = !0), a["data-choices-sorting-false"] && (t.shouldSort = !1), a["data-choices-sorting-true"] && (t.shouldSort = !0), a["data-choices-multiple-remove"] && (t.removeItemButton = !0), a["data-choices-limit"] && (t.maxItemCount = a["data-choices-limit"].value.toString()), a["data-choices-limit"] && (t.maxItemCount = a["data-choices-limit"].value.toString()), a["data-choices-editItem-true"] && (t.maxItemCount = !0), a["data-choices-editItem-false"] && (t.maxItemCount = !1), a["data-choices-text-unique-true"] && (t.duplicateItemsAllowed = !1), a["data-choices-text-disabled-true"] && (t.addItems = !1), a["data-choices-text-disabled-true"] ? new Choices(e, t).disable() : new Choices(e, t)
-    //     }), z = document.querySelectorAll("[data-provider]"), Array.from(z).forEach(function (e) {
-    //         var t, a, n;
-    //         "flatpickr" == e.getAttribute("data-provider") ? (n = e.attributes, (t = {}).disableMobile = "true", n["data-date-format"] && (t.dateFormat = n["data-date-format"].value.toString()), n["data-enable-time"] && (t.enableTime = !0, t.dateFormat = n["data-date-format"].value.toString() + " H:i"), n["data-altFormat"] && (t.altInput = !0, t.altFormat = n["data-altFormat"].value.toString()), n["data-minDate"] && (t.minDate = n["data-minDate"].value.toString(), t.dateFormat = n["data-date-format"].value.toString()), n["data-maxDate"] && (t.maxDate = n["data-maxDate"].value.toString(), t.dateFormat = n["data-date-format"].value.toString()), n["data-deafult-date"] && (t.defaultDate = n["data-deafult-date"].value.toString(), t.dateFormat = n["data-date-format"].value.toString()), n["data-multiple-date"] && (t.mode = "multiple", t.dateFormat = n["data-date-format"].value.toString()), n["data-range-date"] && (t.mode = "range", t.dateFormat = n["data-date-format"].value.toString()), n["data-inline-date"] && (t.inline = !0, t.defaultDate = n["data-deafult-date"].value.toString(), t.dateFormat = n["data-date-format"].value.toString()), n["data-disable-date"] && ((a = []).push(n["data-disable-date"].value), t.disable = a.toString().split(",")), n["data-week-number"] && ((a = []).push(n["data-week-number"].value), t.weekNumbers = !0), flatpickr(e, t)) : "timepickr" == e.getAttribute("data-provider") && (a = {}, (n = e.attributes)["data-time-basic"] && (a.enableTime = !0, a.noCalendar = !0, a.dateFormat = "H:i"), n["data-time-hrs"] && (a.enableTime = !0, a.noCalendar = !0, a.dateFormat = "H:i", a.time_24hr = !0), n["data-min-time"] && (a.enableTime = !0, a.noCalendar = !0, a.dateFormat = "H:i", a.minTime = n["data-min-time"].value.toString()), n["data-max-time"] && (a.enableTime = !0, a.noCalendar = !0, a.dateFormat = "H:i", a.minTime = n["data-max-time"].value.toString()), n["data-default-time"] && (a.enableTime = !0, a.noCalendar = !0, a.dateFormat = "H:i", a.defaultDate = n["data-default-time"].value.toString()), n["data-time-inline"] && (a.enableTime = !0, a.noCalendar = !0, a.defaultDate = n["data-time-inline"].value.toString(), a.inline = !0), flatpickr(e, a))
-    //     }), Array.from(document.querySelectorAll('.dropdown-menu a[data-bs-toggle="tab"]')).forEach(function (e) {
-    //         e.addEventListener("click", function (e) {
-    //             e.stopPropagation(), bootstrap.Tab.getInstance(e.target).show()
-    //         })
-    //     }), o(), s(), p(), window.addEventListener("resize", function () {
-    //         q && clearTimeout(q), q = setTimeout(W, 2e3)
-    //     })
+    searchInput.addEventListener("keyup", () => {
+        if (searchInput.value.length > 0) {
+            searchDropdown.classList.add("show");
+            searchClose.classList.remove("d-none");
+
+            // Lọc danh sách thông báo theo từ khóa
+            const keyword = searchInput.value.toLowerCase();
+            const items = document.querySelectorAll(".notify-item");
+            items.forEach(item => {
+                const title = item.querySelector("h6")?.innerText.toLowerCase() || "";
+                const subtitle = item.querySelector("span")?.innerText.toLowerCase() || "";
+
+                // Hiển thị hoặc ẩn thông báo
+                if (title.includes(keyword) || subtitle.includes(keyword)) {
+                    item.style.display = "block";
+                } else {
+                    item.style.display = "none";
+                }
+            });
+        } else {
+            searchDropdown.classList.remove("show");
+            searchClose.classList.add("d-none");
+        }
+    });
+
+    searchClose.addEventListener("click", () => {
+        searchInput.value = "";
+        searchDropdown.classList.remove("show");
+        searchClose.classList.add("d-none");
+    });
+
+    document.body.addEventListener("click", event => {
+        if (event.target.getAttribute("id") !== "search-options") {
+            searchDropdown.classList.remove("show");
+            searchClose.classList.add("d-none");
+        }
+    });
+}
+
 }();
 var mybutton = document.getElementById("back-to-top");
 
@@ -684,4 +731,22 @@ function topFunction() {
 
 mybutton && (window.onscroll = function () {
     scrollFunction()
+});
+// Chức năng bật/tắt toàn màn hình
+function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+            console.error(`Lỗi khi bật chế độ toàn màn hình: ${err.message}`);
+        });
+    } else {
+        document.exitFullscreen().catch(err => {
+            console.error(`Lỗi khi thoát chế độ toàn màn hình: ${err.message}`);
+        });
+    }
+}
+// Tìm tất cả các nút có thuộc tính data-toggle="fullscreen"
+const fullscreenButtons = document.querySelectorAll('[data-toggle="fullscreen"]');
+
+fullscreenButtons.forEach(button => {
+    button.addEventListener("click", toggleFullscreen);
 });

@@ -4,57 +4,56 @@
     <link href="{{ asset('assets/libs/jsvectormap/css/jsvectormap.min.css') }}" rel="stylesheet" type="text/css" />
 @endpush
 @php
-    $title = 'Cập nhật banner';
+    $title = 'Chi tiết banner';
 @endphp
 @section('content')
-    <div class="container-fluid px-5">
-        <div class="row">
-            <div class="col-12">
-                <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0">Cập nhật banner</h4>
-
-                    <div class="page-title-right">
-                        <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="javascript: void(0);">Quản lí banner</a></li>
-                            <li class="breadcrumb-item active">Danh sách banner</li>
-                            <li class="breadcrumb-item active">Cập nhật banner</li>
-                        </ol>
-                    </div>
-
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <div class="page-title-right">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item active">Quản lí banner</li>
+                        <li class="breadcrumb-item active">Danh sách banner</li>
+                        <li class="breadcrumb-item ">Chi tiết banner</li>
+                    </ol>
                 </div>
+
             </div>
         </div>
+    </div>
+    <div class="container-fluid">
+
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title mb-1">Cập nhật banner</h4>
+                        <h4 class="card-title mb-0">Chi tiết banner</h4>
                         @if (session()->has('success') && session()->get('success'))
-                            <div class="alert alert-success m-0" role="alert">
-                                Cập nhật thành công
+                            <div class="alert alert-success" role="alert">
+                                Thao tác thành công
                             </div>
                         @endif
                         @if (session()->has('success') && !session()->get('success'))
                             <div class="alert alert-danger" role="alert">
-                                <strong>Cập nhật không thành công</strong>
+                                <strong>Thao tác không thành công</strong>
                             </div>
                         @endif
                     </div>
                     <div class="card-body">
                         <div>
-                            <form action="{{route('admin.banners.update',$banner->id)}}" method="post" enctype="multipart/form-data">
+                            <form method="post" enctype="multipart/form-data">
                                 @csrf
-                                @method('PUT')
                                 <div class="mb-3">
                                     <label class="form-label">Title</label>
-                                    <input type="text" name="title" class="form-control" value="{{$banner->title}}">
+                                    <input type="text" @readonly(true) name="title" class="form-control"
+                                        value="{{ $banner->title }}">
                                     @error('title')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Redirect Url</label>
-                                    <input type="text" name="redirect_url" class="form-control"
+                                    <input type="text" @readonly(true) name="redirect_url" class="form-control"
                                         value="{{ $banner->redirect_url }}">
                                     @error('redirect_url')
                                         <div class="text-danger">{{ $message }}</div>
@@ -62,39 +61,40 @@
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Image</label>
-                                    <input type="file" name="image" class="form-control">
-                                    <img src="{{$banner->image}}" alt="" srcset="" width="200px">
+                                    <input type="file" disabled name="image" class="form-control">
+                                    <img src="{{ $banner->image }}" alt="" srcset="" width="200px">
                                     @error('image')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Content</label>
-                                    <input type="text" name="content" class="form-control" value="{{ $banner->content }}">
+                                    <input type="text" @readonly(true) name="content" class="form-control"
+                                        value="{{ $banner->content }}">
                                     @error('content')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Order</label>
-                                    <input type="int" name="order" class="form-control" value="{{ $banner->order }}">
+                                    <input type="int" @readonly(true) name="order" class="form-control"
+                                        value="{{ $banner->order }}">
                                     @error('order')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Status</label>
-                                    <select name="status" class="form-select" value="{{ old('status') }}">
-                                        <option value="1" <?php echo $banner->status ==1 ? 'selected' : '' ?>>Active</option>
-                                        <option value="0" <?php echo $banner->status ==0 ? 'selected' : '' ?>>InActive</option>
+                                    <select disabled name="status" class="form-select" value="{{ old('status') }}">
+                                        <option value="1" <?php echo $banner->status == 1 ? 'selected' : ''; ?>>Active</option>
+                                        <option value="0" <?php echo $banner->status == 0 ? 'selected' : ''; ?>>InActive</option>
                                     </select>
                                     @error('status')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                <button type="submit" class="btn btn-soft-primary waves-effect waves-light me-3">Cập nhật
-                                    </button>
-                                    <a class="btn btn-success add-btn" href="{{route('admin.banners.index')}}">Trở về trang danh sách</a>
+                                <a class="btn btn-success add-btn" href="{{ route('admin.banners.index') }}">Trở về trang
+                                    danh sách</a>
                             </form>
                         </div>
                     </div><!-- end card -->
@@ -118,4 +118,3 @@
     <!-- Dashboard init -->
     <script src="{{ asset('assets/js/pages/dashboard-analytics.init.js') }}"></script>
 @endpush
-
