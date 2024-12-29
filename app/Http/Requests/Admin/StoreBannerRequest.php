@@ -23,7 +23,7 @@ class StoreBannerRequest extends FormRequest
     {
         return [
             'title' => 'required|max:255',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'order' => 'nullable|integer',
             'content'=>'nullable|string|max:255',
             'status' => 'required',

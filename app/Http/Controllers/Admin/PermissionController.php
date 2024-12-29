@@ -109,8 +109,6 @@ class PermissionController extends Controller
                 'status' => 'success',
                 'message' => 'Xoá dữ liệu thành công'
             ]);
-
-            return redirect()->route('admin.permissions.index')->with('success', 'Thao tác thành công');
         } catch (\Exception $e) {
             DB::rollBack();
 
