@@ -127,25 +127,16 @@
                                                     <div class="d-flex gap-2">
                                                         <div class="remove">
                                                             <a href="{{ route('admin.banners.show', $banner->id) }}"
-                                                                class="btn btn-sm btn-primary remove-item-btn">Show</a>
+                                                                class="btn btn-sm btn-primary remove-item-btn">Chi tiết</a>
                                                         </div>
                                                         <div class="edit">
                                                             <a href="{{ route('admin.banners.edit', $banner->id) }}"
-                                                                class="btn btn-sm btn-success edit-item-btn">Edit</a>
+                                                                class="btn btn-sm btn-success edit-item-btn">Sửa</a>
                                                         </div>
                                                         <div class="remove">
-                                                            <form
-                                                                action="{{ route('admin.banners.destroy', $banner->id) }}"
-                                                                method="post">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <button class="btn btn-sm btn-danger remove-item-btn"
-                                                                    data-bs-toggle="modal"
-                                                                    data-bs-target="#deleteRecordModal"
-                                                                    onclick="return confirm('Bạn có muốn xóa không?')">Remove</button>
-                                                            </form>
-
+                                                            <a href="{{ route('admin.banners.destroy', $banner->id) }}" class="btn btn-sm btn-danger sweet-confirm">Xoá</a>
                                                         </div>
+
                                                     </div>
                                                 </td>
 
@@ -178,14 +169,3 @@
 
     </div>
 @endsection
-@push('page-scripts')
-    <!-- apexcharts -->
-    <script src="{{ asset('assets/libs/apexcharts/apexcharts.min.js') }}"></script>
-
-    <!-- Vector map-->
-    <script src="{{ asset('assets/libs/jsvectormap/js/jsvectormap.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/jsvectormap/maps/world-merc.js') }}"></script>
-
-    <!-- Dashboard init -->
-    <script src="{{ asset('assets/js/pages/dashboard-analytics.init.js') }}"></script>
-@endpush

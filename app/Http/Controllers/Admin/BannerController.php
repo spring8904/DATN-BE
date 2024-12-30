@@ -8,10 +8,14 @@ use App\Models\Banner;
 use App\Traits\LoggableTrait;
 use App\Traits\UploadToCloudinaryTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BannerController extends Controller
 {
-    use LoggableTrait;
+    use LoggableTrait, UploadToCloudinaryTrait;
+
+    const FOLDER = 'banners';
+
     /**
      * Display a listing of the resource.
      */
@@ -53,17 +57,25 @@ class BannerController extends Controller
     public function store(StoreBannerRequest $request)
     {
         try {
-            // dd($request->validated());
+            DB::beginTransaction();
+
             $data = $request->all();
 
-            // Upload image to Cloudinary
             if ($request->hasFile('image')) {
-                $uploadedFileUrl = cloudinary()->upload($request->file('image')->getRealPath())->getSecurePath();
-                $data['image'] = $uploadedFileUrl;
+                $data['image'] = $this->uploadImage($request->file('image'), self::FOLDER);
             }
+
             Banner::query()->create($data);
-            return redirect()->route('admin.banners.index')->with(['success' => true, 'uploaded_image' => $uploadedFileUrl]);
+
+            DB::commit();
+
+            return redirect()->route('admin.banners.index')->with('success', true);
         } catch (\Exception $e) {
+            DB::rollBack();
+
+            if (isset($data['image']) && !empty($data['image']) && filter_var($data['image'], FILTER_VALIDATE_URL)) {
+                $this->deleteImage($data['image'], self::FOLDER);
+            }
 
             $this->logError($e);
 
@@ -78,7 +90,6 @@ class BannerController extends Controller
     public function show($id)
     {
         $banner = Banner::findOrFail($id);
-        // dd($banner);
         return view('banners.show', compact('banner'));
     }
 
@@ -97,20 +108,43 @@ class BannerController extends Controller
     public function update(StoreBannerRequest $request, $id)
     {
         try {
-            $banner = Banner::findOrFail($id);
             $data = $request->all();
 
-            // Upload new image to Cloudinary if provided
+            DB::beginTransaction();
+
+            $banner = Banner::findOrFail($id);
+
+            $imageOld = $banner->image;
+
             if ($request->hasFile('image')) {
-                $uploadedFileUrl = cloudinary()->upload($request->file('image')->getRealPath())->getSecurePath();
-                $data['image'] = $uploadedFileUrl;
+                $data['image'] = $this->uploadImage($request->file('image'), self::FOLDER);
+
+                if (
+                    isset($data['image']) && !empty($data['image'])
+                    && filter_var($data['image'], FILTER_VALIDATE_URL)
+                    && !empty($imageOld)
+                ) {
+                    $this->deleteImage($imageOld, self::FOLDER);
+                }
+            }else {
+                $data['image'] = $imageOld;
             }
 
             $banner->update($data);
 
-            return redirect()->route('admin.banners.edit',$banner->id)->with('success', true);
+            DB::commit();
+
+            return redirect()->route('admin.banners.edit', $banner->id)->with('success', true);
         } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            if (isset($data['image']) && !empty($data['image']) && filter_var($data['image'], FILTER_VALIDATE_URL)) {
+                $this->deleteImage($data['image'], self::FOLDER);
+            }
+
             $this->logError($e);
+
             return back()->with('success', false)->with('error', $e->getMessage());
         }
     }
@@ -119,14 +153,30 @@ class BannerController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Banner $banner)
+    public function destroy(string $id)
     {
         try {
+            DB::beginTransaction();
+
+            $banner = Banner::query()->findOrFail($id);
+
             $banner->delete();
-            return redirect()
-                ->route('admin.banners.index')
-                ->with('success', true);
+
+            if (!empty($banner->image) && filter_var($banner->image, FILTER_VALIDATE_URL)) {
+                $this->deleteImage($banner->image,  self::FOLDER);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Xoá dữ liệu thành công'
+            ]);
         } catch (\Exception $e) {
+            DB::rollBack();
+
+            $this->logError($e);
+
             return back()
                 ->with('success', false)
                 ->with('error', 'Lỗi.');

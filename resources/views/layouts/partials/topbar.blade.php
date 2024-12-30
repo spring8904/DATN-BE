@@ -1,8 +1,7 @@
 <div class="layout-width">
     <div class="navbar-header">
         <div class="d-flex">
-            <button type="button"
-                class="btn btn-sm px-3 fs-16 header-item vertical-menu-btn topnav-hamburger"
+            <button type="button" class="btn btn-sm px-3 fs-16 header-item vertical-menu-btn topnav-hamburger"
                 id="topnav-hamburger-icon">
                 <span class="hamburger-icon">
                     <span></span>
@@ -65,8 +64,8 @@
                             <!-- item -->
                             <a href="javascript:void(0);" class="dropdown-item notify-item py-2">
                                 <div class="d-flex">
-                                    <img src="assets/images/users/avatar-2.jpg"
-                                        class="me-3 rounded-circle avatar-xs" alt="user-pic">
+                                    <img src="assets/images/users/avatar-2.jpg" class="me-3 rounded-circle avatar-xs"
+                                        alt="user-pic">
                                     <div class="flex-grow-1">
                                         <h6 class="m-0">Angela Bernier</h6>
                                         <span class="fs-11 mb-0 text-muted">Manager</span>
@@ -76,8 +75,8 @@
                             <!-- item -->
                             <a href="javascript:void(0);" class="dropdown-item notify-item py-2">
                                 <div class="d-flex">
-                                    <img src="assets/images/users/avatar-3.jpg"
-                                        class="me-3 rounded-circle avatar-xs" alt="user-pic">
+                                    <img src="assets/images/users/avatar-3.jpg" class="me-3 rounded-circle avatar-xs"
+                                        alt="user-pic">
                                     <div class="flex-grow-1">
                                         <h6 class="m-0">David Grasso</h6>
                                         <span class="fs-11 mb-0 text-muted">Web Designer</span>
@@ -87,8 +86,8 @@
                             <!-- item -->
                             <a href="javascript:void(0);" class="dropdown-item notify-item py-2">
                                 <div class="d-flex">
-                                    <img src="assets/images/users/avatar-5.jpg"
-                                        class="me-3 rounded-circle avatar-xs" alt="user-pic">
+                                    <img src="assets/images/users/avatar-5.jpg" class="me-3 rounded-circle avatar-xs"
+                                        alt="user-pic">
                                     <div class="flex-grow-1">
                                         <h6 class="m-0">Mike Bunch</h6>
                                         <span class="fs-11 mb-0 text-muted">React Developer</span>
@@ -121,8 +120,7 @@
                             <div class="input-group">
                                 <input type="text" class="form-control" placeholder="Search ..."
                                     aria-label="Recipient's username">
-                                <button class="btn btn-primary" type="submit"><i
-                                        class="mdi mdi-magnify"></i></button>
+                                <button class="btn btn-primary" type="submit"><i class="mdi mdi-magnify"></i></button>
                             </div>
                         </div>
                     </form>
@@ -132,71 +130,69 @@
             <div class="dropdown ms-1 topbar-head-dropdown header-item">
                 <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle"
                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img id="header-lang-img" src="assets/images/flags/us.svg" alt="Header Language"
-                        height="20" class="rounded">
+                    <img id="header-lang-img" src="assets/images/flags/us.svg" alt="Header Language" height="20"
+                        class="rounded">
                 </button>
                 <div class="dropdown-menu dropdown-menu-end">
 
                     <!-- item-->
-                    <a href="javascript:void(0);" class="dropdown-item notify-item language py-2"
-                        data-lang="en" title="English">
-                        <img src="assets/images/flags/us.svg" alt="user-image" class="me-2 rounded"
-                            height="18">
+                    <a href="javascript:void(0);" class="dropdown-item notify-item language py-2" data-lang="en"
+                        title="English">
+                        <img src="assets/images/flags/us.svg" alt="user-image" class="me-2 rounded" height="18">
                         <span class="align-middle">English</span>
                     </a>
 
                     <!-- item-->
-                    <a href="javascript:void(0);" class="dropdown-item notify-item language"
-                        data-lang="sp" title="Spanish">
+                    <a href="javascript:void(0);" class="dropdown-item notify-item language" data-lang="sp"
+                        title="Spanish">
                         <img src="assets/images/flags/spain.svg" alt="user-image" class="me-2 rounded"
                             height="18">
                         <span class="align-middle">Española</span>
                     </a>
 
                     <!-- item-->
-                    <a href="javascript:void(0);" class="dropdown-item notify-item language"
-                        data-lang="gr" title="German">
+                    <a href="javascript:void(0);" class="dropdown-item notify-item language" data-lang="gr"
+                        title="German">
                         <img src="assets/images/flags/germany.svg" alt="user-image" class="me-2 rounded"
                             height="18"> <span class="align-middle">Deutsche</span>
                     </a>
 
                     <!-- item-->
-                    <a href="javascript:void(0);" class="dropdown-item notify-item language"
-                        data-lang="it" title="Italian">
+                    <a href="javascript:void(0);" class="dropdown-item notify-item language" data-lang="it"
+                        title="Italian">
                         <img src="assets/images/flags/italy.svg" alt="user-image" class="me-2 rounded"
                             height="18">
                         <span class="align-middle">Italiana</span>
                     </a>
 
                     <!-- item-->
-                    <a href="javascript:void(0);" class="dropdown-item notify-item language"
-                        data-lang="ru" title="Russian">
+                    <a href="javascript:void(0);" class="dropdown-item notify-item language" data-lang="ru"
+                        title="Russian">
                         <img src="assets/images/flags/russia.svg" alt="user-image" class="me-2 rounded"
                             height="18">
                         <span class="align-middle">русский</span>
                     </a>
 
                     <!-- item-->
-                    <a href="javascript:void(0);" class="dropdown-item notify-item language"
-                        data-lang="ch" title="Chinese">
+                    <a href="javascript:void(0);" class="dropdown-item notify-item language" data-lang="ch"
+                        title="Chinese">
                         <img src="assets/images/flags/china.svg" alt="user-image" class="me-2 rounded"
                             height="18">
                         <span class="align-middle">中国人</span>
                     </a>
 
                     <!-- item-->
-                    <a href="javascript:void(0);" class="dropdown-item notify-item language"
-                        data-lang="fr" title="French">
+                    <a href="javascript:void(0);" class="dropdown-item notify-item language" data-lang="fr"
+                        title="French">
                         <img src="assets/images/flags/french.svg" alt="user-image" class="me-2 rounded"
                             height="18">
                         <span class="align-middle">français</span>
                     </a>
 
                     <!-- item-->
-                    <a href="javascript:void(0);" class="dropdown-item notify-item language"
-                        data-lang="ar" title="Arabic">
-                        <img src="assets/images/flags/ae.svg" alt="user-image" class="me-2 rounded"
-                            height="18">
+                    <a href="javascript:void(0);" class="dropdown-item notify-item language" data-lang="ar"
+                        title="Arabic">
+                        <img src="assets/images/flags/ae.svg" alt="user-image" class="me-2 rounded" height="18">
                         <span class="align-middle">Arabic</span>
                     </a>
                 </div>
@@ -218,8 +214,8 @@
 
             <div class="dropdown topbar-head-dropdown ms-1 header-item" id="notificationDropdown">
                 <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle"
-                    id="page-header-notifications-dropdown" data-bs-toggle="dropdown"
-                    data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
+                    id="page-header-notifications-dropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside"
+                    aria-haspopup="true" aria-expanded="false">
                     <i class='bx bx-bell fs-22'></i>
                     <span
                         class="position-absolute topbar-badge fs-10 translate-middle badge rounded-pill bg-danger">3<span
@@ -241,8 +237,8 @@
                         </div>
 
                         <div class="px-2 pt-2">
-                            <ul class="nav nav-tabs dropdown-tabs nav-tabs-custom"
-                                data-dropdown-tabs="true" id="notificationItemsTab" role="tablist">
+                            <ul class="nav nav-tabs dropdown-tabs nav-tabs-custom" data-dropdown-tabs="true"
+                                id="notificationItemsTab" role="tablist">
                                 <li class="nav-item waves-effect waves-light">
                                     <a class="nav-link active" data-bs-toggle="tab" href="#all-noti-tab"
                                         role="tab" aria-selected="true">
@@ -250,14 +246,14 @@
                                     </a>
                                 </li>
                                 <li class="nav-item waves-effect waves-light">
-                                    <a class="nav-link" data-bs-toggle="tab" href="#messages-tab"
-                                        role="tab" aria-selected="false">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#messages-tab" role="tab"
+                                        aria-selected="false">
                                         Messages
                                     </a>
                                 </li>
                                 <li class="nav-item waves-effect waves-light">
-                                    <a class="nav-link" data-bs-toggle="tab" href="#alerts-tab"
-                                        role="tab" aria-selected="false">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#alerts-tab" role="tab"
+                                        aria-selected="false">
                                         Alerts
                                     </a>
                                 </li>
@@ -267,15 +263,12 @@
                     </div>
 
                     <div class="tab-content position-relative" id="notificationItemsTabContent">
-                        <div class="tab-pane fade show active py-2 ps-2" id="all-noti-tab"
-                            role="tabpanel">
+                        <div class="tab-pane fade show active py-2 ps-2" id="all-noti-tab" role="tabpanel">
                             <div data-simplebar style="max-height: 300px;" class="pe-2">
-                                <div
-                                    class="text-reset notification-item d-block dropdown-item position-relative">
+                                <div class="text-reset notification-item d-block dropdown-item position-relative">
                                     <div class="d-flex">
                                         <div class="avatar-xs me-3 flex-shrink-0">
-                                            <span
-                                                class="avatar-title bg-info-subtle text-info rounded-circle fs-16">
+                                            <span class="avatar-title bg-info-subtle text-info rounded-circle fs-16">
                                                 <i class="bx bx-badge-check"></i>
                                             </span>
                                         </div>
@@ -295,8 +288,8 @@
                                         </div>
                                         <div class="px-2 fs-15">
                                             <div class="form-check notification-check">
-                                                <input class="form-check-input" type="checkbox"
-                                                    value="" id="all-notification-check01">
+                                                <input class="form-check-input" type="checkbox" value=""
+                                                    id="all-notification-check01">
                                                 <label class="form-check-label"
                                                     for="all-notification-check01"></label>
                                             </div>
@@ -304,12 +297,10 @@
                                     </div>
                                 </div>
 
-                                <div
-                                    class="text-reset notification-item d-block dropdown-item position-relative">
+                                <div class="text-reset notification-item d-block dropdown-item position-relative">
                                     <div class="d-flex">
                                         <img src="assets/images/users/avatar-2.jpg"
-                                            class="me-3 rounded-circle avatar-xs flex-shrink-0"
-                                            alt="user-pic">
+                                            class="me-3 rounded-circle avatar-xs flex-shrink-0" alt="user-pic">
                                         <div class="flex-grow-1">
                                             <a href="#!" class="stretched-link">
                                                 <h6 class="mt-0 mb-1 fs-13 fw-semibold">Angela Bernier</h6>
@@ -326,8 +317,8 @@
                                         </div>
                                         <div class="px-2 fs-15">
                                             <div class="form-check notification-check">
-                                                <input class="form-check-input" type="checkbox"
-                                                    value="" id="all-notification-check02">
+                                                <input class="form-check-input" type="checkbox" value=""
+                                                    id="all-notification-check02">
                                                 <label class="form-check-label"
                                                     for="all-notification-check02"></label>
                                             </div>
@@ -335,8 +326,7 @@
                                     </div>
                                 </div>
 
-                                <div
-                                    class="text-reset notification-item d-block dropdown-item position-relative">
+                                <div class="text-reset notification-item d-block dropdown-item position-relative">
                                     <div class="d-flex">
                                         <div class="avatar-xs me-3 flex-shrink-0">
                                             <span
@@ -358,8 +348,8 @@
                                         </div>
                                         <div class="px-2 fs-15">
                                             <div class="form-check notification-check">
-                                                <input class="form-check-input" type="checkbox"
-                                                    value="" id="all-notification-check03">
+                                                <input class="form-check-input" type="checkbox" value=""
+                                                    id="all-notification-check03">
                                                 <label class="form-check-label"
                                                     for="all-notification-check03"></label>
                                             </div>
@@ -367,12 +357,10 @@
                                     </div>
                                 </div>
 
-                                <div
-                                    class="text-reset notification-item d-block dropdown-item position-relative">
+                                <div class="text-reset notification-item d-block dropdown-item position-relative">
                                     <div class="d-flex">
                                         <img src="assets/images/users/avatar-8.jpg"
-                                            class="me-3 rounded-circle avatar-xs flex-shrink-0"
-                                            alt="user-pic">
+                                            class="me-3 rounded-circle avatar-xs flex-shrink-0" alt="user-pic">
                                         <div class="flex-grow-1">
                                             <a href="#!" class="stretched-link">
                                                 <h6 class="mt-0 mb-1 fs-13 fw-semibold">Maureen Gibson</h6>
@@ -388,8 +376,8 @@
                                         </div>
                                         <div class="px-2 fs-15">
                                             <div class="form-check notification-check">
-                                                <input class="form-check-input" type="checkbox"
-                                                    value="" id="all-notification-check04">
+                                                <input class="form-check-input" type="checkbox" value=""
+                                                    id="all-notification-check04">
                                                 <label class="form-check-label"
                                                     for="all-notification-check04"></label>
                                             </div>
@@ -398,10 +386,8 @@
                                 </div>
 
                                 <div class="my-3 text-center view-all">
-                                    <button type="button"
-                                        class="btn btn-soft-success waves-effect waves-light">View
-                                        All Notifications <i
-                                            class="ri-arrow-right-line align-middle"></i></button>
+                                    <button type="button" class="btn btn-soft-success waves-effect waves-light">View
+                                        All Notifications <i class="ri-arrow-right-line align-middle"></i></button>
                                 </div>
                             </div>
 
@@ -429,8 +415,8 @@
                                         </div>
                                         <div class="px-2 fs-15">
                                             <div class="form-check notification-check">
-                                                <input class="form-check-input" type="checkbox"
-                                                    value="" id="messages-notification-check01">
+                                                <input class="form-check-input" type="checkbox" value=""
+                                                    id="messages-notification-check01">
                                                 <label class="form-check-label"
                                                     for="messages-notification-check01"></label>
                                             </div>
@@ -458,8 +444,8 @@
                                         </div>
                                         <div class="px-2 fs-15">
                                             <div class="form-check notification-check">
-                                                <input class="form-check-input" type="checkbox"
-                                                    value="" id="messages-notification-check02">
+                                                <input class="form-check-input" type="checkbox" value=""
+                                                    id="messages-notification-check02">
                                                 <label class="form-check-label"
                                                     for="messages-notification-check02"></label>
                                             </div>
@@ -487,8 +473,8 @@
                                         </div>
                                         <div class="px-2 fs-15">
                                             <div class="form-check notification-check">
-                                                <input class="form-check-input" type="checkbox"
-                                                    value="" id="messages-notification-check03">
+                                                <input class="form-check-input" type="checkbox" value=""
+                                                    id="messages-notification-check03">
                                                 <label class="form-check-label"
                                                     for="messages-notification-check03"></label>
                                             </div>
@@ -515,8 +501,8 @@
                                         </div>
                                         <div class="px-2 fs-15">
                                             <div class="form-check notification-check">
-                                                <input class="form-check-input" type="checkbox"
-                                                    value="" id="messages-notification-check04">
+                                                <input class="form-check-input" type="checkbox" value=""
+                                                    id="messages-notification-check04">
                                                 <label class="form-check-label"
                                                     for="messages-notification-check04"></label>
                                             </div>
@@ -525,22 +511,19 @@
                                 </div>
 
                                 <div class="my-3 text-center view-all">
-                                    <button type="button"
-                                        class="btn btn-soft-success waves-effect waves-light">View
-                                        All Messages <i
-                                            class="ri-arrow-right-line align-middle"></i></button>
+                                    <button type="button" class="btn btn-soft-success waves-effect waves-light">View
+                                        All Messages <i class="ri-arrow-right-line align-middle"></i></button>
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane fade p-4" id="alerts-tab" role="tabpanel"
-                            aria-labelledby="alerts-tab"></div>
+                        <div class="tab-pane fade p-4" id="alerts-tab" role="tabpanel" aria-labelledby="alerts-tab">
+                        </div>
 
                         <div class="notification-actions" id="notification-actions">
                             <div class="d-flex text-muted justify-content-center">
                                 Select <div id="select-content" class="text-body fw-semibold px-1">0</div>
                                 Result <button type="button" class="btn btn-link link-danger p-0 ms-3"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#removeNotificationModal">Remove</button>
+                                    data-bs-toggle="modal" data-bs-target="#removeNotificationModal">Remove</button>
                             </div>
                         </div>
                     </div>
@@ -548,15 +531,17 @@
             </div>
 
             <div class="dropdown ms-sm-3 header-item topbar-user">
-                <button type="button" class="btn" id="page-header-user-dropdown"
-                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button type="button" class="btn" id="page-header-user-dropdown" data-bs-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
                     <span class="d-flex align-items-center">
-                        <img class="rounded-circle header-profile-user"
-                            src="assets/images/users/avatar-1.jpg" alt="Header Avatar">
+                        <img class="rounded-circle header-profile-user" src="{{ Auth::user()->avatar ?? '' }}"
+                            alt="Header Avatar">
                         <span class="text-start ms-xl-2">
-                            <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">Anna
-                                Adame</span>
-                            <span class="d-none d-xl-block ms-1 fs-12 user-name-sub-text">Founder</span>
+                            <span
+                                class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ Auth::user()->name ?? '' }}</span>
+                                <span class="d-none d-xl-block ms-1 fs-12 user-name-sub-text">
+                                    {{ Auth::check() && Auth::user()->roles->count() > 0 ? Str::ucfirst(Auth::user()->roles->first()->name) : '' }}
+                                </span>
                         </span>
                     </span>
                 </button>
@@ -586,9 +571,9 @@
                     <a class="dropdown-item" href="auth-lockscreen-basic.html"><i
                             class="mdi mdi-lock text-muted fs-16 align-middle me-1"></i> <span
                             class="align-middle">Lock screen</span></a>
-                    <a class="dropdown-item" href="auth-logout-basic.html"><i
-                            class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span
-                            class="align-middle" data-key="t-logout">Logout</span></a>
+                    <a class="dropdown-item" href="{{ route('admin.logout') }}"><i
+                            class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle"
+                            data-key="t-logout">Logout</span></a>
                 </div>
             </div>
         </div>

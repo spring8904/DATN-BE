@@ -1,4 +1,7 @@
 @extends('layouts.auth')
+
+@section('title', 'Đăng nhập Quản trị viên')
+
 @section('content')
     <div class="container">
         <div class="row">
@@ -10,7 +13,8 @@
                                 <div class="bg-overlay"></div>
                                 <div class="position-relative h-100 d-flex flex-column">
                                     <div class="mb-4">
-                                        <a style="display: flex;align-items: center; gap: 10px" href="index.html" class="">
+                                        <a style="display: flex;align-items: center; gap: 10px" href="index.html"
+                                            class="">
                                             <img src="{{ asset('assets/images/logo-container.png') }}" alt=""
                                                 width="50" height="50">
                                             <span class="custom-text-logo">CourseHub</span>
@@ -56,16 +60,17 @@
                         <div class="col-lg-6">
                             <div class="p-lg-5 p-4">
                                 <div>
-                                    <h5 class="">Đăng nhập Quản trị viên</h5>
+                                    <h5 class="">{{ $title ?? '' }}</h5>
                                 </div>
 
                                 <div class="mt-4">
-                                    <form class="needs-validation" novalidate action="index.html">
-
+                                    <form class="needs-validation" novalidate action="{{ route('admin.handleLogin') }}"
+                                        method="POST">
+                                        @csrf
                                         <div class="mb-3">
                                             <label for="useremail" class="form-label">Email <span
                                                     class="text-danger">*</span></label>
-                                            <input type="email" class="form-control" id="useremail"
+                                            <input type="email" name="email" class="form-control" id="useremail"
                                                 placeholder="Nhập email..." required>
                                             <div class="invalid-feedback">
                                                 Vui lòng nhập email
@@ -76,27 +81,16 @@
                                             <label class="form-label" for="password-input">Mật khẩu</label>
                                             <div class="position-relative auth-pass-inputgroup">
                                                 <input type="password" class="form-control pe-5 password-input"
-                                                    onpaste="return false" placeholder="Enter password" id="password-input"
-                                                    aria-describedby="passwordInput"
-                                                    pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required>
+                                                    onpaste="return false" placeholder="Enter password" name="password"
+                                                    required>
                                                 <button
                                                     class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon"
                                                     type="button" id="password-addon"><i
                                                         class="ri-eye-fill align-middle"></i></button>
                                                 <div class="invalid-feedback">
-                                                    Please enter password
+                                                    Vui lòng nhập mật khẩu
                                                 </div>
                                             </div>
-                                        </div>
-
-                                        <div id="password-contain" class="p-3 bg-light mb-2 rounded">
-                                            <h5 class="fs-13">Password must contain:</h5>
-                                            <p id="pass-length" class="invalid fs-12 mb-2">Minimum <b>8 characters</b></p>
-                                            <p id="pass-lower" class="invalid fs-12 mb-2">At <b>lowercase</b> letter (a-z)
-                                            </p>
-                                            <p id="pass-upper" class="invalid fs-12 mb-2">At least <b>uppercase</b> letter
-                                                (A-Z)</p>
-                                            <p id="pass-number" class="invalid fs-12 mb-0">A least <b>number</b> (0-9)</p>
                                         </div>
 
                                         <div class="mt-4">
