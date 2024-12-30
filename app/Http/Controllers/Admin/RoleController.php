@@ -48,6 +48,10 @@ class RoleController extends Controller
             $title = 'Quản lý vai trò';
             $subTitle = 'Thêm mới vai trò';
 
+            $permissions = Permission::all()->groupBy(function ($permission) {
+                return Str::before($permission->name, '.');
+            });
+
             return view('roles.create', compact([
                 'title',
                 'subTitle',

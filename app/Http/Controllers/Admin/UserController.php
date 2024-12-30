@@ -47,7 +47,6 @@ class UserController extends Controller
                 ->first();
 
             return view('users.index', compact('users', 'userCounts', 'subTitle', 'title'));
-
         } catch (\Exception $e) {
             $this->logError($e);
             return redirect()->back()->with('error', 'Có lỗi xảy ra, vui lòng thử lại sau');
@@ -95,6 +94,8 @@ class UserController extends Controller
             $data['code'] = str_replace('-', '', Str::uuid()->toString());
 
             $user =  User::query()->create($data);
+
+            $user->email_verified_at = now();
 
             $user->assignRole($request->role);
 
