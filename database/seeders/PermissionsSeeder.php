@@ -16,7 +16,7 @@ class PermissionsSeeder extends Seeder
         $permissions = [
             'user' =>  [
                 'read',
-                // 'create',
+                'create',
                 'update',
                 'delete'
             ],
@@ -61,6 +61,12 @@ class PermissionsSeeder extends Seeder
                 'read',
                 'create',
                 'update',
+            ],
+            'chapter' => [
+                'read',
+                'create',
+                'update',
+                'delete'
             ],
             'lesson' => [
                 'read',

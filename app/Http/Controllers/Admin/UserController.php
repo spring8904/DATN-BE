@@ -29,14 +29,14 @@ class UserController extends Controller
 
             $users = User::query()
                 ->whereHas('roles', function ($query) {
-                    $query->where('name', 'student');
+                    $query->where('name', 'member');
                 })
                 ->latest('id')
                 ->paginate(10);
 
             $userCounts = User::query()
                 ->whereHas('roles', function ($query) {
-                    $query->where('name', 'student');
+                    $query->where('name', 'member');
                 })
                 ->selectRaw('
                     count(id) as total_users,
@@ -93,9 +93,9 @@ class UserController extends Controller
 
             $data['code'] = str_replace('-', '', Str::uuid()->toString());
 
-            $user =  User::query()->create($data);
+            $data['email_verified_at'] = now();
 
-            $user->email_verified_at = now();
+            $user =  User::query()->create($data);
 
             $user->assignRole($request->role);
 

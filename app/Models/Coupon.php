@@ -6,21 +6,22 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Banner extends Model
+class Coupon extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'title',
-        'redirect_url',
-        'image',
-        'content',
-        'order',
-        'status'
+        'user_id',
+        'code',
+        'name',
+        'description',
+        'discount_type',
+        'discount_vale',
+        'start_date',
+        'expire_date',
+        'status',
+        'used_count',
     ];
 
-    public $attributes = [
-        'status'=>1,
-        'order'=>0,
-    ];
+    
 }
