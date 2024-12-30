@@ -7,23 +7,23 @@
     $title = 'Thêm mới banner';
 @endphp
 @section('content')
-    <div class="container-fluid px-5">
-        <div class="row">
-            <div class="col-12">
-                <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0">Thêm mới banner</h4>
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <h4 class="mb-sm-0 ps-2">Quản lí banner</h4>
 
-                    <div class="page-title-right">
-                        <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="javascript: void(0);">Quản lí banner</a></li>
-                            <li class="breadcrumb-item active">Danh sách banner</li>
-                            <li class="breadcrumb-item active">Thêm mới banner</li>
-                        </ol>
-                    </div>
-
-                </div>
+            <div class="page-title-right pe-3">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Dashboard</a></li>
+                    <li class="breadcrumb-item active"><a href="{{route('admin.banners.index')}}">Danh sách banner</a></li>
+                    <li class="breadcrumb-item active"><a href="{{route('admin.banners.create')}}">Thêm mới banner</a></li>
+                </ol>
             </div>
+
         </div>
+    </div>
+</div>
+    <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
