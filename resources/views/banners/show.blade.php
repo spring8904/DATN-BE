@@ -12,9 +12,9 @@
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                 <div class="page-title-right">
                     <ol class="breadcrumb m-0">
-                        <li class="breadcrumb-item active">Quản lí banner</li>
-                        <li class="breadcrumb-item active">Danh sách banner</li>
-                        <li class="breadcrumb-item ">Chi tiết banner</li>
+                        <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Dashboard</a></li>
+                        <li class="breadcrumb-item active"><a href="{{route('admin.banners.index')}}">Danh sách banner</a></li>
+                        <li class="breadcrumb-item active"><a href="{{route('admin.banners.show',$banner->id)}}">Chi tiết banner</a></li>
                     </ol>
                 </div>
 
