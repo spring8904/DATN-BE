@@ -21,7 +21,7 @@
         </div>
 
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-12">
                 <div class="card">
                     <div class="card-header align-items-center d-flex">
                         <h4 class="card-title mb-0 flex-grow-1">{{ $subTitle ?? '' }}</h4>
@@ -59,7 +59,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-8">
+            <div class="col-md-12">
                 <div class="card">
                     <div class="card-header align-items-center d-flex">
                         <h4 class="card-title mb-0 flex-grow-1">{{ $subTitle ?? '' }}</h4>
