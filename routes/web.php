@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\API\Auth\GoogleController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,6 +21,11 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+#============================== ROUTE GOOGLE AUTH =============================
+Route::prefix('auth')->as('auth.')->group(function () {
+    Route::get('google', [GoogleController::class, 'redirectToGoogle'])->name('google');
+    Route::get('google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
+});
 
 Route::prefix('admin')->as('admin.')->group(function () {
     Route::get('login', [AuthController::class, 'login'])->name('login');
