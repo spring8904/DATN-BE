@@ -11,6 +11,9 @@ use App\Traits\UploadToCloudinaryTrait;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
+use App\Notifications\CrudNotification;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -100,6 +103,8 @@ class UserController extends Controller
             $user->assignRole($request->role);
 
             DB::commit();
+            
+            CrudNotification::sendToMany([],$user->id);
 
             return redirect()->route('admin.users.index')->with('success', true);
         } catch (\Exception $e) {
@@ -212,6 +217,8 @@ class UserController extends Controller
             }
 
             DB::commit();
+            
+            CrudNotification::sendToMany([],$id);
 
             return redirect()->route('admin.users.edit', $id)->with('success', true);
         } catch (\Exception $e) {
@@ -253,6 +260,8 @@ class UserController extends Controller
             }
 
             DB::commit();
+
+            CrudNotification::sendToMany([],$id);
 
             return response()->json([
                 'status' => 'success',
