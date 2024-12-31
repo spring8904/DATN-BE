@@ -426,92 +426,92 @@
         "horizontal" !== document.documentElement.getAttribute("data-layout") && (document.getElementById("navbar-nav") && (e = new SimpleBar(document.getElementById("navbar-nav"))) && e.getContentElement(), document.getElementsByClassName("twocolumn-iconview")[0] && (e = new SimpleBar(document.getElementsByClassName("twocolumn-iconview")[0])) && e.getContentElement(), clearTimeout(q))
     }
 
-    sessionStorage.getItem("defaultAttribute") ? ((f = {})["data-layout"] = sessionStorage.getItem("data-layout"), f["data-sidebar-size"] = sessionStorage.getItem("data-sidebar-size"), f["data-bs-theme"] = sessionStorage.getItem("data-bs-theme"), f["data-layout-width"] = sessionStorage.getItem("data-layout-width"), f["data-sidebar"] = sessionStorage.getItem("data-sidebar"), f["data-sidebar-image"] = sessionStorage.getItem("data-sidebar-image"), f["data-layout-position"] = sessionStorage.getItem("data-layout-position"), f["data-layout-style"] = sessionStorage.getItem("data-layout-style"), f["data-topbar"] = sessionStorage.getItem("data-topbar"), f["data-preloader"] = sessionStorage.getItem("data-preloader"), f["data-body-image"] = sessionStorage.getItem("data-body-image"), e(f)) : (L = document.documentElement.attributes, f = {}, Array.from(L).forEach(function (e) {
-        var t;
-        e && e.nodeName && "undefined" != e.nodeName && (t = e.nodeName, f[t] = e.nodeValue, sessionStorage.setItem(t, e.nodeValue))
-    }), sessionStorage.setItem("defaultAttribute", JSON.stringify(f)), e(f), (L = document.querySelector('.btn[data-bs-target="#theme-settings-offcanvas"]')) && L.click()), i(), h = document.getElementById("search-close-options"), v = document.getElementById("search-dropdown"), (I = document.getElementById("search-options")) && (I.addEventListener("focus", function () {
-        0 < I.value.length ? (v.classList.add("show"), h.classList.remove("d-none")) : (v.classList.remove("show"), h.classList.add("d-none"))
-    }), I.addEventListener("keyup", function (e) {
-        var o, t;
-        0 < I.value.length ? (v.classList.add("show"), h.classList.remove("d-none"), o = I.value.toLowerCase(), t = document.getElementsByClassName("notify-item"), Array.from(t).forEach(function (e) {
-            var t, a, n = "";
-            e.querySelector("h6") ? (t = e.getElementsByTagName("span")[0].innerText.toLowerCase(), n = (a = e.querySelector("h6").innerText.toLowerCase()).includes(o) ? a : t) : e.getElementsByTagName("span") && (n = e.getElementsByTagName("span")[0].innerText.toLowerCase()), n && (e.style.display = n.includes(o) ? "block" : "none")
-        })) : (v.classList.remove("show"), h.classList.add("d-none"))
-    }), h.addEventListener("click", function () {
-        I.value = "", v.classList.remove("show"), h.classList.add("d-none")
-    }), document.body.addEventListener("click", function (e) {
-        "search-options" !== e.target.getAttribute("id") && (v.classList.remove("show"), h.classList.add("d-none"))
-    })), S = document.getElementById("search-close-options"), w = document.getElementById("search-dropdown-reponsive"), A = document.getElementById("search-options-reponsive"), S && w && A && (A.addEventListener("focus", function () {
-        0 < A.value.length ? (w.classList.add("show"), S.classList.remove("d-none")) : (w.classList.remove("show"), S.classList.add("d-none"))
-    }), A.addEventListener("keyup", function () {
-        0 < A.value.length ? (w.classList.add("show"), S.classList.remove("d-none")) : (w.classList.remove("show"), S.classList.add("d-none"))
-    }), S.addEventListener("click", function () {
-        A.value = "", w.classList.remove("show"), S.classList.add("d-none")
-    }), document.body.addEventListener("click", function (e) {
-        "search-options" !== e.target.getAttribute("id") && (w.classList.remove("show"), S.classList.add("d-none"))
-    })), (L = document.querySelector('[data-toggle="fullscreen"]')) && L.addEventListener("click", function (e) {
-        e.preventDefault(), document.body.classList.toggle("fullscreen-enable"), document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement ? document.cancelFullScreen ? document.cancelFullScreen() : document.mozCancelFullScreen ? document.mozCancelFullScreen() : document.webkitCancelFullScreen && document.webkitCancelFullScreen() : document.documentElement.requestFullscreen ? document.documentElement.requestFullscreen() : document.documentElement.mozRequestFullScreen ? document.documentElement.mozRequestFullScreen() : document.documentElement.webkitRequestFullscreen && document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT)
-    }), document.addEventListener("fullscreenchange", N), document.addEventListener("webkitfullscreenchange", N), document.addEventListener("mozfullscreenchange", N), B = document.getElementsByTagName("HTML")[0], (z = document.querySelectorAll(".light-dark-mode")) && z.length && z[0].addEventListener("click", function (e) {
-        B.hasAttribute("data-bs-theme") && "dark" == B.getAttribute("data-bs-theme") ? C("data-bs-theme", "light", "layout-mode-light", B) : C("data-bs-theme", "dark", "layout-mode-dark", B), window.dispatchEvent(x)
-    }), G(), D(), r(), document.getElementsByClassName("dropdown-item-cart") && (k = document.querySelectorAll(".dropdown-item-cart").length, Array.from(document.querySelectorAll("#page-topbar .dropdown-menu-cart .remove-item-btn")).forEach(function (e) {
-        e.addEventListener("click", function (e) {
-            k--, this.closest(".dropdown-item-cart").remove(), Array.from(document.getElementsByClassName("cartitem-badge")).forEach(function (e) {
-                e.innerHTML = k
-            }), F(), document.getElementById("empty-cart") && (document.getElementById("empty-cart").style.display = 0 == k ? "block" : "none"), document.getElementById("checkout-elem") && (document.getElementById("checkout-elem").style.display = 0 == k ? "none" : "block")
-        })
-    }), Array.from(document.getElementsByClassName("cartitem-badge")).forEach(function (e) {
-        e.innerHTML = k
-    }), document.getElementById("empty-cart") && (document.getElementById("empty-cart").style.display = "none"), document.getElementById("checkout-elem") && (document.getElementById("checkout-elem").style.display = "block"), F()), document.getElementsByClassName("notification-check") && (H(), Array.from(document.querySelectorAll(".notification-check input")).forEach(function (t) {
-        t.addEventListener("change", function (e) {
-            e.target.closest(".notification-item").classList.toggle("active");
-            var t = document.querySelectorAll(".notification-check input:checked").length;
-            e.target.closest(".notification-item").classList.contains("active"), document.getElementById("notification-actions").style.display = 0 < t ? "block" : "none", document.getElementById("select-content").innerHTML = t
-        }), document.getElementById("notificationDropdown").addEventListener("hide.bs.dropdown", function (e) {
-            t.checked = !1, document.querySelectorAll(".notification-item").forEach(function (e) {
-                e.classList.remove("active")
-            }), document.getElementById("notification-actions").style.display = ""
-        })
-    }), document.getElementById("removeNotificationModal").addEventListener("show.bs.modal", function (e) {
-        document.getElementById("delete-notification").addEventListener("click", function () {
-            Array.from(document.querySelectorAll(".notification-item")).forEach(function (e) {
-                e.classList.contains("active") && e.remove()
-            }), H(), document.getElementById("NotificationModalbtn-close").click()
-        })
-    })), [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]')).map(function (e) {
-        return new bootstrap.Tooltip(e)
-    }), [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]')).map(function (e) {
-        return new bootstrap.Popover(e)
-    }), document.getElementById("reset-layout") && document.getElementById("reset-layout").addEventListener("click", function () {
-        sessionStorage.clear(), window.location.reload()
-    }), z = document.querySelectorAll("[data-toast]"), Array.from(z).forEach(function (a) {
-        a.addEventListener("click", function () {
-            var e = {}, t = a.attributes;
-            t["data-toast-text"] && (e.text = t["data-toast-text"].value.toString()), t["data-toast-gravity"] && (e.gravity = t["data-toast-gravity"].value.toString()), t["data-toast-position"] && (e.position = t["data-toast-position"].value.toString()), t["data-toast-className"] && (e.className = t["data-toast-className"].value.toString()), t["data-toast-duration"] && (e.duration = t["data-toast-duration"].value.toString()), t["data-toast-close"] && (e.close = t["data-toast-close"].value.toString()), t["data-toast-style"] && (e.style = t["data-toast-style"].value.toString()), t["data-toast-offset"] && (e.offset = t["data-toast-offset"]), Toastify({
-                newWindow: !0,
-                text: e.text,
-                gravity: e.gravity,
-                position: e.position,
-                className: "bg-" + e.className,
-                stopOnFocus: !0,
-                offset: {x: e.offset ? 50 : 0, y: e.offset ? 10 : 0},
-                duration: e.duration,
-                close: "close" == e.close,
-                style: "style" == e.style ? {background: "linear-gradient(to right, #0AB39C, #405189)"} : ""
-            }).showToast()
-        })
-    }), z = document.querySelectorAll("[data-choices]"), Array.from(z).forEach(function (e) {
-        var t = {}, a = e.attributes;
-        a["data-choices-groups"] && (t.placeholderValue = "This is a placeholder set in the config"), a["data-choices-search-false"] && (t.searchEnabled = !1), a["data-choices-search-true"] && (t.searchEnabled = !0), a["data-choices-removeItem"] && (t.removeItemButton = !0), a["data-choices-sorting-false"] && (t.shouldSort = !1), a["data-choices-sorting-true"] && (t.shouldSort = !0), a["data-choices-multiple-remove"] && (t.removeItemButton = !0), a["data-choices-limit"] && (t.maxItemCount = a["data-choices-limit"].value.toString()), a["data-choices-limit"] && (t.maxItemCount = a["data-choices-limit"].value.toString()), a["data-choices-editItem-true"] && (t.maxItemCount = !0), a["data-choices-editItem-false"] && (t.maxItemCount = !1), a["data-choices-text-unique-true"] && (t.duplicateItemsAllowed = !1), a["data-choices-text-disabled-true"] && (t.addItems = !1), a["data-choices-text-disabled-true"] ? new Choices(e, t).disable() : new Choices(e, t)
-    }), z = document.querySelectorAll("[data-provider]"), Array.from(z).forEach(function (e) {
-        var t, a, n;
-        "flatpickr" == e.getAttribute("data-provider") ? (n = e.attributes, (t = {}).disableMobile = "true", n["data-date-format"] && (t.dateFormat = n["data-date-format"].value.toString()), n["data-enable-time"] && (t.enableTime = !0, t.dateFormat = n["data-date-format"].value.toString() + " H:i"), n["data-altFormat"] && (t.altInput = !0, t.altFormat = n["data-altFormat"].value.toString()), n["data-minDate"] && (t.minDate = n["data-minDate"].value.toString(), t.dateFormat = n["data-date-format"].value.toString()), n["data-maxDate"] && (t.maxDate = n["data-maxDate"].value.toString(), t.dateFormat = n["data-date-format"].value.toString()), n["data-deafult-date"] && (t.defaultDate = n["data-deafult-date"].value.toString(), t.dateFormat = n["data-date-format"].value.toString()), n["data-multiple-date"] && (t.mode = "multiple", t.dateFormat = n["data-date-format"].value.toString()), n["data-range-date"] && (t.mode = "range", t.dateFormat = n["data-date-format"].value.toString()), n["data-inline-date"] && (t.inline = !0, t.defaultDate = n["data-deafult-date"].value.toString(), t.dateFormat = n["data-date-format"].value.toString()), n["data-disable-date"] && ((a = []).push(n["data-disable-date"].value), t.disable = a.toString().split(",")), n["data-week-number"] && ((a = []).push(n["data-week-number"].value), t.weekNumbers = !0), flatpickr(e, t)) : "timepickr" == e.getAttribute("data-provider") && (a = {}, (n = e.attributes)["data-time-basic"] && (a.enableTime = !0, a.noCalendar = !0, a.dateFormat = "H:i"), n["data-time-hrs"] && (a.enableTime = !0, a.noCalendar = !0, a.dateFormat = "H:i", a.time_24hr = !0), n["data-min-time"] && (a.enableTime = !0, a.noCalendar = !0, a.dateFormat = "H:i", a.minTime = n["data-min-time"].value.toString()), n["data-max-time"] && (a.enableTime = !0, a.noCalendar = !0, a.dateFormat = "H:i", a.minTime = n["data-max-time"].value.toString()), n["data-default-time"] && (a.enableTime = !0, a.noCalendar = !0, a.dateFormat = "H:i", a.defaultDate = n["data-default-time"].value.toString()), n["data-time-inline"] && (a.enableTime = !0, a.noCalendar = !0, a.defaultDate = n["data-time-inline"].value.toString(), a.inline = !0), flatpickr(e, a))
-    }), Array.from(document.querySelectorAll('.dropdown-menu a[data-bs-toggle="tab"]')).forEach(function (e) {
-        e.addEventListener("click", function (e) {
-            e.stopPropagation(), bootstrap.Tab.getInstance(e.target).show()
-        })
-    }), o(), s(), p(), window.addEventListener("resize", function () {
-        q && clearTimeout(q), q = setTimeout(W, 2e3)
-    })
+    // sessionStorage.getItem("defaultAttribute") ? ((f = {})["data-layout"] = sessionStorage.getItem("data-layout"), f["data-sidebar-size"] = sessionStorage.getItem("data-sidebar-size"), f["data-bs-theme"] = sessionStorage.getItem("data-bs-theme"), f["data-layout-width"] = sessionStorage.getItem("data-layout-width"), f["data-sidebar"] = sessionStorage.getItem("data-sidebar"), f["data-sidebar-image"] = sessionStorage.getItem("data-sidebar-image"), f["data-layout-position"] = sessionStorage.getItem("data-layout-position"), f["data-layout-style"] = sessionStorage.getItem("data-layout-style"), f["data-topbar"] = sessionStorage.getItem("data-topbar"), f["data-preloader"] = sessionStorage.getItem("data-preloader"), f["data-body-image"] = sessionStorage.getItem("data-body-image"), e(f)) : (L = document.documentElement.attributes, f = {}, Array.from(L).forEach(function (e) {
+    //     var t;
+    //     e && e.nodeName && "undefined" != e.nodeName && (t = e.nodeName, f[t] = e.nodeValue, sessionStorage.setItem(t, e.nodeValue))
+    // }), sessionStorage.setItem("defaultAttribute", JSON.stringify(f)), e(f), (L = document.querySelector('.btn[data-bs-target="#theme-settings-offcanvas"]')) && L.click()), i(), h = document.getElementById("search-close-options"), v = document.getElementById("search-dropdown"), (I = document.getElementById("search-options")) && (I.addEventListener("focus", function () {
+    //     0 < I.value.length ? (v.classList.add("show"), h.classList.remove("d-none")) : (v.classList.remove("show"), h.classList.add("d-none"))
+    // }), I.addEventListener("keyup", function (e) {
+    //     var o, t;
+    //     0 < I.value.length ? (v.classList.add("show"), h.classList.remove("d-none"), o = I.value.toLowerCase(), t = document.getElementsByClassName("notify-item"), Array.from(t).forEach(function (e) {
+    //         var t, a, n = "";
+    //         e.querySelector("h6") ? (t = e.getElementsByTagName("span")[0].innerText.toLowerCase(), n = (a = e.querySelector("h6").innerText.toLowerCase()).includes(o) ? a : t) : e.getElementsByTagName("span") && (n = e.getElementsByTagName("span")[0].innerText.toLowerCase()), n && (e.style.display = n.includes(o) ? "block" : "none")
+    //     })) : (v.classList.remove("show"), h.classList.add("d-none"))
+    // }), h.addEventListener("click", function () {
+    //     I.value = "", v.classList.remove("show"), h.classList.add("d-none")
+    // }), document.body.addEventListener("click", function (e) {
+    //     "search-options" !== e.target.getAttribute("id") && (v.classList.remove("show"), h.classList.add("d-none"))
+    // })), S = document.getElementById("search-close-options"), w = document.getElementById("search-dropdown-reponsive"), A = document.getElementById("search-options-reponsive"), S && w && A && (A.addEventListener("focus", function () {
+    //     0 < A.value.length ? (w.classList.add("show"), S.classList.remove("d-none")) : (w.classList.remove("show"), S.classList.add("d-none"))
+    // }), A.addEventListener("keyup", function () {
+    //     0 < A.value.length ? (w.classList.add("show"), S.classList.remove("d-none")) : (w.classList.remove("show"), S.classList.add("d-none"))
+    // }), S.addEventListener("click", function () {
+    //     A.value = "", w.classList.remove("show"), S.classList.add("d-none")
+    // }), document.body.addEventListener("click", function (e) {
+    //     "search-options" !== e.target.getAttribute("id") && (w.classList.remove("show"), S.classList.add("d-none"))
+    // })), (L = document.querySelector('[data-toggle="fullscreen"]')) && L.addEventListener("click", function (e) {
+    //     e.preventDefault(), document.body.classList.toggle("fullscreen-enable"), document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement ? document.cancelFullScreen ? document.cancelFullScreen() : document.mozCancelFullScreen ? document.mozCancelFullScreen() : document.webkitCancelFullScreen && document.webkitCancelFullScreen() : document.documentElement.requestFullscreen ? document.documentElement.requestFullscreen() : document.documentElement.mozRequestFullScreen ? document.documentElement.mozRequestFullScreen() : document.documentElement.webkitRequestFullscreen && document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT)
+    // }), document.addEventListener("fullscreenchange", N), document.addEventListener("webkitfullscreenchange", N), document.addEventListener("mozfullscreenchange", N), B = document.getElementsByTagName("HTML")[0], (z = document.querySelectorAll(".light-dark-mode")) && z.length && z[0].addEventListener("click", function (e) {
+    //     B.hasAttribute("data-bs-theme") && "dark" == B.getAttribute("data-bs-theme") ? C("data-bs-theme", "light", "layout-mode-light", B) : C("data-bs-theme", "dark", "layout-mode-dark", B), window.dispatchEvent(x)
+    // }), G(), D(), r(), document.getElementsByClassName("dropdown-item-cart") && (k = document.querySelectorAll(".dropdown-item-cart").length, Array.from(document.querySelectorAll("#page-topbar .dropdown-menu-cart .remove-item-btn")).forEach(function (e) {
+    //     e.addEventListener("click", function (e) {
+    //         k--, this.closest(".dropdown-item-cart").remove(), Array.from(document.getElementsByClassName("cartitem-badge")).forEach(function (e) {
+    //             e.innerHTML = k
+    //         }), F(), document.getElementById("empty-cart") && (document.getElementById("empty-cart").style.display = 0 == k ? "block" : "none"), document.getElementById("checkout-elem") && (document.getElementById("checkout-elem").style.display = 0 == k ? "none" : "block")
+    //     })
+    // }), Array.from(document.getElementsByClassName("cartitem-badge")).forEach(function (e) {
+    //     e.innerHTML = k
+    // }), document.getElementById("empty-cart") && (document.getElementById("empty-cart").style.display = "none"), document.getElementById("checkout-elem") && (document.getElementById("checkout-elem").style.display = "block"), F()), document.getElementsByClassName("notification-check") && (H(), Array.from(document.querySelectorAll(".notification-check input")).forEach(function (t) {
+    //     t.addEventListener("change", function (e) {
+    //         e.target.closest(".notification-item").classList.toggle("active");
+    //         var t = document.querySelectorAll(".notification-check input:checked").length;
+    //         e.target.closest(".notification-item").classList.contains("active"), document.getElementById("notification-actions").style.display = 0 < t ? "block" : "none", document.getElementById("select-content").innerHTML = t
+    //     }), document.getElementById("notificationDropdown").addEventListener("hide.bs.dropdown", function (e) {
+    //         t.checked = !1, document.querySelectorAll(".notification-item").forEach(function (e) {
+    //             e.classList.remove("active")
+    //         }), document.getElementById("notification-actions").style.display = ""
+    //     })
+    // }), document.getElementById("removeNotificationModal").addEventListener("show.bs.modal", function (e) {
+    //     document.getElementById("delete-notification").addEventListener("click", function () {
+    //         Array.from(document.querySelectorAll(".notification-item")).forEach(function (e) {
+    //             e.classList.contains("active") && e.remove()
+    //         }), H(), document.getElementById("NotificationModalbtn-close").click()
+    //     })
+    // })), [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]')).map(function (e) {
+    //     return new bootstrap.Tooltip(e)
+    // }), [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]')).map(function (e) {
+    //     return new bootstrap.Popover(e)
+    // }), document.getElementById("reset-layout") && document.getElementById("reset-layout").addEventListener("click", function () {
+    //     sessionStorage.clear(), window.location.reload()
+    // }), z = document.querySelectorAll("[data-toast]"), Array.from(z).forEach(function (a) {
+    //     a.addEventListener("click", function () {
+    //         var e = {}, t = a.attributes;
+    //         t["data-toast-text"] && (e.text = t["data-toast-text"].value.toString()), t["data-toast-gravity"] && (e.gravity = t["data-toast-gravity"].value.toString()), t["data-toast-position"] && (e.position = t["data-toast-position"].value.toString()), t["data-toast-className"] && (e.className = t["data-toast-className"].value.toString()), t["data-toast-duration"] && (e.duration = t["data-toast-duration"].value.toString()), t["data-toast-close"] && (e.close = t["data-toast-close"].value.toString()), t["data-toast-style"] && (e.style = t["data-toast-style"].value.toString()), t["data-toast-offset"] && (e.offset = t["data-toast-offset"]), Toastify({
+    //             newWindow: !0,
+    //             text: e.text,
+    //             gravity: e.gravity,
+    //             position: e.position,
+    //             className: "bg-" + e.className,
+    //             stopOnFocus: !0,
+    //             offset: {x: e.offset ? 50 : 0, y: e.offset ? 10 : 0},
+    //             duration: e.duration,
+    //             close: "close" == e.close,
+    //             style: "style" == e.style ? {background: "linear-gradient(to right, #0AB39C, #405189)"} : ""
+    //         }).showToast()
+    //     })
+    // }), z = document.querySelectorAll("[data-choices]"), Array.from(z).forEach(function (e) {
+    //     var t = {}, a = e.attributes;
+    //     a["data-choices-groups"] && (t.placeholderValue = "This is a placeholder set in the config"), a["data-choices-search-false"] && (t.searchEnabled = !1), a["data-choices-search-true"] && (t.searchEnabled = !0), a["data-choices-removeItem"] && (t.removeItemButton = !0), a["data-choices-sorting-false"] && (t.shouldSort = !1), a["data-choices-sorting-true"] && (t.shouldSort = !0), a["data-choices-multiple-remove"] && (t.removeItemButton = !0), a["data-choices-limit"] && (t.maxItemCount = a["data-choices-limit"].value.toString()), a["data-choices-limit"] && (t.maxItemCount = a["data-choices-limit"].value.toString()), a["data-choices-editItem-true"] && (t.maxItemCount = !0), a["data-choices-editItem-false"] && (t.maxItemCount = !1), a["data-choices-text-unique-true"] && (t.duplicateItemsAllowed = !1), a["data-choices-text-disabled-true"] && (t.addItems = !1), a["data-choices-text-disabled-true"] ? new Choices(e, t).disable() : new Choices(e, t)
+    // }), z = document.querySelectorAll("[data-provider]"), Array.from(z).forEach(function (e) {
+    //     var t, a, n;
+    //     "flatpickr" == e.getAttribute("data-provider") ? (n = e.attributes, (t = {}).disableMobile = "true", n["data-date-format"] && (t.dateFormat = n["data-date-format"].value.toString()), n["data-enable-time"] && (t.enableTime = !0, t.dateFormat = n["data-date-format"].value.toString() + " H:i"), n["data-altFormat"] && (t.altInput = !0, t.altFormat = n["data-altFormat"].value.toString()), n["data-minDate"] && (t.minDate = n["data-minDate"].value.toString(), t.dateFormat = n["data-date-format"].value.toString()), n["data-maxDate"] && (t.maxDate = n["data-maxDate"].value.toString(), t.dateFormat = n["data-date-format"].value.toString()), n["data-deafult-date"] && (t.defaultDate = n["data-deafult-date"].value.toString(), t.dateFormat = n["data-date-format"].value.toString()), n["data-multiple-date"] && (t.mode = "multiple", t.dateFormat = n["data-date-format"].value.toString()), n["data-range-date"] && (t.mode = "range", t.dateFormat = n["data-date-format"].value.toString()), n["data-inline-date"] && (t.inline = !0, t.defaultDate = n["data-deafult-date"].value.toString(), t.dateFormat = n["data-date-format"].value.toString()), n["data-disable-date"] && ((a = []).push(n["data-disable-date"].value), t.disable = a.toString().split(",")), n["data-week-number"] && ((a = []).push(n["data-week-number"].value), t.weekNumbers = !0), flatpickr(e, t)) : "timepickr" == e.getAttribute("data-provider") && (a = {}, (n = e.attributes)["data-time-basic"] && (a.enableTime = !0, a.noCalendar = !0, a.dateFormat = "H:i"), n["data-time-hrs"] && (a.enableTime = !0, a.noCalendar = !0, a.dateFormat = "H:i", a.time_24hr = !0), n["data-min-time"] && (a.enableTime = !0, a.noCalendar = !0, a.dateFormat = "H:i", a.minTime = n["data-min-time"].value.toString()), n["data-max-time"] && (a.enableTime = !0, a.noCalendar = !0, a.dateFormat = "H:i", a.minTime = n["data-max-time"].value.toString()), n["data-default-time"] && (a.enableTime = !0, a.noCalendar = !0, a.dateFormat = "H:i", a.defaultDate = n["data-default-time"].value.toString()), n["data-time-inline"] && (a.enableTime = !0, a.noCalendar = !0, a.defaultDate = n["data-time-inline"].value.toString(), a.inline = !0), flatpickr(e, a))
+    // }), Array.from(document.querySelectorAll('.dropdown-menu a[data-bs-toggle="tab"]')).forEach(function (e) {
+    //     e.addEventListener("click", function (e) {
+    //         e.stopPropagation(), bootstrap.Tab.getInstance(e.target).show()
+    //     })
+    // }), o(), s(), p(), window.addEventListener("resize", function () {
+    //     q && clearTimeout(q), q = setTimeout(W, 2e3)
+    // })
 }();
 var mybutton = document.getElementById("back-to-top");
 

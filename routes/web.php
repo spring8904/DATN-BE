@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
 Route::get('/', function () {
     return view('dashboard');
 });
@@ -28,6 +29,17 @@ Route::get('/', function () {
 
 
 Route::prefix('admin')->as('admin.')->group(function () {
+
+    #============================== ROUTE CATEGORY =============================
+    Route::prefix('categories')->as('categories.')->group(function () {
+        Route::get('/', [CategoryController::class, 'index'])->name('index');
+        Route::get('/create', [CategoryController::class, 'create'])->name('create');
+        Route::post('/', [CategoryController::class, 'store'])->name('store');
+        Route::get('/{id}', [CategoryController::class, 'show'])->name('show');
+        Route::get('/edit/{category}', [CategoryController::class, 'edit'])->name('edit');
+        Route::put('/{category}', [CategoryController::class, 'update'])->name('update');
+        Route::delete('/{category}', [CategoryController::class, 'destroy'])->name('destroy');
+    });
 
     Route::get('dashboard', function () {
         return view('dashboard');

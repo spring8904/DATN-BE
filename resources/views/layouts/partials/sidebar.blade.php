@@ -111,11 +111,11 @@
             <div class="collapse menu-dropdown" id="sidebarCategory">
                 <ul class="nav nav-sm flex-column">
                     <li class="nav-item">
-                        <a href="apps-chat.html" class="nav-link" data-key="t-chat">
+                        <a href="{{ route('admin.categories.index') }}" class="nav-link" data-key="t-chat">
                             Danh sách danh mục </a>
                     </li>
                     <li class="nav-item">
-                        <a href="apps-chat.html" class="nav-link" data-key="t-chat">
+                        <a href="{{ route('admin.categories.create') }}" class="nav-link" data-key="t-chat">
                             Thêm mới danh mục </a>
                     </li>
                 </ul>
