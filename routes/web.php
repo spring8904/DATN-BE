@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\API\Auth\GoogleController;
 use Illuminate\Support\Facades\Route;
@@ -147,6 +148,21 @@ Route::prefix('admin')->as('admin.')
                 ->can('coupon.update');
             Route::delete('/{coupon}', [CouponController::class, 'destroy'])->name('destroy')
                 ->can('coupon.delete');
+        });
+
+        #============================== ROUTE APPROVAL =============================
+        Route::prefix('settings')->as('settings.')->group(function () {
+            Route::get('/', [SettingController::class, 'index'])->name('index');
+            Route::get('/create', [SettingController::class, 'create'])->name('create')
+                ->can('setting.create');
+            Route::post('/', [SettingController::class, 'store'])->name('store')
+                ->can('setting.create');
+            Route::get('/edit/{setting}', [SettingController::class, 'edit'])->name('edit')
+                ->can('setting.update');
+            Route::put('/{setting}', [SettingController::class, 'update'])->name('update')
+                ->can('setting.update');
+            Route::delete('/{setting}', [SettingController::class, 'destroy'])->name('destroy')
+                ->can('setting.delete');
         });
 
         #============================== ROUTE APPROVAL =============================

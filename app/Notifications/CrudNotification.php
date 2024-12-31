@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\User;
+use App\Traits\LoggableTrait;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -12,7 +13,7 @@ use Illuminate\Support\Facades\Log;
 
 class CrudNotification extends Notification
 {
-    use Queueable;
+    use Queueable,LoggableTrait;
 
     /**
      * Create a new notification instance.
@@ -56,10 +57,13 @@ class CrudNotification extends Notification
         $userReceivers = User::where('id', '<>', Auth::id())->get();
 
         try {
+
             foreach ($userReceivers as $userReceiver) {
+
                 $userReceiver->notify(new CrudNotification($data, $id));
             }
         } catch (\Throwable $th) {
+            
             Log::error(__CLASS__. '@' .__FUNCTION__.'line'. __LINE__, ['error' =>$th->getMessage()]);
         }
     }
