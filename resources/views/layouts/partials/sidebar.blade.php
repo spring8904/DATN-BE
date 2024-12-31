@@ -61,43 +61,51 @@
             <div class="collapse menu-dropdown" id="sidebarAuth">
                 <ul class="nav nav-sm flex-column">
                     <li class="nav-item">
-                        <a href="apps-chat.html" class="nav-link" data-key="t-chat">
+                        <a href="{{ route('admin.users.index') }}" class="nav-link">
                             Danh sách người dùng </a>
                     </li>
                     <li class="nav-item">
-                        <a href="apps-chat.html" class="nav-link" data-key="t-chat">
+                        <a href="apps-chat.html" class="nav-link">
                             Người hướng dẫn </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="apps-chat.html" class="nav-link" data-key="t-chat">
-                            Danh sách quản trị viên </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="apps-chat.html" class="nav-link" data-key="t-chat">
-                            Thêm mới người dùng </a>
-                    </li>
+                    @can('super_admin.view')
+                        <li class="nav-item">
+                            <a href="apps-chat.html" class="nav-link">
+                                Danh sách quản trị viên </a>
+                        </li>
+                    @endcan
+                    @can('user.create')
+                        <li class="nav-item">
+                            <a href="{{ route('admin.users.create') }}" class="nav-link">
+                                Thêm mới người dùng
+                            </a>
+                        </li>
+                    @endcan
                 </ul>
             </div>
-            <a class="nav-link menu-link" href="#sidebarRole" data-bs-toggle="collapse" role="button"
-                aria-expanded="false" aria-controls="sidebarRole">
-                <i class=" ri-shield-user-line"></i> <span data-key="t-authentication">Phân quyền</span>
-            </a>
-            <div class="collapse menu-dropdown" id="sidebarRole">
-                <ul class="nav nav-sm flex-column">
-                    <li class="nav-item">
-                        <a href="{{ route('admin.permissions.index') }}" class="nav-link" data-key="t-chat">
-                            Danh sách quyền </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('admin.roles.index') }}" class="nav-link" data-key="t-chat">
-                            Danh sách vai trò </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="apps-chat.html" class="nav-link" data-key="t-chat">
-                            Thêm vai trò </a>
-                    </li>
-                </ul>
-            </div>
+            @canany(['permission.create', 'permission.edit', 'permission.read', 'permission.delete'])
+                <a class="nav-link menu-link" href="#sidebarRole" data-bs-toggle="collapse" role="button"
+                    aria-expanded="false" aria-controls="sidebarRole">
+                    <i class=" ri-shield-user-line"></i> <span data-key="t-authentication">Phân quyền</span>
+                </a>
+                <div class="collapse menu-dropdown" id="sidebarRole">
+                    <ul class="nav nav-sm flex-column">
+                        <li class="nav-item">
+                            <a href="{{ route('admin.permissions.index') }}" class="nav-link" data-key="t-chat">
+                                Danh sách quyền </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.roles.index') }}" class="nav-link" data-key="t-chat">
+                                Danh sách vai trò </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="apps-chat.html" class="nav-link" data-key="t-chat">
+                                Thêm vai trò </a>
+                        </li>
+                    </ul>
+                </div>
+            @endcanany
+
         </li>
 
         <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-pages">Quản lý hệ thống</span>
@@ -128,13 +136,15 @@
             <div class="collapse menu-dropdown" id="sidebarBanner">
                 <ul class="nav nav-sm flex-column">
                     <li class="nav-item">
-                        <a href="apps-chat.html" class="nav-link" data-key="t-chat">
+                        <a href="{{ route('admin.banners.index') }}" class="nav-link" data-key="t-chat">
                             Danh sách banners </a>
                     </li>
+                    {{-- @can('') --}}
                     <li class="nav-item">
-                        <a href="apps-chat.html" class="nav-link" data-key="t-chat">
+                        <a href="{{ route('admin.banners.create') }}" class="nav-link" data-key="t-chat">
                             Thêm mới banner </a>
                     </li>
+                    {{-- @endcan --}}
                 </ul>
             </div>
 

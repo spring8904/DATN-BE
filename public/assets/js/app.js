@@ -426,6 +426,64 @@
         "horizontal" !== document.documentElement.getAttribute("data-layout") && (document.getElementById("navbar-nav") && (e = new SimpleBar(document.getElementById("navbar-nav"))) && e.getContentElement(), document.getElementsByClassName("twocolumn-iconview")[0] && (e = new SimpleBar(document.getElementsByClassName("twocolumn-iconview")[0])) && e.getContentElement(), clearTimeout(q))
     }
 
+
+=======
+//     // Sử dụng namespace cho dữ liệu sessionStorage
+// const SESSION_NAMESPACE = "myApp_";
+
+// // Hàm lưu dữ liệu vào sessionStorage với namespace
+// function setSessionData(key, value) {
+//     sessionStorage.setItem(SESSION_NAMESPACE + key, value);
+// }
+
+// // Hàm lấy dữ liệu từ sessionStorage với namespace
+// function getSessionData(key) {
+//     return sessionStorage.getItem(SESSION_NAMESPACE + key);
+// }
+
+// // Hàm xóa dữ liệu khỏi sessionStorage với namespace
+// function clearSessionData() {
+//     Object.keys(sessionStorage)
+//         .filter(key => key.startsWith(SESSION_NAMESPACE))
+//         .forEach(key => sessionStorage.removeItem(key));
+// }
+
+// // Hàm khởi tạo sessionStorage
+// function initializeSession() {
+//     if (getSessionData("defaultAttribute")) {
+//         const f = {};
+//         ["data-layout", "data-sidebar-size", "data-bs-theme", "data-layout-width", "data-sidebar", 
+//         "data-sidebar-image", "data-layout-position", "data-layout-style", "data-topbar", 
+//         "data-preloader", "data-body-image"].forEach(attr => {
+//             f[attr] = getSessionData(attr);
+//         });
+//         e(f); // Hàm `e` cần được định nghĩa rõ ràng
+//     } else {
+//         const attributes = document.documentElement.attributes;
+//         const f = {};
+//         Array.from(attributes).forEach(attr => {
+//             if (attr.nodeName && attr.nodeValue) {
+//                 const key = attr.nodeName;
+//                 const value = attr.nodeValue;
+//                 f[key] = value;
+//                 setSessionData(key, value);
+//             }
+//         });
+//         setSessionData("defaultAttribute", JSON.stringify(f));
+//         e(f);
+//     }
+// }
+
+// // Gọi hàm khởi tạo
+// initializeSession();
+
+// // Các phần khác trong mã cần được cấu trúc tương tự
+// document.getElementById("reset-layout")?.addEventListener("click", function () {
+//     clearSessionData();
+//     window.location.reload();
+// });
+
+
     // sessionStorage.getItem("defaultAttribute") ? ((f = {})["data-layout"] = sessionStorage.getItem("data-layout"), f["data-sidebar-size"] = sessionStorage.getItem("data-sidebar-size"), f["data-bs-theme"] = sessionStorage.getItem("data-bs-theme"), f["data-layout-width"] = sessionStorage.getItem("data-layout-width"), f["data-sidebar"] = sessionStorage.getItem("data-sidebar"), f["data-sidebar-image"] = sessionStorage.getItem("data-sidebar-image"), f["data-layout-position"] = sessionStorage.getItem("data-layout-position"), f["data-layout-style"] = sessionStorage.getItem("data-layout-style"), f["data-topbar"] = sessionStorage.getItem("data-topbar"), f["data-preloader"] = sessionStorage.getItem("data-preloader"), f["data-body-image"] = sessionStorage.getItem("data-body-image"), e(f)) : (L = document.documentElement.attributes, f = {}, Array.from(L).forEach(function (e) {
     //     var t;
     //     e && e.nodeName && "undefined" != e.nodeName && (t = e.nodeName, f[t] = e.nodeValue, sessionStorage.setItem(t, e.nodeValue))
@@ -512,6 +570,160 @@
     // }), o(), s(), p(), window.addEventListener("resize", function () {
     //     q && clearTimeout(q), q = setTimeout(W, 2e3)
     // })
+
+=======
+    // Namespace cho sessionStorage để tránh xung đột với dữ liệu khác
+const SESSION_NAMESPACE = "myApp_";
+
+// Hàm lưu dữ liệu vào sessionStorage với namespace
+function setSessionData(key, value) {
+    sessionStorage.setItem(SESSION_NAMESPACE + key, value);
+}
+
+// Hàm lấy dữ liệu từ sessionStorage với namespace
+function getSessionData(key) {
+    return sessionStorage.getItem(SESSION_NAMESPACE + key);
+}
+
+// Hàm xóa tất cả dữ liệu trong sessionStorage thuộc namespace
+function clearSessionData() {
+    Object.keys(sessionStorage)
+        .filter(key => key.startsWith(SESSION_NAMESPACE))
+        .forEach(key => sessionStorage.removeItem(key));
+}
+
+// Hàm khởi tạo sessionStorage
+function initializeSession() {
+    // Kiểm tra nếu dữ liệu đã tồn tại trong sessionStorage
+    if (getSessionData("defaultAttribute")) {
+        const f = {};
+        [
+            "data-feather",
+            "data-target",
+            "data-layout",
+            "data-sidebar-size",
+            "data-bs-theme",
+            "data-layout-width",
+            "data-sidebar",
+            "data-sidebar-image",
+            "data-layout-position",
+            "data-layout-style",
+            "data-topbar",
+            "data-preloader",
+            "data-body-image"
+        ].forEach(attr => {
+            f[attr] = getSessionData(attr);
+        });
+
+        // Gọi hàm xử lý (cần được định nghĩa rõ trong ứng dụng của bạn)
+        e(f);
+    } else {
+        // Nếu dữ liệu chưa tồn tại, lấy từ DOM và lưu vào sessionStorage
+        const attributes = document.documentElement.attributes;
+        const f = {};
+        Array.from(attributes).forEach(attr => {
+            if (attr.nodeName && attr.nodeValue) {
+                const key = attr.nodeName;
+                const value = attr.nodeValue;
+                f[key] = value;
+                setSessionData(key, value);
+            }
+        });
+
+        // Lưu trạng thái khởi tạo
+        setSessionData("defaultAttribute", JSON.stringify(f));
+
+        // Gọi hàm xử lý (cần được định nghĩa rõ trong ứng dụng của bạn)
+        e(f);
+    }
+}
+
+// Hàm reset layout và xóa dữ liệu sessionStorage
+function resetLayout() {
+    clearSessionData();
+    window.location.reload();
+}
+
+// Gọi hàm khởi tạo khi trang được tải
+initializeSession();
+
+// Gắn sự kiện cho nút reset layout
+const resetButton = document.getElementById("reset-layout");
+if (resetButton) {
+    resetButton.addEventListener("click", resetLayout);
+}
+
+// Ví dụ về xử lý theme (Dark/Light)
+const themeToggle = document.querySelector(".light-dark-mode");
+if (themeToggle) {
+    themeToggle.addEventListener("click", () => {
+        const html = document.documentElement;
+        const currentTheme = html.getAttribute("data-bs-theme");
+
+        // Thay đổi theme và cập nhật sessionStorage
+        if (currentTheme === "dark") {
+            html.setAttribute("data-bs-theme", "light");
+            setSessionData("data-bs-theme", "light");
+        } else {
+            html.setAttribute("data-bs-theme", "dark");
+            setSessionData("data-bs-theme", "dark");
+        }
+    });
+}
+
+// Ví dụ về xử lý tìm kiếm
+const searchInput = document.getElementById("search-options");
+const searchDropdown = document.getElementById("search-dropdown");
+const searchClose = document.getElementById("search-close-options");
+
+if (searchInput && searchDropdown && searchClose) {
+    searchInput.addEventListener("focus", () => {
+        if (searchInput.value.length > 0) {
+            searchDropdown.classList.add("show");
+            searchClose.classList.remove("d-none");
+        }
+    });
+
+    searchInput.addEventListener("keyup", () => {
+        if (searchInput.value.length > 0) {
+            searchDropdown.classList.add("show");
+            searchClose.classList.remove("d-none");
+
+            // Lọc danh sách thông báo theo từ khóa
+            const keyword = searchInput.value.toLowerCase();
+            const items = document.querySelectorAll(".notify-item");
+            items.forEach(item => {
+                const title = item.querySelector("h6")?.innerText.toLowerCase() || "";
+                const subtitle = item.querySelector("span")?.innerText.toLowerCase() || "";
+
+                // Hiển thị hoặc ẩn thông báo
+                if (title.includes(keyword) || subtitle.includes(keyword)) {
+                    item.style.display = "block";
+                } else {
+                    item.style.display = "none";
+                }
+            });
+        } else {
+            searchDropdown.classList.remove("show");
+            searchClose.classList.add("d-none");
+        }
+    });
+
+    searchClose.addEventListener("click", () => {
+        searchInput.value = "";
+        searchDropdown.classList.remove("show");
+        searchClose.classList.add("d-none");
+    });
+
+    document.body.addEventListener("click", event => {
+        if (event.target.getAttribute("id") !== "search-options") {
+            searchDropdown.classList.remove("show");
+            searchClose.classList.add("d-none");
+        }
+    });
+}
+
+
 }();
 var mybutton = document.getElementById("back-to-top");
 
@@ -525,4 +737,22 @@ function topFunction() {
 
 mybutton && (window.onscroll = function () {
     scrollFunction()
+});
+// Chức năng bật/tắt toàn màn hình
+function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+            console.error(`Lỗi khi bật chế độ toàn màn hình: ${err.message}`);
+        });
+    } else {
+        document.exitFullscreen().catch(err => {
+            console.error(`Lỗi khi thoát chế độ toàn màn hình: ${err.message}`);
+        });
+    }
+}
+// Tìm tất cả các nút có thuộc tính data-toggle="fullscreen"
+const fullscreenButtons = document.querySelectorAll('[data-toggle="fullscreen"]');
+
+fullscreenButtons.forEach(button => {
+    button.addEventListener("click", toggleFullscreen);
 });

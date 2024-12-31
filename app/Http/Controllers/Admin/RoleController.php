@@ -9,6 +9,7 @@ use App\Traits\LoggableTrait;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Str;
 
 class RoleController extends Controller
 {
@@ -21,7 +22,6 @@ class RoleController extends Controller
     {
         try {
             $roles = Role::all();
-            $permissions =  Permission::groupBy('guard_name')->get();
 
             $title = 'Quản lý vai trò';
             $subTitle = 'Danh sách vai trò của hệ thống';
@@ -30,7 +30,6 @@ class RoleController extends Controller
                 'title',
                 'subTitle',
                 'roles',
-                'permissions'
             ]));
         } catch (\Exception $e) {
 
@@ -48,6 +47,10 @@ class RoleController extends Controller
         try {
             $title = 'Quản lý vai trò';
             $subTitle = 'Thêm mới vai trò';
+
+            $permissions = Permission::all()->groupBy(function ($permission) {
+                return Str::before($permission->name, '.');
+            });
 
             return view('roles.create', compact([
                 'title',
@@ -100,7 +103,9 @@ class RoleController extends Controller
         try {
             $title = 'Quản lý vai trò';
             $subTitle = 'Cập nhật vai trò: ' . $role->name;
-            $permissions = Permission::all()->groupBy('guard_name');
+            $permissions = Permission::all()->groupBy(function ($permission) {
+                return Str::before($permission->name, '.');
+            });
 
             return view('roles.edit', compact([
                 'title',
@@ -134,8 +139,15 @@ class RoleController extends Controller
 
             $role->update($data);
 
+            $permissions = Permission::whereIn('id', $request->input('permissions', []))
+                ->where('guard_name', $role->guard_name)
+                ->pluck('id');
+
+            $role->syncPermissions($permissions);
+
             DB::commit();
-            return redirect()->route('admin.roles.index')->with('success', 'Thao tác thành công');
+
+            return redirect()->back()->with('success', 'Cập nhật vai trò thành công');
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -158,6 +170,8 @@ class RoleController extends Controller
             if (!$role) {
                 return redirect()->back()->with('error', 'Không tìm thấy vai trò');
             }
+
+            $role->permissions()->detach();
 
             $role->delete();
 

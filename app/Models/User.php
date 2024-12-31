@@ -18,6 +18,11 @@ class User extends Authenticatable implements MustVerifyEmail
     const STATUS_INACTIVE = 'inactive';
     const STATUS_BLOCKED = 'blocked';
 
+    const ROLE_SUPER_ADMIN = 'super_admin';
+    const ROLE_ADMIN = 'admin';
+    const ROLE_MEMBER = 'member';
+    const ROLE_INSTROUCTOR = 'instructor';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -30,6 +35,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'avatar',
         'verification_token',
+        'email_verified_at',
         'status',
     ];
 
@@ -50,5 +56,6 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'password' => 'hashed',
     ];
 }
