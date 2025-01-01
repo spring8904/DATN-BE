@@ -3,27 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Categories\StoreCategoryRequest;
-use App\Http\Requests\Admin\Categories\UpdateCategoryRequest;
-use App\Models\Category;
-use App\Traits\LoggableTrait;
-use App\Traits\UploadToCloudinaryTrait;
+use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    use LoggableTrait, UploadToCloudinaryTrait;
-
-    const FOLDER = 'categories';
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $title = 'Quản lý danh mục';
-        $subTitle = 'Danh sách danh mục';
-        $categories = Category::query()->with('parent')->get();
-
-        return view('categories.index', compact(['categories','title', 'subTitle']));
+        //
     }
 
     /**
@@ -31,47 +20,15 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        $title = 'Quản lý danh mục';
-        $subTitle = 'Thêm mới danh mục';
-
-        return view('categories.create',compact(['title','subTitle']));
+        //
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreCategoryRequest $request)
+    public function store(Request $request)
     {
-
-        try {
-
-            $data = $request->except('icon');
-
-            $data['status'] ??= 0;
-
-            if ($request->hasFile('icon')) {
-                $data['icon'] = $this->uploadImage($request->file('icon'), self::FOLDER);
-            }
-
-            Category::query()->create($data);
-
-            return redirect()->route('admin.categories.index')->with('success', 'Thao tác thành công');
-        } catch (\Exception $e) {
-            //throw $th;
-
-            if (
-                !empty($data['icon'])
-                && filter_var($data['icon'], FILTER_VALIDATE_URL)
-            ) {
-                $this->deleteImage($data['icon'], 'categories');
-            }
-
-            $this->logError($e);
-
-            return redirect()
-                ->back()
-                ->with('fasle', 'Thao tác không thành công');
-        }
+        //
     }
 
     /**
@@ -79,93 +36,30 @@ class CategoryController extends Controller
      */
     public function show(string $id)
     {
-        $title = 'Quản lý danh mục';
-        $subTitle = 'Chi tiết danh mục';
-        $category = Category::findOrFail($id);
-
-        return view('categories.show', compact(['category','title', 'subTitle']));
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Category $category)
+    public function edit(string $id)
     {
-        $title = 'Quản lý danh mục';
-        $subTitle = 'Cập nhật danh mục';
-
-        return view('categories.edit', compact(['category','title','subTitle']));
+        //
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCategoryRequest $request, string $id)
+    public function update(Request $request, string $id)
     {
-
-        try {
-
-            $category = Category::findOrFail($id);
-
-            $data = $request->except('icon');
-
-            $data['status'] ??= 0;
-
-            if ($request->hasFile('icon')) {
-                $data['icon'] = $this->uploadImage($request->file('icon'), self::FOLDER);
-            }
-
-            $currencyIcon = $category->icon;
-
-            $category->update($data);
-
-            // kiem tra truong icon co tin tai hay khong , url co hop le hay khong va url cu co hay khong 
-
-            if (
-                isset($data['icon']) && !empty($data['icon'])
-                && filter_var($data['icon'], FILTER_VALIDATE_URL)
-                && !empty($currencyIcon)
-            ) {
-                $this->deleteImage($currencyIcon, 'categories');
-            }
-
-            return back()->with('success', 'Thao tác thành công');
-        } catch (\Exception $e) {
-
-            if (
-                isset($data['icon']) && !empty($data['icon'])
-                && filter_var($data['icon'], FILTER_VALIDATE_URL)
-            ) {
-                $this->deleteImage($data['icon'], 'categories');
-            }
-
-            $this->logError($e);
-            return redirect()
-                ->back()
-                ->with('success', false);
-        }
+        //
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Category $category)
+    public function destroy(string $id)
     {
         //
-
-        try {
-            //code...
-            $category->delete();
-
-            if (isset($category->icon)) {
-                $this->deleteImage($category->icon, self::FOLDER);
-            }
-            return response()->json($data = ['status' => 'success', 'message' => 'Mục đã được xóa.']);
-        } catch (\Exception $e) {
-            //throw $th;
-            $this->logError($e);
-
-            return response()->json($data = ['status' => 'error', 'message' => 'Lỗi thao tác.']);
-        }
     }
 }
