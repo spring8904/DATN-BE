@@ -106,7 +106,7 @@ class UserController extends Controller
             
             CrudNotification::sendToMany([],$user->id);
 
-            return redirect()->route('admin.users.index')->with('success', true);
+            return redirect()->route('admin.users.index')->with('success', 'Thêm mới thành công');
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -220,7 +220,7 @@ class UserController extends Controller
             
             CrudNotification::sendToMany([],$id);
 
-            return redirect()->route('admin.users.edit', $id)->with('success', true);
+            return redirect()->route('admin.users.edit', $id)->with('success', 'Cập nhật thành công');
         } catch (\Exception $e) {
             DB::rollBack();
 
