@@ -99,7 +99,7 @@
                                 Danh sách vai trò </a>
                         </li>
                         <li class="nav-item">
-                            <a href="apps-chat.html" class="nav-link" data-key="t-chat">
+                            <a href="{{ route('admin.roles.create' )}}" class="nav-link" data-key="t-chat">
                                 Thêm vai trò </a>
                         </li>
                     </ul>
