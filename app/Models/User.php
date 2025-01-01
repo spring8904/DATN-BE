@@ -2,16 +2,26 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, SoftDeletes;
+
+    const STATUS_ACTIVE = 'active';
+    const STATUS_INACTIVE = 'inactive';
+    const STATUS_BLOCKED = 'blocked';
+
+    const ROLE_SUPER_ADMIN = 'super_admin';
+    const ROLE_ADMIN = 'admin';
+    const ROLE_MEMBER = 'member';
+    const ROLE_INSTROUCTOR = 'instructor';
 
     /**
      * The attributes that are mass assignable.
@@ -19,9 +29,14 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'code',
         'name',
         'email',
         'password',
+        'avatar',
+        'verification_token',
+        'email_verified_at',
+        'status',
     ];
 
     /**
@@ -41,5 +56,6 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'password' => 'hashed',
     ];
 }
