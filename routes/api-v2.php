@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\API\CloudinaryController;
-use App\Http\Controllers\API\QuizController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +27,4 @@ Route::prefix('v2')->group(function () {
     Route::post('upload-mux', [CloudinaryController::class, 'mux']);
     Route::get('get-duration/{assetId}', [CloudinaryController::class, 'getVideoDuration']);
     Route::delete('delete-mux/{assetId}', [CloudinaryController::class, 'deleteVideoFromMux']);
-
-    Route::post('import-quiz', [QuizController::class, 'import']);
 });

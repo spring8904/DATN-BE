@@ -11,6 +11,7 @@ use App\Traits\UploadToCloudinaryTrait;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
+use App\Notifications\CrudNotification;
 
 class UserController extends Controller
 {
@@ -48,7 +49,9 @@ class UserController extends Controller
 
             return view('users.index', compact('users', 'userCounts', 'subTitle', 'title'));
         } catch (\Exception $e) {
+
             $this->logError($e);
+            
             return redirect()->back()->with('error', 'Có lỗi xảy ra, vui lòng thử lại sau');
         }
     }
@@ -100,6 +103,8 @@ class UserController extends Controller
             $user->assignRole($request->role);
 
             DB::commit();
+            
+            CrudNotification::sendToMany([],$user->id);
 
             return redirect()->route('admin.users.index')->with('success', true);
         } catch (\Exception $e) {
@@ -212,6 +217,8 @@ class UserController extends Controller
             }
 
             DB::commit();
+            
+            CrudNotification::sendToMany([],$id);
 
             return redirect()->route('admin.users.edit', $id)->with('success', true);
         } catch (\Exception $e) {
@@ -253,6 +260,8 @@ class UserController extends Controller
             }
 
             DB::commit();
+
+            CrudNotification::sendToMany([],$id);
 
             return response()->json([
                 'status' => 'success',
