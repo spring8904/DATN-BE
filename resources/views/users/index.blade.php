@@ -64,9 +64,6 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h4 class="card-title mb-0">Tổng quan người dùng</h4>
-                        @if (session()->has('success') && session()->get('success') == true)
-                            <span class="badge bg-primary text-end">Thao tác thành công</span>
-                        @endif
                         <div class="dropdown">
                             <button class="btn btn-sm btn-primary" type="button" id="filterDropdown"
                                 data-bs-toggle="dropdown" aria-expanded="false">

@@ -150,7 +150,7 @@ Route::prefix('admin')->as('admin.')
                 ->can('coupon.delete');
         });
 
-        #============================== ROUTE APPROVAL =============================
+        #============================== ROUTE SETTINGS =============================
         Route::prefix('settings')->as('settings.')->group(function () {
             Route::get('/', [SettingController::class, 'index'])->name('index');
             Route::get('/create', [SettingController::class, 'create'])->name('create')
