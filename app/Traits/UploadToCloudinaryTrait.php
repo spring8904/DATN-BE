@@ -24,7 +24,6 @@ trait UploadToCloudinaryTrait
             ]);
 
             return $uploadResult->getSecurePath() ?? null;
-            
         } catch (\Exception $e) {
             $this->logError($e);
 

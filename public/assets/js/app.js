@@ -426,8 +426,6 @@
         "horizontal" !== document.documentElement.getAttribute("data-layout") && (document.getElementById("navbar-nav") && (e = new SimpleBar(document.getElementById("navbar-nav"))) && e.getContentElement(), document.getElementsByClassName("twocolumn-iconview")[0] && (e = new SimpleBar(document.getElementsByClassName("twocolumn-iconview")[0])) && e.getContentElement(), clearTimeout(q))
     }
 
-
-=======
 //     // Sử dụng namespace cho dữ liệu sessionStorage
 // const SESSION_NAMESPACE = "myApp_";
 
@@ -482,7 +480,6 @@
 //     clearSessionData();
 //     window.location.reload();
 // });
-
 
     // sessionStorage.getItem("defaultAttribute") ? ((f = {})["data-layout"] = sessionStorage.getItem("data-layout"), f["data-sidebar-size"] = sessionStorage.getItem("data-sidebar-size"), f["data-bs-theme"] = sessionStorage.getItem("data-bs-theme"), f["data-layout-width"] = sessionStorage.getItem("data-layout-width"), f["data-sidebar"] = sessionStorage.getItem("data-sidebar"), f["data-sidebar-image"] = sessionStorage.getItem("data-sidebar-image"), f["data-layout-position"] = sessionStorage.getItem("data-layout-position"), f["data-layout-style"] = sessionStorage.getItem("data-layout-style"), f["data-topbar"] = sessionStorage.getItem("data-topbar"), f["data-preloader"] = sessionStorage.getItem("data-preloader"), f["data-body-image"] = sessionStorage.getItem("data-body-image"), e(f)) : (L = document.documentElement.attributes, f = {}, Array.from(L).forEach(function (e) {
     //     var t;
@@ -570,8 +567,6 @@
     // }), o(), s(), p(), window.addEventListener("resize", function () {
     //     q && clearTimeout(q), q = setTimeout(W, 2e3)
     // })
-
-=======
     // Namespace cho sessionStorage để tránh xung đột với dữ liệu khác
 const SESSION_NAMESPACE = "myApp_";
 
@@ -722,7 +717,6 @@ if (searchInput && searchDropdown && searchClose) {
         }
     });
 }
-
 
 }();
 var mybutton = document.getElementById("back-to-top");

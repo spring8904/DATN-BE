@@ -10,9 +10,8 @@
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Dashboard</a></li>
-                            <li class="breadcrumb-item active"><a href="{{route('admin.users.index')}}">Danh sách người dùng</a></li>
-                            <li class="breadcrumb-item active"><a href="{{route('admin.users.create')}}">Thêm mới người dùng</a></li>
+                            <li class="breadcrumb-item"><a>Quản lý thành viên</a></li>
+                            <li class="breadcrumb-item active">Thêm mới người dùng</li>
                         </ol>
                     </div>
 
