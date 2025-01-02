@@ -15,4 +15,12 @@ class Post extends Model
     const STATUS_PUBLISHED = 'published';
     const STATUS_PRIVATE = 'private';
 
+    public function tags()
+    {
+        return $this->morphToMany(Tag::class, 'taggable');
+    }
+
+    public function categories() {
+        return $this->morphToMany(Category::class, 'categorizable');
+    }
 }
