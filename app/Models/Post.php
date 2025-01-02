@@ -15,6 +15,20 @@ class Post extends Model
     const STATUS_PUBLISHED = 'published';
     const STATUS_PRIVATE = 'private';
 
+    protected $fillable = [
+        'user_id',
+        'category_id',
+        'title',
+        'slug',
+        'description',
+        'content',
+        'thumbnail',
+        'status',
+        'view',
+        'is_hot',
+        'published_at',
+    ];
+
     public function tags()
     {
         return $this->morphToMany(Tag::class, 'taggable');
