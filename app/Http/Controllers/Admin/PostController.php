@@ -3,10 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Traits\LoggableTrait;
+use App\Traits\UploadToCloudinaryTrait;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
+    use LoggableTrait, UploadToCloudinaryTrait;
+
+    const FOLDER = 'blogs';
+
     /**
      * Display a listing of the resource.
      */
@@ -20,7 +27,22 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        try {
+            $title = 'Quản lý bài viết';
+            $subTitle = 'Thêm mới bài viết';
+
+            $categories = Category::query()->get();
+
+            return view('posts.create', compact([
+                'title',
+                'subTitle',
+                'categories'
+            ]));
+        } catch (\Exception $e) {
+            $this->logError($e);
+
+            return redirect()->back()->with('error', 'Error: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -28,7 +50,7 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        dd($request->all());
     }
 
     /**

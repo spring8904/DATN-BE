@@ -24,10 +24,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-
-Route::get('/', function () {
-    return view('dashboard');
-=======
 #============================== ROUTE GOOGLE AUTH =============================
 Route::prefix('auth')->as('auth.')->group(function () {
     Route::get('google', [GoogleController::class, 'redirectToGoogle'])->name('google');
@@ -42,65 +38,6 @@ Route::prefix('admin')->as('admin.')->group(function () {
 });
 
 
-    #============================== ROUTE CATEGORY =============================
-    Route::prefix('categories')->as('categories.')->group(function () {
-        Route::get('/', [CategoryController::class, 'index'])->name('index');
-        Route::get('/create', [CategoryController::class, 'create'])->name('create');
-        Route::post('/', [CategoryController::class, 'store'])->name('store');
-        Route::get('/{id}', [CategoryController::class, 'show'])->name('show');
-        Route::get('/edit/{category}', [CategoryController::class, 'edit'])->name('edit');
-        Route::put('/{category}', [CategoryController::class, 'update'])->name('update');
-        Route::delete('/{category}', [CategoryController::class, 'destroy'])->name('destroy');
-    });
-
-    Route::get('dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
-
-    #============================== ROUTE USER =============================
-    Route::prefix('users')->as('users.')->group(function () {
-        Route::get('/', [UserController::class, 'index'])->name('index');
-        Route::get('/create', [UserController::class, 'create'])->name('create');
-        Route::post('/', [UserController::class, 'store'])->name('store');
-        Route::get('/{id}', [UserController::class, 'show'])->name('show');
-        Route::get('/edit/{user}', [UserController::class, 'edit'])->name('edit');
-        Route::put('/{user}', [UserController::class, 'update'])->name('update');
-        Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');
-    });
-
-    #============================== ROUTE ROLE =============================
-    Route::prefix('roles')->as('roles.')->group(function () {
-        Route::get('/', [RoleController::class, 'index'])->name('index');
-        Route::get('/create', [RoleController::class, 'create'])->name('create');
-        Route::post('/', [RoleController::class, 'store'])->name('store');
-        Route::get('/{id}', [RoleController::class, 'show'])->name('show');
-        Route::get('/edit/{role}', [RoleController::class, 'edit'])->name('edit');
-        Route::put('/{role}', [RoleController::class, 'update'])->name('update');
-        Route::delete('/{role}', [RoleController::class, 'destroy'])->name('destroy');
-    });
-
-    #============================== ROUTE PERMISSION =============================
-    Route::prefix('permissions')->as('permissions.')->group(function () {
-        Route::get('/', [PermissionController::class, 'index'])->name('index');
-        Route::get('/create', [PermissionController::class, 'create'])->name('create');
-        Route::post('/', [PermissionController::class, 'store'])->name('store');
-        Route::get('/{id}', [PermissionController::class, 'show'])->name('show');
-        Route::get('/edit/{permission}', [PermissionController::class, 'edit'])->name('edit');
-        Route::put('/{permission}', [PermissionController::class, 'update'])->name('update');
-        Route::delete('/{permission}', [PermissionController::class, 'destroy'])->name('destroy');
-    });
-
-    #============================== ROUTE CATEGORY =============================
-    Route::prefix('categories')->as('categories.')->group(function () {
-        Route::get('/', [CategoryController::class, 'index'])->name('index');
-        Route::get('/create', [CategoryController::class, 'create'])->name('create');
-        Route::post('/', [CategoryController::class, 'store'])->name('store');
-        Route::get('/{id}', [CategoryController::class, 'show'])->name('show');
-        Route::get('/edit/{category}', [CategoryController::class, 'edit'])->name('edit');
-        Route::put('/{category}', [CategoryController::class, 'update'])->name('update');
-        Route::delete('/{category}', [CategoryController::class, 'destroy'])->name('destroy');
-    });
-=======
 Route::prefix('admin')->as('admin.')
     ->middleware(['roleHasAdmins', 'check_permission:view.dashboard'])
     ->group(function () {
