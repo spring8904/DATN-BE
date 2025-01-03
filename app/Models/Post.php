@@ -37,4 +37,7 @@ class Post extends Model
     public function categories() {
         return $this->morphToMany(Category::class, 'categorizable');
     }
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }
