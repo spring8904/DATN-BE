@@ -10,7 +10,8 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <div class="page-title-right">
+                <h4 class="mb-sm-0 ps-2">Quản lí banner</h4>
+                <div class="page-title-right pe-3">
                     <ol class="breadcrumb m-0">
                         <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Dashboard</a></li>
                         <li class="breadcrumb-item active"><a href="{{route('admin.banners.index')}}">Danh sách banner</a></li>
