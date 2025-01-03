@@ -31,16 +31,6 @@
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title mb-1">Cập nhật banner</h4>
-                        @if (session()->has('success') && session()->get('success'))
-                            <div class="alert alert-success m-0" role="alert">
-                                Cập nhật thành công
-                            </div>
-                        @endif
-                        @if (session()->has('success') && !session()->get('success'))
-                            <div class="alert alert-danger" role="alert">
-                                <strong>Cập nhật không thành công</strong>
-                            </div>
-                        @endif
                     </div>
                     <div class="card-body">
                         <div>
