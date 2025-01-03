@@ -59,6 +59,10 @@
                             <p class="text-muted">{{ $post->title }}</p>
                         </div>
                         <div class="mb-3">
+                            <label class="form-label">Người tạo bài:</label>
+                            <p class="text-muted">{{ $post->user->name }}</p>
+                        </div>
+                        <div class="mb-3">
                             <label class="form-label">Trạng thái:</label>
                             <p class="text-muted">{{ ucfirst($post->status) }}</p>
                         </div>
@@ -82,6 +86,10 @@
                                     <option selected>{{ $tag->name }}</option>
                                 @endforeach
                             </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Đường dẫn thân thiện:</label>
+                            <p class="text-muted">{{ $post->slug }}</p>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">View:</label>

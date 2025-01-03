@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Course extends Model
 {
-    use HasFactory , SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     const LEVEL_BEGINNER = 'beginner';
     const LEVEL_INTERMEDIATE =
-    'intermediate';
+        'intermediate';
     const LEVEL_ADVANCED = 'advanced';
 
     const STATUS_DRAFT = 'draft';
@@ -21,6 +21,8 @@ class Course extends Model
     const STATUS_REJECTED = 'rejected';
 
     protected $fillable = [
+        'user_id',
+        'category_id',
         'code',
         'name',
         'slug',
@@ -51,4 +53,9 @@ class Course extends Model
         'benefits' => '[]',
         'qa' => '[]',
     ];
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }
