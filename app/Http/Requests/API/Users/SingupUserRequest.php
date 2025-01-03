@@ -1,12 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Admin\Users;
+namespace App\Http\Requests\API\Users;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
-use Spatie\Permission\Models\Role;
 
-class UpdateUserRequest extends FormRequest
+class SingupUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,18 +21,11 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules(): array
     {
-        $roles = Role::query()->get()->pluck('name')->toArray();
-
-        $roles = array_values($roles);
-
         return [
             'name'       => ['required', 'string', 'min:2', 'max:255', 'regex:/^[\pL\s]+$/u'],
-            'email'      => ['required', 'email', Rule::unique('users','email')->ignore($this->route('user')), 'max:255', 'regex:/^[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/'],
-            'avatar'     => ['nullable', 'image', 'max:2000'],
-            'role' => [
-                'required',
-                'in:' . implode(',', $roles),
-            ],
+            'email'      => ['required', 'email', 'unique:users,email', 'max:255', 'regex:/^[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/'],
+            'password'   => ['required', 'string', 'min:8', 'max:255', 'regex:/^(?=.*[A-Z])/'],
+            'repassword' => ['required', 'min:8', 'same:password'],
         ];
     }
     public function messages()
@@ -54,13 +45,17 @@ class UpdateUserRequest extends FormRequest
             'email.max'      => 'Email không được vượt quá 255 ký tự.',
             'email.regex'    => 'Định dạng email không hợp lệ.',
 
-            // Avatar
-            'avatar.image'  => 'Hình ảnh đại diện phải là một tệp hình ảnh.',
-            'avatar.max'    => 'Hình ảnh đại diện không được vượt quá 2MB.',
+            // Mật khẩu
+            'password.required'  => 'Mật khẩu là bắt buộc.',
+            'password.string'    => 'Định dạng mật khẩu không hợp lệ.',
+            'password.min'       => 'Mật khẩu phải có ít nhất 8 ký tự.',
+            'password.max'       => 'Mật khẩu không được vượt quá 255 ký tự.',
+            'password.regex'     => 'Mật khẩu phải chứa ít nhất một chữ cái viết hoa.',
 
-            // Vai trò
-            'role.required' => 'Vai trò là bắt buộc.',
-            'role.in'       => 'Vai trò không hợp lệ.',
+            // Repassword
+            'repassword.required' => 'Vui lòng xác nhận mật khẩu.',
+            'repassword.min'      => 'Xác nhận mật khẩu phải có ít nhất 8 ký tự.',
+            'repassword.same' => 'Mật khẩu và xác nhận mật khẩu không khớp.',
         ];
     }
 }

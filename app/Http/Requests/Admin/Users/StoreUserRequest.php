@@ -43,8 +43,8 @@ class StoreUserRequest extends FormRequest
         return [
             // Tên
             'name.required' => 'Tên là bắt buộc.',
-            'name.string'   => 'Tên phải là một chuỗi',
-            'name.regex'    => 'Tên phải là chữ cái.',
+            'name.string'   => 'Định dạng tên không hợp lệ.',
+            'name.regex'    => 'Định dạng tên không hợp lệ.',
             'name.min'      => 'Tên phải có ít nhất 2 ký tự',
             'name.max'      => 'Tên không được vượt quá 255 ký tự.',
 
@@ -57,7 +57,7 @@ class StoreUserRequest extends FormRequest
 
             // Mật khẩu
             'password.required'  => 'Mật khẩu là bắt buộc.',
-            'password.string'    => 'Mật khẩu phải là một chuỗi ký tự.',
+            'password.string'    => 'Định dạng mật khẩu không hợp lệ.',
             'password.min'       => 'Mật khẩu phải có ít nhất 8 ký tự.',
             'password.max'       => 'Mật khẩu không được vượt quá 255 ký tự.',
             'password.regex'     => 'Mật khẩu phải chứa ít nhất một chữ cái viết hoa.',
