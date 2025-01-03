@@ -13,6 +13,7 @@ use App\Traits\UploadToCloudinaryTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class PostController extends Controller
 {
@@ -68,7 +69,9 @@ class PostController extends Controller
             $title = 'Quản lý bài viết';
             $subTitle = 'Chi tiết bài viết';
 
-            $post = Post::query()->with(['tags', 'categories'])->findOrFail($id);
+            $post = Post::query()
+            ->with(['tags:id,name', 'categories:id,name,parent_id', 'user:id,name'])
+            ->findOrFail($id);
 
             return view('posts.show', compact([
                 'title',
@@ -93,7 +96,10 @@ class PostController extends Controller
 
             $categories = Category::query()->get();
             $tags = Tag::query()->get();
-            $post = Post::query()->with(['tags', 'categories'])->findOrFail($id);
+            $post = Post::query()
+            ->with(['tags:id,name', 'categories:id,name,parent_id'])
+            ->findOrFail($id);
+            
             $categoryIds = $post->categories->pluck('id')->toArray();
             $tagIds = $post->tags->pluck('id')->toArray();
 
@@ -133,7 +139,10 @@ class PostController extends Controller
 
             $data['is_hot'] = $request->input('is_hot') ?? 0;
             $data['category_id'] = $request->input('categories')[0];
-            $data['user_id'] = Auth::id();
+
+            do {
+                $data['slug'] = Str::slug($request->title) . '?' . Str::uuid();
+            } while (Post::query()->where('slug',$data['slug'])->exists());
 
             $currencyThumbnail = $post->thumbnail;
 

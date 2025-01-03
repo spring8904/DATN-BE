@@ -35,7 +35,7 @@
                             <div class="form-check form-switch">
                                 <input class="form-check-input" type="checkbox" name="is_hot" value="1" id="isHotSwitch" @checked($post->is_hot)>
                                 <label class="form-check-label" for="isHotSwitch">
-                                    {{ $post->is_hot ? 'Bài viết hot 🔥' : 'Không hot🔥' }}
+                                    Bài viết hot 🔥
                                 </label>
                             </div>
                         </div>
