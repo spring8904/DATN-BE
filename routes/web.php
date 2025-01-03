@@ -24,7 +24,6 @@ use Illuminate\Support\Facades\Route;
 */
 #============================== ROUTE GOOGLE AUTH =============================
 
-
 Route::prefix('admin')->as('admin.')->group(function () {
     Route::get('login', [AuthController::class, 'login'])->name('login');
     Route::post('login', [AuthController::class, 'handleLogin'])->name('handleLogin');
@@ -166,7 +165,6 @@ Route::prefix('admin')->as('admin.')
         #============================== ROUTE APPROVAL =============================
 
         #============================== ROUTE INVOICE =============================
-
 
 
     });
