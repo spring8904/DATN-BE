@@ -37,10 +37,10 @@ class AuthController extends Controller
 
             DB::commit();
 
-            return $this->respondCreated([
+            return response()->json([
                 'status' => true,
                 'message' => 'Tạo tài khoản thành công, vui lòng đăng nhập',
-            ]);
+            ], Response::HTTP_OK);
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -61,14 +61,19 @@ class AuthController extends Controller
 
             if(Auth::attempt($data)){
                 $user = Auth::user();
-            }
 
-            return response()->json([
-                'status' => true,
-                'message' => 'Đăng nhập thành công',
-                'user' => $user, 
-                'token' => $user->createToken('API Token')->plainTextToken,
-            ]);
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Đăng nhập thành công',
+                    'user' => $user, 
+                    'token' => $user->createToken('API Token')->plainTextToken
+                ], Response::HTTP_OK);
+            }else{
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Tài khoản hoặc mật khẩu không đúng'
+                ], Response::HTTP_UNAUTHORIZED);
+            }
         } catch (\Exception $e) {
             DB::rollBack();
 
