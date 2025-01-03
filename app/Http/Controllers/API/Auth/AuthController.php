@@ -48,7 +48,7 @@ class AuthController extends Controller
 
             return response()->json([
                 'status' => false,
-                'message' => 'Có lỗi xảy ra, vui lòng thử lại' 
+                'message' => 'Có lỗi xảy ra, vui lòng thử lại'
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -59,29 +59,39 @@ class AuthController extends Controller
 
             $data = $request->only(['email', 'password']);
 
-            if(Auth::attempt($data)){
+            if (Auth::attempt($data)) {
+
                 $user = Auth::user();
 
-                return response()->json([
-                    'status' => true,
-                    'message' => 'Đăng nhập thành công',
-                    'user' => $user, 
-                    'token' => $user->createToken('API Token')->plainTextToken
-                ], Response::HTTP_OK);
-            }else{
+                if ($user->status == "blocked") {
+
+                    Auth::logout();
+
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Tài khoản đã bị cấm!',
+                    ], Response::HTTP_FORBIDDEN);
+                } else {
+
+                    return response()->json([
+                        'status' => true,
+                        'message' => 'Đăng nhập thành công',
+                        'user' => $user,
+                        'token' => $user->createToken('API Token')->plainTextToken
+                    ], Response::HTTP_OK);
+                }
+            } else {
                 return response()->json([
                     'status' => false,
                     'message' => 'Tài khoản hoặc mật khẩu không đúng'
                 ], Response::HTTP_UNAUTHORIZED);
             }
         } catch (\Exception $e) {
-            DB::rollBack();
-
             $this->logError($e);
 
             return response()->json([
                 'status' => false,
-                'message' => 'Có lỗi xảy ra, vui lòng thử lại' 
+                'message' => 'Có lỗi xảy ra, vui lòng thử lại'
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
