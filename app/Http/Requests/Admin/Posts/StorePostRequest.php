@@ -11,7 +11,7 @@ class StorePostRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,34 @@ class StorePostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'categories'    => ['required', 'exists:categories,id'],
+            'title'         => ['required','string','max:255'],
+            'description'   => ['nullable','string','max:255'],
+            'content'       => ['nullable','string'],
+            'thumbnail'     => ['nullable','image'],
+            'status'        => ['in:draft,pending,published,private'],
+            'view'          => ['nullable','integer','min:0'],
+            'is_hot'        => ['nullable', 'boolean'],
+            'published_at'  => ['nullable', 'date'],
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+
+            'categories.required'     => 'Danh mục không được để trống',
+            'categories.exists'       => 'Danh mục không tồn tại',
+
+            'title.required'          => 'Tên tiêu đề không được trống',
+            'title.string'            => 'Tên tiêu đề phải nhập là một chuỗi',
+            'title.max'               => 'Tên tiêu đề không được quá 255 kí tự',
+
+            'description.required'    => 'Mô tả không được để trống',
+            'description.max'         => 'Tên không được quá 255 kí tự',
+
+            'content.string'          => 'Tên phải nhập là một chuỗi',
+
         ];
     }
 }
