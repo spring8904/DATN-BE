@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\CourseController;
+use App\Http\Controllers\API\Instructor\CourseController;
 use App\Http\Controllers\API\Auth\GoogleController;
 use App\Http\Controllers\API\Auth\AuthController;
 
@@ -39,16 +39,18 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('logout', [AuthController::class, 'logout']);
     });
 
-    #============================== ROUTE COURSE =============================
+#============================== ROUTE COURSE =============================
     Route::prefix('courses')
         ->as('courses.')
         ->group(function () {
+            Route::get('/{slug}', [CourseController::class, 'getCourseOverView']);
             Route::post('/', [CourseController::class, 'store']);
+            Route::put('/{slug}/contentCourse', [CourseController::class, 'updateContentCourse']);
         });
 
-    #============================== ROUTE CHAPTER =============================
+#============================== ROUTE CHAPTER =============================
 
-    #============================== ROUTE LESSON =============================
+#============================== ROUTE LESSON =============================
 });
 
 
