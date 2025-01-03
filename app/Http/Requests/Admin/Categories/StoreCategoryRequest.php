@@ -24,7 +24,7 @@ class StoreCategoryRequest extends FormRequest
     {
         return [
             //
-            'name'        => 'required|max:255',
+            'name'        => ['required','string','max:255'],
             'slug'        => 'required|max:255|unique:categories',
             'icon'        => 'required',
             'status'      => [Rule::in(0,1)],
@@ -35,9 +35,12 @@ class StoreCategoryRequest extends FormRequest
     {
         return [
             'name.required' => 'Tên không được để trống',
+            'name.string'   => 'Tên phải là một chuỗi',
+            'name.max'      => 'Tên không được quá 255 kí tự',
+
             'slug.required' => 'Url không được để trống',
             'icon.required' => 'Icon không được để trống',
-            'slug.unique' => 'Url đã tồn tại, Vui lòng nhập lại',
+            'slug.unique'   => 'Url đã tồn tại, Vui lòng nhập lại',
         ];
     }
 }

@@ -23,7 +23,7 @@
                 </div>
             </div>
         </div>
-        <form action="{{ route('admin.posts.store') }}" method="POST">
+        <form action="{{ route('admin.posts.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="row">
                 <div class="col-lg-8">
@@ -37,8 +37,8 @@
                             <div class="col-md-12 mb-2">
                                 <label class="form-label">Tiêu đề</label>
                                 <input type="name" class="form-control mb-2" placeholder="Nhập tiêu đề..."
-                                    value="{{ old('name') }}" name="name">
-                                @error('name')
+                                    value="{{ old('title') }}" name="title">
+                                @error('title')
                                     <span class="text-danger mt-2">{{ $message }}</span>
                                 @enderror
                             </div>
@@ -114,10 +114,10 @@
                             <div class="col-md-12 mb-2">
                                 <select class="select2-tags form-control" name="tags[]" data-placeholder="Chọn tags"
                                     multiple="multiple">
-                                    @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}"
-                                            {{ in_array($category->id, old('categories', [])) ? 'selected' : '' }}>
-                                            {{ $category->name }}
+                                    @foreach ($tags as $tag)
+                                        <option value="{{ $tag->id }}"
+                                            {{ in_array($tag->id, old('tags', [])) ? 'selected' : '' }}>
+                                            {{ $tag->name }}
                                         </option>
                                     @endforeach
                                 </select>
