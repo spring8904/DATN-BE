@@ -74,6 +74,8 @@
                                             <th>Slug</th>
                                             <th>Danh mục cha</th>
                                             <th>Trạng thái</th>
+                                            
+
                                             <th>Biểu tượng</th>
                                             <th>Action</th>
                                         </tr>

@@ -26,7 +26,7 @@ class UpdateCategoryRequest extends FormRequest
         // dd(request('icon_url'), $this->input('icon_url'));
         return [
             //
-            'name'        => 'required|max:255',
+            'name'        => ['required','string','max:255'],
             'slug'        => ['required','max:255',Rule::unique('categories')->ignore($segment)],
             'icon'        => Rule::requiredIf(empty(request('icon_url'))),
             'status'      => [ Rule::in([0,1])],
@@ -38,9 +38,12 @@ class UpdateCategoryRequest extends FormRequest
     {
         return [
             'name.required' => 'Tên không được để trống',
+            'name.string'   => 'Tên phải là một chuỗi',
+            'name.max'      => 'Tên không được quá 255 kí tự',
+
             'slug.required' => 'Url không được để trống',
             'icon.required' => 'Icon không được để trống',
-            'slug.unique' => 'Url đã tồn tại, Vui lòng nhập lại',
+            'slug.unique'   => 'Url đã tồn tại, Vui lòng nhập lại',
         ];
     }
 }
