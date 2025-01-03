@@ -27,13 +27,14 @@ class Course extends Model
         'name',
         'slug',
         'thumbnail',
+        'intro',
         'price',
         'price_sale',
         'description',
         'duration',
         'level',
         'total_student',
-        'requirement',
+        'requirements',
         'benefits',
         'qa',
         'status',
@@ -57,5 +58,10 @@ class Course extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }
