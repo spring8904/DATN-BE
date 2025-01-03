@@ -20,7 +20,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 // API TEST Base không sử dụng
-
 Route::prefix('v2')->group(function () {
     Route::post('cloudinary', [CloudinaryController::class, 'upload']);
     Route::post('destroy', [CloudinaryController::class, 'delete']);
