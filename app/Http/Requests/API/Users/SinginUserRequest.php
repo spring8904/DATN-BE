@@ -23,7 +23,7 @@ class SinginUserRequest extends FormRequest
     {
         return [
             'email'      => ['required', 'email', 'max:255', 'regex:/^[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/'],
-            'password'   => ['required', 'string', 'min:8', 'max:255', 'regex:/^(?=.*[A-Z])/'],
+            'password'   => ['required', 'string', 'min:8', 'max:255'],
         ];
     }
     public function messages()
@@ -41,7 +41,6 @@ class SinginUserRequest extends FormRequest
             'password.string'    => 'Định dạng mật khẩu không hợp lệ.',
             'password.min'       => 'Mật khẩu phải có ít nhất 8 ký tự.',
             'password.max'       => 'Mật khẩu không được vượt quá 255 ký tự.',
-            'password.regex'     => 'Mật khẩu phải chứa ít nhất một chữ cái viết hoa.',
         ];
     }
 }

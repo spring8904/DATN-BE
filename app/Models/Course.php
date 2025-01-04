@@ -42,7 +42,7 @@ class Course extends Model
     ];
 
     protected $casts = [
-        'requirement' => 'array',
+        'requirements' => 'array',
         'benefits' => 'array',
         'qa' => 'array',
     ];
@@ -50,7 +50,7 @@ class Course extends Model
     public $attributes = [
         'status' => self::STATUS_DRAFT,
         'total_student' => 0,
-        'requirement' => '[]',
+        'requirements' => '[]',
         'benefits' => '[]',
         'qa' => '[]',
     ];
@@ -64,4 +64,17 @@ class Course extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function chapters()
+    {
+        return $this->hasMany(Chapter::class);
+    }
+
+    public function scopeSearch($query, $searchQuery)
+    {
+        return $query->when($searchQuery, function ($query) use ($searchQuery) {
+            $query->where('name', 'like', '%' . $searchQuery . '%');
+        });
+    }
+
 }
