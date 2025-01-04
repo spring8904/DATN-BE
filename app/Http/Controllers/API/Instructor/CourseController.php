@@ -23,39 +23,61 @@ class CourseController extends Controller
     const FOLDER_COURSE_THUMBNAIL = 'courses/thumbnail';
     const FOLDER_COURSE_INTRO = 'courses/intro';
 
+    public function index(Request $request)
+    {
+        try {
+            $query = $request->input('q');
+
+            $courses = Course::query()
+                ->where('user_id', Auth::id())
+                ->select([
+                    'id', 'category_id', 'name', 'slug', 'thumbnail',
+                    'intro', 'price', 'price_sale',  'duration', 'total_student',
+                ])
+                ->with([
+                    'category:id,name,slug,parent_id',
+                ])
+                ->search($query)
+                ->orderBy('created_at')
+                ->get();
+
+            if ($courses->isEmpty()) {
+                return $this->respondNotFound('Không tìm thấy khoá học');
+            }
+
+            return $this->respondOk('Danh sách khoá học của: ' . Auth::user()->name,
+                $courses
+            );
+        } catch (\Exception $e) {
+            $this->logError($e);
+
+            return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại',
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
     public function getCourseOverView(string $slug)
     {
         try {
             $course = Course::query()
                 ->where('slug', $slug)
                 ->select([
-                    'id',
-                    'category_id',
-                    'name',
-                    'slug',
-                    'thumbnail',
-                    'intro',
-                    'price',
-                    'price_sale',
-                    'description',
-                    'duration',
-                    'level',
-                    'total_student',
-                    'requirements',
-                    'benefits',
-                    'qa'
+                    'id', 'user_id', 'category_id', 'name', 'slug', 'thumbnail',
+                    'intro', 'price', 'price_sale', 'description', 'duration',
+                    'level', 'total_student', 'requirements', 'benefits', 'qa'
+                ])
+                ->with([
+                    'user:id,name,email,avatar,created_at',
+                    'category:id,name,slug,parent_id',
+                    'chapters:id,course_id,title,order',
+                    'chapters.lessons:id,chapter_id,title,slug,order,playback_id'
                 ])
                 ->first();
 
             if (!$course) {
                 return $this->respondNotFound('Không tìm thấy khoá học');
             }
-
-            $course->load([
-                'category' => function ($query) {
-                    $query->select('id', 'name', 'slug', 'parent_id');
-                }
-            ]);
 
             return $this->respondOk('Thông tin khoá học: ' . $course->name,
                 $course
@@ -73,7 +95,8 @@ class CourseController extends Controller
     {
         try {
             $data = $request->validated();
-            $data['user_id'] = 4;
+
+            $data['user_id'] = Auth::id();
 
             do {
                 $data['code'] = (string)Str::uuid();
@@ -90,7 +113,7 @@ class CourseController extends Controller
                 'course' => $course->load('category'),
             ]);
         } catch (\Exception $e) {
-            $this->logError($e);
+            $this->logError($e, $request->all());
 
             return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại',
                 Response::HTTP_INTERNAL_SERVER_ERROR
@@ -158,7 +181,7 @@ class CourseController extends Controller
 
             $this->rollbackFileUploads($data, $thumbnailOld, $introOld);
 
-            $this->logError($e);
+            $this->logError($e, $request->all());
 
             if ($e instanceof ValidationException) {
                 return $this->respondFailedValidation('Dữ liệu không hợp lệ', $e->errors());
@@ -203,6 +226,33 @@ class CourseController extends Controller
     {
         if (!empty($file) && filter_var($file, FILTER_VALIDATE_URL)) {
             $type === 'image' ? $this->deleteImage($file, $folder) : $this->deleteVideo($file, $folder);
+        }
+    }
+
+    public function deleteCourse(string $slug)
+    {
+        try {
+            $course = Course::query()
+                ->where('slug', $slug)
+                ->first();
+
+            if (!$course) {
+                return $this->respondNotFound('Không tìm thấy khoá học');
+            }
+
+            if ($course->chapters()->count() > 0) {
+                return $this->respondError('Khoá học đang chứa chương học, không thể xóa');
+            }
+
+            $course->delete();
+
+            return $this->respondOk('Xóa khoá học thành công');
+        } catch (\Exception $e) {
+            $this->logError($e);
+
+            return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại',
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
     }
 }
