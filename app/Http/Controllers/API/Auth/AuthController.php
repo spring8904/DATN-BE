@@ -7,11 +7,14 @@ use App\Http\Requests\API\Users\SinginUserRequest;
 use App\Http\Requests\API\Users\SingupUserRequest;
 use App\Models\User;
 use App\Traits\LoggableTrait;
+use Carbon\Carbon;
 use F9Web\ApiResponseHelpers;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+
+use function PHPUnit\Framework\isEmpty;
 
 class AuthController extends Controller
 {
@@ -40,7 +43,7 @@ class AuthController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'Tạo tài khoản thành công, vui lòng đăng nhập',
-            ], Response::HTTP_OK);
+            ], Response::HTTP_CREATED);
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -59,34 +62,58 @@ class AuthController extends Controller
 
             $data = $request->only(['email', 'password']);
 
+            $user = User::query()->where('email', $data['email'])->first();
+
+            if (is_null($user)) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Tài khoản không tồn tại, vui lòng thử lại!',
+                    'user' => $user
+                ], Response::HTTP_UNAUTHORIZED);
+            }
+
+            if ($user->status == "blocked") {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Tài khoản đã bị khóa!',
+                ], Response::HTTP_FORBIDDEN);
+            }
+
             if (Auth::attempt($data)) {
 
-                $user = Auth::user();
+                DB::beginTransaction();
 
-                if ($user->status == "blocked") {
-
-                    Auth::logout();
-
-                    return response()->json([
-                        'status' => false,
-                        'message' => 'Tài khoản đã bị cấm!',
-                    ], Response::HTTP_FORBIDDEN);
-                } else {
-
-                    return response()->json([
-                        'status' => true,
-                        'message' => 'Đăng nhập thành công',
-                        'user' => $user,
-                        'token' => $user->createToken('API Token')->plainTextToken
-                    ], Response::HTTP_OK);
+                if ($user->status == "inactive") {
+                    $user->status = "active";
+                    $user->save();
                 }
+
+                $expiresAt = Carbon::now('Asia/Ho_Chi_Minh')->addMonth();
+
+                $token = $user->createToken('API Token');
+
+                $tokenInst = $token->accessToken;
+                $tokenInst->expires_at = $expiresAt;
+                $tokenInst->save();
+
+                DB::commit();
+
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Đăng nhập thành công',
+                    'user' => $user,
+                    'token' => $token->plainTextToken,
+                    'expires_at' => $expiresAt
+                ], Response::HTTP_OK);
             } else {
                 return response()->json([
                     'status' => false,
-                    'message' => 'Tài khoản hoặc mật khẩu không đúng'
+                    'message' => 'Mật khẩu không đúng'
                 ], Response::HTTP_UNAUTHORIZED);
             }
         } catch (\Exception $e) {
+            DB::rollBack();
+
             $this->logError($e);
 
             return response()->json([
