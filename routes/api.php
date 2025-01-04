@@ -2,9 +2,10 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\API\Auth\GoogleController;
 use App\Http\Controllers\API\Auth\AuthController;
+use App\Http\Controllers\API\Instructor\CourseController;
+use App\Http\Controllers\API\Instructor\ChapterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,16 +40,33 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('logout', [AuthController::class, 'logout']);
     });
 
-    #============================== ROUTE COURSE =============================
-    Route::prefix('courses')
-        ->as('courses.')
-        ->group(function () {
-            Route::post('/', [CourseController::class, 'store']);
-        });
+    Route::prefix('instructor')
+        ->middleware('roleHasInstructor')
+        ->as('instructor.')->group(function () {
+        #============================== ROUTE COURSE =============================
+        Route::prefix('courses')
+            ->as('courses.')
+            ->group(function () {
+                Route::get('/', [CourseController::class, 'index']);
+                Route::get('/{slug}', [CourseController::class, 'getCourseOverView']);
+                Route::post('/', [CourseController::class, 'store']);
+                Route::put('/{slug}/contentCourse', [CourseController::class, 'updateContentCourse']);
+                Route::delete('/{slug}', [CourseController::class, 'deleteCourse']);
+            });
 
-    #============================== ROUTE CHAPTER =============================
+        #============================== ROUTE CHAPTER =============================
+        Route::prefix('chapters')
+            ->as('chapters.')
+            ->group(function () {
+                Route::post('/', [ChapterController::class, 'storeChapter']);
+                Route::put('/{slug}/update-order', [ChapterController::class, 'updateOrderChapter']);
+                Route::put('/{slug}/{chapterId}', [ChapterController::class, 'updateContentChapter']);
+                Route::delete('/{slug}/{chapterId}', [ChapterController::class, 'deleteChapter']);
+            });
 
-    #============================== ROUTE LESSON =============================
+        #============================== ROUTE LESSON =============================
+    });
+
 });
 
 

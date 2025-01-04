@@ -22,19 +22,19 @@ class AuthController extends Controller
 
     public function signUp(SingupUserRequest $request)
     {
-
         try {
             DB::beginTransaction();
 
             $validated = $request->validated();
 
             $data = $request->only(['name', 'email', 'password', 'repassword']);
+            $data['avatar'] = 'https://res.cloudinary.com/dvrexlsgx/image/upload/v1732148083/Avatar-trang-den_apceuv_pgbce6.png';
 
             do {
                 $data['code'] = str_replace('-', '', Str::uuid()->toString());
             } while (User::query()->where('code', $data['code'])->exists());
 
-            $user =  User::query()->create($data);
+            $user = User::query()->create($data);
 
             $user->assignRole("member");
 
@@ -55,6 +55,7 @@ class AuthController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
     public function signIn(SinginUserRequest $request)
     {
         try {
