@@ -6,6 +6,7 @@ use App\Http\Controllers\API\Auth\GoogleController;
 use App\Http\Controllers\API\Auth\AuthController;
 use App\Http\Controllers\API\Instructor\CourseController;
 use App\Http\Controllers\API\Instructor\ChapterController;
+use App\Http\Controllers\API\Instructor\LessonController;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,29 +44,37 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('instructor')
         ->middleware('roleHasInstructor')
         ->as('instructor.')->group(function () {
-        #============================== ROUTE COURSE =============================
-        Route::prefix('courses')
-            ->as('courses.')
-            ->group(function () {
-                Route::get('/', [CourseController::class, 'index']);
-                Route::get('/{slug}', [CourseController::class, 'getCourseOverView']);
-                Route::post('/', [CourseController::class, 'store']);
-                Route::put('/{slug}/contentCourse', [CourseController::class, 'updateContentCourse']);
-                Route::delete('/{slug}', [CourseController::class, 'deleteCourse']);
-            });
+            #============================== ROUTE COURSE =============================
+            Route::prefix('courses')
+                ->as('courses.')
+                ->group(function () {
+                    Route::get('/', [CourseController::class, 'index']);
+                    Route::get('/{slug}', [CourseController::class, 'getCourseOverView']);
+                    Route::post('/', [CourseController::class, 'store']);
+                    Route::put('/{slug}/contentCourse', [CourseController::class, 'updateContentCourse']);
+                    Route::delete('/{slug}', [CourseController::class, 'deleteCourse']);
+                });
 
-        #============================== ROUTE CHAPTER =============================
-        Route::prefix('chapters')
-            ->as('chapters.')
-            ->group(function () {
-                Route::post('/', [ChapterController::class, 'storeChapter']);
-                Route::put('/{slug}/update-order', [ChapterController::class, 'updateOrderChapter']);
-                Route::put('/{slug}/{chapterId}', [ChapterController::class, 'updateContentChapter']);
-                Route::delete('/{slug}/{chapterId}', [ChapterController::class, 'deleteChapter']);
-            });
+            #============================== ROUTE CHAPTER =============================
+            Route::prefix('chapters')
+                ->as('chapters.')
+                ->group(function () {
+                    Route::post('/', [ChapterController::class, 'storeChapter']);
+                    Route::put('/{slug}/update-order', [ChapterController::class, 'updateOrderChapter']);
+                    Route::put('/{slug}/{chapterId}', [ChapterController::class, 'updateContentChapter']);
+                    Route::delete('/{slug}/{chapterId}', [ChapterController::class, 'deleteChapter']);
+                });
 
-        #============================== ROUTE LESSON =============================
-    });
+            #============================== ROUTE LESSON =============================
+            Route::prefix('lessons')
+                ->as('lessons.')
+                ->group(function () {
+                    Route::post('/', [LessonController::class, 'storeLesson']);
+                    Route::put('/{slug}/update-order', [LessonController::class, 'updateOrderLesson']);
+                    Route::put('/{slug}/{lessonId}', [LessonController::class, 'updateContentLesson']);
+                    Route::delete('/{slug}/{lessonId}', [LessonController::class, 'deleteLesson']);
+                });
+        });
 
 });
 
