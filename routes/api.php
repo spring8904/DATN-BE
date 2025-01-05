@@ -6,6 +6,7 @@ use App\Http\Controllers\API\Auth\GoogleController;
 use App\Http\Controllers\API\Auth\AuthController;
 use App\Http\Controllers\API\Instructor\CourseController;
 use App\Http\Controllers\API\Instructor\ChapterController;
+use App\Http\Controllers\API\Instructor\RegisterController;
 use App\Http\Controllers\API\Search\SearchController;
 
 /*
@@ -30,6 +31,7 @@ Route::prefix('auth')->as('auth.')->group(function () {
     Route::post('verify-email', [AuthController::class, 'verifyEmail']);
     Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
     Route::post('reset-password', [AuthController::class, 'resetPassword']);
+    Route::post('register-instructor', [AuthController::class, 'registerInstructor']);
 
     Route::get('google', [GoogleController::class, 'redirectToGoogle']);
     Route::get('google/callback', [GoogleController::class, 'handleGoogleCallback']);
@@ -42,6 +44,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('auth')->as('auth.')->group(function () {
         Route::post('logout', [AuthController::class, 'logout']);
+    });
+
+    Route::prefix('instructor')->as('instructor.')->group(function () {
+        Route::post('register', [RegisterController::class, 'register']);
     });
 
     Route::prefix('instructor')

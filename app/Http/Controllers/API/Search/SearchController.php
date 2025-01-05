@@ -22,7 +22,7 @@ class SearchController extends Controller
             $perPage = $request->input('per_page', 10);
 
             $courses = DB::table('courses')
-                ->select('id', 'name', 'slug', 'price', 'price_sale', 'thumbnail', 'total_student', 'duration', 'description')
+                ->select('id', 'category_id', 'name', 'slug', 'price', 'price_sale', 'thumbnail', 'total_student', 'duration', 'description')
                 ->where('status', 'approved')
                 ->where(function ($q) use ($query) {
                     $q->where('name', 'like', '%' . $query . '%')
@@ -31,7 +31,7 @@ class SearchController extends Controller
                 ->paginate($perPage);
 
             $posts = DB::table('posts')
-                ->select('id', 'title', 'slug', 'thumbnail', 'is_hot', 'published_at', 'content')
+                ->select('id', 'category_id ', 'title', 'slug', 'thumbnail', 'is_hot', 'published_at', 'content')
                 ->where('status', 'published')
                 ->where(function ($q) use ($query) {
                     $q->where('title', 'like', '%' . $query . '%')
@@ -41,6 +41,7 @@ class SearchController extends Controller
                 ->paginate($perPage);
             return response()->json([
                 'status' => true,
+                'message' => $posts->isEmpty() && $courses->isEmpty() ? 'Không tìm thấy khóa học, bài viết' : '',
                 'perpage' => $perPage,
                 'page' => $page,
                 'courses' => $courses,
