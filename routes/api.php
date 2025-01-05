@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\API\Auth\GoogleController;
 use App\Http\Controllers\API\Auth\AuthController;
+use App\Http\Controllers\API\Posts\PostController;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,6 +50,12 @@ Route::middleware('auth:sanctum')->group(function () {
     #============================== ROUTE CHAPTER =============================
 
     #============================== ROUTE LESSON =============================
+
+
+    #============================== ROUTE COURSE =============================
+    Route::prefix('posts')->as('posts.')->group( function(){
+        Route::get('/', [PostController::class, '']);
+    });
 });
 
 
