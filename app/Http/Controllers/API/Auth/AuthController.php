@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\API\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\API\Users\SigninInstructorRequest;
 use App\Http\Requests\API\Users\SinginUserRequest;
 use App\Http\Requests\API\Users\SingupUserRequest;
+use App\Models\Education;
+use App\Models\Profile;
 use App\Models\User;
 use App\Traits\LoggableTrait;
 use Carbon\Carbon;
@@ -89,7 +92,7 @@ class AuthController extends Controller
                     $user->save();
                 }
 
-                $expiresAt = Carbon::now('Asia/Ho_Chi_Minh')->addMonth();
+                $expiresAt = Carbon::now(env('APP_TIMEZONE'))->addMonth();
 
                 $token = $user->createToken('API Token');
 
@@ -120,6 +123,59 @@ class AuthController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Có lỗi xảy ra, vui lòng thử lại'
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+    public function registerInstructor(SigninInstructorRequest $request)
+    {
+        try {
+            DB::beginTransaction();
+            
+            $validated = $request->validated();
+
+            $data = $request->only(['name', 'email', 'password', 'repassword']);
+            $data['avatar'] = 'https://res.cloudinary.com/dvrexlsgx/image/upload/v1732148083/Avatar-trang-den_apceuv_pgbce6.png';
+
+            do {
+                $data['code'] = str_replace('-', '', Str::uuid()->toString());
+            } while (User::query()->where('code', $data['code'])->exists());
+
+            $user = User::query()->create($data);
+
+            $user->assignRole("member");
+
+            $dataProfiles = $request->only(['phone', 'address', 'experience']);
+            $dataProfiles['bio'] = json_encode($request->bio);
+            $dataProfiles['user_id'] = $user->id;
+
+            $profile = Profile::query()->create($dataProfiles);
+
+            $education = Education::query()->create([
+                'name' => $user->name,
+                'degree' => $request->degree,
+                'major' => $request->major,
+                'certificates' => json_encode($request->certificates),
+                'qa_systems' => json_encode($request->qa_systems),
+                'start_date' => now(env('APP_TIMEZONE')),
+                'profile_id' => $profile->id,
+            ]);
+
+            $user->assignRole("instructor");
+
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Đăng ký giảng viên thành công!',
+            ], Response::HTTP_CREATED);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            $this->logError($e);
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Có lỗi xảy ra, vui lòng thử lại',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
