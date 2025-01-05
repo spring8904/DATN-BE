@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Admin\Users;
+namespace App\Http\Requests\API\Users;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Spatie\Permission\Models\Role;
 
-class StoreUserRequest extends FormRequest
+class SigninInstructorRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -20,24 +19,24 @@ class StoreUserRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
+    public function rules()
     {
-        $roles = Role::query()->get()->pluck('name')->toArray();
-
-        $roles = array_values($roles);
-
         return [
             'name'       => ['required', 'string', 'min:2', 'max:255', 'regex:/^[\pL\s]+$/u'],
             'email'      => ['required', 'email', 'unique:users,email', 'max:255', 'regex:/^[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/'],
             'password'   => ['required', 'string', 'min:8', 'max:255', 'regex:/^(?=.*[A-Z])/'],
             'repassword' => ['required', 'min:8', 'same:password'],
-            'avatar'     => ['nullable', 'image', 'max:2000'],
-            'role' => [
-                'required',
-                'in:' . implode(',', $roles),
-            ],
+            'phone' => 'required|unique:profiles,phone|regex:/^0[0-9]{9}$/',
+            'address' => 'required|string|max:255|min:10',
+            'experience' => 'required|string|max:255',
+            'bio' => 'nullable',
+            'degree' => 'required|string|max:255',
+            'major' => 'required|string|max:255',
+            'certificates' => 'required',
+            'qa_systems' => 'required',
         ];
     }
+
     public function messages()
     {
         return [
@@ -67,13 +66,29 @@ class StoreUserRequest extends FormRequest
             'repassword.min'      => 'Xác nhận mật khẩu phải có ít nhất 8 ký tự.',
             'repassword.same' => 'Mật khẩu và xác nhận mật khẩu không khớp.',
 
-            // Avatar
-            'avatar.image'  => 'Hình ảnh đại diện phải là một tệp hình ảnh.',
-            'avatar.max'    => 'Hình ảnh đại diện không được vượt quá 2MB.',
+            'phone.required' => 'Vui lòng nhập số điện thoại của bạn',
+            'phone.unique' => 'Số điện thoại đã tồn tại',
+            'phone.regex' => 'Số điện thoại không đúng định dạng',
 
-            // Role
-            'role.required' => 'Vui lòng chọn vai trò của người dùng',
-            'role.in'       => 'Vai trò không hợp lệ.',
+            'address.required' => 'Vui lòng nhập địa chỉ của bạn',
+            'address.string' => 'Định dạng địa chỉ không hợp lệ',
+            'address.max' => 'Địa chỉ tối đa được nhập 255 ký tự',
+
+            'experience.required' => 'Vui lòng cung cấp thông tin kinh nghiệm.',
+            'experience.string' => 'Kinh nghiệm nhập sai định dạng',
+            'experience.max' => 'Kinh nghiệm được nhập tối đa 255 ký tự',
+
+            'degree.required' => 'Vui lòng nhập bằng cấp.',
+            'degree.string' => 'Bằng cấp nhập sai định dạng',
+            'degree.max' => 'Bằng cấp được nhập tối đa 255 ký tự',
+
+            'major.required' => 'Vui lòng nhập chuyên ngành.',
+            'major.string' => 'chuyên ngành nhập sai định dạng',
+            'major.max' => 'chuyên ngành được nhập tối đa 255 ký tự',
+
+            'certificates.required' => 'Vui lòng nhập thông tin chứng chỉ.',
+            
+            'qa_systems.required' => 'Vui lòng nhập thông tin QA.',
         ];
     }
 }

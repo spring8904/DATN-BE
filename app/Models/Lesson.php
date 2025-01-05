@@ -27,4 +27,9 @@ class Lesson extends Model
         'is_free_preview' => 0,
         'order' => 0,
     ];
+
+    public function chapter()
+    {
+        return $this->belongsTo(Chapter::class);
+    }
 }

@@ -94,7 +94,9 @@ class UserController extends Controller
                 $data['avatar'] = $this->uploadImage($request->file('avatar'), self::FOLDER);
             }
 
-            $data['code'] = str_replace('-', '', Str::uuid()->toString());
+            do {
+                $data['code'] = str_replace('-', '', Str::uuid()->toString());
+            } while (User::query()->where('code',$data['code'])->exists());
 
             $data['email_verified_at'] = now();
 

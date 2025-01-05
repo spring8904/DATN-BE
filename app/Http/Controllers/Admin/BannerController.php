@@ -69,7 +69,7 @@ class BannerController extends Controller
 
             DB::commit();
 
-            return redirect()->route('admin.banners.index')->with('success', true);
+            return redirect()->route('admin.banners.index')->with('success', 'Thêm mới thành công');
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -134,7 +134,7 @@ class BannerController extends Controller
 
             DB::commit();
 
-            return redirect()->route('admin.banners.edit', $banner->id)->with('success', true);
+            return redirect()->route('admin.banners.edit', $banner->id)->with('success', 'Cập nhật thành công');
         } catch (\Exception $e) {
 
             DB::rollBack();

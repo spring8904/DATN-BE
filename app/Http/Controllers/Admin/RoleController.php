@@ -92,7 +92,8 @@ class RoleController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $role = Role::query()->findOrFail($id);
+        return view('roles.profile', compact('role'));
     }
 
     /**

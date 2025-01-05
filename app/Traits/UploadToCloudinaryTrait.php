@@ -18,13 +18,13 @@ trait UploadToCloudinaryTrait
                 return null;
             }
 
-            $uploadResult =  Cloudinary::upload($file->getRealPath(), [
+            $uploadResult = Cloudinary::upload($file->getRealPath(), [
                 'folder' => $folder ?? 'images',
                 'public_id' => Str::random(10),
             ]);
 
             return $uploadResult->getSecurePath() ?? null;
-            
+
         } catch (\Exception $e) {
             $this->logError($e);
 
@@ -32,28 +32,34 @@ trait UploadToCloudinaryTrait
         }
     }
 
-    public function uploadVideo($file, $folder = null)
+    public function uploadVideo($file, $folder = null, $fullInfo = false)
     {
         try {
             if (!$file->isValid()) {
                 return null;
             }
 
-            $uploadResult =  Cloudinary::uploadVideo($file->getRealPath(), [
+            $uploadResult = Cloudinary::uploadVideo($file->getRealPath(), [
                 'folder' => $folder ?? 'videos',
                 'public_id' => Str::random(10),
-                'format' => 'mp4',
+                'resource_type' => 'video',
+                'eager_async' => true,
+                'timeout' => 600,
             ]);
 
             $secure_url = $uploadResult->getSecurePath() ?? null;
-            $duration = $uploadResult->getDuration() ?? null;
-            $publicId = $uploadResult->getPublicId() ?? null;
 
-            return [
-                'secure_url' => $secure_url,
-                'duration' => $duration,
-                'public_id' => $publicId,
-            ];
+            if ($fullInfo) {
+                $duration = $uploadResult->getDuration() ?? null;
+                $publicId = $uploadResult->getPublicId() ?? null;
+                return [
+                    'secure_url' => $secure_url,
+                    'duration' => $duration,
+                    'public_id' => $publicId,
+                ];
+            }
+
+            return $secure_url;
         } catch (\Exception $e) {
             $this->logError($e);
 
@@ -67,9 +73,10 @@ trait UploadToCloudinaryTrait
             if (empty($dataUrl) || !filter_var($dataUrl, FILTER_VALIDATE_URL)) {
                 throw new \Exception('URL không hợp lệ hoặc không được cung cấp.');
             }
+
             $publicId = pathinfo(parse_url($dataUrl, PHP_URL_PATH), PATHINFO_FILENAME);
 
-            $publicIdWithFolder = ($folder ?? 'images')   . '/' . $publicId;
+            $publicIdWithFolder = ($folder ?? 'images') . '/' . $publicId;
 
             $deleteResult = Cloudinary::destroy($publicIdWithFolder);
 
