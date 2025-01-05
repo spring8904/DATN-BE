@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\Document\DocumentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\Auth\GoogleController;
@@ -85,6 +86,22 @@ Route::middleware('auth:sanctum')->group(function () {
                     Route::delete('/{slug}/{lessonId}', [LessonController::class, 'deleteLesson']);
                 });
         });
+            #============================== ROUTE DOCUMENT =============================
+    Route::prefix('documents')->as('documents.')->group(function () {
+        Route::get('/', [DocumentController::class, 'index']);
+        Route::get('/{documentID}', [DocumentController::class, 'show']);
+        Route::post('/', [DocumentController::class, 'store']);
+        Route::put('/{documentID}', [DocumentController::class, 'update']);
+        Route::delete('/{documentID}', [DocumentController::class, 'destroy']);
+    });
+
+            #============================== ROUTE DOCUMENT =============================
+    Route::prefix('transactions')->as('transactions.')->group(function () {
+        Route::get('/', [DocumentController::class, 'index']);
+        Route::get('/{documentID}', [DocumentController::class, 'show']);
+        Route::post('/deposit', [DocumentController::class, 'deposit']);
+        Route::post('/buyCourse', [DocumentController::class, 'buyCourse']);
+    });
 
 });
 

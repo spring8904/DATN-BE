@@ -9,6 +9,8 @@ use F9Web\ApiResponseHelpers;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
+use function PHPUnit\Framework\isEmpty;
+
 class SearchController extends Controller
 {
     use LoggableTrait, ApiResponseHelpers;
@@ -41,7 +43,7 @@ class SearchController extends Controller
                 ->paginate($perPage);
             return response()->json([
                 'status' => true,
-                'message' => $posts->isEmpty() && $courses->isEmpty() ? 'Không tìm thấy khóa học, bài viết' : '',
+                'message' => isEmpty() ? 'Không tìm thấy khóa học, bài viết' : '',
                 'perpage' => $perPage,
                 'page' => $page,
                 'courses' => $courses,
