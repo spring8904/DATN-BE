@@ -7,6 +7,7 @@ use App\Http\Controllers\API\Auth\AuthController;
 use App\Http\Controllers\API\Instructor\CourseController;
 use App\Http\Controllers\API\Instructor\ChapterController;
 use App\Http\Controllers\API\Instructor\LessonController;
+use App\Http\Controllers\API\Search\SearchController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +35,9 @@ Route::prefix('auth')->as('auth.')->group(function () {
     Route::get('google', [GoogleController::class, 'redirectToGoogle']);
     Route::get('google/callback', [GoogleController::class, 'handleGoogleCallback']);
 });
+
+#============================== ROUTE SEARCH =============================
+Route::get('search', [SearchController::class, 'search']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
