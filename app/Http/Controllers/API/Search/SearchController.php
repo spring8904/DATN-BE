@@ -41,7 +41,7 @@ class SearchController extends Controller
                 ->get();
             return response()->json([
                 'status' => true,
-                'message' => isEmpty() ? 'Không tìm thấy khóa học, bài viết' : '',
+                'message' => isEmpty($posts) && isEmpty($courses) ? 'Không tìm thấy khóa học, bài viết' : '',
                 'courses' => $courses,
                 'posts' => $posts,
             ], Response::HTTP_OK);
