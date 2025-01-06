@@ -10,7 +10,9 @@ use App\Http\Controllers\API\Instructor\CourseController;
 use App\Http\Controllers\API\Instructor\ChapterController;
 use App\Http\Controllers\API\Instructor\RegisterController;
 use App\Http\Controllers\API\Instructor\LessonController;
+use App\Http\Controllers\API\Posts\PostController;
 use App\Http\Controllers\API\Search\SearchController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -87,7 +89,13 @@ Route::middleware('auth:sanctum')->group(function () {
                     Route::delete('/{slug}/{lessonId}', [LessonController::class, 'deleteLesson']);
                 });
         });
-            #============================== ROUTE DOCUMENT =============================
+
+    #============================== ROUTE COURSE =============================
+    Route::prefix('posts')->as('posts.')->group( function(){
+        Route::get('/', [PostController::class, '']);
+    });
+
+    #============================== ROUTE DOCUMENT =============================
     Route::prefix('documents')->as('documents.')->group(function () {
         Route::get('/', [DocumentController::class, 'index']);
         Route::get('/{documentID}', [DocumentController::class, 'show']);
@@ -96,7 +104,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{documentID}', [DocumentController::class, 'destroy']);
     });
 
-            #============================== ROUTE DOCUMENT =============================
+    #============================== ROUTE DOCUMENT =============================
     Route::prefix('transactions')->as('transactions.')->group(function () {
         Route::get('/', [TransactionController::class, 'index']);
         Route::get('/{transactionID}', [TransactionController::class, 'show']);
@@ -104,7 +112,3 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/buyCourse', [TransactionController::class, 'buyCourse']);
     });
 });
-
-
-
-

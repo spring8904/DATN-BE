@@ -39,7 +39,7 @@ class TransactionController extends Controller
             $transaction = Transaction::query()->findOrFail($id);
 
             return response()->json([
-                'message' => 'Danh sách giao dịch của: ' . Auth::user()->name,
+                'message' => 'Chi tiết giao dịch của: ' . Auth::user()->name,
                 'transactions' => $transaction,
             ], Response::HTTP_OK);
         } catch (\Exception $e) {

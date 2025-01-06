@@ -20,8 +20,6 @@ class SearchController extends Controller
             $data = $request->validated();
 
             $query = $request->input('query');
-            $page = $request->input('page', 1);
-            $perPage = $request->input('per_page', 10);
 
             $courses = DB::table('courses')
                 ->select('id', 'category_id', 'name', 'slug', 'price', 'price_sale', 'thumbnail', 'total_student', 'duration', 'description')
@@ -30,7 +28,7 @@ class SearchController extends Controller
                     $q->where('name', 'like', '%' . $query . '%')
                         ->orWhere('description', 'like', '%' . $query . '%');
                 })
-                ->paginate($perPage);
+                ->get();
 
             $posts = DB::table('posts')
                 ->select('id', 'category_id ', 'title', 'slug', 'thumbnail', 'is_hot', 'published_at', 'content')
@@ -40,12 +38,10 @@ class SearchController extends Controller
                         ->orWhere('content', 'like', '%' . $query . '%')
                         ->orWhere('description', 'like', '%' . $query . '%');
                 })
-                ->paginate($perPage);
+                ->get();
             return response()->json([
                 'status' => true,
                 'message' => isEmpty() ? 'Không tìm thấy khóa học, bài viết' : '',
-                'perpage' => $perPage,
-                'page' => $page,
                 'courses' => $courses,
                 'posts' => $posts,
             ], Response::HTTP_OK);
