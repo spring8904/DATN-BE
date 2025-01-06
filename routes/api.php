@@ -4,11 +4,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\Auth\GoogleController;
 use App\Http\Controllers\API\Auth\AuthController;
+
+use App\Http\Controllers\API\Posts\PostController;
+
 use App\Http\Controllers\API\Instructor\CourseController;
 use App\Http\Controllers\API\Instructor\ChapterController;
 use App\Http\Controllers\API\Instructor\RegisterController;
 use App\Http\Controllers\API\Instructor\LessonController;
 use App\Http\Controllers\API\Search\SearchController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -85,6 +89,15 @@ Route::middleware('auth:sanctum')->group(function () {
                     Route::delete('/{slug}/{lessonId}', [LessonController::class, 'deleteLesson']);
                 });
         });
+
+
+    #============================== ROUTE LESSON =============================
+
+
+    #============================== ROUTE COURSE =============================
+    Route::prefix('posts')->as('posts.')->group( function(){
+        Route::get('/', [PostController::class, '']);
+    });
 
 });
 
