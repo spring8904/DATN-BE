@@ -35,7 +35,6 @@ class AuthController extends Controller
 {
     use LoggableTrait, ApiResponseHelpers;
 
-
     public function forgotPassword(ForgotPassWordRequest $forgotPassWordRequest)
     {
         try {
@@ -50,8 +49,8 @@ class AuthController extends Controller
                 ],200);
             }
 
-        } catch (\Throwable $th) {
-            //throw $th;
+        } catch (\Exception $e) {
+            $this->logError($e);
 
             return response()->json([
                 'message' => 'Không thể gửi liên kết đặt lại mật khẩu. Vui lòng thử lại.',
@@ -83,8 +82,8 @@ class AuthController extends Controller
                 ], 200);
             }
             
-        } catch (\Throwable $th) {
-            //throw $th;
+        } catch (\Exception $e) {
+            $this->logError($e);
 
             return response()->json([
                 'success' => false,
@@ -106,13 +105,14 @@ class AuthController extends Controller
                 ], 200);
             }
 
-        } catch (\Throwable $th) {
-            //throw $th;
+        } catch (\Exception $e) {
+            $this->logError($e);
 
             return response()->json([
                 'success' => false,
                 'message' => 'Mật khẩu không chính xác.',
             ], 400);
+        }
     }
     public function signUp(SingupUserRequest $request)
     {
@@ -217,6 +217,7 @@ class AuthController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
     public function registerInstructor(SigninInstructorRequest $request)
     {
         try {

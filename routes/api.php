@@ -1,16 +1,16 @@
 <?php
 
+use App\Http\Controllers\API\Document\DocumentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\Auth\GoogleController;
 use App\Http\Controllers\API\Auth\AuthController;
-
-use App\Http\Controllers\API\Posts\PostController;
-
+use App\Http\Controllers\API\Transaction\TransactionController;
 use App\Http\Controllers\API\Instructor\CourseController;
 use App\Http\Controllers\API\Instructor\ChapterController;
 use App\Http\Controllers\API\Instructor\RegisterController;
 use App\Http\Controllers\API\Instructor\LessonController;
+use App\Http\Controllers\API\Posts\PostController;
 use App\Http\Controllers\API\Search\SearchController;
 
 
@@ -90,16 +90,25 @@ Route::middleware('auth:sanctum')->group(function () {
                 });
         });
 
-
-    #============================== ROUTE LESSON =============================
-
-
     #============================== ROUTE COURSE =============================
     Route::prefix('posts')->as('posts.')->group( function(){
         Route::get('/', [PostController::class, '']);
     });
 
+    #============================== ROUTE DOCUMENT =============================
+    Route::prefix('documents')->as('documents.')->group(function () {
+        Route::get('/', [DocumentController::class, 'index']);
+        Route::get('/{documentID}', [DocumentController::class, 'show']);
+        Route::post('/', [DocumentController::class, 'store']);
+        Route::put('/{documentID}', [DocumentController::class, 'update']);
+        Route::delete('/{documentID}', [DocumentController::class, 'destroy']);
+    });
+
+    #============================== ROUTE TRANSACTION =============================
+    Route::prefix('transactions')->as('transactions.')->group(function () {
+        Route::get('/', [TransactionController::class, 'index']);
+        Route::get('/{transactionID}', [TransactionController::class, 'show']);
+        Route::post('/deposit', [TransactionController::class, 'deposit']);
+        Route::post('/buyCourse', [TransactionController::class, 'buyCourse']);
+    });
 });
-
-
-
