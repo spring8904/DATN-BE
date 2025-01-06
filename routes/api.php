@@ -104,7 +104,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{documentID}', [DocumentController::class, 'destroy']);
     });
 
-    #============================== ROUTE DOCUMENT =============================
+    #============================== ROUTE TRANSACTION =============================
     Route::prefix('transactions')->as('transactions.')->group(function () {
         Route::get('/', [TransactionController::class, 'index']);
         Route::get('/{transactionID}', [TransactionController::class, 'show']);
