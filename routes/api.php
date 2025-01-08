@@ -29,6 +29,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::post('/livestream', [\App\Http\Controllers\API\LivestreamController::class, 'createLiveStream']);
+
 #============================== ROUTE AUTH =============================
 Route::prefix('auth')->as('auth.')->group(function () {
     Route::post('sign-up', [AuthController::class, 'signUp']);
