@@ -25,6 +25,12 @@ use App\Http\Controllers\API\Instructor\SupportBankController;
 |
 */
 
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
+
+Route::post('/livestream', [\App\Http\Controllers\API\LivestreamController::class, 'createLiveStream']);
+
 #============================== ROUTE AUTH =============================
 Route::prefix('auth')->as('auth.')->group(function () {
     Route::post('sign-up', [AuthController::class, 'signUp']);
@@ -41,16 +47,7 @@ Route::prefix('auth')->as('auth.')->group(function () {
 #============================== ROUTE SEARCH =============================
 Route::get('search', [SearchController::class, 'search']);
 
-Route::prefix('support-banks')->as('support-banks.')->group(function () {
-    Route::get('/', [SupportBankController::class, 'index']);
-    Route::post('generate-qr', [SupportBankController::class, 'generateQR']);
-});
-
-Route::middleware('auth:sanctum')
-    ->group(function () {
-        Route::get('user', function (Request $request) {
-            return $request->user();
-        });
+Route::middleware('auth:sanctum')->group(function () {
 
         Route::prefix('auth')->as('auth.')->group(function () {
             Route::post('logout', [AuthController::class, 'logout']);
