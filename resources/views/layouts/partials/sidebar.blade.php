@@ -203,6 +203,9 @@
                 </ul>
             </div>
 
+            <a class="nav-link menu-link" href="#sidebarComment">
+                <i class="las la-comment"></i> <span data-key="t-authentication">Cấu hình thanh toán</span>
+            </a>
         </li>
 
     </ul>

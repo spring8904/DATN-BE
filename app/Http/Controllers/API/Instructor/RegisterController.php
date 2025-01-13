@@ -3,14 +3,13 @@
 namespace App\Http\Controllers\API\Instructor;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\API\Users\RegisterInstructorRequest;
+use App\Http\Requests\API\Auth\RegisterInstructorRequest;
 use App\Models\Education;
 use App\Models\Profile;
 use App\Traits\LoggableTrait;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class RegisterController extends Controller
 {

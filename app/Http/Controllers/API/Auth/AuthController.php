@@ -3,32 +3,24 @@
 namespace App\Http\Controllers\API\Auth;
 
 use App\Http\Controllers\Controller;
-
 use App\Http\Requests\API\Auth\ForgotPassWordRequest;
 use App\Http\Requests\API\Auth\ResetPasswordRequest;
+use App\Http\Requests\API\Auth\SigninInstructorRequest;
+use App\Http\Requests\API\Auth\SinginUserRequest;
+use App\Http\Requests\API\Auth\SingupUserRequest;
 use App\Http\Requests\API\Auth\VerifyEmailRequest;
-
-use App\Http\Requests\API\Users\SigninInstructorRequest;
-use App\Http\Requests\API\Users\SinginUserRequest;
-use App\Http\Requests\API\Users\SingupUserRequest;
 use App\Models\Education;
 use App\Models\Profile;
-
 use App\Models\User;
 use App\Traits\LoggableTrait;
 use Carbon\Carbon;
 use F9Web\ApiResponseHelpers;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
-use Spatie\Permission\Models\Role;
-
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-
-use function PHPUnit\Framework\isEmpty;
 
 
 class AuthController extends Controller
@@ -65,7 +57,7 @@ class AuthController extends Controller
             $data = $resetPasswordRequest->only('email', 'password', 'password_confirmation', 'token');
 
             $status = Password::reset(
-                $data, 
+                $data,
                 function($user, $password) {
                 $user->forceFill([
                     'password' => Hash::make($password),
@@ -81,7 +73,7 @@ class AuthController extends Controller
                     'message' => __($status),
                 ], 200);
             }
-            
+
         } catch (\Exception $e) {
             $this->logError($e);
 
@@ -222,7 +214,7 @@ class AuthController extends Controller
     {
         try {
             DB::beginTransaction();
-            
+
             $validated = $request->validated();
 
             $data = $request->only(['name', 'email', 'password', 'repassword']);

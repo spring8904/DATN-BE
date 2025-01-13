@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API\Posts;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\Post;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -21,7 +23,7 @@ class PostController extends Controller
 
             $searchPost = $request->input('searchPost');
 
-            // kiểm tra xem có từ khóa không 
+            // kiểm tra xem có từ khóa không
             if (!empty($searchPost)) {
                 $posts =  Post::with('user')
                     ->where('title', 'LIKE', '%' . $searchPost . '%')
@@ -30,7 +32,7 @@ class PostController extends Controller
                 $posts = Post::with('user')->paginate(10);
             }
 
-            // Kiểm tra xem trong collection có phần tử nào không 
+            // Kiểm tra xem trong collection có phần tử nào không
             $message =$posts->isEmpty() ? 'Không có bản ghi nào' :  '';
             $key =$posts->isEmpty() ? 'success' :  '';
             session()->flash($key,$message);
