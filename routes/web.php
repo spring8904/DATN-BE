@@ -32,8 +32,8 @@ Route::prefix('admin')->as('admin.')->group(function () {
 });
 
 Route::get('email', function () {
-//    \Illuminate\Support\Facades\Mail::to('quaixe121811@gmail.com')
-//        ->send(new \App\Mail\Auth\VerifyEmail());
+    //    \Illuminate\Support\Facades\Mail::to('quaixe121811@gmail.com')
+    //        ->send(new \App\Mail\Auth\VerifyEmail());
 
     return view('emails.auth.verify');
 });
@@ -47,18 +47,32 @@ Route::prefix('admin')->as('admin.')
         })->name('dashboard');
 
         #============================== ROUTE USER =============================
-        Route::prefix('users')->as('users.')->group(function () {
-            Route::get('/', [UserController::class, 'index'])->name('index');
-            Route::get('/create', [UserController::class, 'create'])->name('create')
+        Route::prefix('users')->group(function () {
+            Route::get('user-clients', [UserController::class, 'index'])->name('clients.index');
+            Route::get('user-instructors', [UserController::class, 'index'])->name('instructors.index');
+            Route::get('user-admins', [UserController::class, 'index'])->name('admins.index');
+            Route::get('user-deleted', [UserController::class, 'index'])->name('users.deleted.index');
+
+            Route::as('users.')->group(function (){
+                Route::get('/create', [UserController::class, 'create'])->name('create')
                 ->can('user.create');
-            Route::post('/', [UserController::class, 'store'])->name('store')
-                ->can('user.create');
-            Route::get('/{id}', [UserController::class, 'show'])->name('show');
-            Route::get('/edit/{user}', [UserController::class, 'edit'])->name('edit');
-            Route::put('/{user}', [UserController::class, 'update'])->name('update')
-                ->can('user.update');
-            Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy')
-                ->can('user.delete');
+                Route::post('/', [UserController::class, 'store'])->name('store')
+                    ->can('user.create');
+                Route::get('/{user}', [UserController::class, 'show'])->name('show');
+                Route::get('/edit/{user}', [UserController::class, 'edit'])->name('edit');
+                Route::put('/{user}', [UserController::class, 'update'])->name('update')
+                    ->can('user.update');
+                Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy')
+                    ->can('user.delete');
+                Route::put('/updateEmailVerified/{user}', [UserController::class, 'updateEmailVerified'])
+                ->name('updateEmailVerified')->can('user.update');
+                Route::put('/updateEmailVerified/{user}', [UserController::class, 'updateEmailVerified'])
+                ->name('updateEmailVerified')->can('user.update');
+                Route::delete('/{user}/force-delete', [UserController::class, 'forceDelete'])
+                ->name('forceDelete')->can('user.update');
+                Route::put('/{user}/restore-delete', [UserController::class, 'restoreDelete'])
+                ->name('restoreDelete')->can('user.update');
+            });
         });
 
         #============================== ROUTE ROLE =============================
