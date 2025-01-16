@@ -234,15 +234,15 @@ class AuthController extends Controller
 
             $profile = Profile::query()->create($dataProfiles);
 
-            // $education = Education::query()->create([
-            //     'name' => $user->name,
-            //     'degree' => $request->degree,
-            //     'major' => $request->major,
-            //     'certificates' => json_encode($request->certificates),
-            //     'qa_systems' => json_encode($request->qa_systems),
-            //     'start_date' => now(env('APP_TIMEZONE')),
-            //     'profile_id' => $profile->id,
-            // ]);
+            $education = Education::query()->create([
+                'name' => $user->name,
+                'degree' => $request->degree,
+                'major' => $request->major,
+                'certificates' => json_encode($request->certificates),
+                'qa_systems' => json_encode($request->qa_systems),
+                'start_date' => now(env('APP_TIMEZONE')),
+                'profile_id' => $profile->id,
+            ]);
 
             $user->assignRole("instructor");
 
