@@ -66,7 +66,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
         #============================== ROUTE LESSON =============================
 });
-
 });
 
 
