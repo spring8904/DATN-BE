@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\Auth\GoogleController;
 use App\Http\Controllers\API\Auth\AuthController;
+use App\Http\Controllers\API\Banner\BannerController;
+use App\Http\Controllers\API\Category\CategoryController;
 use App\Http\Controllers\API\Instructor\CourseController;
 use App\Http\Controllers\API\Instructor\ChapterController;
 
@@ -41,7 +43,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::prefix('instructor')
-        ->middleware('roleHasInstructor')
+        // ->middleware('roleHasInstructor')
         ->as('instructor.')->group(function () {
         #============================== ROUTE COURSE =============================
         Route::prefix('courses')
@@ -65,7 +67,27 @@ Route::middleware('auth:sanctum')->group(function () {
             });
 
         #============================== ROUTE LESSON =============================
-});
+        #============================== ROUTE CATEGORY =============================
+        Route::prefix('categories')
+            ->as('categories.')
+            ->group(function () {
+                Route::get('/', [CategoryController::class, 'index']);
+                Route::post('/', [CategoryController::class, 'store']);
+                Route::get('/{id}', [CategoryController::class, 'show']);
+                Route::put('/{category}', [CategoryController::class, 'update']);
+                Route::delete('/{category}', [CategoryController::class, 'destroy']);
+        });
+         #============================== ROUTE BANNER =============================
+         Route::prefix('banners')
+         ->as('banners.')
+         ->group(function () {
+             Route::get('/', [BannerController::class, 'index']);
+             Route::post('/', [BannerController::class, 'store']);
+             Route::get('/{id}', [BannerController::class, 'show']);
+             Route::put('/{banner}', [BannerController::class, 'update']);
+             Route::delete('/{banner}', [BannerController::class, 'destroy']);
+     });
+    });
 });
 
 
