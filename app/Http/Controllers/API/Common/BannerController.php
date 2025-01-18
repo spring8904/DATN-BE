@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API\Banner;
+namespace App\Http\Controllers\API\Common;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\Banners\StoreBannerRequest;
@@ -8,7 +8,6 @@ use App\Http\Requests\API\Banners\UpdateBannerRequest;
 use App\Models\Banner;
 use App\Traits\LoggableTrait;
 use App\Traits\UploadToCloudinaryTrait;
-use Illuminate\Http\Request;
 
 class BannerController extends Controller
 {

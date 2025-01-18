@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API\Category;
+namespace App\Http\Controllers\API\Common;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Categories\StoreCategoryRequest;
@@ -8,7 +8,6 @@ use App\Http\Requests\Admin\Categories\UpdateCategoryRequest;
 use App\Models\Category;
 use App\Traits\LoggableTrait;
 use App\Traits\UploadToCloudinaryTrait;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class CategoryController extends Controller
@@ -38,7 +37,7 @@ class CategoryController extends Controller
             $data = $request->except('icon');
 
             $data['status'] ??= 0;
-            
+
             do {
                 $data['slug'] = Str::slug($data['name']) . '-' . Str::uuid();
                 $exists = Category::query()->where('slug',$data['slug'])->exists();
@@ -60,9 +59,9 @@ class CategoryController extends Controller
             //throw $th;
 
             if (
-                !empty($data['icon']) 
+                !empty($data['icon'])
                 && filter_var($data['icon'], FILTER_VALIDATE_URL)
-                ) 
+                )
             {
                 $this->deleteImage($data['icon'], 'categories');
             }
@@ -121,7 +120,7 @@ class CategoryController extends Controller
 
             $category->update($data);
 
-            // kiem tra truong icon co tin tai hay khong , url co hop le hay khong va url cu co hay khong 
+            // kiem tra truong icon co tin tai hay khong , url co hop le hay khong va url cu co hay khong
 
             if (
                 !empty($data['icon'])
@@ -139,7 +138,7 @@ class CategoryController extends Controller
         } catch (\Exception $e) {
             //throw $th;
             if (
-                !empty($data['icon']) 
+                !empty($data['icon'])
                 && filter_var($data['icon'], FILTER_VALIDATE_URL)
             ) {
                 $this->deleteImage($data['icon'], 'categories');

@@ -152,7 +152,33 @@ class ChapterController extends Controller
 
             return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại');
         }
+    }
 
+    public function getLessons(string $slug, int $chapterId)
+    {
+        try {
+            $course = Course::query()
+                ->where('slug', $slug)
+                ->first();
+
+            if (!$course) {
+                throw new \Exception('Không tìm thấy khoá học');
+            }
+
+            $chapter = $course->chapters()->find($chapterId);
+
+            if (!$chapter) {
+                throw new \Exception('Không tìm thấy chương học');
+            }
+
+            $lessons = $chapter->lessons()->orderBy('order')->get();
+
+            return $this->respondOk('Lấy danh sách bài học thành công', $lessons);
+        } catch (\Exception $e) {
+            $this->logError($e);
+
+            return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại');
+        }
     }
 
 }

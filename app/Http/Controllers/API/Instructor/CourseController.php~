@@ -255,34 +255,4 @@ class CourseController extends Controller
             );
         }
     }
-
-    public function getChapters(string $slug)
-    {
-        try {
-            $course = Course::query()
-                ->where('slug', $slug)
-                ->first();
-
-            if (!$course) {
-                return $this->respondNotFound('Không tìm thấy khoá học');
-            }
-
-            $chapters = $course->chapters()
-                ->select([
-                    'id', 'course_id', 'title', 'slug', 'order'
-                ])
-                ->orderBy('order')
-                ->get();
-
-            return $this->respondOk('Danh sách chương học của khoá học: ' . $course->name,
-                $chapters
-            );
-        } catch (\Exception $e) {
-            $this->logError($e);
-
-            return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại',
-                Response::HTTP_INTERNAL_SERVER_ERROR
-            );
-        }
-    }
 }
