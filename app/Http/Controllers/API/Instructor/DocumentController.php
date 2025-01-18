@@ -1,12 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\API\Document;
+namespace App\Http\Controllers\API\Instructor;
 
 use App\Http\Controllers\Controller;
-use App\Models\Document;
 use App\Traits\LoggableTrait;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class DocumentController extends Controller
 {

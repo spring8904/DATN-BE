@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\API\Common;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Categories\StoreCategoryRequest;
@@ -8,8 +8,7 @@ use App\Http\Requests\Admin\Categories\UpdateCategoryRequest;
 use App\Models\Category;
 use App\Traits\LoggableTrait;
 use App\Traits\UploadToCloudinaryTrait;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
-use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
@@ -21,18 +20,8 @@ class CategoryController extends Controller
     {
         //
         $categories = Category::query()->with('parent')->get();
-        return view('categories.index', compact('categories'));
+        return response()->json($categories);
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-        return view('categories.create');
-    }
-
     /**
      * Store a newly created resource in storage.
      */
@@ -43,19 +32,28 @@ class CategoryController extends Controller
         // dd($request->all());
 
         try {
-            //code...
+            $validate = $request->validated();
 
             $data = $request->except('icon');
 
             $data['status'] ??= 0;
 
+            do {
+                $data['slug'] = Str::slug($data['name']) . '-' . Str::uuid();
+                $exists = Category::query()->where('slug',$data['slug'])->exists();
+            } while ($exists);
+
             if ($request->hasFile('icon')) {
                 $data['icon'] = $this->uploadImage($request->file('icon'), 'categories');
             }
 
-            Category::query()->create($data);
+            $category = Category::query()->create($data);
 
-            return redirect()->route('admin.categories.index')->with('success', 'Thao tác thành công');
+            return response()->json([
+                'success' => true,
+                'message' => 'Thao tác thành công',
+                'data' => $category,
+            ], 201);
 
         } catch (\Exception $e) {
             //throw $th;
@@ -70,9 +68,10 @@ class CategoryController extends Controller
 
             $this->logError($e);
 
-            return redirect()
-                ->back()
-                ->with('fasle', 'Thao tác không thành công');
+            return response()->json([
+                'success' => false,
+                'message' => 'Thao tác không thành công',
+            ], 500);
         }
     }
 
@@ -82,19 +81,21 @@ class CategoryController extends Controller
     public function show(string $id)
     {
         //
-        $category = Category::findOrFail($id);
-        return view('categories.show', compact('category'));
+        try {
+            $category = Category::findOrFail($id);
+            return response()->json($category);
+        } catch (\Exception $e) {
+            $this->logError($e);
+            return response()->json([
+                'status'=>false,
+                'message'=>'Lấy dữ liệu lỗi',
+            ],500);
+        }
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Category $category)
-    {
-        //
-        return view('categories.edit', compact('category'));
-    }
-
     /**
      * Update the specified resource in storage.
      */
@@ -106,7 +107,7 @@ class CategoryController extends Controller
         try {
 
             $category = Category::findOrFail($id);
-
+            $validate = $request->validated();
             $data = $request->except('icon');
 
             $data['status'] ??= 0;
@@ -129,7 +130,11 @@ class CategoryController extends Controller
                 $this->deleteImage($currencyIcon,'categories');
             }
 
-            return back()->with('success', 'Thao tác thành công');
+            return response()->json([
+                'success' => true,
+                'message' => 'Thao tác thành công',
+                'data' => $category,
+            ], 201);
         } catch (\Exception $e) {
             //throw $th;
             if (
@@ -140,9 +145,11 @@ class CategoryController extends Controller
             }
 
             $this->logError($e);
-            return redirect()
-                ->back()
-                ->with('success', false);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Thao tác không thành công',
+            ], 500);
         }
     }
 
