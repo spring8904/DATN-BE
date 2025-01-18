@@ -180,12 +180,6 @@ Route::middleware('auth:sanctum')->group(function () {
         ->group(function () {
             Route::post('/', [LivestreamController::class, 'createLiveStream']);
         });
-
-    #============================== ROUTE SUPPORT BANK =================================
-    Route::prefix('support-banks')->group(function () {
-        Route::post('/', [SupportBankController::class, 'index']);
-        Route::post('/generate-qr', [SupportBankController::class, 'generateQR']);
-    });
 });
 
 #============================== ROUTE COURSE =============================
@@ -204,3 +198,9 @@ Route::get('/banners', [BannerController::class, 'index']);
 
 #============================== ROUTE CATEGORY =============================
 Route::get('/categories', [CategoryController::class, 'index']);
+
+#============================== ROUTE SUPPORT BANK =================================
+Route::prefix('support-banks')->group(function () {
+    Route::post('/', [SupportBankController::class, 'index']);
+    Route::post('/generate-qr', [SupportBankController::class, 'generateQR']);
+});

@@ -22,7 +22,13 @@ class StoreGenerateQrRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'accountNo' => 'required|numeric',
+            'accountName' => 'required|string',
+            'acqId' => 'required|numeric',
+            'amount' => 'required|numeric',
+            'addInfo' => 'required|string',
+            'format' => 'required|string',
+            'template' => 'required|string',
         ];
     }
 }
