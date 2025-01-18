@@ -69,10 +69,11 @@ Route::middleware('auth:sanctum')->group(function () {
                 ->as('courses.')
                 ->group(function () {
                     Route::get('/', [CourseController::class, 'index']);
-                    Route::get('/{slug}', [CourseController::class, 'getCourseOverView']);
+                    Route::get('/{course}', [CourseController::class, 'getCourseOverView']);
                     Route::post('/', [CourseController::class, 'store']);
-                    Route::put('/{slug}/contentCourse', [CourseController::class, 'updateContentCourse']);
-                    Route::delete('/{slug}', [CourseController::class, 'deleteCourse']);
+                    Route::put('/{course}/contentCourse', [CourseController::class, 'updateContentCourse']);
+                    Route::delete('/{course}', [CourseController::class, 'deleteCourse']);
+                    Route::get('/{slug}/chapters', [CourseController::class, 'getChapters']);
                 });
 
             #============================== ROUTE CHAPTER =============================
@@ -80,9 +81,10 @@ Route::middleware('auth:sanctum')->group(function () {
                 ->as('chapters.')
                 ->group(function () {
                     Route::post('/', [ChapterController::class, 'storeChapter']);
-                    Route::put('/{slug}/update-order', [ChapterController::class, 'updateOrderChapter']);
-                    Route::put('/{slug}/{chapterId}', [ChapterController::class, 'updateContentChapter']);
-                    Route::delete('/{slug}/{chapterId}', [ChapterController::class, 'deleteChapter']);
+                    Route::put('/{chapter}/update-order', [ChapterController::class, 'updateOrderChapter']);
+                    Route::put('/{chapter}', [ChapterController::class, 'updateContentChapter']);
+                    Route::delete('/{chapter}', [ChapterController::class, 'deleteChapter']);
+                    Route::get('/{chapter}/lessons', [ChapterController::class, 'getLessons']);
                 });
 
             #============================== ROUTE LESSON =============================
@@ -90,9 +92,9 @@ Route::middleware('auth:sanctum')->group(function () {
                 ->as('lessons.')
                 ->group(function () {
                     Route::post('/', [LessonController::class, 'storeLesson']);
-                    Route::put('/{slug}/update-order', [LessonController::class, 'updateOrderLesson']);
-                    Route::put('/{slug}/{lessonId}', [LessonController::class, 'updateContentLesson']);
-                    Route::delete('/{slug}/{lessonId}', [LessonController::class, 'deleteLesson']);
+                    Route::put('/{lesson}/update-order', [LessonController::class, 'updateOrderLesson']);
+                    Route::put('/{lesson}', [LessonController::class, 'updateContentLesson']);
+                    Route::delete('/{lesson}', [LessonController::class, 'deleteLesson']);
                 });
         });
 
