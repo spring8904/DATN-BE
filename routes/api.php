@@ -5,8 +5,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\Auth\GoogleController;
 use App\Http\Controllers\API\Auth\AuthController;
-use App\Http\Controllers\API\Banner\BannerController;
-use App\Http\Controllers\API\Category\CategoryController;
 use App\Http\Controllers\API\Transaction\TransactionController;
 use App\Http\Controllers\API\Instructor\CourseController;
 use App\Http\Controllers\API\Instructor\ChapterController;
@@ -109,22 +107,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::put('/{documentID}', [DocumentController::class, 'update']);
             Route::delete('/{documentID}', [DocumentController::class, 'destroy']);
         });
-        #============================== ROUTE CATEGORY =============================
-        Route::prefix('categories')->as('categories.')->group(function () {
-            Route::get('/', [CategoryController::class, 'index']);
-            Route::get('/{CategoryID}', [CategoryController::class, 'show']);
-            Route::post('/', [CategoryController::class, 'store']);
-            Route::put('/{CategoryID}', [CategoryController::class, 'update']);
-            Route::delete('/{CategoryID}', [CategoryController::class, 'destroy']);
-        });
-         #============================== ROUTE BANNER =============================
-         Route::prefix('banners')->as('banners.')->group(function () {
-            Route::get('/', [BannerController::class, 'index']);
-            Route::get('/{BannerID}', [BannerController::class, 'show']);
-            Route::post('/', [BannerController::class, 'store']);
-            Route::put('/{BannerID}', [BannerController::class, 'update']);
-            Route::delete('/{BannerID}', [BannerController::class, 'destroy']);
-        });
+
         #============================== ROUTE TRANSACTION =============================
         Route::prefix('transactions')->as('transactions.')->group(function () {
             Route::get('/', [TransactionController::class, 'index']);
