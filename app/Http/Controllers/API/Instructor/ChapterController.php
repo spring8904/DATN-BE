@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\API\Chapters\StoreChapterRequest;
 use App\Http\Requests\API\Chapters\UpdateChapterRequest;
 use App\Http\Requests\API\Chapters\UpdateOrderChapterRequest;
+use App\Models\Chapter;
 use App\Models\Course;
 use App\Traits\LoggableTrait;
 use F9Web\ApiResponseHelpers;
@@ -154,24 +155,20 @@ class ChapterController extends Controller
         }
     }
 
-    public function getLessons(string $slug, int $chapterId)
+    public function getLessons(int $chapterId)
     {
         try {
-            $course = Course::query()
-                ->where('slug', $slug)
-                ->first();
-
-            if (!$course) {
-                throw new \Exception('Không tìm thấy khoá học');
-            }
-
-            $chapter = $course->chapters()->find($chapterId);
+            $chapter = Chapter::query()->find($chapterId);
 
             if (!$chapter) {
                 throw new \Exception('Không tìm thấy chương học');
             }
 
             $lessons = $chapter->lessons()->orderBy('order')->get();
+
+            if ($lessons->isEmpty()) {
+                return $this->respondNotFound('Chương học không có bài học');
+            }
 
             return $this->respondOk('Lấy danh sách bài học thành công', $lessons);
         } catch (\Exception $e) {

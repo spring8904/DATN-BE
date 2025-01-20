@@ -97,7 +97,6 @@ Route::middleware('auth:sanctum')->group(function () {
                 ->group(function () {
                     #============================== ROUTE COURSE =============================
                     Route::prefix('courses')
-                        ->as('courses.')
                         ->group(function () {
                             Route::get('/', [CourseController::class, 'index']);
                             Route::get('/{course}', [CourseController::class, 'getCourseOverView']);

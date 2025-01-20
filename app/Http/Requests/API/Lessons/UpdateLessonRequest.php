@@ -1,0 +1,118 @@
+<?php
+
+namespace App\Http\Requests\API\Lessons;
+
+use App\Http\Requests\API\Bases\BaseFormRequest;
+use App\Models\Lesson;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+
+class UpdateLessonRequest extends BaseFormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
+    public function rules(): array
+    {
+        $type = $this->input('type');
+
+        $rules = [
+            'chapter_id' => 'required|integer|exists:chapters,id',
+            'title' => 'required|string|max:255',
+            'content' => 'nullable|string',
+            'is_free_preview' => 'nullable|boolean',
+            'type' => [
+                'required',
+                'string',
+                'in:video,document,quiz,coding',
+            ]
+        ];
+
+        switch ($type) {
+            case 'video':
+                $rules = array_merge($rules, [
+                    'video_file' => 'nullable|mimes:mp4,avi,mkv,flv|file',
+                ]);
+                break;
+            case 'document':
+                $rules = array_merge($rules, [
+                    'document_file' => 'nullable|file|mimes:pdf,doc,docx,xls,ppt,png,jpg,jpeg',
+                    'document_url' => 'nullable|url|required_without:document_file',
+                ]);
+                break;
+            case 'quiz':
+                $rules = array_merge($rules, [
+                    'questions' => 'required|array|min:1',
+                    'questions.*.question' => 'required|string|max:255',
+                    'questions.*.answer_type' => 'required|string|in:multiple_choice,single_choice',
+                    'questions.*.answers' => 'required|array|min:2',
+                    'questions.*.answers.*.answer' => 'required|string|max:255',
+                    'questions.*.answers.*.is_correct' => 'nullable|boolean',
+                    'description' => 'nullable|string|max:500',
+                ]);
+
+                if ($this->input('answer_type') === 'multiple_choice') {
+                    $rules['questions.*.answers.*.is_correct'] = 'nullable|in:1,0';
+                } elseif ($this->input('answer_type') === 'single_choice') {
+                    $rules['questions.*.answers.*.is_correct'] = 'nullable|in:1';
+                }
+                break;
+            case 'coding':
+                $rules = array_merge($rules, [
+                    'language' => 'nullable|string',
+                    'hints' => 'nullable|string',
+                    'result_code' => 'nullable|string',
+                    'solution_code' => 'nullable|string',
+                ]);
+                break;
+        }
+
+        return $rules;
+    }
+
+    public function messages()
+    {
+        return [
+            'chapter_id.exists' => 'Chương học không tồn tại',
+            'title.max' => 'Tiêu đề không được vượt quá 255 ký tự',
+            'is_free_preview.boolean' => 'Trường này phải là boolean',
+            'type.in' => 'Loại bài học không hợp lệ',
+
+            'video_file.required' => 'Vui lòng tải lên video.',
+            'video_file.mimes' => 'Video phải có định dạng mp4, avi, mkv, hoặc flv.',
+
+            'document_file.required' => 'Vui lòng tải lên tài liệu.',
+            'document_file.mimes' => 'Tài liệu phải có định dạng pdf, doc, docx, xls, ppt, png, jpg, jpeg.',
+            'document_url.required_without' => 'URL tài liệu là bắt buộc khi không tải lên tệp tài liệu.',
+            'document_url.url' => 'URL tài liệu không hợp lệ.',
+
+            'questions.required' => 'Câu hỏi là bắt buộc.',
+            'questions.array' => 'Câu hỏi phải là một mảng.',
+            'questions.min' => 'Cần ít nhất một câu hỏi.',
+            'questions.*.question.required' => 'Câu hỏi không được để trống.',
+            'questions.*.question.string' => 'Câu hỏi phải là chuỗi.',
+            'questions.*.question.max' => 'Câu hỏi không được vượt quá 255 ký tự.',
+            'questions.*.answer_type.required' => 'Loại câu trả lời là bắt buộc.',
+            'questions.*.answer_type.in' => 'Loại câu trả lời không hợp lệ.',
+            'questions.*.answers.required' => 'Câu trả lời là bắt buộc.',
+            'questions.*.answers.array' => 'Câu trả lời phải là một mảng.',
+            'questions.*.answers.min' => 'Cần ít nhất hai câu trả lời.',
+            'questions.*.answers.*.answer.required' => 'Mỗi câu trả lời phải có nội dung.',
+            'questions.*.answers.*.answer.string' => 'Câu trả lời phải là chuỗi.',
+            'questions.*.answers.*.answer.max' => 'Câu trả lời không được vượt quá 255 ký tự.',
+            'questions.*.answers.*.is_correct.boolean' => 'Trường "is_correct" phải là boolean.',
+            'questions.*.answers.*.is_correct.in' => 'Trường "is_correct" phải có giá trị là true hoặc false.',
+            'description.max' => 'Mô tả không được vượt quá 500 ký tự.',
+        ];
+    }
+}

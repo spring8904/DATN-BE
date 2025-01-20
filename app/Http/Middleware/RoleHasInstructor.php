@@ -22,7 +22,9 @@ class RoleHasInstructor
     {
         try {
             if (
-                Auth::check() && Auth::user()->hasRole('instructor') &&
+                Auth::check() && (Auth::user()->hasRole('instructor') || Auth::user()->hasRole('super_admin')
+                    || Auth::user()->hasRole('admin')
+                ) &&
                 Auth::user()->email_verified_at !== null &&
                 Auth::user()->status === 'active'
             ) {
