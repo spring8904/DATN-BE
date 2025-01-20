@@ -15,7 +15,6 @@ use App\Http\Controllers\API\Instructor\LessonController;
 use App\Http\Controllers\API\Instructor\LivestreamController;
 use App\Http\Controllers\API\Instructor\RegisterController;
 use App\Http\Controllers\API\Instructor\SupportBankController;
-use App\Http\Controllers\API\Instructor\SendRequestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -93,8 +92,6 @@ Route::middleware('auth:sanctum')->group(function () {
                 ->group(function () {
 
                 });
-
-            Route::post('/{course}/submit-course', [SendRequestController::class, 'submitCourse']);
 
             Route::prefix('manage')
                 ->group(function () {
