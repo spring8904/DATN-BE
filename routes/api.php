@@ -15,6 +15,7 @@ use App\Http\Controllers\API\Instructor\LessonController;
 use App\Http\Controllers\API\Instructor\LivestreamController;
 use App\Http\Controllers\API\Instructor\RegisterController;
 use App\Http\Controllers\API\Instructor\SupportBankController;
+use App\Http\Controllers\API\Note\NoteController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -130,9 +131,13 @@ Route::middleware('auth:sanctum')->group(function () {
         });
 
     #============================== ROUTE NOTE =============================
-    Route::prefix('notes')->as('notes.')
-        ->group(function () {
-        });
+    Route::prefix('notes')->as('notes.')->group(function () {
+        Route::get('/', [NoteController::class, 'index']);
+        Route::get('/{NoteID}', [NoteController::class, 'show']);
+        Route::post('/', [NoteController::class, 'store']);
+        Route::put('/{NoteID}', [NoteController::class, 'update']);
+        Route::delete('/{NoteID}', [NoteController::class, 'destroy']);
+    });
 
     #============================== ROUTE DOCUMENT =============================
     Route::prefix('documents')->as('documents.')->group(function () {
