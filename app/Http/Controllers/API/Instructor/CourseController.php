@@ -32,7 +32,7 @@ class CourseController extends Controller
                 ->where('user_id', Auth::id())
                 ->select([
                     'id', 'category_id', 'name', 'slug', 'thumbnail',
-                    'intro', 'price', 'price_sale',  'duration', 'total_student',
+                    'intro', 'price', 'price_sale', 'total_student',
                 ])
                 ->with([
                     'category:id,name,slug,parent_id',
@@ -64,14 +64,14 @@ class CourseController extends Controller
                 ->where('slug', $slug)
                 ->select([
                     'id', 'user_id', 'category_id', 'name', 'slug', 'thumbnail',
-                    'intro', 'price', 'price_sale', 'description', 'duration',
+                    'intro', 'price', 'price_sale', 'description',
                     'level', 'total_student', 'requirements', 'benefits', 'qa'
                 ])
                 ->with([
                     'user:id,name,email,avatar,created_at',
                     'category:id,name,slug,parent_id',
                     'chapters:id,course_id,title,order',
-                    'chapters.lessons:id,chapter_id,title,slug,order,playback_id'
+                    'chapters.lessons'
                 ])
                 ->first();
 

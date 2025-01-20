@@ -16,4 +16,9 @@ class Video extends Model
         'mux_playback_id',
         'duration',
     ];
+
+    public function lessons()
+    {
+        return $this->morphOne(Lesson::class, 'lessonable');
+    }
 }

@@ -13,6 +13,11 @@ class Document extends Model
         'title',
         'content',
         'file_path',
-        'url_path',
+        'file_type',
     ];
+
+    public function lessons()
+    {
+        return $this->morphOne(Lesson::class, 'lessonable');
+    }
 }

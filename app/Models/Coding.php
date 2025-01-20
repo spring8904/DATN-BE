@@ -17,4 +17,9 @@ class Coding extends Model
         'result_code',
         'solution_code'
     ];
+
+    public function lessons()
+    {
+        return $this->morphOne(Lesson::class, 'lessonable');
+    }
 }
