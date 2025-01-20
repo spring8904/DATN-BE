@@ -1,11 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\API\Transaction;
+namespace App\Http\Controllers\API\Common;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\Transaction\DepositTransactionRequest;
-use App\Models\Coupon;
-use App\Models\Course;
 use App\Models\Transaction;
 use App\Traits\LoggableTrait;
 use Illuminate\Http\Response;
@@ -77,6 +75,6 @@ class TransactionController extends Controller
         }
     }
     public function buyCourse(){
-        
+
     }
 }

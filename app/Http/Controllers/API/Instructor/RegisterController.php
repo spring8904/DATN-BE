@@ -4,16 +4,17 @@ namespace App\Http\Controllers\API\Instructor;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\Auth\RegisterInstructorRequest;
-use App\Models\Education;
+use App\Models\Career;
 use App\Models\Profile;
 use App\Traits\LoggableTrait;
+use F9Web\ApiResponseHelpers;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class RegisterController extends Controller
 {
-    use LoggableTrait;
+    use LoggableTrait, ApiResponseHelpers;
 
     public function register(RegisterInstructorRequest $request)
     {
@@ -21,10 +22,7 @@ class RegisterController extends Controller
             $user = Auth::user();
 
             if (!$user->hasRole('member')) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Tài khoản không phù hợp để đăng ký làm giảng viên.',
-                ], Response::HTTP_FORBIDDEN);
+                return $this->respondUnAuthenticated('Tài khoản không phù hợp để đăng ký làm giảng viên.');
             }
 
             DB::beginTransaction();
@@ -37,8 +35,8 @@ class RegisterController extends Controller
 
             $profile = Profile::query()->create($dataProfiles);
 
-            $education = Education::query()->create([
-                'name' => $user->name,
+            $education = Career::query()->create([
+                'institution_name' => $user->name,
                 'degree' => $request->degree,
                 'major' => $request->major,
                 'certificates' => json_encode($request->certificates),
@@ -51,19 +49,13 @@ class RegisterController extends Controller
 
             DB::commit();
 
-            return response()->json([
-                'status' => true,
-                'message' => 'Đăng ký giảng viên thành công!',
-            ], Response::HTTP_CREATED);
+            return $this->respondCreated('Đăng ký giảng viên thành công');
         } catch (\Exception $e) {
             DB::rollBack();
 
-            $this->logError($e);
+            $this->logError($e, $request->all());
 
-            return response()->json([
-                'status' => false,
-                'message' => 'Có lỗi xảy ra, vui lòng thử lại',
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại');
         }
     }
 }

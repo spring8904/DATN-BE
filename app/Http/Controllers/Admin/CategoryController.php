@@ -61,9 +61,9 @@ class CategoryController extends Controller
             //throw $th;
 
             if (
-                !empty($data['icon']) 
+                !empty($data['icon'])
                 && filter_var($data['icon'], FILTER_VALIDATE_URL)
-                ) 
+                )
             {
                 $this->deleteImage($data['icon'], 'categories');
             }
@@ -119,7 +119,7 @@ class CategoryController extends Controller
 
             $category->update($data);
 
-            // kiem tra truong icon co tin tai hay khong , url co hop le hay khong va url cu co hay khong 
+            // kiem tra truong icon co tin tai hay khong , url co hop le hay khong va url cu co hay khong
 
             if (
                 !empty($data['icon'])
@@ -133,7 +133,7 @@ class CategoryController extends Controller
         } catch (\Exception $e) {
             //throw $th;
             if (
-                !empty($data['icon']) 
+                !empty($data['icon'])
                 && filter_var($data['icon'], FILTER_VALIDATE_URL)
             ) {
                 $this->deleteImage($data['icon'], 'categories');
