@@ -15,6 +15,7 @@ use App\Http\Controllers\API\Instructor\LessonController;
 use App\Http\Controllers\API\Posts\PostController;
 use App\Http\Controllers\API\Search\SearchController;
 use App\Http\Controllers\API\Instructor\SupportBankController;
+use App\Http\Controllers\API\Note\NoteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -130,5 +131,13 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/{transactionID}', [TransactionController::class, 'show']);
             Route::post('/deposit', [TransactionController::class, 'deposit']);
             Route::post('/buyCourse', [TransactionController::class, 'buyCourse']);
+        });
+        #============================== ROUTE NOTE =============================
+        Route::prefix('notes')->as('notes.')->group(function () {
+            Route::get('/', [NoteController::class, 'index']);
+            Route::get('/{NoteID}', [NoteController::class, 'show']);
+            Route::post('/', [NoteController::class, 'store']);
+            Route::put('/{NoteID}', [NoteController::class, 'update']);
+            Route::delete('/{NoteID}', [NoteController::class, 'destroy']);
         });
     });
