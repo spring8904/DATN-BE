@@ -10,6 +10,7 @@ use App\Http\Controllers\API\Instructor\CourseController;
 use App\Http\Controllers\API\Instructor\ChapterController;
 use App\Http\Controllers\API\Instructor\RegisterController;
 use App\Http\Controllers\API\Instructor\LessonController;
+use App\Http\Controllers\API\Instructor\LivestreamController;
 use App\Http\Controllers\API\Posts\PostController;
 use App\Http\Controllers\API\Search\SearchController;
 use App\Http\Controllers\API\Instructor\SupportBankController;
@@ -30,7 +31,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/livestream', [\App\Http\Controllers\API\LivestreamController::class, 'createLiveStream']);
+Route::post('/livestream', [LivestreamController::class, 'createLiveStream']);
 
 #============================== ROUTE AUTH =============================
 Route::prefix('auth')->as('auth.')->group(function () {
