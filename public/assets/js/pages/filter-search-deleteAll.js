@@ -26,7 +26,7 @@ $(document).ready(function () {
             });
             return;
         }
-
+        
         let deleteUrl = routeDeleteAll.replace(':itemID',
             selectedItems.join(','));
 

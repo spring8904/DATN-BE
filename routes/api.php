@@ -141,7 +141,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     #============================== ROUTE DOCUMENT =============================
     Route::prefix('documents')->as('documents.')->group(function () {
-        Route::get('/', [DocumentController::class, 'index']);
+        Route::get('/{lessonID}/document-lesson', [DocumentController::class, 'index']);
         Route::get('/{documentID}', [DocumentController::class, 'show']);
         Route::post('/', [DocumentController::class, 'store']);
         Route::put('/{documentID}', [DocumentController::class, 'update']);
