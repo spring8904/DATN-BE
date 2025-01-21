@@ -12,7 +12,6 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\API\Auth\GoogleController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\SupportBankController;
-use App\Http\Controllers\API\Instructor\DocumentController;
 
 /*
 |--------------------------------------------------------------------------
