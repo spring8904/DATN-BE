@@ -55,7 +55,7 @@ Route::prefix('admin')->as('admin.')
 
             Route::as('users.')->group(function (){
                 Route::get('/create', [UserController::class, 'create'])->name('create')
-                ->can('user.create');
+                    ->can('user.create');
                 Route::post('/', [UserController::class, 'store'])->name('store')
                     ->can('user.create');
                 Route::get('/{user}', [UserController::class, 'show'])->name('show');
@@ -64,10 +64,8 @@ Route::prefix('admin')->as('admin.')
                     ->can('user.update');
                 Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy')
                     ->can('user.delete');
-                Route::put('/updateEmailVerified/{user}', [UserController::class, 'updateEmailVerified'])
-                ->name('updateEmailVerified')->can('user.update');
-                Route::put('/updateEmailVerified/{user}', [UserController::class, 'updateEmailVerified'])
-                ->name('updateEmailVerified')->can('user.update');
+                Route::put('/updateEmailVerified/{user}', [UserController::class, 'updateEmailVerified'])->name('updateEmailVerified')
+                    ->can('user.update');
                 Route::delete('/{user}/force-delete', [UserController::class, 'forceDelete'])
                 ->name('forceDelete')->can('user.update');
                 Route::put('/{user}/restore-delete', [UserController::class, 'restoreDelete'])
@@ -200,6 +198,4 @@ Route::prefix('admin')->as('admin.')
         #============================== ROUTE APPROVAL =============================
 
         #============================== ROUTE INVOICE =============================
-
-
     });
