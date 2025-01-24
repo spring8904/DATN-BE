@@ -23,8 +23,4 @@ class WithdrawalRequest extends Model
         'request_date',
         'completed_date'
     ];
-
-    public function wallet(){
-        return $this->belongsTo(Wallet::class);
-    }
 }

@@ -14,11 +14,4 @@ class Wallet extends Model
         'balance',
         'status',
     ];
-
-    public function user(){
-        return $this->belongsTo(User::class);
-    }
-    public function withdrawal_requests(){
-        return $this->hasMany(WithdrawalRequest::class);
-    }
 }
