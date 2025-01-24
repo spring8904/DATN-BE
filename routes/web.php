@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\API\Auth\GoogleController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\SupportBankController;
+use App\Http\Controllers\Admin\WithDrawalsRequestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,7 +54,7 @@ Route::prefix('admin')->as('admin.')
             Route::get('user-admins', [UserController::class, 'index'])->name('admins.index');
             Route::get('user-deleted', [UserController::class, 'index'])->name('users.deleted.index');
 
-            Route::as('users.')->group(function (){
+            Route::as('users.')->group(function () {
                 Route::get('/create', [UserController::class, 'create'])->name('create')
                     ->can('user.create');
                 Route::post('/', [UserController::class, 'store'])->name('store')
@@ -67,9 +68,9 @@ Route::prefix('admin')->as('admin.')
                 Route::put('/updateEmailVerified/{user}', [UserController::class, 'updateEmailVerified'])->name('updateEmailVerified')
                     ->can('user.update');
                 Route::delete('/{user}/force-delete', [UserController::class, 'forceDelete'])
-                ->name('forceDelete')->can('user.update');
+                    ->name('forceDelete')->can('user.update');
                 Route::put('/{user}/restore-delete', [UserController::class, 'restoreDelete'])
-                ->name('restoreDelete')->can('user.update');
+                    ->name('restoreDelete')->can('user.update');
             });
         });
 
@@ -198,4 +199,7 @@ Route::prefix('admin')->as('admin.')
         #============================== ROUTE APPROVAL =============================
 
         #============================== ROUTE INVOICE =============================
+
+        #============================== ROUTE WIDTHDRAWALS =============================
+        Route::get('/withdrawals-requests', [WithDrawalsRequestController::class, 'index'])->name('withdrawals.index');
     });

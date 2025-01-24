@@ -44,7 +44,7 @@ class UserController extends Controller
                     sum(status = "blocked") as blocked_users
                 ');
 
-            list($queryUsers, $queryUserCounts) = $this->filterSearch($queryUsers, $queryUserCounts, $request);
+            $queryUsers= $this->filterSearch($queryUsers,$request);
 
             if ($roleUser['name'] === 'deleted') {
                 $queryUsers->with('roles:name')->onlyTrashed();
@@ -63,7 +63,7 @@ class UserController extends Controller
             $userCounts = $queryUserCounts->first();
 
             if ($request->ajax() && $request->hasAny(['status', 'start_date', 'end_date', 'search_full'])) {
-                $html = view('users.list', compact(['users', 'userCounts', 'subTitle', 'title', 'roleUser', 'actorRole']))->render();
+                $html = view('users.table', compact(['users', 'userCounts', 'subTitle', 'title', 'roleUser', 'actorRole']))->render();
                 return response()->json(['html' => $html]);
             }
 
@@ -418,7 +418,7 @@ class UserController extends Controller
                     sum(status = "blocked") as blocked_users
                 ');
 
-            list($queryUsers, $queryUserCounts) = $this->filterSearch($queryUsers, $queryUserCounts, $request);
+            list($queryUsers, $queryUserCounts) = $this->filterSearch($queryUsers, $request);
 
             $users = $queryUsers->paginate(10);
             $userCounts = $queryUserCounts->first();
@@ -491,34 +491,35 @@ class UserController extends Controller
         return $roles[$role] ?? ['name' => 'member', 'actor' => 'khách hàng', 'role_name' => 'clients'];
     }
 
-    private function filterSearch($queryUsers, $queryUserCounts, $request)
+    private function filterSearch($queryUsers, $request)
     {
-        if ($request->has('status') && $request->status !== Null) {
-            $queryUsers->where('status', $request->status);
-        }
+        $filters = [
+            'status' => ['queryWhere' => '='],
+            'created_at' => ['queryWhere' => '>='],
+            'updated_at' => ['queryWhere' => '<='],
+        ];
 
-        if ($request->has('start_date') && $request->start_date !== Null) {
-            $queryUsers->where('created_at', '>=', $request->start_date);
-        }
-        if ($request->has('end_date') && $request->end_date !== Null) {
-            $queryUsers->where('updated_at', '<=', $request->end_date);
+        foreach ($filters as $filter => $value) {
+            $filterValue = $request->input($filter);
+
+            if (!empty($filterValue)) {
+                $queryUsers->where($filter, $value['queryWhere'], $filterValue);
+            }
         }
 
         $queryUsers = $this->filterBySearchFull($queryUsers, $request);
 
-        return [$queryUsers, $queryUserCounts];
+        return $queryUsers;
     }
 
     private function filterBySearchFull($query, $request)
     {
-        if ($request->has('search_full') && $request->search_full !== null) {
-            $searchTerm = $request->search_full;
-
+        $query->when($request->search_full, function($query, $searchTerm) {
             $query->where(function($query) use ($searchTerm) {
                 $query->where('name', 'LIKE', "%$searchTerm%")
                       ->orWhere('email', 'LIKE', "%$searchTerm%");
             });
-        }
+        });
 
         return $query;
     }

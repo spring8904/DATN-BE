@@ -30,7 +30,7 @@
             <a class="nav-link menu-link" href="#transaction">
                 <i class="ri-database-2-line"></i> <span data-key="t-authentication">Giao dịch thanh toán</span>
             </a>
-            <a class="nav-link menu-link" href="#transaction">
+            <a class="nav-link menu-link" href="{{ route('admin.withdrawals.index') }}">
                 <i class="ri-database-2-line"></i> <span data-key="t-authentication">Yêu cầu rút tiền</span>
             </a>
         </li>
