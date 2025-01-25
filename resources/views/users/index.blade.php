@@ -74,7 +74,7 @@
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="filterDropdown">
                                 <div class="container">
                                     <li>
-                                        <select class="form-select form-select-sm mb-2" name="statusItem" id="statusItem">
+                                        <select class="form-select form-select-sm mb-2" name="status" data-filter>
                                             <option value="">Tất cả trạng thái</option>
                                             <option value="active">Hoạt động</option>
                                             <option value="inactive">Không hoạt động</option>
@@ -84,14 +84,14 @@
                                     <li>
                                         <div class="mb-2">
                                             <label for="startDate" class="form-label">Từ ngày</label>
-                                            <input type="date" class="form-control form-control-sm" id="startDate"
+                                            <input type="date" class="form-control form-control-sm" name="start_date" data-filter id="startDate"
                                                 value="{{ request()->input('start_date') ?? '' }}">
                                         </div>
                                     </li>
                                     <li>
                                         <div class="mb-2">
                                             <label for="endDate" class="form-label">Đến ngày</label>
-                                            <input type="date" class="form-control form-control-sm" id="endDate"
+                                            <input type="date" class="form-control form-control-sm" id="endDate" name="end_date" data-filter
                                                 value="{{ request()->input('end_date') ?? '' }}">
                                         </div>
                                     </li>
@@ -128,8 +128,8 @@
                                 <div class="col-sm">
                                     <div class="d-flex justify-content-sm-end">
                                         <div class="search-box ms-2">
-                                            <input type="text" name="searchFull" class="form-control search"
-                                                placeholder="Tìm kiếm...">
+                                            <input type="text" name="search_full" id="searchFull"
+                                                class="form-control search" placeholder="Tìm kiếm..." data-search>
                                             <button id="search-full" class="ri-search-line search-icon m-0 p-0 border-0"
                                                 style="background: none;"></button>
                                         </div>
@@ -195,7 +195,10 @@
                                                 </td>
                                                 <td>
                                                     @php
-                                                        $roleName = $roleUser['name'] === 'deleted' ? $user->roles->first()?->name : $roleUser['name'];
+                                                        $roleName =
+                                                            $roleUser['name'] === 'deleted'
+                                                                ? $user->roles->first()?->name
+                                                                : $roleUser['name'];
                                                         $badgeColor = match ($roleName) {
                                                             'admin' => 'bg-danger',
                                                             'member' => 'bg-primary',
@@ -208,7 +211,7 @@
                                                     </span>
                                                 </td>
                                                 <td>
-                                                    {{ $user->created_at != null ? date_format($user->created_at, 'd/m/Y') : 'NULL' }}
+                                                    {{ optional(\Carbon\Carbon::parse($user->created_at))->format('d/m/Y') ?? 'NULL' }}
                                                 </td>
                                                 <td>
                                                     @if ($roleUser['name'] !== 'deleted')
@@ -229,7 +232,7 @@
                                                             </a>
                                                         </div>
                                                     @else
-                                                        {{ $user->deleted_at != null ? date_format($user->deleted_at, 'd/m/Y') : 'NULL' }}
+                                                        {{ optional(\Carbon\Carbon::parse($user->deleted_at))->format('d/m/Y') ?? 'NULL' }}
                                                     @endif
                                                 </td>
                                             </tr>
@@ -255,30 +258,26 @@
 @push('page-scripts')
     <script>
         var routeUrlFilter = "{{ route('admin.' . $actorRole . '.index') }}";
-        var routeDeleteAll = "{{ $roleUser['name'] === 'deleted' ? route('admin.users.forceDelete', ':itemID') : route('admin.users.destroy', ':itemID') }}";
+        var routeDeleteAll =
+            "{{ $roleUser['name'] === 'deleted' ? route('admin.users.forceDelete', ':itemID') : route('admin.users.destroy', ':itemID') }}";
         var routeRestoreUrl = "{{ route('admin.users.restoreDelete', ':itemID') }}";
-        $(document).ready(function() {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $(document).on('change', 'input[name="email_verified"]', function() {
-                var userID = $(this).val();
-                var isChecked = $(this).is(':checked');
 
-                var updateUrl = "{{ route('admin.users.updateEmailVerified', ':userID') }}".replace(
-                    ':userID', userID);
+        $(document).on('change', 'input[name="email_verified"]', function() {
+            var userID = $(this).val();
+            var isChecked = $(this).is(':checked');
 
-                $.ajax({
-                    type: "PUT",
-                    url: updateUrl,
-                    data: {
-                        email_verified: isChecked ? userID : ''
-                    },
-                });
+            var updateUrl = "{{ route('admin.users.updateEmailVerified', ':userID') }}".replace(
+                ':userID', userID);
+
+            $.ajax({
+                type: "PUT",
+                url: updateUrl,
+                data: {
+                    email_verified: isChecked ? userID : ''
+                },
             });
         });
     </script>
-    <script src="{{ asset('assets/js/pages/filter-search-deleteAll.js') }}"></script>
+    <script src="{{ asset('assets/js/common/delete-restore-Selected.js') }}"></script>
+    <script src="{{ asset('assets/js/common/filter-search.js') }}"></script>
 @endpush
