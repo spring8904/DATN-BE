@@ -102,9 +102,8 @@
                                             </th>
                                             <th>ID</th>
                                             <th>Tiêu đề</th>
-                                            <th>Mô tả</th>
                                             <th>Ảnh bìa</th>
-                                            <th>Tên người dùng</th>
+                                            <th>Tác giả</th>
                                             <th>Trạng thái</th>
                                             <th>Ngày đăng tải</th>
                                             <th>Hành Động</th>
@@ -122,7 +121,6 @@
 
                                                 <td class="customer_name">{{ $post->id }}</td>
                                                 <td class="email">{{ $post->title }}</td>
-                                                <td class="email">{!! $post->description  !!}</td>
                                                 <td >
                                                     <img class="img-thumbnail" src="{{ $post->thumbnail }}" alt="Hình đại diện" width="100">
                                                 </td>
