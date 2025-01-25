@@ -37,7 +37,7 @@ class PostController extends Controller
 
             $searchPost = $request->input('searchPost');
 
-            // kiểm tra xem có từ khóa không 
+            // kiểm tra xem có từ khóa không
             if (!empty($searchPost)) {
                 $posts =  Post::with('user')
                     ->where('title', 'LIKE', '%' . $searchPost . '%')
@@ -45,11 +45,6 @@ class PostController extends Controller
             } else {
                 $posts = Post::with('user')->paginate(10);
             }
-
-            // Kiểm tra xem trong collection có phần tử nào không 
-            $message =$posts->isEmpty() ? 'Không có bản ghi nào' :  '';
-            $key =$posts->isEmpty() ? 'success' :  '';
-            session()->flash($key,$message);
 
             return view('posts.index', compact([
                 'title',
@@ -105,9 +100,9 @@ class PostController extends Controller
             }
 
             $data['user_id'] = Auth::id();
-            
+
             $data['category_id'] = $request->input('categories')[0];
-            
+
             do {
                 $data['slug'] = Str::slug($request->title) . '?' . Str::uuid();
             } while (Post::query()->where('slug',$data['slug'])->exists());
@@ -127,7 +122,7 @@ class PostController extends Controller
             DB::commit();
 
             return redirect()->route('admin.posts.index')->with('success', 'Thao tác thành công');
-            
+
         } catch (\Exception $e) {
 
             DB::rollBack();
@@ -184,7 +179,7 @@ class PostController extends Controller
             $post = Post::query()
             ->with(['tags:id,name', 'categories:id,name,parent_id'])
             ->findOrFail($id);
-            
+
             $categoryIds = $post->categories->pluck('id')->toArray();
             $tagIds = $post->tags->pluck('id')->toArray();
 
