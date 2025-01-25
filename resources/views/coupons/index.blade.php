@@ -65,15 +65,15 @@
                                                 </div>
                                             </th>
                                             <th>ID</th>
-                                            <th>User_id</th>
-                                            <th>Name</th>
-                                            <th>Code</th>
-                                            <th>Discount</th>
-                                            <th>Status</th>
-                                            <th>Start_date</th>
-                                            <th>Expire_date</th>
-                                            <th>Used_count</th>
-                                            <th>Actions</th>
+                                            <th>Người tạo</th>
+                                            <th>Tên mã giảm giá</th>
+                                            <th>Mã giảm giá</th>
+                                            <th>Giảm giá</th>
+                                            <th>Trạng Thái</th>
+                                            <th>Ngày bắt đầu</th>
+                                            <th>Ngày kết thúc</th>
+                                            <th>Số lượng sử dụng</th>
+                                            <th>Hành động</th>
                                         </tr>
                                     </thead>
                                     <tbody class="list form-check-all">

@@ -46,7 +46,7 @@
                                         </div>
                                         <div class="col-sm-4">
                                             <div class="px-3">
-                                                <img src="assets/images/user-illustarator-2.png" class="img-fluid"
+                                                <img src="../assets/images/user-illustarator-2.png" class="img-fluid"
                                                     alt="">
                                             </div>
                                         </div>
@@ -453,7 +453,7 @@
                             </div><!-- end col -->
                             <div class="col-6">
                                 <div class="text-center">
-                                    <img src="assets/images/illustrator-1.png" class="img-fluid" alt="">
+                                    <img src="../assets/images/illustrator-1.png" class="img-fluid" alt="">
                                 </div>
                             </div><!-- end col -->
                         </div><!-- end row -->

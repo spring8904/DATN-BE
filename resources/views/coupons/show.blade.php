@@ -68,27 +68,27 @@
                             <div class="col-md-9">{{ $coupon->id }}</div>
                         </div>
                         <div class="row mb-3">
-                            <div class="col-md-3"><strong>Code:</strong></div>
+                            <div class="col-md-3"><strong>Mã giảm giá:</strong></div>
                             <div class="col-md-9">{{ $coupon->code }}</div>
                         </div>
                         <div class="row mb-3">
-                            <div class="col-md-3"><strong>Name:</strong></div>
+                            <div class="col-md-3"><strong>Tên mã giảm giá:</strong></div>
                             <div class="col-md-9">{{ $coupon->name }}</div>
                         </div>
                         <div class="row mb-3">
-                            <div class="col-md-3"><strong>Discount_type:</strong></div>
+                            <div class="col-md-3"><strong>Loại mã giảm giá:</strong></div>
                             <div class="col-md-9">{{ $coupon->discount_type }}</div>
                         </div>
                         <div class="row mb-3">
-                            <div class="col-md-3"><strong>Discount_value:</strong></div>
+                            <div class="col-md-3"><strong>Giá trị giảm giá:</strong></div>
                             <div class="col-md-9">{{ $coupon->discount_value }}</div>
                         </div>
                         <div class="row mb-3">
-                            <div class="col-md-3"><strong>Start Date:</strong></div>
+                            <div class="col-md-3"><strong>Ngày bắt đầu:</strong></div>
                             <div class="col-md-9">{{ $coupon->start_date }}</div>
                         </div>
                         <div class="row mb-3">
-                            <div class="col-md-3"><strong>Expire Date:</strong></div>
+                            <div class="col-md-3"><strong>Ngày kết thúc:</strong></div>
                             <div class="col-md-9">{{ $coupon->expire_date }}</div>
                         </div>
                         <div class="text-start mt-5">
@@ -100,7 +100,7 @@
                     </div>
                     <div class="col-6">
                         <div class="row mb-3">
-                            <div class="col-md-3"><strong>Status:</strong></div>
+                            <div class="col-md-3"><strong>Trạng thái:</strong></div>
                             <div class="col-md-9">
                                 @if ($coupon->status)
                                     <span class="badge bg-success">
@@ -114,29 +114,29 @@
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <div class="col-md-3"><strong>Used_count:</strong></div>
+                            <div class="col-md-3"><strong>Số lượt sử dụng:</strong></div>
                             <div class="col-md-9"> 
                                 {{$coupon->used_count}}                                                   
                               </div>
                         </div>
                         <div class="row mb-3">
-                            <div class="col-md-3"><strong>User_id:</strong></div>
+                            <div class="col-md-3"><strong>Người tạo:</strong></div>
                             <div class="col-md-9"> 
                                 {{$coupon->user_id}}                                                   
                               </div>
                         </div>
                         <div class="row mb-3">
-                            <div class="col-md-3"><strong>Description:</strong></div>
+                            <div class="col-md-3"><strong>Mô tả:</strong></div>
                             <div class="col-md-9"> 
                                 {{$coupon->description}}                                                   
                               </div>
                         </div>
                         <div class="row mb-3">
-                            <div class="col-md-3"><strong>Created At:</strong></div>
+                            <div class="col-md-3"><strong>Ngày tạo:</strong></div>
                             <div class="col-md-9">{{ $coupon->created_at }}</div>
                         </div>
                         <div class="row mb-3">
-                            <div class="col-md-3"><strong>Updated At:</strong></div>
+                            <div class="col-md-3"><strong>Ngày cập nhật:</strong></div>
                             <div class="col-md-9">{{ $coupon->updated_at }}</div>
                         </div>
                     </div>
