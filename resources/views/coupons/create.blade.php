@@ -36,14 +36,14 @@
                                 @csrf
                                 <div class="d-flex">
                                     <div class="mb-3 col-6 pe-3">
-                                        <label class="form-label">Name</label>
+                                        <label class="form-label">Tên mã giảm giá</label>
                                         <input type="text" name="name" class="form-control" value="{{ old('name') }}">
                                         @error('name')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
                                     </div>
                                     <div class="mb-3 col-6">
-                                        <label class="form-label">Code</label>
+                                        <label class="form-label">Mã giảm giá</label>
                                         <input type="text" name="code" class="form-control"
                                             value="{{ old('code') }}">
                                         @error('code')
@@ -53,17 +53,17 @@
                                 </div>
                                 <div class="d-flex">
                                     <div class="mb-3 col-6 pe-3">
-                                        <label class="form-label">Discount_type</label>
-                                        <select name="discount_type" class="form-control" value="{{ old('content') }}">
-                                            <option value="fixed">Fixed</option>
-                                            <option value="percentage">Percentage</option>
+                                        <label class="form-label">Loại giảm giá</label>
+                                        <select name="discount_type" class="form-control" value="{{ old('discount_type') }}">
+                                            <option value="fixed">Cố định</option>
+                                            <option value="percentage">Phần trăm</option>
                                         </select>
                                         @error('discount_type')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
                                     </div>
                                     <div class="mb-3 col-6">
-                                        <label class="form-label">Discount_value</label>
+                                        <label class="form-label">Giá trị giảm giá</label>
                                         <input type="number" name="discount_value" class="form-control" value="{{ old('discount_value') }}">
                                         @error('discount_value')
                                             <div class="text-danger">{{ $message }}</div>
@@ -72,18 +72,18 @@
                                 </div>
                                 <div class="d-flex">
                                     <div class="mb-3 col-6 pe-3">
-                                        <label class="form-label">Used_count</label>
+                                        <label class="form-label">Số lượt dùng</label>
                                         <input type="int" name="used_count" class="form-control" value="{{ old('used_count') }}">
                                         @error('used_count')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
                                     </div>
                                         <div class="mb-3 col-6">
-                                        <label class="form-label">Status</label>
+                                        <label class="form-label">Trạng thái</label>
                                         <select name="status" class="form-select" value="{{ old('status') }}">
                                             <option value="" selected>Chọn trạng thái</option>
-                                            <option value="1">Active</option>
-                                            <option value="0">InActive</option>
+                                            <option value="1">Hoạt động</option>
+                                            <option value="0">Không hoạt động</option>
                                         </select>
                                         @error('status')
                                             <div class="text-danger">{{ $message }}</div>
@@ -92,14 +92,14 @@
                                 </div>
                                 <div class="d-flex">
                                     <div class="mb-3 col-6 pe-3">
-                                        <label class="form-label">start_date</label>
+                                        <label class="form-label">Ngày bắt đầu</label>
                                         <input type="date" name="start_date" class="form-control" value="{{ old('start_date') }}">
                                         @error('start_date')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
                                     </div>
                                     <div class="mb-3 col-6">
-                                        <label class="form-label">Expire_date</label>
+                                        <label class="form-label">Ngày kết thúc</label>
                                         <input type="date" name="expire_date" class="form-control" value="{{ old('expire_date') }}">
                                         @error('expire_date')
                                             <div class="text-danger">{{ $message }}</div>
@@ -108,7 +108,7 @@
                                         
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">Description</label>
+                                    <label class="form-label">Mô tả</label>
                                     <textarea name="description" class="form-control" value="{{ old('description') }}"></textarea>
                                     @error('description')
                                         <div class="text-danger">{{ $message }}</div>
