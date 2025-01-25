@@ -17,3 +17,11 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::prefix('v1')
+    ->group(function () {
+        Route::prefix('ai')
+            ->group(function () {
+                Route::post('generate-text', [\App\Http\Controllers\API\AI\AiController::class, 'generateText']);
+            });
+    });
