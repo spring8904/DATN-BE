@@ -13,7 +13,7 @@
                         <ol class="breadcrumb m-0">
                             <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
                             <li class="breadcrumb-item active"><a
-                                    href="{{ route('admin.users.index') }}">{{ $subTitle }}</a></li>
+                                    href="">{{ $subTitle }}</a></li>
                         </ol>
                     </div>
 
@@ -92,7 +92,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="table-responsive table-card mt-3 mb-1">
                                 <table class="table align-middle table-nowrap" id="customerTable">
                                     <thead class="table-light">
@@ -119,7 +119,7 @@
                                                             name="postID" value="{{ $post->id }}">
                                                     </div>
                                                 </th>
-                                                
+
                                                 <td class="customer_name">{{ $post->id }}</td>
                                                 <td class="email">{{ $post->title }}</td>
                                                 <td class="email">{!! $post->description  !!}</td>
@@ -147,12 +147,12 @@
                                                         </span>
                                                     @endif
                                                 </td>
-                                                
+
                                                 <td>
                                                     {{ $post->published_at ? \Carbon\Carbon::parse($post->published_at)->format('d/m/Y H:i:s') : 'NULL' }}
                                                 </td>
-                                                
-                                                
+
+
                                                 <td>
                                                     <div class="d-flex gap-2">
                                                         <a href="{{ route('admin.posts.edit', $post->id) }}">

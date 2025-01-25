@@ -53,7 +53,10 @@
                                 @enderror
                             </div>
                             <div class="col-md-12 mb-2">
-                                <label class="form-label">Mô tả bài viết</label>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <label class="form-label">Mô tả bài viết</label>
+                                    <button type="button" class="btn btn-sm btn-primary">Sử dụng AI</button>
+                                </div>
                                 <textarea id="ckeditor-classic" name="description" class="form-control" id="" cols="30" rows="10">{{ old('description') }}</textarea>
                             </div>
                             <div class="col-md-12 mb-2">

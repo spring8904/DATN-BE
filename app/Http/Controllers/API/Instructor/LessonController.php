@@ -11,7 +11,6 @@ use App\Models\Document;
 use App\Models\Lesson;
 use App\Models\Question;
 use App\Models\Quiz;
-use App\Models\QuizAnswer;
 use App\Models\Video;
 use App\Services\VideoUploadService;
 use App\Traits\LoggableTrait;
