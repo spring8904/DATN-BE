@@ -23,7 +23,7 @@ class TransactionSeeder extends Seeder
 
         for ($i = 1; $i <= 100; $i++) {
             $type = fake()->randomElement(['invoice', 'withdrawal']);
-            $transactionable_type = $type == "invoice" ? 'App\\Models\\Course' : 'App\\Models\\WithdrawalRequest';
+            $transactionable_type = $type == "invoice" ? 'App\\Models\\Invoice' : 'App\\Models\\WithdrawalRequest';
             $transactionable_id = $type == "invoice" ? fake()->randomElement($course) : fake()->randomElement($withdrawals);
             
             Transaction::query()->create([

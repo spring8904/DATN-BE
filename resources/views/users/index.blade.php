@@ -142,7 +142,7 @@
                                 <select class="form-select form-select-sm" name="status" id="statusItem" data-filter>
                                     <option value="">Tất cả trạng thái</option>
                                     <option value="completed">Hoàn thành</option>
-                                    <option value="pending">Chờ xử lý</option>
+                                    <option value="pending">Đang xử lý</option>
                                     <option value="failed">Thất bại</option>
                                 </select>
                             </div>

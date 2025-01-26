@@ -24,7 +24,7 @@ class WithDrawalsRequestController extends Controller
                 sum(status = "failed") as failed_withdrawals'
             )->first();
 
-            if ($request->hasAny(['status', 'request_date', 'completed_date', 'bank_name', 'amount', 'account_number', 'account_holder']))
+            if ($request->hasAny(['status', 'request_date', 'completed_date', 'bank_name', 'amount_min', 'amount_max', 'account_number', 'account_holder']))
                 $queryWithdrawals = $this->filter($request, $queryWithdrawals);
 
             if ($request->has('search_full'))
@@ -32,7 +32,7 @@ class WithDrawalsRequestController extends Controller
 
             $withdrawals = $queryWithdrawals->paginate(10);
 
-            if ($request->ajax() && $request->hasAny(['status', 'request_date', 'completed_date', 'bank_name', 'search_full'])) {
+            if ($request->ajax()) {
                 $html = view('withdrawals.table', compact('withdrawals'))->render();
                 return response()->json(['html' => $html]);
             }
