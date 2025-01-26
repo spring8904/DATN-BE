@@ -17,4 +17,14 @@ class Transaction extends Model
         'type',
         'user_id'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function transactionable()
+    {
+        return $this->morphTo();
+    }
 }

@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\API\Auth\GoogleController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\SupportBankController;
+use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\Admin\WithDrawalsRequestController;
 
 /*
@@ -201,5 +202,10 @@ Route::prefix('admin')->as('admin.')
         #============================== ROUTE INVOICE =============================
 
         #============================== ROUTE WIDTHDRAWALS =============================
-        Route::get('/withdrawals-requests', [WithDrawalsRequestController::class, 'index'])->name('withdrawals.index');
+        Route::get('/withdrawals-requests', [WithDrawalsRequestController::class, 'index'])
+            ->name('withdrawals.index');
+
+        #============================== ROUTE TRANSACTIONS =============================
+        Route::get('/transactions', [TransactionController::class, 'index'])
+            ->name('transactions.index');
     });
