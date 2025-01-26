@@ -20,6 +20,7 @@ class UserController extends Controller
 
     const FOLDER = 'users';
     const URLIMAGEDEFAULT = "https://res.cloudinary.com/dvrexlsgx/image/upload/v1732148083/Avatar-trang-den_apceuv_pgbce6.png";
+    
 
     /**
      * Display a listing of the resource.
@@ -62,8 +63,8 @@ class UserController extends Controller
             $users = $queryUsers->paginate(10);
             $userCounts = $queryUserCounts->first();
 
-            if ($request->ajax() && $request->hasAny(['status', 'start_date', 'end_date', 'search_full'])) {
-                $html = view('users.table', compact(['users', 'userCounts', 'subTitle', 'title', 'roleUser', 'actorRole']))->render();
+            if ($request->ajax() && $request->hasAny(['status', 'created_at', 'updated_at', 'search_full'])) {
+                $html = view('users.table', compact(['users', 'roleUser', 'actorRole']))->render();
                 return response()->json(['html' => $html]);
             }
 
@@ -500,10 +501,22 @@ class UserController extends Controller
         ];
 
         foreach ($filters as $filter => $value) {
-            $filterValue = $request->input($filter);
+            if (!empty($value['queryWhere'])) {
+                if ($value['queryWhere'] !== 'BETWEEN') {
+                    $filterValue = $request->input($filter);
 
-            if (!empty($filterValue)) {
-                $queryUsers->where($filter, $value['queryWhere'], $filterValue);
+                    if (!empty($filterValue)) {
+                        $filterValue = $value['queryWhere'] === 'LIKE' ? "%$filterValue%" : $filterValue;
+                        $queryUsers->where($filter, $value['queryWhere'], $filterValue);
+                    }
+                } else {
+                    $filterValueBetweenA = $request->input($value['attribute'][0]);
+                    $filterValueBetweenB = $request->input($value['attribute'][1]);
+
+                    if (!empty($filterValueBetweenA) && !empty($filterValueBetweenB)) {
+                        $queryUsers->whereBetween($filter, [$filterValueBetweenA, $filterValueBetweenB]);
+                    }
+                }
             }
         }
 

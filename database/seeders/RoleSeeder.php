@@ -27,7 +27,12 @@ class RoleSeeder extends Seeder
                 'name' => 'instructor',
                 'guard_name' => 'web',
                 'description' => 'Giảng viên hệ thống',
-            ]
+            ],
+            [
+                'name' => 'super_admin',
+                'guard_name' => 'web',
+                'description' => 'Người có quyền kiểm soát toàn bộ hệ thống',
+            ],
         ];
 
         foreach ($data as $item) {

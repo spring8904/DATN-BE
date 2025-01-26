@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @push('page-css')
-    <link href="{{ asset('assets/css/custom.css') }}" rel="stylesheet" type="text/css"/>
+    <link href="{{ asset('assets/css/custom.css') }}" rel="stylesheet" type="text/css" />
 @endpush
 
 @section('content')
@@ -31,7 +31,7 @@
                 <div class="card text-center h-75">
                     <div class="card-body">
                         <h5 class="card-title">Tổng số yêu cầu rút tiền</h5>
-                        <p class="card-text fs-4">{{ $userCounts->total_users ?? 0 }}</p>
+                        <p class="card-text fs-4">{{ $countWithdrawals->total_withdrawals ?? 0 }}</p>
                     </div>
                 </div>
             </div>
@@ -39,7 +39,7 @@
                 <div class="card text-center h-75">
                     <div class="card-body">
                         <h5 class="card-title">Yêu cầu rút tiền đang chờ duyệt</h5>
-                        <p class="card-text fs-4 text-success"></p>
+                        <p class="card-text fs-4 text-success">{{ $countWithdrawals->completed_withdrawals ?? 0 }}</p>
                     </div>
                 </div>
             </div>
@@ -47,7 +47,7 @@
                 <div class="card text-center h-75">
                     <div class="card-body">
                         <h5 class="card-title">Yêu cầu rút tiền thành công</h5>
-                        <p class="card-text fs-4 text-warning"></p>
+                        <p class="card-text fs-4 text-warning">{{ $countWithdrawals->pending_withdrawals ?? 0 }}</p>
                     </div>
                 </div>
             </div>
@@ -55,7 +55,7 @@
                 <div class="card text-center h-75">
                     <div class="card-body">
                         <h5 class="card-title">Yêu cầu rút tiền thất bại</h5>
-                        <p class="card-text fs-4 text-danger"></p>
+                        <p class="card-text fs-4 text-danger">{{ $countWithdrawals->failed_withdrawals ?? 0 }}</p>
                     </div>
                 </div>
             </div>
@@ -72,57 +72,40 @@
                             <div class="col-sm">
                                 <div class="d-flex justify-content-sm-end">
                                     <div class="search-box ms-2">
-                                        <input type="text" name="search_full" class="form-control search"
-                                               placeholder="Tìm kiếm..." data-search>
-                                        <button id="search-full" class="ri-search-line search-icon m-0 p-0 border-0"
-                                                style="background: none;"></button>
+                                        <input type="text" name="search_full" class="form-control search h-75"
+                                            placeholder="Tìm kiếm..." data-search>
+                                        <button id="search-full" class="h-75 ri-search-line search-icon m-0 p-0 border-0"
+                                            style="background: none;"></button>
                                     </div>
                                 </div>
                             </div>
-                            <button class="btn btn-sm btn-success">Export dữ liệu</button>
-                            <button class="btn btn-sm btn-primary" id="toggleAdvancedSearch">
+                            <button class="btn btn-sm btn-success h-75">Export dữ liệu</button>
+                            <button class="btn btn-sm btn-primary h-75" id="toggleAdvancedSearch">
                                 Tìm kiếm nâng cao
                             </button>
                             <div class="dropdown">
-                                <button class="btn btn-sm btn-primary" type="button" id="filterDropdown"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                <button class="btn btn-sm btn-primary h-75" type="button" id="filterDropdown"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="ri-filter-2-line"></i>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="filterDropdown"
                                     style="min-width: 500px;">
                                     <div class="container">
-                                        <div class="row">
-                                            <li class="col-6">
-                                                <label for="statusItem" class="form-label">Trạng thái</label>
-                                                <select class="form-select form-select-sm mb-2" name="status"
-                                                        id="statusItem"
-                                                        data-filter>
-                                                    <option value="">Tất cả trạng thái</option>
-                                                    <option value="completed">Hoàn thành</option>
-                                                    <option value="pending">Chờ xử lý</option>
-                                                    <option value="failed">Thất bại</option>
-                                                </select>
-                                            </li>
-                                            <li class="col-6">
-                                                <label for="bankItem" class="form-label">Ngân hàng</label>
-                                                <select class="form-select form-select-sm mb-2" name="bank_name"
-                                                        id="bankItem"
-                                                        data-filter>
-                                                    <option value="">Chọn ngân hàng</option>
-                                                    <option value="TPBank">TPBank</option>
-                                                    <option value="ABBANK">ABBANK</option>
-                                                    <option value="MB Bank">MB Bank</option>
-                                                </select>
-                                            </li>
-                                        </div>
                                         <li>
                                             <label for="amountRange" class="form-label">Số tiền</label>
-                                            <input type="range" class="form-range" name="amount" id="amountRange"
-                                                   min="10000" max="99999999" step="10000"
-                                                   value="{{ request()->input('amount') ?? 10000000 }}" data-filter>
+
                                             <div class="d-flex justify-content-between">
                                                 <span id="amountMin">10,000 VND</span>
                                                 <span id="amountMax">99,999,999 VND</span>
+                                            </div>
+
+                                            <div class="d-flex justify-content-between">
+                                                <input type="range" class="form-range w-50" id="amountMinRange"
+                                                    name="amount_min" min="10000" max="49990000" step="10000"
+                                                    value="10000" oninput="updateRange()" data-filter>
+                                                <input type="range" class="form-range w-50" id="amountMaxRange"
+                                                    name="amount_max" min="50000000" max="99990000" step="10000"
+                                                    value="99990000" oninput="updateRange()" data-filter>
                                             </div>
                                         </li>
                                         <div class="row">
@@ -130,16 +113,16 @@
                                                 <div class="mb-2">
                                                     <label for="startDate" class="form-label">Ngày yêu cầu</label>
                                                     <input type="date" class="form-control form-control-sm"
-                                                           name="request_date" id="dateRequest" data-filter
-                                                           value="{{ request()->input('request_date') ?? '' }}">
+                                                        name="request_date" id="dateRequest" data-filter
+                                                        value="{{ request()->input('request_date') ?? '' }}">
                                                 </div>
                                             </li>
                                             <li class="col-6">
                                                 <div class="mb-2">
                                                     <label for="endDate" class="form-label">Ngày xác nhận</label>
                                                     <input type="date" class="form-control form-control-sm"
-                                                           name="completed_date" id="dateComplete" data-filter
-                                                           value="{{ request()->input('completed_date') ?? '' }}">
+                                                        name="completed_date" id="dateComplete" data-filter
+                                                        value="{{ request()->input('completed_date') ?? '' }}">
                                                 </div>
                                             </li>
                                         </div>
@@ -156,34 +139,41 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <label class="form-label">Tên chủ tài khoản</label>
-                                <input class="form-control form-control-sm" type="text"
-                                       placeholder="Nhập tên chủ tài khoản...">
+                                <input class="form-control form-control-sm" name="account_holder" type="text"
+                                    placeholder="Nhập tên chủ tài khoản..."
+                                    value="{{ request()->input('account_holder') ?? '' }}" data-advanced-filter>
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label">Số tài khoản</label>
-                                <input class="form-control form-control-sm" type="text"
-                                       placeholder="Nhập tên số tài khoản...">
+                                <input class="form-control form-control-sm" name="account_number" type="text"
+                                    placeholder="Nhập tên số tài khoản..."
+                                    value="{{ request()->input('account_number') ?? '' }}" data-advanced-filter>
                             </div>
                             <div class="col-md-3">
                                 <label for="statusItem" class="form-label">Trạng thái</label>
-                                <select class="form-select form-select-sm" name="status" id="statusItem" data-filter>
+                                <select class="form-select form-select-sm" name="status" id="statusItem"
+                                    data-advanced-filter>
                                     <option value="">Tất cả trạng thái</option>
-                                    <option value="completed">Hoàn thành</option>
-                                    <option value="pending">Chờ xử lý</option>
-                                    <option value="failed">Thất bại</option>
+                                    <option value="completed" @selected(request()->input('status') === 'completed')>Hoàn thành</option>
+                                    <option value="pending" @selected(request()->input('status') === 'pending')>Chờ xử lý</option>
+                                    <option value="failed" @selected(request()->input('status') === 'failed')>Thất bại</option>
                                 </select>
                             </div>
                             <div class="col-md-3">
-                                <label for="statusItem" class="form-label">Ngân hàng</label>
-                                <select class="form-select form-select-sm" name="status" id="statusItem" data-filter>
-                                    <option value="">Tất cả trạng thái</option>
-                                    <option value="completed">Hoàn thành</option>
-                                    <option value="pending">Chờ xử lý</option>
-                                    <option value="failed">Thất bại</option>
+                                <label for="bankName" class="form-label">Ngân hàng</label>
+                                <select class="form-select form-select-sm" name="bank_name" id="bankName"
+                                    data-advanced-filter>
+                                    <option value="">Chọn ngân hàng</option>
+                                    <option value="Vietcombank" @selected(request()->input('bank_name') === 'Vietcombank')>Vietcombank</option>
+                                    <option value="VIB" @selected(request()->input('bank_name') === 'VIB')>VIB</option>
+                                    <option value="VietinBank" @selected(request()->input('bank_name') === 'VietinBank')>VietinBank</option>
+                                    <option value="MB Bank" @selected(request()->input('bank_name') === 'Bank')>MB Bank</option>
+                                    <option value="VPBank" @selected(request()->input('bank_name') === 'VPBank')>VPBank</option>
+                                    <option value="OCB" @selected(request()->input('bank_name') === 'OCB')>OCB</option>
                                 </select>
                             </div>
                             <div class="mt-3 text-end">
-                                <button class="btn btn-sm btn-primary">Áp dụng</button>
+                                <button class="btn btn-sm btn-primary" id="applyAdvancedFilter">Áp dụng</button>
                             </div>
                         </div>
                     </div>
@@ -193,51 +183,51 @@
                             <div class="table-responsive table-card mt-3 mb-1">
                                 <table class="table align-middle table-nowrap" id="customerTable">
                                     <thead class="table-light">
-                                    <tr>
-                                        <th>STT</th>
-                                        <th>Tên chủ tài khoản</th>
-                                        <th>Số tài khoản</th>
-                                        <th>Ngân hàng</th>
-                                        <th>Số tiền</th>
-                                        <th>Ghi chú</th>
-                                        <th>Trạng thái</th>
-                                        <th>Ngày yêu cầu</th>
-                                        <th>Ngày xác nhận</th>
-                                    </tr>
+                                        <tr>
+                                            <th>STT</th>
+                                            <th>Tên chủ tài khoản</th>
+                                            <th>Số tài khoản</th>
+                                            <th>Ngân hàng</th>
+                                            <th>Số tiền</th>
+                                            <th>Ghi chú</th>
+                                            <th>Trạng thái</th>
+                                            <th>Ngày yêu cầu</th>
+                                            <th>Ngày xác nhận</th>
+                                        </tr>
                                     </thead>
                                     <tbody class="list">
-                                    @foreach ($withdrawals as $withdrawal)
-                                        <tr>
-                                            <td>{{ $loop->index + 1 }}</td>
-                                            <td>{{ $withdrawal->account_holder }}</td>
-                                            <td><span class="text-danger">{{ $withdrawal->account_number }}</span></td>
-                                            <td>{{ $withdrawal->bank_name }}</td>
-                                            <td>{{ number_format($withdrawal->amount) }} VND</td>
-                                            <td>
-                                                <textarea class="border-0 bg-white"
-                                                          disabled>{{ $withdrawal->note }}</textarea>
-                                            </td>
-                                            <td>
-                                                @if ($withdrawal->status === 'completed')
-                                                    <span class="badge bg-success w-100">
+                                        @foreach ($withdrawals as $withdrawal)
+                                            <tr>
+                                                <td>{{ $loop->index + 1 }}</td>
+                                                <td>{{ $withdrawal->account_holder }}</td>
+                                                <td><span class="text-danger">{{ $withdrawal->account_number }}</span>
+                                                </td>
+                                                <td>{{ $withdrawal->bank_name }}</td>
+                                                <td>{{ number_format($withdrawal->amount) }} VND</td>
+                                                <td>
+                                                    <textarea class="border-0 bg-white" disabled>{{ $withdrawal->note }}</textarea>
+                                                </td>
+                                                <td>
+                                                    @if ($withdrawal->status === 'completed')
+                                                        <span class="badge bg-success w-100">
                                                             Hoàn thành
                                                         </span>
-                                                @elseif($withdrawal->status === 'pending')
-                                                    <span class="badge bg-warning w-100">
+                                                    @elseif($withdrawal->status === 'pending')
+                                                        <span class="badge bg-warning w-100">
                                                             Chờ xử lý
                                                         </span>
-                                                @else
-                                                    <span class="badge bg-danger w-100">
+                                                    @else
+                                                        <span class="badge bg-danger w-100">
                                                             Thất bại
                                                         </span>
-                                                @endif
-                                            </td>
-                                            <td>{{ optional(\Carbon\Carbon::parse($withdrawal->request_date))->format('d/m/Y') ?? 'NULL' }}
-                                            </td>
-                                            <td>{{ optional(\Carbon\Carbon::parse($withdrawal->completed_date))->format('d/m/Y') ?? 'NULL' }}
-                                            </td>
-                                        </tr>
-                                    @endforeach
+                                                    @endif
+                                                </td>
+                                                <td>{{ optional(\Carbon\Carbon::parse($withdrawal->request_date))->format('d/m/Y') ?? 'NULL' }}
+                                                </td>
+                                                <td>{{ optional(\Carbon\Carbon::parse($withdrawal->completed_date))->format('d/m/Y') ?? 'NULL' }}
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -259,7 +249,21 @@
 @push('page-scripts')
     <script>
         var routeUrlFilter = "{{ route('admin.withdrawals.index') }}";
+
+        function updateRange() {
+            var minValue = $('#amountMinRange').val();
+            var maxValue = $('#amountMaxRange').val();
+            document.getElementById('amountMin').textContent = formatCurrency(minValue) + ' VND';
+            document.getElementById('amountMax').textContent = formatCurrency(maxValue) + ' VND';
+        }
+
+        function formatCurrency(value) {
+            return value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+        updateRange();
     </script>
     <script src="{{ asset('assets/js/custom/custom.js') }}"></script>
-    <script src="{{ asset('assets/js/common/filter-search.js') }}"></script>
+    <script src="{{ asset('assets/js/common/filter.js') }}"></script>
+    <script src="{{ asset('assets/js/common/search.js') }}"></script>
+    <script src="{{ asset('assets/js/common/handle-ajax-search&filter.js') }}"></script>
 @endpush

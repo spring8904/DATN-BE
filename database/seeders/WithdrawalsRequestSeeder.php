@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\SupportedBank;
 use App\Models\Wallet;
 use App\Models\WithdrawalRequest;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -16,6 +17,7 @@ class WithdrawalsRequestSeeder extends Seeder
     {
         $wallets = Wallet::query()->pluck('id')->toArray();
         $countwallets = sizeof($wallets);
+        $supportBank = SupportedBank::query()->pluck('name')->all();
 
         for ($i = 1; $i <= 100; $i++) {
             $requestDate = fake()->dateTimeBetween('-1 year', 'now');
@@ -23,19 +25,7 @@ class WithdrawalsRequestSeeder extends Seeder
             WithdrawalRequest::create([
                 'wallet_id' => $wallets[$i % $countwallets],
                 'amount' => rand(10000, 99999999),
-                'bank_name' => fake()->randomElement([
-                    'Vietcombank',
-                    'VietinBank',
-                    'BIDV',
-                    'ACB',
-                    'VPBank',
-                    'HDBank',
-                    'MB Bank',
-                    'TPBank',
-                    'VIB',
-                    'OCB',
-                    'ABBANK',
-                ]),
+                'bank_name' => fake()->randomElement($supportBank),
                 'account_number' => fake()->bankAccountNumber(),
                 'account_holder' => fake()->name(),
                 'note' => fake()->sentence(),
