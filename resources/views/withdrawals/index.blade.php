@@ -79,8 +79,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <button class="btn btn-sm btn-success h-75">Export dữ liệu</button>
-                            <button class="btn btn-sm btn-primary h-75" id="toggleAdvancedSearch">
+                            <a href="{{ route('admin.withdrawals.export') }}" class="btn btn-sm btn-success">Export dữ liệu</a>
+                            <button class="btn btn-sm btn-primary" id="toggleAdvancedSearch">
                                 Tìm kiếm nâng cao
                             </button>
                             <div class="dropdown">

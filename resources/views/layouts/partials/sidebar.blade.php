@@ -42,7 +42,7 @@
             <a class="nav-link menu-link" href="#sidebarCheck">
                 <i class="ri-database-2-line"></i> <span data-key="t-authentication">Kiểm duyệt giao dịch</span>
             </a>
-            <a class="nav-link menu-link" href="#sidebarCheck">
+            <a class="nav-link menu-link" href="{{ route('admin.approvals.courses.index') }}">
                 <i class="las la-book-reader"></i> <span data-key="t-authentication">Kiểm duyệt khoá học</span>
             </a>
             <a class="nav-link menu-link" href="#sidebarCheck">

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\WithDrawalExport;
 use App\Http\Controllers\Controller;
 use App\Models\WithdrawalRequest;
 use App\Traits\LoggableTrait;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class WithDrawalsRequestController extends Controller
 {
@@ -94,5 +96,16 @@ class WithDrawalsRequestController extends Controller
         }
 
         return $query;
+    }
+
+    public function export()
+    {
+        try {
+            return Excel::download(new WithDrawalExport, 'withdrawals.xlsx');
+        }catch (\Exception $e) {
+            $this->logError($e);
+
+            return redirect()->back()->with('error', 'Có lỗi xảy ra, vui lòng thử lại sau');
+        }
     }
 }

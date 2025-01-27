@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\SupportBankController;
 use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\Admin\WithDrawalsRequestController;
+use App\Http\Controllers\Admin\ApprovalCourseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -92,6 +93,7 @@ Route::prefix('admin')->as('admin.')
                 ->can('role.edit');
             Route::delete('/{role}', [RoleController::class, 'destroy'])->name('destroy')
                 ->can('role.delete');
+            Route::post('/import', [RoleController::class, 'import'])->name('import');
         });
 
         #============================== ROUTE PERMISSION =============================
@@ -198,18 +200,35 @@ Route::prefix('admin')->as('admin.')
             Route::delete('/{supportBank}', [SupportBankController::class, 'destroy'])->name('destroy')
                 ->can('support-bank.delete');
         });
+
         #============================== ROUTE APPROVAL =============================
+        Route::prefix('approvals')
+            ->as('approvals.')
+            ->group(function () {
+                Route::prefix('courses')
+                    ->as('courses.')
+                    ->group(function () {
+                        Route::get('/', [ApprovalCourseController::class, 'index'])->name('index');
+                        Route::get('/{course}', [ApprovalCourseController::class, 'show'])->name('show');
+                    });
+            });
 
         #============================== ROUTE INVOICE =============================
         Route::get('/invoices', [InvoiceController::class, 'index'])
         ->name('invoices.index');
 
-        #============================== ROUTE WIDTHDRAWALS =============================
-        Route::get('/withdrawals-requests', [WithDrawalsRequestController::class, 'index'])
-            ->name('withdrawals.index');
+        #============================== ROUTE WITH DRAWALS =============================
+        Route::prefix('withdrawals')
+            ->as('withdrawals.')
+            ->group(function () {
+                Route::get('/', [WithDrawalsRequestController::class, 'index'])->name('index');
+                Route::get('export', [WithDrawalsRequestController::class, 'export'])->name('export');
+            });
+    });
 
         #============================== ROUTE TRANSACTIONS =============================
         Route::get('/transactions', [TransactionController::class, 'index'])
             ->name('transactions.index');
 
 });
+

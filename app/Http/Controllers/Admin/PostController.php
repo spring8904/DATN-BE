@@ -268,7 +268,6 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         try {
-            //code...
             $post->delete();
 
             if (isset($category->icon)) {
@@ -276,7 +275,6 @@ class PostController extends Controller
             }
             return response()->json($data = ['status' => 'success', 'message' => 'Mục đã được xóa.']);
         } catch (\Exception $e) {
-            //throw $th;
             $this->logError($e);
 
             return response()->json($data = ['status' => 'error', 'message' => 'Lỗi thao tác.']);
