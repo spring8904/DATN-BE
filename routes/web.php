@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\Auth\AuthController;
 use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CouponController;
+use App\Http\Controllers\Admin\InvoiceController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\RoleController;
@@ -200,6 +201,8 @@ Route::prefix('admin')->as('admin.')
         #============================== ROUTE APPROVAL =============================
 
         #============================== ROUTE INVOICE =============================
+        Route::get('/invoices', [InvoiceController::class, 'index'])
+        ->name('invoices.index');
 
         #============================== ROUTE WIDTHDRAWALS =============================
         Route::get('/withdrawals-requests', [WithDrawalsRequestController::class, 'index'])
@@ -208,4 +211,5 @@ Route::prefix('admin')->as('admin.')
         #============================== ROUTE TRANSACTIONS =============================
         Route::get('/transactions', [TransactionController::class, 'index'])
             ->name('transactions.index');
-    });
+
+});

@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             BannerSeeder::class,
             CategorySeeder::class,
             CourseSeeder::class,
+            InvoiceSeeder::class,
             WithdrawalsRequestSeeder::class,
             TransactionSeeder::class,
         ]);
