@@ -69,6 +69,9 @@ class Course extends Model
     {
         return $this->hasMany(Chapter::class);
     }
+    public function invoices(){
+        return $this->hasMany(Invoice::class);
+    }
 
     public function scopeSearch($query, $searchQuery)
     {

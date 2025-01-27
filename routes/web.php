@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\Auth\AuthController;
 use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CouponController;
+use App\Http\Controllers\Admin\InvoiceController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\RoleController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\API\Auth\GoogleController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\SupportBankController;
+use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\Admin\WithDrawalsRequestController;
 use App\Http\Controllers\Admin\ApprovalCourseController;
 
@@ -212,6 +214,8 @@ Route::prefix('admin')->as('admin.')
             });
 
         #============================== ROUTE INVOICE =============================
+        Route::get('/invoices', [InvoiceController::class, 'index'])
+        ->name('invoices.index');
 
         #============================== ROUTE WITH DRAWALS =============================
         Route::prefix('withdrawals')
@@ -221,3 +225,10 @@ Route::prefix('admin')->as('admin.')
                 Route::get('export', [WithDrawalsRequestController::class, 'export'])->name('export');
             });
     });
+
+        #============================== ROUTE TRANSACTIONS =============================
+        Route::get('/transactions', [TransactionController::class, 'index'])
+            ->name('transactions.index');
+
+});
+
