@@ -120,34 +120,39 @@
                             <div class="col-md-3">
                                 <label class="form-label">Mã người dùng</label>
                                 <input class="form-control form-control-sm" name="code" type="text"
-                                    placeholder="Nhập mã người dùng..." data-filter>
+                                    value="{{ request()->input('code') ?? '' }}" placeholder="Nhập mã người dùng..."
+                                    data-advanced-filter>
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label">Tên khách hàng</label>
                                 <input class="form-control form-control-sm" name="name" type="text"
-                                    placeholder="Nhập tên khách hàng..." data-filter>
+                                    value="{{ request()->input('name') ?? '' }}" placeholder="Nhập tên khách hàng..."
+                                    data-advanced-filter>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <label class="form-label">Email</label>
-                                <input class="form-control form-control-sm" name="email" type="email"
-                                    placeholder="Nhập email..." data-filter>
+                                <input class="form-control form-control-sm" name="email" name="email" type="email"
+                                    value="{{ request()->input('email') ?? '' }}" placeholder="Nhập email..."
+                                    data-advanced-filter>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <label class="form-label">Số điện thoại</label>
-                                <input class="form-control form-control-sm" type="text"
-                                    placeholder="Nhập số điện thoại..." data-filter>
+                                <input class="form-control form-control-sm" name="profile_phone_user" type="text"
+                                    value="{{ request()->input('profile_phone_user') ?? '' }}"
+                                    placeholder="Nhập số điện thoại..." data-advanced-filter>
                             </div>
                             <div class="col-md-3">
                                 <label for="statusItem" class="form-label">Trạng thái</label>
-                                <select class="form-select form-select-sm" name="status" id="statusItem" data-filter>
+                                <select class="form-select form-select-sm" name="status" id="statusItem"
+                                    data-advanced-filter>
                                     <option value="">Tất cả trạng thái</option>
-                                    <option value="completed">Hoàn thành</option>
-                                    <option value="pending">Đang xử lý</option>
-                                    <option value="failed">Thất bại</option>
+                                    <option @selected(request()->input('status') === 'active') value="active">Hoạt động</option>
+                                    <option @selected(request()->input('status') === 'inactive') value="inactive">Không hoạt động</option>
+                                    <option @selected(request()->input('status') === 'blocked') value="blocked">Khóa</option>
                                 </select>
                             </div>
                             <div class="mt-3 text-end">
-                                <button class="btn btn-sm btn-primary">Áp dụng</button>
+                                <button class="btn btn-sm btn-primary" id="applyAdvancedFilter">Áp dụng</button>
                             </div>
                         </div>
                     </div>
@@ -178,7 +183,8 @@
                                     <div class="d-flex justify-content-sm-end">
                                         <div class="search-box ms-2">
                                             <input type="text" name="search_full" id="searchFull"
-                                                class="form-control search" placeholder="Tìm kiếm..." data-search>
+                                                class="form-control search" placeholder="Tìm kiếm..." data-search
+                                                value="{{ request()->input('search_full') ?? '' }}">
                                             <button id="search-full" class="ri-search-line search-icon m-0 p-0 border-0"
                                                 style="background: none;"></button>
                                         </div>
@@ -194,8 +200,9 @@
                                                 <input type="checkbox" id="checkAll">
                                             </th>
                                             <th>STT</th>
-                                            <th>Tên</th>
+                                            <th>Họ và tên</th>
                                             <th>Email</th>
+                                            <th>Số điện thoại</th>
                                             <th>Xác minh email</th>
                                             <th>Trạng Thái</th>
                                             <th>Vai Trò</th>
@@ -220,6 +227,7 @@
                                                         class="fw-medium link-primary">{{ $loop->index + 1 }}</a></td>
                                                 <td class="customer_name">{{ $user->name }}</td>
                                                 <td class="email">{{ $user->email }}</td>
+                                                <td class="phone">{{ $user->profile->phone ?? 'Chưa nhập' }}</td>
                                                 <td>
                                                     <div class="form-check form-switch form-switch-warning">
                                                         <input class="form-check-input" type="checkbox" role="switch"
@@ -229,15 +237,15 @@
                                                 </td>
                                                 <td class="status">
                                                     @if ($user->status === 'active')
-                                                        <span class="badge bg-success w-50">
+                                                        <span class="badge bg-success w-100">
                                                             Active
                                                         </span>
                                                     @elseif($user->status === 'inactive')
-                                                        <span class="badge bg-warning w-50">
+                                                        <span class="badge bg-warning w-100">
                                                             Inactive
                                                         </span>
                                                     @else
-                                                        <span class="badge bg-danger w-50">
+                                                        <span class="badge bg-danger w-100">
                                                             Block
                                                         </span>
                                                     @endif
@@ -255,7 +263,7 @@
                                                             default => 'bg-primary',
                                                         };
                                                     @endphp
-                                                    <span class="badge {{ $badgeColor }} w-75">
+                                                    <span class="badge {{ $badgeColor }} w-100">
                                                         {{ Str::ucfirst($roleName) }}
                                                     </span>
                                                 </td>

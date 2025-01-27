@@ -16,4 +16,8 @@ class Profile extends Model
         'experience',
         'bio'
     ];
+    
+    public function user(){
+        return $this->hasOne(User::class);
+    }
 }

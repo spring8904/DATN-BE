@@ -81,6 +81,18 @@
                             @enderror
                         </div>
                         <div class="col-md-12">
+                            <label for="">Trạng thái</label>
+                            <select name="status" id="" class="form-select mb-2">
+                                <option value="">Chọn trạng thái</option>
+                                <option @selected(old('status') == 'active') value="active">Active</option>
+                                <option @selected(old('status') == 'inactive') value="inactive">Inactive</option>
+                                <option @selected(old('status') == 'blocked') value="blocked">Blocked</option>
+                            </select>
+                            @error('status')
+                                <span class="text-danger mt-2">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="col-md-12">
                             <label for="">Vai trò</label>
                             <select name="role" id="" class="form-select mb-2">
                                 <option value="">Chọn vai trò</option>

@@ -14,6 +14,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $startTime = microtime(true);
+
         $this->call([
             RoleSeeder::class,
             PermissionsSeeder::class,
@@ -27,5 +29,9 @@ class DatabaseSeeder extends Seeder
             WithdrawalsRequestSeeder::class,
             TransactionSeeder::class,
         ]);
+
+        $endTime = microtime(true);
+
+        echo 'Thời gian thực hiện: '. round($endTime - $startTime) . 's';
     }
 }

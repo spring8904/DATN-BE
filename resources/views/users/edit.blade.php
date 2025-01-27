@@ -10,9 +10,12 @@
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Dashboard</a></li>
-                            <li class="breadcrumb-item active"><a href="{{ route('admin.' . (session('nameRouteUser')['role_name'] ?? 'clients') . '.index') }}">Danh sách người dùng</a></li>
-                            <li class="breadcrumb-item active"><a href="{{route('admin.users.edit', $user->id)}}">Cập nhật người dùng</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+                            <li class="breadcrumb-item active"><a
+                                    href="{{ route('admin.' . (session('nameRouteUser')['role_name'] ?? 'clients') . '.index') }}">Danh
+                                    sách người dùng</a></li>
+                            <li class="breadcrumb-item active"><a href="{{ route('admin.users.edit', $user->id) }}">Cập nhật
+                                    người dùng</a></li>
                         </ol>
                     </div>
 
@@ -71,18 +74,31 @@
                             </div>
                             <div class="col-md-12 mb-3">
                                 <label class="form-label">Avatar mới</label>
-                                <input type="file"  name="avatar" id="imageInput" accept="image/*" class="form-control mb-2">
+                                <input type="file" name="avatar" id="imageInput" accept="image/*"
+                                    class="form-control mb-2">
                                 <img id="imagePreview" style="display: none; max-width: 100%; max-height: 300px;">
                                 @error('avatar')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div> <!-- end col -->
                             <div class="col-md-12 mb-3">
+                                <label for="">Trạng thái</label>
+                                <select name="status" id="" class="form-select mb-2">
+                                    <option value="">Chọn trạng thái</option>
+                                    <option @selected($user->status === 'active') value="active">Active</option>
+                                    <option @selected($user->status === 'inactive') value="inactive">Inactive</option>
+                                    <option @selected($user->status === 'blocked') value="blocked">Blocked</option>
+                                </select>
+                                @error('status')
+                                    <span class="text-danger mt-2">{{ $message }}</span>
+                                @enderror
+                            </div>
+                            <div class="col-md-12 mb-3">
                                 <label for="">Vai trò</label>
                                 <select name="role" id="" class="form-select mb-2">
                                     <option value="">Chọn vai trò</option>
                                     @foreach ($roles as $role)
-                                        <option {{ $user->roles->first()->name == $role ? 'selected' : '' }}  value="{{ $role }}">
+                                        <option @selected($user->roles->first()->name == $role) value="{{ $role }}">
                                             {{ Str::ucfirst($role) }}</option>
                                     @endforeach
                                 </select>
@@ -103,7 +119,9 @@
                             <div class="col-12">
                                 <div class="text-start">
                                     <button type="submit" class="btn btn-primary">Cập nhật</button>
-                                    <a class="btn btn-success" href="{{ route('admin.' . (session('nameRouteUser')['role_name'] ?? 'clients') . '.index') }}">Quay lại</a>
+                                    <a class="btn btn-success"
+                                        href="{{ route('admin.' . (session('nameRouteUser')['role_name'] ?? 'clients') . '.index') }}">Quay
+                                        lại</a>
                                 </div>
                             </div>
                         </div>

@@ -22,7 +22,7 @@
             <div class="d-flex justify-content-sm-end">
                 <div class="search-box ms-2">
                     <input type="text" name="search_full" id="searchFull" class="form-control search"
-                        placeholder="Tìm kiếm..." data-search  value="{{ request()->input('search_full') ?? '' }}">
+                        placeholder="Tìm kiếm..." data-search value="{{ request()->input('search_full') ?? '' }}">
                     <button id="search-full" class="ri-search-line search-icon m-0 p-0 border-0"
                         style="background: none;"></button>
                 </div>
@@ -38,8 +38,9 @@
                         <input type="checkbox" id="checkAll">
                     </th>
                     <th>STT</th>
-                    <th>Tên</th>
+                    <th>Họ và tên</th>
                     <th>Email</th>
+                    <th>Số điện thoại</th>
                     <th>Xác minh email</th>
                     <th>Trạng Thái</th>
                     <th>Vai Trò</th>
@@ -63,6 +64,7 @@
                         <td class="id"><a class="fw-medium link-primary">{{ $loop->index + 1 }}</a></td>
                         <td class="customer_name">{{ $user->name }}</td>
                         <td class="email">{{ $user->email }}</td>
+                        <td class="phone">{{ $user->profile->phone ?? 'Chưa nhập' }}</td>
                         <td>
                             <div class="form-check form-switch form-switch-warning">
                                 <input class="form-check-input" type="checkbox" role="switch"
@@ -72,15 +74,15 @@
                         </td>
                         <td class="status">
                             @if ($user->status === 'active')
-                                <span class="badge bg-success w-50">
+                                <span class="badge bg-success w-100">
                                     Active
                                 </span>
                             @elseif($user->status === 'inactive')
-                                <span class="badge bg-warning w-50">
+                                <span class="badge bg-warning w-100">
                                     Inactive
                                 </span>
                             @else
-                                <span class="badge bg-danger w-50">
+                                <span class="badge bg-danger w-100">
                                     Block
                                 </span>
                             @endif
@@ -96,7 +98,7 @@
                                     default => 'bg-primary',
                                 };
                             @endphp
-                            <span class="badge {{ $badgeColor }} w-75">
+                            <span class="badge {{ $badgeColor }} w-100">
                                 {{ Str::ucfirst($roleName) }}
                             </span>
                         </td>
