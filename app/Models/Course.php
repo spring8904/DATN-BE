@@ -77,4 +77,9 @@ class Course extends Model
         });
     }
 
+    public function approvables()
+    {
+        return $this->morphMany(Approvable::class, 'approvable');
+    }
+
 }

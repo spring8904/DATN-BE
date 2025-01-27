@@ -35,7 +35,6 @@ class SendRequestController extends Controller
                 $approvable = new Approvable();
                 $approvable->approvable_id = $course->id;
                 $approvable->approvable_type = Course::class;
-                $approvable->user_id = auth()->id();
                 $approvable->status = 'pending';
                 $approvable->request_date = now();
                 $approvable->save();

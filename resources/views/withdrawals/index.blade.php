@@ -79,7 +79,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <button class="btn btn-sm btn-success">Export dữ liệu</button>
+                            <a href="{{ route('admin.withdrawals.export') }}" class="btn btn-sm btn-success">Export dữ liệu</a>
                             <button class="btn btn-sm btn-primary" id="toggleAdvancedSearch">
                                 Tìm kiếm nâng cao
                             </button>
