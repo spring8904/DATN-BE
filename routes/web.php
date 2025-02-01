@@ -93,6 +93,7 @@ Route::prefix('admin')->as('admin.')
                 ->can('role.edit');
             Route::delete('/{role}', [RoleController::class, 'destroy'])->name('destroy')
                 ->can('role.delete');
+            Route::post('/import', [RoleController::class, 'import'])->name('import');
         });
 
         #============================== ROUTE PERMISSION =============================
@@ -199,6 +200,7 @@ Route::prefix('admin')->as('admin.')
             Route::delete('/{supportBank}', [SupportBankController::class, 'destroy'])->name('destroy')
                 ->can('support-bank.delete');
         });
+
         #============================== ROUTE APPROVAL =============================
         Route::prefix('approvals')
             ->as('approvals.')
@@ -213,9 +215,9 @@ Route::prefix('admin')->as('admin.')
 
         #============================== ROUTE INVOICE =============================
         Route::get('/invoices', [InvoiceController::class, 'index'])
-        ->name('invoices.index');
+            ->name('invoices.index');
 
-        #============================== ROUTE WIDTHDRAWALS =============================
+        #============================== ROUTE WITH DRAWALS =============================
         Route::prefix('withdrawals')
             ->as('withdrawals.')
             ->group(function () {
@@ -226,5 +228,4 @@ Route::prefix('admin')->as('admin.')
         #============================== ROUTE TRANSACTIONS =============================
         Route::get('/transactions', [TransactionController::class, 'index'])
             ->name('transactions.index');
-
-});
+    });
