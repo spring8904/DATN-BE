@@ -31,6 +31,7 @@ class UpdateUserRequest extends FormRequest
             'name'       => ['required', 'string', 'min:2', 'max:255', 'regex:/^[\pL\s]+$/u'],
             'email'      => ['required', 'email', Rule::unique('users','email')->ignore($this->route('user')), 'max:255', 'regex:/^[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/'],
             'avatar'     => ['nullable', 'image', 'max:2000'],
+            'status'     => ['required', 'in:active,inactive,blocked'],
             'role' => [
                 'required',
                 'in:' . implode(',', $roles),
@@ -57,6 +58,10 @@ class UpdateUserRequest extends FormRequest
             // Avatar
             'avatar.image'  => 'Hình ảnh đại diện phải là một tệp hình ảnh.',
             'avatar.max'    => 'Hình ảnh đại diện không được vượt quá 2MB.',
+
+            //Trạng thái
+            'status.required' => 'Trạng thái là bắt buộc.',
+            'status.in' => 'Trạng thái phải là một trong các giá trị: active, inactive, hoặc blocked.',
 
             // Vai trò
             'role.required' => 'Vai trò là bắt buộc.',

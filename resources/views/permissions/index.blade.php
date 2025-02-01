@@ -2,6 +2,10 @@
 
 @section('title', $title)
 
+@push('page-css')
+    <link href="{{ asset('assets/css/custom.css') }}" rel="stylesheet" type="text/css" />
+@endpush
+
 @section('content')
     <div class="container-fluid">
         <div class="row">
@@ -63,8 +67,72 @@
                 <div class="card">
                     <div class="card-header align-items-center d-flex">
                         <h4 class="card-title mb-0 flex-grow-1">{{ $subTitle ?? '' }}</h4>
+                        <div class="d-flex gap-2">
+                            <div class="col-sm">
+                                <div class="d-flex justify-content-sm-end">
+                                    <div class="search-box ms-2">
+                                        <input type="text" name="search_full" class="form-control search h-75"
+                                            placeholder="Tìm kiếm..." data-search>
+                                        <button id="search-full" class="h-75 ri-search-line search-icon m-0 p-0 border-0"
+                                            style="background: none;"></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn-sm btn-success h-75">Export dữ liệu</button>
+                            <button class="btn btn-sm btn-primary h-75" id="toggleAdvancedSearch">
+                                Tìm kiếm nâng cao
+                            </button>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-primary h-75" type="button" id="filterDropdown"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="ri-filter-2-line"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="filterDropdown"
+                                    style="min-width: 500px;">
+                                    <div class="container">
+                                        <div class="row">
+                                            <li class="col-6">
+                                                <div class="mb-2">
+                                                    <label for="startDate" class="form-label">Từ ngày</label>
+                                                    <input type="date" class="form-control form-control-sm"
+                                                        name="created_at" id="dateRequest" data-filter>
+                                                </div>
+                                            </li>
+                                            <li class="col-6">
+                                                <div class="mb-2">
+                                                    <label for="endDate" class="form-label">Đến ngày</label>
+                                                    <input type="date" class="form-control form-control-sm"
+                                                        name="updated_at" id="dateComplete" data-filter>
+                                                </div>
+                                            </li>
+                                        </div>
+                                        <li class="mt-2">
+                                            <button class="btn btn-sm btn-primary w-100" id="applyFilter">Áp dụng</button>
+                                        </li>
+                                    </div>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-body">
+                    <!-- Tìm kiếm nâng cao -->
+                    <div id="advancedSearch" class="card-header" style="display:none;">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="form-label">Quyền</label>
+                                <input class="form-control form-control-sm" name="name" type="text"
+                                    placeholder="Nhập quyền..." data-advanced-filter>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Mô tả</label>
+                                <input class="form-control form-control-sm" name="description" type="text"
+                                    placeholder="Nhập mô tả quyền..." data-advanced-filter>
+                            </div>
+                            <div class="mt-3 text-end">
+                                <button class="btn btn-sm btn-primary" id="applyAdvancedFilter">Áp dụng</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body" id="item_List">
                         <div class="live-preview">
                             <div class="table-responsive">
                                 <table class="table table-striped table-nowrap align-middle mb-0">
@@ -113,3 +181,12 @@
 
     </div>
 @endSection
+@push('page-scripts')
+    <script>
+        var routeUrlFilter = "{{ route('admin.permissions.index') }}";
+    </script>
+    <script src="{{ asset('assets/js/custom/custom.js') }}"></script>
+    <script src="{{ asset('assets/js/common/filter.js') }}"></script>
+    <script src="{{ asset('assets/js/common/search.js') }}"></script>
+    <script src="{{ asset('assets/js/common/handle-ajax-search&filter.js') }}"></script>
+@endpush

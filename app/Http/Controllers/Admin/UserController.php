@@ -21,6 +21,7 @@ class UserController extends Controller
     const FOLDER = 'users';
     const URLIMAGEDEFAULT = "https://res.cloudinary.com/dvrexlsgx/image/upload/v1732148083/Avatar-trang-den_apceuv_pgbce6.png";
 
+
     /**
      * Display a listing of the resource.
      */
@@ -34,7 +35,7 @@ class UserController extends Controller
             $actorRole = $roleUser['role_name'];
             session(['nameRouteUser' => $roleUser]);
 
-            $queryUsers = User::query()->latest('id');
+            $queryUsers = User::query()->latest('id')->with('profile');
 
             $queryUserCounts = User::query()
                 ->selectRaw('
@@ -44,7 +45,13 @@ class UserController extends Controller
                     sum(status = "blocked") as blocked_users
                 ');
 
-            $queryUsers= $this->filterSearch($queryUsers,$request);
+            if ($request->hasAny(['code', 'name', 'email', 'profile_phone_user', 'status', 'created_at', 'updated_at'])) {
+                $queryUsers = $this->filter($request, $queryUsers);
+            }
+
+            if ($request->has('search_full')) {
+                $queryUsers = $this->search($request->search_full, $queryUsers);
+            }
 
             if ($roleUser['name'] === 'deleted') {
                 $queryUsers->with('roles:name')->onlyTrashed();
@@ -62,8 +69,8 @@ class UserController extends Controller
             $users = $queryUsers->paginate(10);
             $userCounts = $queryUserCounts->first();
 
-            if ($request->ajax() && $request->hasAny(['status', 'start_date', 'end_date', 'search_full'])) {
-                $html = view('users.table', compact(['users', 'userCounts', 'subTitle', 'title', 'roleUser', 'actorRole']))->render();
+            if ($request->ajax()) {
+                $html = view('users.table', compact(['users', 'roleUser', 'actorRole']))->render();
                 return response()->json(['html' => $html]);
             }
 
@@ -111,14 +118,14 @@ class UserController extends Controller
             $data = $request->except('avatar');
 
             if ($request->hasFile('avatar')) {
-                $data['avatar'] = $this->uploadImage($request->file('avatar'), self::FOLDER);
+                $urlAvatar = $this->uploadImage($request->file('avatar'), self::FOLDER);
             }
 
             do {
                 $data['code'] = str_replace('-', '', Str::uuid()->toString());
             } while (User::query()->where('code', $data['code'])->exists());
 
-            $data['avatar'] = $data['avatar'] ?? self::URLIMAGEDEFAULT;
+            $data['avatar'] = $urlAvatar ?? self::URLIMAGEDEFAULT;
 
             $data['email_verified_at'] = now();
 
@@ -130,12 +137,15 @@ class UserController extends Controller
 
             CrudNotification::sendToMany([], $user->id);
 
-            return redirect()->route('admin.users.create')->with('success', 'Thêm mới thành công');
+            $routeUserByRole = $request->role === 'admin' ? 'admins'
+                : ($request->role === 'instructor' ? 'instructors' : 'clients');
+
+            return redirect()->route('admin.' . $routeUserByRole . '.index')->with('success', 'Thêm mới thành công');
         } catch (\Exception $e) {
             DB::rollBack();
 
-            if (isset($data['avatar']) && !empty($data['avatar']) && filter_var($data['avatar'], FILTER_VALIDATE_URL)) {
-                $this->deleteImage($data['avatar'], self::FOLDER);
+            if (isset($urlAvatar) && filter_var($urlAvatar, FILTER_VALIDATE_URL)) {
+                $this->deleteImage($urlAvatar, self::FOLDER);
             }
 
 
@@ -154,6 +164,8 @@ class UserController extends Controller
 
             $title = 'Quản lý thành viên';
             $subTitle = 'Chi tiết người dùng';
+
+            $user->load('profile');
 
             return view('users.show', compact([
                 'user',
@@ -491,35 +503,66 @@ class UserController extends Controller
         return $roles[$role] ?? ['name' => 'member', 'actor' => 'khách hàng', 'role_name' => 'clients'];
     }
 
-    private function filterSearch($queryUsers, $request)
+    private function filter($request, $query)
     {
         $filters = [
-            'status' => ['queryWhere' => '='],
             'created_at' => ['queryWhere' => '>='],
             'updated_at' => ['queryWhere' => '<='],
+            'code' => ['queryWhere' => 'LIKE'],
+            'name' => ['queryWhere' => 'LIKE'],
+            'email' => ['queryWhere' => 'LIKE'],
+            'status' => ['queryWhere' => '='],
+            'profile_phone_user' => null,
         ];
 
         foreach ($filters as $filter => $value) {
             $filterValue = $request->input($filter);
 
             if (!empty($filterValue)) {
-                $queryUsers->where($filter, $value['queryWhere'], $filterValue);
+
+                if (is_array($value) && !empty($value['queryWhere'])) {
+
+                    if ($value['queryWhere'] !== 'BETWEEN') {
+                        $filterValue = $value['queryWhere'] === 'LIKE' ? "%$filterValue%" : $filterValue;
+                        $query->where($filter, $value['queryWhere'], $filterValue);
+                    } else {
+                        $filterValueBetweenA = $request->input($value['attribute'][0]);
+                        $filterValueBetweenB = $request->input($value['attribute'][1]);
+
+                        if (!empty($filterValueBetweenA) && !empty($filterValueBetweenB)) {
+                            $query->whereBetween($filter, [$filterValueBetweenA, $filterValueBetweenB]);
+                        }
+                    }
+                } else {
+                    if (str_contains($filter, '_')) {
+                        $elementFilter = explode('_', $filter);
+                        $relation = $elementFilter[0];
+                        $field = $elementFilter[1];
+
+                        if (method_exists($query->getModel(), $relation)) {
+
+                            $query->whereHas($relation, function ($query) use ($field, $filterValue) {
+                                $query->where($field, 'LIKE', "%$filterValue%");
+                            });
+                        }
+                    }
+                }
             }
         }
 
-        $queryUsers = $this->filterBySearchFull($queryUsers, $request);
-
-        return $queryUsers;
+        return $query;
     }
 
-    private function filterBySearchFull($query, $request)
+    private function search($searchTerm, $query)
     {
-        $query->when($request->search_full, function($query, $searchTerm) {
-            $query->where(function($query) use ($searchTerm) {
-                $query->where('name', 'LIKE', "%$searchTerm%")
-                      ->orWhere('email', 'LIKE', "%$searchTerm%");
-            });
-        });
+        if (!empty($searchTerm)) {
+            $query->whereHas('profile', function ($query) use ($searchTerm) {
+                $query->where('phone', 'LIKE', "%$searchTerm%");
+            })
+                ->orWhere('name', 'LIKE', "%$searchTerm%")
+                ->orWhere('email', 'LIKE', "%$searchTerm%")
+                ->orWhere('code', 'LIKE', "%$searchTerm%");
+        }
 
         return $query;
     }

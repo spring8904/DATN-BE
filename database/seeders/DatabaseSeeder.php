@@ -14,10 +14,24 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $startTime = microtime(true);
+
         $this->call([
+            RoleSeeder::class,
+            PermissionsSeeder::class,
+            SupportedBankSeeder::class,
             UserSeeder::class,
             WalletSedder::class,
+            BannerSeeder::class,
+            CategorySeeder::class,
+            CourseSeeder::class,
+            InvoiceSeeder::class,
             WithdrawalsRequestSeeder::class,
+            TransactionSeeder::class,
         ]);
+
+        $endTime = microtime(true);
+
+        echo 'Thời gian thực hiện: '. round($endTime - $startTime) . 's';
     }
 }

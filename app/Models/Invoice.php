@@ -22,4 +22,14 @@ class Invoice extends Model
     protected $attributes = [
         'status' => 'pending'
     ];
+
+    public function course()
+    {
+        return $this->belongsTo(Course::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

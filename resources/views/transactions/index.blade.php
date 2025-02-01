@@ -11,12 +11,12 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0">Yêu cầu rút tiền</h4>
+                    <h4 class="mb-sm-0">Giao dịch thanh toán</h4>
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
                             <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
                             <li class="breadcrumb-item active"><a
-                                    href="{{ route('admin.withdrawals.index') }}">{{ $subTitle }}</a></li>
+                                    href="{{ route('admin.transactions.index') }}">{{ $subTitle }}</a></li>
                         </ol>
                     </div>
 
@@ -27,35 +27,27 @@
 
         <!-- social-customer -->
         <div class="row mb-2">
-            <div class="col-12 col-sm-6 col-md-3">
+            <div class="col-12 col-sm-6 col-md-4">
                 <div class="card text-center h-75">
                     <div class="card-body">
-                        <h5 class="card-title">Tổng số yêu cầu rút tiền</h5>
-                        <p class="card-text fs-4">{{ $countWithdrawals->total_withdrawals ?? 0 }}</p>
+                        <h5 class="card-title">Tổng số giao dịch</h5>
+                        <p class="card-text fs-4">{{ $countTransactions->total_transactions ?? 0 }}</p>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-sm-6 col-md-3">
+            <div class="col-12 col-sm-6 col-md-4">
                 <div class="card text-center h-75">
                     <div class="card-body">
-                        <h5 class="card-title">Yêu cầu rút tiền đang chờ duyệt</h5>
-                        <p class="card-text fs-4 text-success">{{ $countWithdrawals->completed_withdrawals ?? 0 }}</p>
+                        <h5 class="card-title">Số giao dịch mua khóa học</h5>
+                        <p class="card-text fs-4 text-success">{{ $countTransactions->invoice_transactions ?? 0 }}</p>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-sm-6 col-md-3">
+            <div class="col-12 col-sm-6 col-md-4">
                 <div class="card text-center h-75">
                     <div class="card-body">
-                        <h5 class="card-title">Yêu cầu rút tiền thành công</h5>
-                        <p class="card-text fs-4 text-warning">{{ $countWithdrawals->pending_withdrawals ?? 0 }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-6 col-md-3">
-                <div class="card text-center h-75">
-                    <div class="card-body">
-                        <h5 class="card-title">Yêu cầu rút tiền thất bại</h5>
-                        <p class="card-text fs-4 text-danger">{{ $countWithdrawals->failed_withdrawals ?? 0 }}</p>
+                        <h5 class="card-title">Số giao dịch rút tiền</h5>
+                        <p class="card-text fs-4 text-warning">{{ $countTransactions->withdrawal_transactions ?? 0 }}</p>
                     </div>
                 </div>
             </div>
@@ -67,7 +59,7 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h4 class="card-title mb-0">Danh sách yêu cầu rút tiền</h4>
+                        <h4 class="card-title mb-0">Danh sách giao dịch thanh toán</h4>
                         <div class="d-flex gap-2">
                             <div class="col-sm">
                                 <div class="d-flex justify-content-sm-end">
@@ -79,8 +71,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <a href="{{ route('admin.withdrawals.export') }}" class="btn btn-sm btn-success">Export dữ liệu</a>
-                            <button class="btn btn-sm btn-primary" id="toggleAdvancedSearch">
+                            <button class="btn btn-sm btn-success h-75">Export dữ liệu</button>
+                            <button class="btn btn-sm btn-primary h-75" id="toggleAdvancedSearch">
                                 Tìm kiếm nâng cao
                             </button>
                             <div class="dropdown">
@@ -98,22 +90,31 @@
                                                 <span id="amountMin">10,000 VND</span>
                                                 <span id="amountMax">99,999,999 VND</span>
                                             </div>
+
+                                            <div class="d-flex justify-content-between">
+                                                <input type="range" class="form-range w-50" id="amountMinRange"
+                                                    name="amount_min" min="10000" max="49990000" step="10000"
+                                                    value="10000" oninput="updateRange()" data-filter>
+                                                <input type="range" class="form-range w-50" id="amountMaxRange"
+                                                    name="amount_max" min="50000000" max="99990000" step="10000"
+                                                    value="99990000" oninput="updateRange()" data-filter>
+                                            </div>
                                         </li>
                                         <div class="row">
                                             <li class="col-6">
                                                 <div class="mb-2">
                                                     <label for="startDate" class="form-label">Ngày yêu cầu</label>
                                                     <input type="date" class="form-control form-control-sm"
-                                                        name="request_date" id="dateRequest" data-filter
-                                                        value="{{ request()->input('request_date') ?? '' }}">
+                                                        name="created_at" id="dateRequest" data-filter
+                                                        value="{{ request()->input('created_at') ?? '' }}">
                                                 </div>
                                             </li>
                                             <li class="col-6">
                                                 <div class="mb-2">
                                                     <label for="endDate" class="form-label">Ngày xác nhận</label>
                                                     <input type="date" class="form-control form-control-sm"
-                                                        name="completed_date" id="dateComplete" data-filter
-                                                        value="{{ request()->input('completed_date') ?? '' }}">
+                                                        name="updated_at" id="dateComplete" data-filter
+                                                        value="{{ request()->input('updated_at') ?? '' }}">
                                                 </div>
                                             </li>
                                         </div>
@@ -128,21 +129,15 @@
                     <!-- Tìm kiếm nâng cao -->
                     <div id="advancedSearch" class="card-header" style="display:none;">
                         <div class="row">
-                            <div class="col-md-3">
-                                <label class="form-label">Tên chủ tài khoản</label>
-                                <input class="form-control form-control-sm" name="account_holder" type="text"
-                                    placeholder="Nhập tên chủ tài khoản..."
-                                    value="{{ request()->input('account_holder') ?? '' }}" data-advanced-filter>
+                            <div class="col-md-4">
+                                <label class="form-label">Người thực hiện giao dịch</label>
+                                <input class="form-control form-control-sm" name="user_transaction" type="text"
+                                    placeholder="Nhập tên người thực hiện giao dịch..."
+                                    value="{{ request()->input('user_transaction') ?? '' }}" data-advanced-filter>
                             </div>
-                            <div class="col-md-3">
-                                <label class="form-label">Số tài khoản</label>
-                                <input class="form-control form-control-sm" name="account_number" type="text"
-                                    placeholder="Nhập tên số tài khoản..."
-                                    value="{{ request()->input('account_number') ?? '' }}" data-advanced-filter>
-                            </div>
-                            <div class="col-md-3">
-                                <label for="statusItem" class="form-label">Trạng thái</label>
-                                <select class="form-select form-select-sm" name="status" id="statusItem"
+                            <div class="col-md-4">
+                                <label for="statusTransaction" class="form-label">Trạng thái</label>
+                                <select class="form-select form-select-sm" name="status" id="statusTransaction"
                                     data-advanced-filter>
                                     <option value="">Tất cả trạng thái</option>
                                     <option value="completed" @selected(request()->input('status') === 'completed')>Hoàn thành</option>
@@ -150,17 +145,13 @@
                                     <option value="failed" @selected(request()->input('status') === 'failed')>Thất bại</option>
                                 </select>
                             </div>
-                            <div class="col-md-3">
-                                <label for="bankName" class="form-label">Ngân hàng</label>
-                                <select class="form-select form-select-sm" name="bank_name" id="bankName"
+                            <div class="col-md-4">
+                                <label for="typeTransaction" class="form-label">Loại giao dịch</label>
+                                <select class="form-select form-select-sm" name="type" id="typeTransaction"
                                     data-advanced-filter>
-                                    <option value="">Chọn ngân hàng</option>
-                                    <option value="Vietcombank" @selected(request()->input('bank_name') === 'Vietcombank')>Vietcombank</option>
-                                    <option value="VIB" @selected(request()->input('bank_name') === 'VIB')>VIB</option>
-                                    <option value="VietinBank" @selected(request()->input('bank_name') === 'VietinBank')>VietinBank</option>
-                                    <option value="MB Bank" @selected(request()->input('bank_name') === 'Bank')>MB Bank</option>
-                                    <option value="VPBank" @selected(request()->input('bank_name') === 'VPBank')>VPBank</option>
-                                    <option value="OCB" @selected(request()->input('bank_name') === 'OCB')>OCB</option>
+                                    <option value="">Tất cả trạng thái</option>
+                                    <option value="invoice" @selected(request()->input('type') === 'invoice')>Mua bán</option>
+                                    <option value="withdrawal" @selected(request()->input('type') === 'withdrawal')>Rút tiền</option>
                                 </select>
                             </div>
                             <div class="mt-3 text-end">
@@ -176,46 +167,51 @@
                                     <thead class="table-light">
                                         <tr>
                                             <th>STT</th>
-                                            <th>Tên chủ tài khoản</th>
-                                            <th>Số tài khoản</th>
-                                            <th>Ngân hàng</th>
+                                            <th>Người thực hiện giao dịch</th>
                                             <th>Số tiền</th>
-                                            <th>Ghi chú</th>
+                                            <th>Loại giao dịch</th>
                                             <th>Trạng thái</th>
-                                            <th>Ngày yêu cầu</th>
-                                            <th>Ngày xác nhận</th>
+                                            <th>Ngày tạo giao dịch</th>
+                                            <th>Ngày cập nhật giao dịch</th>
                                         </tr>
                                     </thead>
                                     <tbody class="list">
-                                        @foreach ($withdrawals as $withdrawal)
+                                        @foreach ($transactions as $transaction)
                                             <tr>
                                                 <td>{{ $loop->index + 1 }}</td>
-                                                <td>{{ $withdrawal->account_holder }}</td>
-                                                <td><span class="text-danger">{{ $withdrawal->account_number }}</span>
+                                                <td><span
+                                                        class="text-primary fw-bold">{{ $transaction->user->name }}</span>
                                                 </td>
-                                                <td>{{ $withdrawal->bank_name }}</td>
-                                                <td>{{ number_format($withdrawal->amount) }} VND</td>
+                                                <td>{{ number_format($transaction->amount) }} VND</td>
                                                 <td>
-                                                    <textarea class="border-0 bg-white" disabled>{{ $withdrawal->note }}</textarea>
+                                                    @if ($transaction->type === 'invoice')
+                                                        <span class="badge bg-success w-50">
+                                                            Mua bán
+                                                        </span>
+                                                    @elseif($transaction->type === 'withdrawal')
+                                                        <span class="badge bg-info w-50">
+                                                            Rút tiền
+                                                        </span>
+                                                    @endif
                                                 </td>
                                                 <td>
-                                                    @if ($withdrawal->status === 'completed')
-                                                        <span class="badge bg-success w-100">
+                                                    @if ($transaction->status === 'completed')
+                                                        <span class="badge bg-success w-75">
                                                             Hoàn thành
                                                         </span>
-                                                    @elseif($withdrawal->status === 'pending')
-                                                        <span class="badge bg-warning w-100">
+                                                    @elseif($transaction->status === 'pending')
+                                                        <span class="badge bg-warning w-75">
                                                             Đang xử lý
                                                         </span>
                                                     @else
-                                                        <span class="badge bg-danger w-100">
+                                                        <span class="badge bg-danger w-75">
                                                             Thất bại
                                                         </span>
                                                     @endif
                                                 </td>
-                                                <td>{{ optional(\Carbon\Carbon::parse($withdrawal->request_date))->format('d/m/Y') ?? 'NULL' }}
+                                                <td>{{ optional(\Carbon\Carbon::parse($transaction->created_at))->format('d/m/Y') ?? 'NULL' }}
                                                 </td>
-                                                <td>{{ optional(\Carbon\Carbon::parse($withdrawal->completed_date))->format('d/m/Y') ?? 'NULL' }}
+                                                <td>{{ optional(\Carbon\Carbon::parse($transaction->updated_at))->format('d/m/Y') ?? 'NULL' }}
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -224,7 +220,7 @@
                             </div>
 
                             <div class="row justify-content-end">
-                                {{ $withdrawals->appends(request()->query())->links() }}
+                                {{ $transactions->appends(request()->query())->links() }}
                             </div>
                         </div>
                     </div>
@@ -239,7 +235,7 @@
 
 @push('page-scripts')
     <script>
-        var routeUrlFilter = "{{ route('admin.withdrawals.index') }}";
+        var routeUrlFilter = "{{ route('admin.transactions.index') }}";
 
         function updateRange() {
             var minValue = $('#amountMinRange').val();

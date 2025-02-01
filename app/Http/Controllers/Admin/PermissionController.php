@@ -17,12 +17,25 @@ class PermissionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $permissions = Permission::all()->groupBy(function ($permission) {
+            $queryPermissions = Permission::query();
+
+            if ($request->hasAny(['name', 'description', 'created_at', 'updated_at']))
+                $queryPermissions = $this->filter($request, $queryPermissions);
+
+            if ($request->has('search_full'))
+                $queryPermissions = $this->search($request->search_full, $queryPermissions);
+
+            $permissions = $queryPermissions->get()->groupBy(function ($permission) {
                 return Str::before($permission->name, '.');
             });
+
+            if ($request->ajax()) {
+                $html = view('permissions.table', compact('permissions'))->render();
+                return response()->json(['html' => $html]);
+            }
 
             $title = 'Quản lý quyền';
             $subTitle = 'Danh sách quyền của hệ thống';
@@ -119,5 +132,35 @@ class PermissionController extends Controller
 
             return redirect()->back()->with('error', 'Có lỗi xảy ra, vui lòng thử lại sau');
         }
+    }
+    private function filter($request, $query)
+    {
+        $filters = [
+            'created_at' => ['queryWhere' => '>='],
+            'updated_at' => ['queryWhere' => '<='],
+            'name' => ['queryWhere' => 'LIKE'],
+            'description' => ['queryWhere' => 'LIKE'],
+        ];
+
+        foreach ($filters as $filter => $value) {
+            if (!empty($value['queryWhere'])) {
+                $filterValue = $request->input($filter);
+                if (!empty($filterValue)) {
+                    $filterValue = $value['queryWhere'] === 'LIKE' ? "%$filterValue%" : $filterValue;
+                    $query->where($filter, $value['queryWhere'], $filterValue);
+                }
+            }
+        }
+
+        return $query;
+    }
+
+    private function search($searchTerm, $query)
+    {
+        if (!empty($searchTerm)) {
+            $query->where('name', 'LIKE', "%$searchTerm%")->orWhere('description', 'LIKE', "%$searchTerm%");
+        }
+
+        return $query;
     }
 }
