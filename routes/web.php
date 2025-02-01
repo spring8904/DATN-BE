@@ -215,7 +215,7 @@ Route::prefix('admin')->as('admin.')
 
         #============================== ROUTE INVOICE =============================
         Route::get('/invoices', [InvoiceController::class, 'index'])
-        ->name('invoices.index');
+            ->name('invoices.index');
 
         #============================== ROUTE WITH DRAWALS =============================
         Route::prefix('withdrawals')
@@ -224,11 +224,8 @@ Route::prefix('admin')->as('admin.')
                 Route::get('/', [WithDrawalsRequestController::class, 'index'])->name('index');
                 Route::get('export', [WithDrawalsRequestController::class, 'export'])->name('export');
             });
-    });
 
         #============================== ROUTE TRANSACTIONS =============================
         Route::get('/transactions', [TransactionController::class, 'index'])
             ->name('transactions.index');
-
-});
-
+    });

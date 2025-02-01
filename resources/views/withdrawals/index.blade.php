@@ -99,7 +99,7 @@
                                                 <span id="amountMax">99,999,999 VND</span>
                                             </div>
 
-                                            <div class="d-flex justify-content-between">
+                                                 <div class="d-flex justify-content-between">
                                                 <input type="range" class="form-range w-50" id="amountMinRange"
                                                     name="amount_min" min="10000" max="49990000" step="10000"
                                                     value="10000" oninput="updateRange()" data-filter>
