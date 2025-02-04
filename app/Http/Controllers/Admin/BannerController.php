@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\StoreBannerRequest;
+use App\Http\Requests\Admin\Banners\StoreBannerRequest;
+use App\Http\Requests\Admin\StoreBannerRequest as AdminStoreBannerRequest;
+use App\Http\Requests\API\Banners\UpdateBannerRequest;
 use App\Models\Banner;
 use App\Traits\LoggableTrait;
 use App\Traits\UploadToCloudinaryTrait;
@@ -21,18 +23,23 @@ class BannerController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Banner::query();
+        $queryBanners = Banner::query();
 
         // Kiểm tra nếu có từ khóa tìm kiếm
         if ($request->has('query') && $request->input('query')) {
             $search = $request->input('query');
-            $query->where('title', 'like', "%$search%")
+            $queryBanners->where('title', 'like', "%$search%")
                 ->orWhere('content', 'like', "%$search%");
         }
-
+        if ($request->hasAny(['title', 'id', 'status', 'created_at', 'updated_at'])) {
+            $queryBanners = $this->filter($request, $queryBanners);
+        }
         // Lấy dữ liệu và phân trang
-        $banners = $query->orderBy('created_at', 'desc')->paginate(10);
-
+        $banners = $queryBanners->orderBy('created_at', 'desc')->paginate(10);
+        if ($request->ajax()) {
+            $html = view('banners.table', compact('banners'))->render();
+            return response()->json(['html' => $html]);
+        }
         return view('banners.index', compact('banners'));
     }
 
@@ -54,7 +61,7 @@ class BannerController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreBannerRequest $request)
+    public function store(AdminStoreBannerRequest $request)
     {
         try {
             DB::beginTransaction();
@@ -105,7 +112,7 @@ class BannerController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(StoreBannerRequest $request, $id)
+    public function update(UpdateBannerRequest $request, $id)
     {
         try {
             $data = $request->all();
@@ -126,7 +133,7 @@ class BannerController extends Controller
                 ) {
                     $this->deleteImage($imageOld, self::FOLDER);
                 }
-            }else {
+            } else {
                 $data['image'] = $imageOld;
             }
 
@@ -181,5 +188,32 @@ class BannerController extends Controller
                 ->with('success', false)
                 ->with('error', 'Lỗi.');
         }
+    }
+    private function filter($request, $query)
+    {
+        $filters = [
+            'created_at' => ['queryWhere' => '>='],
+            'updated_at' => ['queryWhere' => '<='],
+            'id' => ['queryWhere' => 'LIKE'],
+            'title' => ['queryWhere' => 'LIKE'],
+            'status' => ['queryWhere' => '=']
+        ];
+
+        foreach ($filters as $filter => $value) {
+            $filterValue = $request->input($filter);
+
+            if ($filterValue !== null) {
+
+                if (is_array($value) && !empty($value['queryWhere'])) {
+
+                    if ($value['queryWhere'] !== 'BETWEEN') {
+                        $filterValue = $value['queryWhere'] === 'LIKE' ? "%$filterValue%" : $filterValue;
+                        $query->where($filter, $value['queryWhere'], $filterValue);
+                    }
+                }
+            }
+        }
+
+        return $query;
     }
 }

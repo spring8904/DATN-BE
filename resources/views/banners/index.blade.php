@@ -15,7 +15,7 @@
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
                             <li class="breadcrumb-item active">Danh sách banner</li>
                         </ol>
                     </div>
@@ -26,12 +26,84 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title mb-1">Danh sách banner</h4>
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4 class="card-title mb-0">Danh sách Banner</h4>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-sm btn-danger">Import dữ liệu</button>
+                            <button class="btn btn-sm btn-success">Export dữ liệu</button>
+                            <button class="btn btn-sm btn-primary" id="toggleAdvancedSearch">
+                                Tìm kiếm nâng cao
+                            </button>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-primary" type="button" id="filterDropdown"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="ri-filter-2-line"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="filterDropdown"
+                                    style="min-width: 500px;">
+                                    <div class="container">
+                                        <div class="container">
+                                            <div class="row">
+                                                <li class="col-6">
+                                                    <div class="mb-2">
+                                                        <label for="startDate" class="form-label">Ngày bắt đầu</label>
+                                                        <input type="date" class="form-control form-control-sm"
+                                                            name="created_at" id="startDate" data-filter
+                                                            value="{{ request()->input('created_at') ?? '' }}">
+                                                    </div>
+                                                </li>
+                                                <li class="col-6">
+                                                    <div class="mb-2">
+                                                        <label for="endDate" class="form-label">Ngày kết thúc</label>
+                                                        <input type="date" class="form-control form-control-sm"
+                                                            name="updated_at" id="endDate" data-filter
+                                                            value="{{ request()->input('updated_at') ?? '' }}">
+                                                    </div>
+                                                </li>
+                                            </div>
+                                            <li class="mt-2">
+                                                <button class="btn btn-sm btn-primary w-100" id="applyFilter">Áp
+                                                    dụng</button>
+                                            </li>
+                                        </div>
+                                    </div>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="card-body">
-                        <div class="listjs-table">
+                    <!-- Tìm kiếm nâng cao -->
+                    <div id="advancedSearch" class="card-header" style="display:none;">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label">Mã banner</label>
+                                <input class="form-control form-control-sm" name="id" type="text"
+                                    value="{{ request()->input('id') ?? '' }}" placeholder="Nhập mã banner..."
+                                    data-advanced-filter>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Tiêu đề</label>
+                                <input class="form-control form-control-sm" name="title" type="text"
+                                    value="{{ request()->input('title') ?? '' }}" placeholder="Nhập tiêu đề..."
+                                    data-advanced-filter>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="statusItem" class="form-label">Trạng thái</label>
+                                <select class="form-select form-select-sm" name="status" id="statusItem"
+                                    data-advanced-filter>
+                                    <option value="">Tất cả trạng thái</option>
+                                    <option @selected(request()->input('status') === '1') value="1">Hoạt động</option>
+                                    <option @selected(request()->input('status') === '0') value="0">Không hoạt động</option>
+                                </select>
+                            </div>
+                            <div class="mt-3 text-end">
+                                <button class="btn btn-sm btn-primary" id="applyAdvancedFilter">Áp dụng</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body" id="item_List">
+                        <div class="listjs-table" id="customerList">
                             <div class="row g-4 mb-3">
                                 <div class="col-sm-auto">
                                     <div>
@@ -97,12 +169,12 @@
                                                 <td class="date">{{ $banner->order }}</td>
                                                 @if ($banner->status)
                                                     <td class="status"><span
-                                                            class="badge bg-success-subtle text-success text-uppercase">
+                                                            class="badge bg-success-subtle text-success">
                                                             Active
                                                         </span></td>
                                                 @else
                                                     <td class="status"><span
-                                                            class="badge bg-danger-subtle text-danger text-uppercase">
+                                                            class="badge bg-danger-subtle text-danger">
                                                             InActive
                                                         </span></td>
                                                 @endif
@@ -120,7 +192,8 @@
                                                                 class="btn btn-sm btn-success edit-item-btn">Sửa</a>
                                                         </div>
                                                         <div class="remove">
-                                                            <a href="{{ route('admin.banners.destroy', $banner->id) }}" class="btn btn-sm btn-danger sweet-confirm">Xoá</a>
+                                                            <a href="{{ route('admin.banners.destroy', $banner->id) }}"
+                                                                class="btn btn-sm btn-danger sweet-confirm">Xoá</a>
                                                         </div>
 
                                                     </div>
@@ -155,3 +228,15 @@
 
     </div>
 @endsection
+@push('page-scripts')
+    <script>
+        var routeUrlFilter = "{{ route('admin.banners.index') }}";
+    </script>
+    <script src="{{ asset('assets/js/custom/custom.js') }}"></script>
+    <script src="{{ asset('assets/js/common/checkall-option.js') }}"></script>
+    <script src="{{ asset('assets/js/common/delete-all-selected.js') }}"></script>
+    <script src="{{ asset('assets/js/common/restore-all-selected.js') }}"></script>
+    <script src="{{ asset('assets/js/common/filter.js') }}"></script>
+    <script src="{{ asset('assets/js/common/search.js') }}"></script>
+    <script src="{{ asset('assets/js/common/handle-ajax-search&filter.js') }}"></script>
+@endpush
