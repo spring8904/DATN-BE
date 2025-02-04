@@ -20,6 +20,12 @@ class Approvable extends Model
         'rejected_at'
     ];
 
+    protected $casts = [
+        'request_date' => 'datetime',
+        'approved_at' => 'datetime',
+        'rejected_at' => 'datetime',
+    ];
+
     public function approvable()
     {
         return $this->morphTo();

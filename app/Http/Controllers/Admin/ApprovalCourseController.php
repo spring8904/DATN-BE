@@ -19,6 +19,7 @@ class ApprovalCourseController extends Controller
         $courses = Course::query()
             ->with('approvables')
             ->where('status', '!=', 'draft')
+            ->whereHas('approvables')
             ->paginate(10);
 
         return view('approval.course.index', compact([

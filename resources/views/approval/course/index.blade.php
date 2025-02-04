@@ -145,7 +145,6 @@
                                     <thead class="table-light">
                                     <tr>
                                         <th>STT</th>
-                                        <th>Mã khoá học</th>
                                         <th>Tên khoá học</th>
                                         <th>Giảng viên</th>
                                         <th>Hình ảnh</th>
@@ -159,39 +158,40 @@
                                     </thead>
                                     <tbody class="list">
                                     @foreach($courses as $course)
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $course->code }}</td>
-                                        <td>{{ $course->name }}</td>
-                                        <td>{{ $course->user->name }}</td>
-                                        <td>
-                                            <img src="{{ $course->thumbnail }}" alt=""
-                                                 class="avatar-sm object-fit-cover">
-                                        </td>
-                                        <td>{{ number_format($course->price) }}</td>
-                                        <td>{{ $course->approvables->first()->request_date }}</td>
-                                        <td>
-                                            @switch($course->status)
-                                                @case('approved')
-                                                    <span class="btn btn-sm btn-soft-success">Đã kiểm duyệt</span>
-                                                    @break
-                                                @case('pending')
-                                                    <span class="btn btn-sm btn-soft-warning">Đang xử lý</span>
-                                                    @break
-                                                @case('reject')
-                                                    <span class="btn btn-sm btn-soft-danger">Đã từ chối</span>
-                                                    @break
-                                            @endswitch
-                                        </td>
-                                        <td>
-                                            {!!   $course->approvables->first()->user->name  ?? '<span class="btn btn-sm btn-soft-warning">Chưa kiểm duyệt</span>' !!}
-                                        </td>
-                                        <td>
-                                            {!! $course->approvables->first()->approved_at ?? '<span class="btn btn-sm btn-soft-warning">Chưa kiểm duyệt</span>' !!}
-                                        </td>
-                                        <td>
-                                            <a href="{{ route('admin.approvals.courses.show', $course->slug) }}"
-                                               class="btn btn-sm btn-soft-secondary ">Chi tiết</a>
-                                        </td>
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $course->name }}</td>
+                                            <td>{{ $course->user->name }}</td>
+                                            <td>
+                                                <img src="{{ $course->thumbnail }}" alt=""
+                                                     class="avatar-sm object-fit-cover">
+                                            </td>
+                                            <td>{{ number_format($course->price) }}</td>
+                                            <td>{{ $course->approvables->first()->request_date ?? '<span class="btn btn-sm btn-soft-warning">Chưa kiểm duyệt</span>' }}</td>
+                                            <td>
+                                                @switch($course->status)
+                                                    @case('approved')
+                                                        <span class="btn btn-sm btn-soft-success">Đã kiểm duyệt</span>
+                                                        @break
+                                                    @case('pending')
+                                                        <span class="btn btn-sm btn-soft-warning">Đang xử lý</span>
+                                                        @break
+                                                    @case('reject')
+                                                        <span class="btn btn-sm btn-soft-danger">Đã từ chối</span>
+                                                        @break
+                                                @endswitch
+                                            </td>
+                                            <td>
+                                                {!!   $course->approvables->first()->user->name  ?? '<span class="btn btn-sm btn-soft-warning">Chưa kiểm duyệt</span>' !!}
+                                            </td>
+                                            <td>
+                                                {!! $course->approvables->first()->approved_at ?? '<span class="btn btn-sm btn-soft-warning">Chưa kiểm duyệt</span>' !!}
+                                            </td>
+                                            <td>
+                                                <a href="{{ route('admin.approvals.courses.show', $course->slug) }}"
+                                                   class="btn btn-sm btn-soft-secondary ">Chi tiết</a>
+                                            </td>
+                                        </tr>
                                     @endforeach
                                     </tbody>
                                 </table>
