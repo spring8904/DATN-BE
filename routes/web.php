@@ -228,4 +228,28 @@ Route::prefix('admin')->as('admin.')
         #============================== ROUTE TRANSACTIONS =============================
         Route::get('/transactions', [TransactionController::class, 'index'])
             ->name('transactions.index');
+
+        #============================== ROUTE NOTIFICATIONS =============================
+        Route::prefix('notifications')
+            ->as('notifications.')
+            ->group(function () {
+                Route::get('/', [\App\Http\Controllers\Admin\NotificationController::class, 'index'])
+                    ->name('index');
+                Route::get('/unread-count', [\App\Http\Controllers\Admin\NotificationController::class, 'getUnreadNotificationsCount'])
+                    ->name('unread-count');
+                Route::put('/{notificationId}', [\App\Http\Controllers\Admin\NotificationController::class, 'markAsRead'])
+                    ->name('markAsRead');
+            });
+
+        #============================== ROUTE QA SYSTEM =============================
+        Route::prefix('qa-systems')
+            ->as('qa-systems.')
+            ->group(function () {
+                Route::get('/', [\App\Http\Controllers\Admin\QaSystemController::class, 'index'])->name('index');
+                Route::get('/create', [\App\Http\Controllers\Admin\QaSystemController::class, 'create'])->name('create');
+                Route::post('/', [\App\Http\Controllers\Admin\QaSystemController::class, 'store'])->name('store');
+                Route::get('/edit/{qaSystem}', [\App\Http\Controllers\Admin\QaSystemController::class, 'edit'])->name('edit');
+                Route::put('/{qaSystem}', [\App\Http\Controllers\Admin\QaSystemController::class, 'update'])->name('update');
+                Route::delete('/{qaSystem}', [\App\Http\Controllers\Admin\QaSystemController::class, 'destroy'])->name('destroy');
+            });
     });
