@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API\Posts;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\Post;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -19,7 +21,7 @@ class PostController extends Controller
 
             $categories = Category::query()->get();
 
-            $searchPost = $request->input('searchPost');
+            // $searchPost = $request->input('searchPost');
 
             // kiểm tra xem có từ khóa không 
             if (!empty($searchPost)) {
