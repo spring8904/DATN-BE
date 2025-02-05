@@ -45,7 +45,7 @@
                             <form method="post" enctype="multipart/form-data">
                                 @csrf
                                 <div class="mb-3">
-                                    <label class="form-label">Title</label>
+                                    <label class="form-label">Tiêu đề</label>
                                     <input type="text" @readonly(true) name="title" class="form-control"
                                         value="{{ $banner->title }}">
                                     @error('title')
@@ -53,7 +53,7 @@
                                     @enderror
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">Redirect Url</label>
+                                    <label class="form-label">Đường dẫn</label>
                                     <input type="text" @readonly(true) name="redirect_url" class="form-control"
                                         value="{{ $banner->redirect_url }}">
                                     @error('redirect_url')
@@ -61,7 +61,7 @@
                                     @enderror
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">Image</label>
+                                    <label class="form-label">Ảnh</label>
                                     <input type="file" disabled name="image" class="form-control">
                                     <img src="{{ $banner->image }}" alt="" srcset="" width="200px">
                                     @error('image')
@@ -69,7 +69,7 @@
                                     @enderror
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">Content</label>
+                                    <label class="form-label">Nội dung</label>
                                     <input type="text" @readonly(true) name="content" class="form-control"
                                         value="{{ $banner->content }}">
                                     @error('content')
@@ -77,7 +77,7 @@
                                     @enderror
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">Order</label>
+                                    <label class="form-label">Thứ tự</label>
                                     <input type="int" @readonly(true) name="order" class="form-control"
                                         value="{{ $banner->order }}">
                                     @error('order')
@@ -85,10 +85,10 @@
                                     @enderror
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">Status</label>
+                                    <label class="form-label">Trạng thái</label>
                                     <select disabled name="status" class="form-select" value="{{ old('status') }}">
-                                        <option value="1" <?php echo $banner->status == 1 ? 'selected' : ''; ?>>Active</option>
-                                        <option value="0" <?php echo $banner->status == 0 ? 'selected' : ''; ?>>InActive</option>
+                                        <option value="1" <?php echo $banner->status == 1 ? 'selected' : ''; ?>>Hoạt động</option>
+                                        <option value="0" <?php echo $banner->status == 0 ? 'selected' : ''; ?>>Không hoạt động</option>
                                     </select>
                                     @error('status')
                                         <div class="text-danger">{{ $message }}</div>

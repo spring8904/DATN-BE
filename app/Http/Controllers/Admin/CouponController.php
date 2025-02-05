@@ -18,18 +18,23 @@ class CouponController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Coupon::query();
+        $queryCoupons = Coupon::query();
 
         // Kiểm tra nếu có từ khóa tìm kiếm
         if ($request->has('query') && $request->input('query')) {
             $search = $request->input('query');
-            $query->where('name', 'like', "%$search%")
+            $queryCoupons->where('name', 'like', "%$search%")
                 ->orWhere('code', 'like', "%$search%");
         }
-
+        if ($request->hasAny(['code','name','user_id','discount_type','status','used_count','start_date','expire_date'])) {
+           $queryCoupons = $this->filter($request,$queryCoupons);
+        }
         // Lấy dữ liệu và phân trang
-        $coupons = $query->orderBy('id', 'desc')->paginate(10);
-
+        $coupons = $queryCoupons->orderBy('id', 'desc')->paginate(10);
+        if ($request->ajax()) {
+            $html = view('coupons.table', compact('coupons'))->render();
+            return response()->json(['html' => $html]);
+        }
         return view('coupons.index', compact('coupons'));
     }
 
@@ -120,4 +125,39 @@ class CouponController extends Controller
             return back()->with('success', false)->with('error', 'Lỗi');
         }
     }
+    private function filter($request, $query)
+    {
+        $filters = [
+            'start_date' => ['queryWhere' => '>='],
+            'expire_date' => ['queryWhere' => '<='],
+            'code' => ['queryWhere' => 'LIKE'],
+            'name' => ['queryWhere' => 'LIKE'],
+            'user_id' => ['queryWhere' => 'LIKE'],
+            'status' => ['queryWhere' => '='],
+            'discount_type' => ['queryWhere' => '='],
+            'used_count' => ['queryWhere' => 'BETWEEN']
+        ];
+    
+        foreach ($filters as $filter => $value) {
+            $filterValue = $request->input($filter);
+    
+            if ($filterValue !== null) {
+                if (is_array($value) && !empty($value['queryWhere'])) {
+                    
+                    if ($value['queryWhere'] === 'BETWEEN') {
+                        $range = explode(',', $filterValue);
+                        if (count($range) === 2) {
+                            $query->whereBetween($filter, [$range[0], $range[1]]);
+                        }
+                    } else {
+                        $filterValue = $value['queryWhere'] === 'LIKE' ? "%$filterValue%" : $filterValue;
+                        $query->where($filter, $value['queryWhere'], $filterValue);
+                    }
+                }
+            }
+        }
+    
+        return $query;
+    }
+    
 }
