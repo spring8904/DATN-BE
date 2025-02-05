@@ -79,4 +79,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Transaction::class);
     }
+
+    public function approvables()
+    {
+        return $this->morphOne(Approvable::class, 'approvable');
+    }
 }

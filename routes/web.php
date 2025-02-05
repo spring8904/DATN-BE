@@ -211,6 +211,15 @@ Route::prefix('admin')->as('admin.')
                         Route::get('/', [ApprovalCourseController::class, 'index'])->name('index');
                         Route::get('/{course}', [ApprovalCourseController::class, 'show'])->name('show');
                     });
+
+                Route::prefix('instructors')
+                    ->as('instructors.')
+                    ->group(function () {
+                        Route::get('/', [\App\Http\Controllers\Admin\ApprovalInstructorController::class, 'index'])->name('index');
+                        Route::get('/{instructor}', [\App\Http\Controllers\Admin\ApprovalInstructorController::class, 'show'])->name('show');
+                        Route::put('/{instructor}', [\App\Http\Controllers\Admin\ApprovalInstructorController::class, 'approve'])->name('approve');
+                        Route::put('/{instructor}/reject', [\App\Http\Controllers\Admin\ApprovalInstructorController::class, 'reject'])->name('reject');
+                    });
             });
 
         #============================== ROUTE INVOICE =============================

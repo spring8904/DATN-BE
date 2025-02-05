@@ -119,6 +119,50 @@ trait UploadToCloudinaryTrait
         }
     }
 
+    public function deleteMultiple(array $dataUrls, $folder = null)
+    {
+        try {
+            if (empty($dataUrls)) {
+                throw new \Exception('Danh sách URL không hợp lệ hoặc không được cung cấp.');
+            }
+
+            $deleteResults = [];
+
+            foreach ($dataUrls as $dataUrl) {
+                if (!filter_var($dataUrl, FILTER_VALIDATE_URL)) {
+                    throw new \Exception("URL không hợp lệ: $dataUrl");
+                }
+
+                $publicId = pathinfo(parse_url($dataUrl, PHP_URL_PATH), PATHINFO_FILENAME);
+                $publicIdWithFolder = ($folder ?? 'images') . '/' . $publicId;
+
+                $deleteResult = Cloudinary::destroy($publicIdWithFolder);
+
+                if ($deleteResult['result'] !== 'ok') {
+                    $deleteResults[] = [
+                        'url' => $dataUrl,
+                        'status' => 'failed',
+                    ];
+                } else {
+                    $deleteResults[] = [
+                        'url' => $dataUrl,
+                        'status' => 'ok',
+                    ];
+                }
+            }
+
+            if (empty($deleteResults)) {
+                throw new \Exception('Không thể xóa ảnh');
+            }
+
+            return $deleteResults;
+        } catch (\Exception $e) {
+            $this->logError($e);
+            return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại sau', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
     public function deleteVideo($dataUrl, $folder = null)
     {
         try {

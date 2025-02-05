@@ -3,13 +3,22 @@
 namespace App\Http\Controllers\API\Common;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\API\User\UpdateUserProfileRequest;
+use App\Models\Career;
+use App\Models\Profile;
 use App\Traits\LoggableTrait;
+use App\Traits\UploadToCloudinaryTrait;
 use F9Web\ApiResponseHelpers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
-    use LoggableTrait, ApiResponseHelpers;
+    use LoggableTrait, ApiResponseHelpers, UploadToCloudinaryTrait;
+
+    const FOLDER_USER = 'users';
+    const FOLDER_CERTIFICATE = 'certificates';
 
     public function showProfile()
     {
@@ -22,16 +31,127 @@ class UserController extends Controller
         }
     }
 
-    public function updateProfile(Request $request)
+    public function updateProfile(UpdateUserProfileRequest $request)
     {
         try {
+            DB::beginTransaction();
 
+            $user = Auth::user();
+
+            if ($request->hasFile('avatar')) {
+                if ($user->avatar) {
+                    $this->deleteImage($user->avatar, self::FOLDER_USER);
+                }
+
+                $avatarUrl = $this->uploadImage($request->file('avatar'), self::FOLDER_USER);
+                $user->avatar = $avatarUrl;
+            }
+
+            $user->update($request->only(['name']));
+
+            $profile = Profile::query()->where('user_id', $user->id)->first();
+
+            if ($profile) {
+                if ($request->hasFile('certificates')) {
+                    $certificates = json_decode($profile->certificates, true);
+
+                    if (!empty($certificates)) {
+                        $this->deleteMultiple($certificates, self::FOLDER_CERTIFICATE);
+                    }
+
+                    $uploadedCertificates = $this->uploadCertificates($request->file('certificates'));
+                }
+
+                $profile->update([
+                    'about_me' => $request->about_me ?? $profile->about_me,
+                    'phone' => $request->phone ?? $profile->phone,
+                    'address' => $request->address ?? $profile->address,
+                    'experience' => $request->experience ?? $profile->experience,
+                    'certificates' => !empty($uploadedCertificates)
+                        ? json_encode($uploadedCertificates)
+                        : $profile->certificates,
+                    'bio' => $this->prepareBioData($request->bio),
+                ]);
+            }
+
+            if ($request->has('careers')) {
+                foreach ($request->careers as $careerData) {
+                    Career::updateOrCreate(
+                        [
+                            'profile_id' => $profile->id,
+                            'institution_name' => $careerData['institution_name'],
+                        ],
+                        [
+                            'degree' => $careerData['degree'],
+                            'major' => $careerData['major'],
+                            'start_date' => $careerData['start_date'],
+                            'end_date' => $careerData['end_date'],
+                        ]
+                    );
+                }
+            }
+
+            DB::commit();
+
+            return $this->respondOk('Cập nhật thông tin thành công', [
+                'user' => $user->load('profile.careers'),
+            ]);
         } catch (\Exception $e) {
+            DB::rollBack();
+
             $this->logError($e, $request->all());
 
             return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại.');
         }
     }
+
+    private function uploadCertificates($certificates)
+    {
+        if ($certificates) {
+            return $this->uploadImageMultiple($certificates, self::FOLDER_CERTIFICATE);
+        }
+        return [];
+    }
+
+    private function prepareBioData($bioData)
+    {
+        if ($bioData) {
+            $bio = [];
+
+            if (isset($bioData['facebook'])) {
+                $bio['facebook'] = $bioData['facebook'];
+            }
+
+            if (isset($bioData['instagram'])) {
+                $bio['instagram'] = $bioData['instagram'];
+            }
+
+            if (isset($bioData['github'])) {
+                $bio['github'] = $bioData['github'];
+            }
+
+            if (isset($bioData['linkedin'])) {
+                $bio['linkedin'] = $bioData['linkedin'];
+            }
+
+            if (isset($bioData['twitter'])) {
+                $bio['twitter'] = $bioData['twitter'];
+            }
+
+            if (isset($bioData['youtube'])) {
+                $bio['youtube'] = $bioData['youtube'];
+            }
+
+            if (isset($bioData['website'])) {
+                $bio['website'] = $bioData['website'];
+            }
+
+            return json_encode($bio);
+        }
+
+        return null;
+    }
+
 
     public function changePassword(Request $request)
     {
