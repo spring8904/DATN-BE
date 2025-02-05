@@ -10,6 +10,7 @@ class Career extends Model
     use HasFactory;
 
     protected $fillable = [
+        'profile_id',
         'institution_name',
         'degree',
         'major',

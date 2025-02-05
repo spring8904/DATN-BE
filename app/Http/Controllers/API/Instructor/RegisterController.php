@@ -4,52 +4,71 @@ namespace App\Http\Controllers\API\Instructor;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\Auth\RegisterInstructorRequest;
+use App\Models\Approvable;
 use App\Models\Career;
 use App\Models\Profile;
+use App\Models\User;
+use App\Notifications\RegisterInstructorNotification;
 use App\Traits\LoggableTrait;
+use App\Traits\UploadToCloudinaryTrait;
 use F9Web\ApiResponseHelpers;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class RegisterController extends Controller
 {
-    use LoggableTrait, ApiResponseHelpers;
+    use LoggableTrait, ApiResponseHelpers, UploadToCloudinaryTrait;
+
+    const FOLDER_CERTIFICATES = 'certificates';
+
+    const URL_IMAGE_DEFAULT = "https://res.cloudinary.com/dvrexlsgx/image/upload/v1732148083/Avatar-trang-den_apceuv_pgbce6.png";
+
 
     public function register(RegisterInstructorRequest $request)
     {
         try {
-            $user = Auth::user();
-
-            if (!$user->hasRole('member')) {
-                return $this->respondUnAuthenticated('Tài khoản không phù hợp để đăng ký làm giảng viên.');
-            }
-
             DB::beginTransaction();
 
-            $validated = $request->validated();
+            $user = Auth::check() ? Auth::user() : $this->createUser($request->validated());
 
-            $dataProfiles = $request->only(['phone', 'address', 'experience']);
-            $dataProfiles['bio'] = json_encode($request->bio);
-            $dataProfiles['user_id'] = $user->id;
+            $profile = $this->createProfile($user->id, $request->only(['phone', 'address', 'experience']));
 
-            $profile = Profile::query()->create($dataProfiles);
+            $uploadedCertificates = $this->uploadCertificates($request->file('certificates'));
 
-            $education = Career::query()->create([
-                'institution_name' => $user->name,
-                'degree' => $request->degree,
-                'major' => $request->major,
-                'certificates' => json_encode($request->certificates),
-                'qa_systems' => json_encode($request->qa_systems),
-                'start_date' => now(env('APP_TIMEZONE')),
-                'profile_id' => $profile->id,
-            ]);
+            $qaSystemsData = $this->prepareQaSystemsData($request->qa_systems);
+
+            $this->createCareer($profile->id, $uploadedCertificates, $qaSystemsData);
 
             $user->assignRole("instructor");
 
+            $approvable = Approvable::where('approvable_id', $user->id)
+                ->where('approvable_type', User::class)
+                ->first();
+
+            if (!$approvable) {
+                $approvable = new Approvable();
+                $approvable->approvable_id = $user->id;
+                $approvable->approvable_type = User::class;
+                $approvable->status = 'pending';
+                $approvable->request_date = now();
+                $approvable->save();
+            }else {
+                return $this->respondOk('Yêu cầu kiểm duyệt đã được gửi');
+            }
+
+            $managers = User::query()->role([
+                'admin',
+            ])->get();
+
+            foreach ($managers as $manager) {
+                $manager->notify(new RegisterInstructorNotification($user));
+            }
+
             DB::commit();
 
-            return $this->respondCreated('Đăng ký giảng viên thành công');
+            return $this->respondCreated('Đăng ký giảng viên thành công', $user);
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -57,5 +76,49 @@ class RegisterController extends Controller
 
             return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại');
         }
+    }
+
+    private function createUser(array $validated)
+    {
+        return User::create([
+            'name' => $validated['name'],
+            'code' => Str::uuid()->toString(),
+            'email' => $validated['email'],
+            'password' => $validated['password'],
+            'avatar' => self::URL_IMAGE_DEFAULT,
+        ]);
+    }
+
+    private function createProfile(int $userId, array $data)
+    {
+        return Profile::query()->create(array_merge($data, ['user_id' => $userId]));
+    }
+
+    private function uploadCertificates($certificates)
+    {
+        if ($certificates) {
+            return $this->uploadImageMultiple($certificates, self::FOLDER_CERTIFICATES);
+        }
+        return [];
+    }
+
+    private function prepareQaSystemsData($qaSystems)
+    {
+        return collect($qaSystems)->map(function ($qaSystem) {
+            return [
+                'question' => $qaSystem['question'],
+                'selected_options' => $qaSystem['selected_options'],
+                'options' => $qaSystem['options'],
+            ];
+        })->toArray();
+    }
+
+    private function createCareer(int $profileId, array $certificates, array $qaSystemsData)
+    {
+        Career::query()->create([
+            'profile_id' => $profileId,
+            'certificates' => json_encode($certificates),
+            'qa_systems' => json_encode($qaSystemsData),
+        ]);
     }
 }
