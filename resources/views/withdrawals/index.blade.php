@@ -79,8 +79,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <a href="{{ route('admin.withdrawals.export') }}" class="btn btn-sm btn-success">Export dữ liệu</a>
-                            <button class="btn btn-sm btn-primary" id="toggleAdvancedSearch">
+                            <a href="{{ route('admin.withdrawals.export') }}" class="btn btn-sm btn-success h-75">Export dữ liệu</a>
+                            <button class="btn btn-sm btn-primary h-75" id="toggleAdvancedSearch">
                                 Tìm kiếm nâng cao
                             </button>
                             <div class="dropdown">
@@ -99,7 +99,7 @@
                                                 <span id="amountMax">99,999,999 VND</span>
                                             </div>
 
-                                            <div class="d-flex justify-content-between">
+                                                 <div class="d-flex justify-content-between">
                                                 <input type="range" class="form-range w-50" id="amountMinRange"
                                                     name="amount_min" min="10000" max="49990000" step="10000"
                                                     value="10000" oninput="updateRange()" data-filter>

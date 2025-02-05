@@ -14,7 +14,7 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        for ($i = 1; $i <= 100; $i++) {
+        for ($i = 1; $i <= 10000; $i++) {
             $user = User::create([
                 'code' => str_replace('-', '', Str::uuid()),
                 'name' => fake()->name(),
@@ -29,12 +29,12 @@ class UserSeeder extends Seeder
             $user->profile()->create([
                 'phone' => fake()->unique()->phoneNumber(),
                 'address' => fake()->address(),
-                'experience' => fake()->paragraph(),
-                'bio' => json_encode(fake()->paragraph()),
+                'experience' => fake()->paragraph(2),
+                'bio' => json_encode(fake()->paragraph(2)),
             ]);
 
             if($role === 'instructor'){
-                
+
             }
         }
 
@@ -46,7 +46,7 @@ class UserSeeder extends Seeder
                 'name' => Str::ucfirst($permission),
                 'email' => $email . '@gmail.com',
                 'email_verified_at' => now(),
-                'avatar' => 'https://res.cloudinary.com/dvrexlsgx/image/upload/v1735530492/users/BHw9E6fCJw.webp',
+                'avatar' => 'https://res.cloudinary.com/dvrexlsgx/image/upload/v1732148083/Avatar-trang-den_apceuv_pgbce6.png',
                 'password' => password_hash($email . '@gmail.com', PASSWORD_DEFAULT),
             ]);
             $user->assignRole($permission);

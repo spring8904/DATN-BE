@@ -23,3 +23,17 @@
 .cusor-pointer {
     cursor: pointer;
 }
+
+
+@keyframes shake {
+    0%, 100% { transform: rotate(0); }
+    10%, 90% { transform: rotate(-10deg); }
+    20%, 80% { transform: rotate(10deg); }
+    30%, 50%, 70% { transform: rotate(-10deg); }
+    40%, 60% { transform: rotate(10deg); }
+}
+
+.shake-animation {
+    animation: shake 0.5s ease-in-out;
+}
+

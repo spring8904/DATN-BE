@@ -5,17 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Wallet extends Model
+class QaSystem extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
-        'balance',
+        'title',
+        'description',
+        'question',
+        'options',
+        'answer_type',
         'status',
     ];
 
-    public function user(){
-        return $this->belongsTo(User::class);
-    }
+    protected $casts = [
+        'options' => 'array',
+    ];
 }

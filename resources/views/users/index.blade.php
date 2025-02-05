@@ -71,8 +71,11 @@
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h4 class="card-title mb-0">Danh sách {{ $roleUser['actor'] }}</h4>
                         <div class="d-flex gap-2">
-                            <button class="btn btn-sm btn-danger">Import dữ liệu</button>
-                            <button class="btn btn-sm btn-success">Export dữ liệu</button>
+                            @if ($roleUser['name'] !== 'deleted')
+                                <button class="btn btn-sm btn-danger" data-bs-toggle="modal"
+                                    data-bs-target="#importModal">Import dữ liệu</button>
+                            @endif
+                            <a class="btn btn-sm btn-success" href="{{ route('admin.users.export', $roleUser['name']) }}">Export dữ liệu</a>
                             <button class="btn btn-sm btn-primary" id="toggleAdvancedSearch">
                                 Tìm kiếm nâng cao
                             </button>
@@ -227,7 +230,7 @@
                                                         class="fw-medium link-primary">{{ $loop->index + 1 }}</a></td>
                                                 <td class="customer_name">{{ $user->name }}</td>
                                                 <td class="email">{{ $user->email }}</td>
-                                                <td class="phone">{{ $user->profile->phone ?? 'Chưa nhập' }}</td>
+                                                <td class="phone">{{ $user->profile->phone ?? 'Chưa có thông tin' }}</td>
                                                 <td>
                                                     <div class="form-check form-switch form-switch-warning">
                                                         <input class="form-check-input" type="checkbox" role="switch"
@@ -310,6 +313,37 @@
         </div>
         <!-- end List-customer -->
     </div>
+
+    @if ($roleUser['name'] !== 'deleted')
+        <!-- Modal import -->
+        <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="importModalLabel">Import Users từ Excel</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <a href="{{ asset('storage/csv/users_import_template.xlsx') }}" download class="btn btn-outline-primary btn-sm">Tải Mẫu</a>
+                        </div>
+                        <form action="{{ route('admin.users.import', $roleUser['name']) }}" method="POST"
+                            enctype="multipart/form-data">
+                            @csrf
+                            <div class="mb-3">
+                                <label for="file" class="form-label">Chọn File Excel</label>
+                                <input type="file" name="file" class="form-control" required>
+                                @error('file')
+                                    <span class="badge bg-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                            <button type="submit" class="btn btn-success">Import</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
 @endsection
 
 @push('page-scripts')
