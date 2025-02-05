@@ -26,11 +26,118 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title mb-1">Danh sách coupon</h4>
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4 class="card-title mb-0">Danh sách mã giảm giá</h4>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-sm btn-danger">Import dữ liệu</button>
+                            <button class="btn btn-sm btn-success">Export dữ liệu</button>
+                            <button class="btn btn-sm btn-primary" id="toggleAdvancedSearch">
+                                Tìm kiếm nâng cao
+                            </button>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-primary" type="button" id="filterDropdown"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="ri-filter-2-line"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="filterDropdown"
+                                    style="min-width: 500px;">
+                                    <div class="container">
+                                        <div class="container">
+                                            <div class="row">
+                                                <li>
+                                                    <label for="amountRange" class="form-label">Số lượt sử dụng</label>
+                    
+                                                    <div class="d-flex justify-content-between">
+                                                        <span id="amountMin">0</span>
+                                                        <span id="amountMax">1000</span>
+                                                    </div>
+                    
+                                                    <div class="d-flex justify-content-between">
+                                                        <input type="range" class="form-range w-100" id="amountMinRange"
+                                                            name="used_count" min="0" max="1000" step="10"
+                                                            value="0" oninput="updateRange()" data-filter>
+                                                        
+                                                    </div>
+                                                </li>
+                                                <li class="col-6">
+                                                    <div class="mb-2">
+                                                        <label for="startDate" class="form-label">Ngày bắt đầu</label>
+                                                        <input type="date" class="form-control form-control-sm"
+                                                            name="start_date" id="startDate" data-filter
+                                                            value="{{ request()->input('start_date') ?? '' }}">
+                                                    </div>
+                                                </li>
+                                                <li class="col-6">
+                                                    <div class="mb-2">
+                                                        <label for="endDate" class="form-label">Ngày kết thúc</label>
+                                                        <input type="date" class="form-control form-control-sm"
+                                                            name="expire_date" id="endDate" data-filter
+                                                            value="{{ request()->input('expire_date') ?? '' }}">
+                                                    </div>
+                                                </li>
+                                            </div>
+                                            <li class="mt-2">
+                                                <button class="btn btn-sm btn-primary w-100" id="applyFilter">Áp
+                                                    dụng</button>
+                                            </li>
+                                            
+                                        </div>
+                                    </div>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="card-body">
+                    <!-- Tìm kiếm nâng cao -->
+                    <div id="advancedSearch" class="card-header" style="display:none;">
+                        <form id="filterForm">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label class="form-label">Mã giảm giá</label>
+                                <input class="form-control form-control-sm" name="code" type="text"
+                                    value="{{ request()->input('code') ?? '' }}" placeholder="Nhập mã giảm giá..."
+                                    data-advanced-filter>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Tên mã giảm giá</label>
+                                <input class="form-control form-control-sm" name="name" type="text"
+                                    value="{{ request()->input('name') ?? '' }}" placeholder="Nhập tên mã giảm giá..."
+                                    data-advanced-filter>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Người tạo</label>
+                                <input class="form-control form-control-sm" name="user_id" type="text"
+                                    value="{{ request()->input('user_id') ?? '' }}" placeholder="Nhập người tạo..."
+                                    data-advanced-filter>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="statusItem" class="form-label">Loại giảm giá</label>
+                                <select class="form-select form-select-sm" name="discount_type" id="statusItem"
+                                    data-advanced-filter>
+                                    <option value="">Tất cả loại giảm giá</option>
+                                    <option @selected(request()->input('discount_type') === 'percentage') value="percentage">Phần trăm</option>
+                                    <option @selected(request()->input('discount_type') === 'fixed') value="fixed">Giảm trực tiếp</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="statusItem" class="form-label">Trạng thái</label>
+                                <select class="form-select form-select-sm" name="status" id="statusItem"
+                                    data-advanced-filter>
+                                    <option value="">Tất cả trạng thái</option>
+                                    <option @selected(request()->input('status') === '1') value="1">Hoạt động</option>
+                                    <option @selected(request()->input('status') === '0') value="0">Không hoạt động</option>
+                                </select>
+                            </div>
+                            <div class="mt-3 text-end">
+                                <button class="btn btn-sm btn-success" type="reset" >Reset</button>
+                                <button class="btn btn-sm btn-primary" id="applyAdvancedFilter">Áp dụng</button>
+                            </div>
+                          
+                        </div>
+                    </form>
+                    </div>
+
+                    <div class="card-body" id="item_List">
                         <div class="listjs-table">
                             <div class="row g-4 mb-3">
                                 <div class="col-sm-auto">
@@ -55,7 +162,7 @@
                             </div>
 
                             <div class="table-responsive table-card mt-3 mb-1">
-                                <table class="table align-middle table-nowrap">
+                                <table class="table align-middle table-nowrap" id="itemList">
                                     <thead class="table-light">
                                     <tr>
                                         <th scope="col" style="width: 50px;">
@@ -107,7 +214,7 @@
 
                                             <td class="date">{{ $coupon->start_date }}</td>
                                             <td class="date">{{ $coupon->expire_date }}</td>
-                                            <td class="date">{{ $coupon->used_count }}</td>
+                                            <td class="date" >{{ $coupon->used_count }}</td>
                                             <td>
                                                 <div class="d-flex gap-2">
                                                     <div class="remove">
@@ -156,3 +263,31 @@
 
     </div>
 @endsection
+@push('page-scripts')
+    <script>
+        var routeUrlFilter = "{{ route('admin.coupons.index') }}";
+        function updateRange() {
+        let rangeValue = document.getElementById("amountMinRange").value;
+        document.getElementById("amountMin").textContent = rangeValue;
+
+        // Lọc danh sách theo số lượt sử dụng
+        let items = document.querySelectorAll("#itemList");
+        items.forEach(item => {
+            let usedCount = parseInt(item.getAttribute("used_count"), 10);
+            if (usedCount >= rangeValue) {
+                item.style.display = "block";
+            } else {
+                item.style.display = "none";
+            }
+        });
+    }
+    </script>
+    <script src="{{ asset('assets/js/custom/custom.js') }}"></script>
+    <script src="{{ asset('assets/js/common/checkall-option.js') }}"></script>
+    <script src="{{ asset('assets/js/common/delete-all-selected.js') }}"></script>
+    <script src="{{ asset('assets/js/common/restore-all-selected.js') }}"></script>
+    <script src="{{ asset('assets/js/common/filter.js') }}"></script>
+    <script src="{{ asset('assets/js/common/search.js') }}"></script>
+    <script src="{{ asset('assets/js/common/resetFilter.js') }}"></script>
+    <script src="{{ asset('assets/js/common/handle-ajax-search&filter.js') }}"></script>
+@endpush

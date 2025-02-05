@@ -136,14 +136,14 @@
                                                         value="option">
                                                 </div>
                                             </th>
-                                            <th>ID</th>
-                                            <th>Title</th>
-                                            <th>Image</th>
-                                            <th>Order</th>
-                                            <th>Status</th>
-                                            <th>Created_at</th>
-                                            <th>Updated_at</th>
-                                            <th>Action</th>
+                                            <th>Mã banner</th>
+                                            <th>Tiêu đề</th>
+                                            <th>Ảnh</th>
+                                            <th>Thứ tự</th>
+                                            <th>Trạng thái</th>
+                                            <th>Ngày tạo</th>
+                                            <th>Ngày cập nhật</th>
+                                            <th>Hành động</th>
                                         </tr>
                                     </thead>
                                     <tbody class="list form-check-all">
@@ -162,7 +162,7 @@
                                                     @if ($banner->image)
                                                         <img src="{{ $banner->image }}" alt="" width="100px">
                                                     @else
-                                                        <p>No photo</p>
+                                                        <p>Không có ảnh</p>
                                                     @endif
 
                                                 </td>
@@ -170,12 +170,12 @@
                                                 @if ($banner->status)
                                                     <td class="status"><span
                                                             class="badge bg-success-subtle text-success">
-                                                            Active
+                                                            Hoạt động
                                                         </span></td>
                                                 @else
                                                     <td class="status"><span
                                                             class="badge bg-danger-subtle text-danger">
-                                                            InActive
+                                                            Không hoạt động
                                                         </span></td>
                                                 @endif
 
