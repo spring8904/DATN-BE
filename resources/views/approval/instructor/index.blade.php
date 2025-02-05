@@ -145,10 +145,8 @@
                                     <thead class="table-light">
                                     <tr>
                                         <th>STT</th>
-                                        <th>Tên khoá học</th>
-                                        <th>Giảng viên</th>
-                                        <th>Hình ảnh</th>
-                                        <th>Giá</th>
+                                        <th>Tên giảng viên</th>
+                                        <th>Email</th>
                                         <th>Ngày gửi yêu cầu</th>
                                         <th>Trạng thái</th>
                                         <th>Người kiểm duyệt</th>
@@ -160,13 +158,8 @@
                                     @foreach($approvals as $approval)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $approval->course->name }}</td>
                                             <td>{{ $approval->user->name }}</td>
-                                            <td>
-                                                <img style="height: 100px" src="{{ $approval->course->thumbnail }}" alt=""
-                                                     class="w-100 object-fit-cover">
-                                            </td>
-                                            <td>{{ number_format($approval->course->price) }}</td>
+                                            <td>{{ $approval->user->email }}</td>
                                             <td>{{ $approval->request_date ?? '<span class="btn btn-sm btn-soft-warning">Chưa kiểm duyệt</span>' }}</td>
                                             <td>
                                                 @if($approval->status == 'pending')
@@ -184,7 +177,7 @@
                                                 {!! $approval->approved_at ?? '<span class="btn btn-sm btn-soft-warning">Chưa kiểm duyệt</span>' !!}
                                             </td>
                                             <td>
-                                                <a href="{{ route('admin.approvals.courses.show', $approval->id) }}"
+                                                <a href="{{ route('admin.approvals.instructors.show', $approval->id) }}"
                                                    class="btn btn-sm btn-soft-secondary ">Chi tiết</a>
                                             </td>
                                         </tr>

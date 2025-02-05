@@ -428,7 +428,7 @@
 
                 if (type === 'register_course') {
                     title = notification.data.course_name || 'Khóa học';
-                    thumbnail = notification.data.thumbnail;
+                    thumbnail = notification.data.course_thumbnail;
                 } else if (type === 'register_instructor') {
                     title = notification.data.user_name || 'Giảng viên';
                     thumbnail = 'https://res.cloudinary.com/dvrexlsgx/image/upload/v1732148083/Avatar-trang-den_apceuv_pgbce6.png';

@@ -58,7 +58,7 @@ class SendRequestController extends Controller
                     ])->get();
 
                     foreach ($managers as $manager) {
-                        $manager->notify(new CourseSubmittedNotification($course));
+                        $manager->notify(new CourseSubmittedNotification($course->load('approvables')));
                     }
 
                     break;
@@ -83,6 +83,5 @@ class SendRequestController extends Controller
             return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại sau');
         }
     }
-
 
 }
