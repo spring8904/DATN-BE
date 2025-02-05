@@ -24,13 +24,15 @@ class StorePostRequest extends FormRequest
         return [
             'categories'    => ['required', 'exists:categories,id'],
             'title'         => ['required','string','max:255'],
-            'description'   => ['nullable','string','max:255'],
+            'description'   => ['nullable','string'],
             'content'       => ['nullable','string'],
             'thumbnail'     => ['nullable','image'],
             'status'        => ['in:draft,pending,published,private'],
             'view'          => ['nullable','integer','min:0'],
             'is_hot'        => ['nullable', 'boolean'],
             'published_at'  => ['nullable', 'date'],
+            'tags'          => ['nullable', 'array'],
+            'tags.*'        => ['nullable'],
         ];
     }
 
@@ -46,10 +48,8 @@ class StorePostRequest extends FormRequest
             'title.max'               => 'Tên tiêu đề không được quá 255 kí tự',
 
             'description.required'    => 'Mô tả không được để trống',
-            'description.max'         => 'Tên không được quá 255 kí tự',
 
             'content.string'          => 'Tên phải nhập là một chuỗi',
-
         ];
     }
 }

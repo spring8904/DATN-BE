@@ -18,8 +18,15 @@ class WithdrawalRequest extends Model
         'account_number',
         'account_holder',
         'note',
+        'qr_code',
         'status',
         'request_date',
         'completed_date'
     ];
+
+    public function wallet()
+    {
+        return $this->belongsTo(Wallet::class);
+    }
+
 }

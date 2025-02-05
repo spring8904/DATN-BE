@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Notifications\Notification;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -53,7 +54,29 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-    public function posts(){
+
+    public function posts()
+    {
         return $this->hasMany(Post::class);
+    }
+
+    public function wallet()
+    {
+        return $this->hasOne(Wallet::class);
+    }
+
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class);
+    }
+
+    public function profile()
+    {
+        return $this->hasOne(Profile::class);
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
     }
 }

@@ -5,11 +5,14 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Roles\StoreRoleRequest;
 use App\Http\Requests\Admin\Roles\UpdateRoleRequest;
+use App\Imports\RolesImport;
 use App\Traits\LoggableTrait;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
@@ -182,10 +185,27 @@ class RoleController extends Controller
                 'status' => 'success',
                 'message' => 'Xoá dữ liệu thành công'
             ]);
-            return redirect()->route('admin.roles.index')->with('success', 'Thao tác thành công');
         } catch (\Exception $e) {
             DB::rollBack();
 
+            $this->logError($e);
+
+            return redirect()->back()->with('error', 'Có lỗi xảy ra, vui lòng thử lại sau');
+        }
+    }
+
+    public function import(Request $request) {
+        try {
+            $request->validate([
+                'file' => 'required|mimes:xlsx,csv',
+            ]);
+
+            $file = $request->file('file');
+
+            Excel::import(new RolesImport, $file);
+
+            return redirect()->route('admin.roles.index')->with('success', 'Import dữ liệu thành công');
+        }catch (\Exception $e) {
             $this->logError($e);
 
             return redirect()->back()->with('error', 'Có lỗi xảy ra, vui lòng thử lại sau');

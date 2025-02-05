@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@push('page-css')
+    <link href="{{ asset('assets/css/custom.css') }}" rel="stylesheet" type="text/css" />
+@endpush
+
 @section('content')
     <div class="container-fluid">
 
@@ -7,12 +11,14 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0">Danh sách người dùng</h4>
+                    <h4 class="mb-sm-0">Danh sách {{ $roleUser['actor'] }}</h4>
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Dashboard</a></li>
-                            <li class="breadcrumb-item active"><a href="{{route('admin.users.index')}}">Danh sách người dùng</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+                            <li class="breadcrumb-item active"><a
+                                    href="{{ route('admin.' . $roleUser['role_name'] . '.index') }}">Danh sách
+                                    {{ $roleUser['actor'] }}</a></li>
                         </ol>
                     </div>
 
@@ -26,7 +32,7 @@
             <div class="col-12 col-sm-6 col-md-3">
                 <div class="card text-center h-75">
                     <div class="card-body">
-                        <h5 class="card-title">Tổng số khách hàng</h5>
+                        <h5 class="card-title">Tổng số {{ $roleUser['actor'] }}</h5>
                         <p class="card-text fs-4">{{ $userCounts->total_users ?? 0 }}</p>
                     </div>
                 </div>
@@ -34,7 +40,7 @@
             <div class="col-12 col-sm-6 col-md-3">
                 <div class="card text-center h-75">
                     <div class="card-body">
-                        <h5 class="card-title">Khách hàng hoạt động</h5>
+                        <h5 class="card-title">{{ Str::ucfirst($roleUser['actor']) }} hoạt động</h5>
                         <p class="card-text fs-4 text-success">{{ $userCounts->active_users ?? 0 }}</p>
                     </div>
                 </div>
@@ -42,7 +48,7 @@
             <div class="col-12 col-sm-6 col-md-3">
                 <div class="card text-center h-75">
                     <div class="card-body">
-                        <h5 class="card-title">Khách hàng không hoạt động</h5>
+                        <h5 class="card-title">{{ Str::ucfirst($roleUser['actor']) }} không hoạt động</h5>
                         <p class="card-text fs-4 text-warning">{{ $userCounts->inactive_users ?? 0 }}</p>
                     </div>
                 </div>
@@ -50,7 +56,7 @@
             <div class="col-12 col-sm-6 col-md-3">
                 <div class="card text-center h-75">
                     <div class="card-body">
-                        <h5 class="card-title">Khách hàng bị khóa</h5>
+                        <h5 class="card-title">{{ Str::ucfirst($roleUser['actor']) }} bị khóa</h5>
                         <p class="card-text fs-4 text-danger">{{ $userCounts->blocked_users ?? 0 }}</p>
                     </div>
                 </div>
@@ -63,64 +69,123 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h4 class="card-title mb-0">Tổng quan người dùng</h4>
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-primary" type="button" id="filterDropdown"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="ri-filter-2-line"></i>
+                        <h4 class="card-title mb-0">Danh sách {{ $roleUser['actor'] }}</h4>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-sm btn-danger">Import dữ liệu</button>
+                            <button class="btn btn-sm btn-success">Export dữ liệu</button>
+                            <button class="btn btn-sm btn-primary" id="toggleAdvancedSearch">
+                                Tìm kiếm nâng cao
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="filterDropdown">
-                                <div class="container">
-                                    <li>
-                                        <select class="form-select form-select-sm mb-2">
-                                            <option value="">Tất cả trạng thái</option>
-                                            <option value="active">Hoạt động</option>
-                                            <option value="inactive">Không hoạt động</option>
-                                            <option value="banned">Bị khóa</option>
-                                        </select>
-                                    </li>
-                                    <li>
-                                        <div class="mb-2">
-                                            <label for="startDate" class="form-label">Từ ngày</label>
-                                            <input type="date" class="form-control form-control-sm" id="startDate">
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-primary" type="button" id="filterDropdown"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="ri-filter-2-line"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="filterDropdown"
+                                    style="min-width: 500px;">
+                                    <div class="container">
+                                        <div class="container">
+                                            <div class="row">
+                                                <li class="col-6">
+                                                    <div class="mb-2">
+                                                        <label for="startDate" class="form-label">Ngày bắt đầu</label>
+                                                        <input type="date" class="form-control form-control-sm"
+                                                            name="created_at" id="startDate" data-filter
+                                                            value="{{ request()->input('created_at') ?? '' }}">
+                                                    </div>
+                                                </li>
+                                                <li class="col-6">
+                                                    <div class="mb-2">
+                                                        <label for="endDate" class="form-label">Ngày kết thúc</label>
+                                                        <input type="date" class="form-control form-control-sm"
+                                                            name="updated_at" id="endDate" data-filter
+                                                            value="{{ request()->input('updated_at') ?? '' }}">
+                                                    </div>
+                                                </li>
+                                            </div>
+                                            <li class="mt-2">
+                                                <button class="btn btn-sm btn-primary w-100" id="applyFilter">Áp
+                                                    dụng</button>
+                                            </li>
                                         </div>
-                                    </li>
-                                    <li>
-                                        <div class="mb-2">
-                                            <label for="endDate" class="form-label">Đến ngày</label>
-                                            <input type="date" class="form-control form-control-sm" id="endDate">
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <button class="btn btn-sm btn-primary w-100">Áp dụng</button>
-                                    </li>
-                                </div>
-                            </ul>
+                                    </div>
+                                </ul>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- Tìm kiếm nâng cao -->
+                    <div id="advancedSearch" class="card-header" style="display:none;">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label class="form-label">Mã người dùng</label>
+                                <input class="form-control form-control-sm" name="code" type="text"
+                                    value="{{ request()->input('code') ?? '' }}" placeholder="Nhập mã người dùng..."
+                                    data-advanced-filter>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Tên khách hàng</label>
+                                <input class="form-control form-control-sm" name="name" type="text"
+                                    value="{{ request()->input('name') ?? '' }}" placeholder="Nhập tên khách hàng..."
+                                    data-advanced-filter>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">Email</label>
+                                <input class="form-control form-control-sm" name="email" name="email" type="email"
+                                    value="{{ request()->input('email') ?? '' }}" placeholder="Nhập email..."
+                                    data-advanced-filter>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">Số điện thoại</label>
+                                <input class="form-control form-control-sm" name="profile_phone_user" type="text"
+                                    value="{{ request()->input('profile_phone_user') ?? '' }}"
+                                    placeholder="Nhập số điện thoại..." data-advanced-filter>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="statusItem" class="form-label">Trạng thái</label>
+                                <select class="form-select form-select-sm" name="status" id="statusItem"
+                                    data-advanced-filter>
+                                    <option value="">Tất cả trạng thái</option>
+                                    <option @selected(request()->input('status') === 'active') value="active">Hoạt động</option>
+                                    <option @selected(request()->input('status') === 'inactive') value="inactive">Không hoạt động</option>
+                                    <option @selected(request()->input('status') === 'blocked') value="blocked">Khóa</option>
+                                </select>
+                            </div>
+                            <div class="mt-3 text-end">
+                                <button class="btn btn-sm btn-primary" id="applyAdvancedFilter">Áp dụng</button>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- end card header -->
-                    <div class="card-body">
+                    <div class="card-body" id="item_List">
                         <div class="listjs-table" id="customerList">
                             <div class="row g-4 mb-3">
                                 <div class="col-sm-auto">
                                     <div>
-                                        <a href="{{ route('admin.users.create') }}">
-                                            <button type="button" class="btn btn-primary add-btn">
-                                                <i class="ri-add-line align-bottom me-1"></i> Thêm mới
+                                        @if ($roleUser['name'] === 'deleted')
+                                            <button class="btn btn-danger" id="restoreSelected">
+                                                <i class=" ri-restart-line"> Khôi phục</i>
                                             </button>
-                                        </a>
+                                        @else
+                                            <a href="{{ route('admin.users.create') }}">
+                                                <button type="button" class="btn btn-primary add-btn">
+                                                    <i class="ri-add-line align-bottom me-1"></i> Thêm mới
+                                                </button>
+                                            </a>
+                                        @endif
                                         <button class="btn btn-danger" id="deleteSelected">
-                                            <i class="ri-delete-bin-2-line"></i>
+                                            <i class="ri-delete-bin-2-line"> Xóa nhiều</i>
                                         </button>
                                     </div>
                                 </div>
                                 <div class="col-sm">
                                     <div class="d-flex justify-content-sm-end">
                                         <div class="search-box ms-2">
-                                            <input type="text" name="searchUser" class="form-control search"
-                                                id="search-options" placeholder="Tìm kiếm..."
-                                                value="{{ old('searchUser') }}">
-                                            <button class="ri-search-line search-icon m-0 p-0 border-0"
+                                            <input type="text" name="search_full" id="searchFull"
+                                                class="form-control search" placeholder="Tìm kiếm..." data-search
+                                                value="{{ request()->input('search_full') ?? '' }}">
+                                            <button id="search-full" class="ri-search-line search-icon m-0 p-0 border-0"
                                                 style="background: none;"></button>
                                         </div>
                                     </div>
@@ -134,14 +199,19 @@
                                             <th scope="col" style="width: 50px;">
                                                 <input type="checkbox" id="checkAll">
                                             </th>
-                                            <th>Mã</th>
-                                            <th>Tên</th>
+                                            <th>STT</th>
+                                            <th>Họ và tên</th>
                                             <th>Email</th>
-                                            <th>Xác Thực</th>
+                                            <th>Số điện thoại</th>
+                                            <th>Xác minh email</th>
                                             <th>Trạng Thái</th>
                                             <th>Vai Trò</th>
                                             <th>Ngày Tham Gia</th>
-                                            <th>Hành Động</th>
+                                            @if ($roleUser['name'] !== 'deleted')
+                                                <th>Hành Động</th>
+                                            @else
+                                                <th>Thời gian xóa</th>
+                                            @endif
                                         </tr>
                                     </thead>
                                     <tbody class="list">
@@ -149,57 +219,78 @@
                                             <tr>
                                                 <th scope="row">
                                                     <div class="form-check">
-                                                        <input class="form-check-input" id="checkAll" type="checkbox"
-                                                            name="userId" value="{{ $user->id }}">
+                                                        <input class="form-check-input" type="checkbox" name="itemID"
+                                                            value="{{ $user->id }}">
                                                     </div>
                                                 </th>
                                                 <td class="id"><a
-                                                        class="fw-medium link-primary">#{{ $user->code }}</a></td>
+                                                        class="fw-medium link-primary">{{ $loop->index + 1 }}</a></td>
                                                 <td class="customer_name">{{ $user->name }}</td>
                                                 <td class="email">{{ $user->email }}</td>
+                                                <td class="phone">{{ $user->profile->phone ?? 'Chưa nhập' }}</td>
                                                 <td>
                                                     <div class="form-check form-switch form-switch-warning">
                                                         <input class="form-check-input" type="checkbox" role="switch"
-                                                            id="SwitchCheck4" disabled @checked($user->email_verified_at != null)>
+                                                            {{ $roleUser['name'] !== 'deleted' ? 'name=email_verified' : 'disabled' }}
+                                                            value="{{ $user->id }}" @checked($user->email_verified_at != null)>
                                                     </div>
                                                 </td>
                                                 <td class="status">
                                                     @if ($user->status === 'active')
                                                         <span class="badge bg-success w-100">
-                                                            ACTIVE
+                                                            Active
                                                         </span>
                                                     @elseif($user->status === 'inactive')
                                                         <span class="badge bg-warning w-100">
-                                                            INACTIVE
+                                                            Inactive
                                                         </span>
                                                     @else
                                                         <span class="badge bg-danger w-100">
-                                                            BLOCK
+                                                            Block
                                                         </span>
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    <span class="badge bg-primary">User</span>
-                                                </td>
-                                                <td>{{ $user->created_at != null ? date_format($user->created_at, 'd/m/Y') : 'NULL' }}
+                                                    @php
+                                                        $roleName =
+                                                            $roleUser['name'] === 'deleted'
+                                                                ? $user->roles->first()?->name
+                                                                : $roleUser['name'];
+                                                        $badgeColor = match ($roleName) {
+                                                            'admin' => 'bg-danger',
+                                                            'member' => 'bg-primary',
+                                                            'instructor' => 'bg-warning',
+                                                            default => 'bg-primary',
+                                                        };
+                                                    @endphp
+                                                    <span class="badge {{ $badgeColor }} w-100">
+                                                        {{ Str::ucfirst($roleName) }}
+                                                    </span>
                                                 </td>
                                                 <td>
-                                                    <div class="d-flex gap-2">
-                                                        <a href="{{ route('admin.users.edit', $user->id) }}">
-                                                            <button class="btn btn-sm btn-warning edit-item-btn">
-                                                                <span class="ri-edit-box-line"></span>
-                                                            </button>
-                                                        </a>
-                                                        <a href="{{ route('admin.users.show', $user->id) }}">
-                                                            <button class="btn btn-sm btn-info edit-item-btn">
-                                                                <span class="ri-folder-user-line"></span>
-                                                            </button>
-                                                        </a>
-                                                        <a href="{{ route('admin.users.destroy', $user->id) }}"
-                                                            class="sweet-confirm btn btn-sm btn-danger remove-item-btn">
-                                                            <span class="ri-delete-bin-7-line"></span>
-                                                        </a>
-                                                    </div>
+                                                    {{ optional(\Carbon\Carbon::parse($user->created_at))->format('d/m/Y') ?? 'NULL' }}
+                                                </td>
+                                                <td>
+                                                    @if ($roleUser['name'] !== 'deleted')
+                                                        <div class="d-flex gap-2">
+                                                            <a href="{{ route('admin.users.edit', $user->id) }}">
+                                                                <button class="btn btn-sm btn-warning edit-item-btn">
+                                                                    <span class="ri-edit-box-line"></span>
+                                                                </button>
+                                                            </a>
+                                                            <a href="{{ route('admin.users.show', $user->id) }}">
+                                                                <button class="btn btn-sm btn-info edit-item-btn">
+                                                                    <span class="ri-folder-user-line"></span>
+                                                                </button>
+                                                            </a>
+                                                            <a href="{{ route('admin.users.destroy', $user->id) }}"
+                                                                class="sweet-confirm btn btn-sm btn-danger remove-item-btn">
+                                                                <span class="ri-delete-bin-7-line"></span>
+                                                            </a>
+                                                        </div>
+                                                    @else
+                                                        {{ optional(\Carbon\Carbon::parse($user->deleted_at))->format('d/m/Y') ?? 'NULL' }}
+                                                    @endif
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -222,87 +313,33 @@
 @endsection
 
 @push('page-scripts')
-    <script src="{{ asset('assets/libs/list.pagination.js/list.pagination.min.js') }}"></script>
-
-    <!-- listjs init -->
-    <script src="{{ asset('assets/js/pages/listjs.init.js') }}"></script>
     <script>
-        $('#checkAll').on('change', function() {
-            const isChecked = $(this).prop('checked');
-            $('input[name="userId"]').prop('checked', isChecked);
-        });
+        var routeUrlFilter = "{{ route('admin.' . $actorRole . '.index') }}";
+        var routeDeleteAll =
+            "{{ $roleUser['name'] === 'deleted' ? route('admin.users.forceDelete', ':itemID') : route('admin.users.destroy', ':itemID') }}";
+        var routeRestoreUrl = "{{ route('admin.users.restoreDelete', ':itemID') }}";
 
-        $(document).ready(function() {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $("#deleteSelected").click(function(event) {
-                event.preventDefault();
+        $(document).on('change', 'input[name="email_verified"]', function() {
+            var userID = $(this).val();
+            var isChecked = $(this).is(':checked');
 
-                var selectedUsers = [];
+            var updateUrl = "{{ route('admin.users.updateEmailVerified', ':userID') }}".replace(
+                ':userID', userID);
 
-                $('input[name="userId"]:checked').each(function() {
-                    selectedUsers.push($(this).val());
-                });
-
-                if (selectedUsers.length == 0) {
-                    Swal.fire({
-                        title: 'Chọn ít nhất 1 người dùng để xóa',
-                        icon: 'warning',
-                        confirmButtonText: 'OK'
-                    });
-                    return;
-                }
-
-                let deleteUrl = "{{ route('admin.users.destroy', ':userID') }}".replace(':userID',
-                    selectedUsers.join(','));
-
-                Swal.fire({
-                    title: "Bạn có muốn xóa ?",
-                    text: "Bạn sẽ không thể khôi phục dữ liệu khi xoá!!",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#DD6B55",
-                    confirmButtonText: "Đồng ý!!",
-                    cancelButtonText: "Huỷ!!"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            type: "DELETE",
-                            url: deleteUrl,
-                            success: function(data) {
-                                if (data.status === 'success') {
-                                    Swal.fire({
-                                        title: 'Thao tác thành công!',
-                                        text: data.message,
-                                        icon: 'success'
-                                    }).then((result) => {
-                                        if (result.isConfirmed) {
-                                            location.reload();
-                                        }
-                                    });
-                                } else if (data.status === 'error') {
-                                    Swal.fire({
-                                        title: "Thao tác thất bại!",
-                                        text: data.message,
-                                        icon: 'error'
-                                    });
-                                }
-                            },
-                            error: function(data) {
-                                console.log('Error:', data);
-                                Swal.fire({
-                                    title: "Thao tác thất bại!",
-                                    text: data.responseJSON.message,
-                                    icon: 'error'
-                                });
-                            }
-                        });
-                    }
-                });
+            $.ajax({
+                type: "PUT",
+                url: updateUrl,
+                data: {
+                    email_verified: isChecked ? userID : ''
+                },
             });
         });
     </script>
+    <script src="{{ asset('assets/js/custom/custom.js') }}"></script>
+    <script src="{{ asset('assets/js/common/checkall-option.js') }}"></script>
+    <script src="{{ asset('assets/js/common/delete-all-selected.js') }}"></script>
+    <script src="{{ asset('assets/js/common/restore-all-selected.js') }}"></script>
+    <script src="{{ asset('assets/js/common/filter.js') }}"></script>
+    <script src="{{ asset('assets/js/common/search.js') }}"></script>
+    <script src="{{ asset('assets/js/common/handle-ajax-search&filter.js') }}"></script>
 @endpush

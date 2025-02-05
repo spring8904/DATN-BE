@@ -10,10 +10,16 @@ class Quiz extends Model
     use HasFactory;
 
     protected $fillable = [
-        'lesson_id',
-        'question',
-        'image',
-        'answer_type',
-        'description'
+       'title'
     ];
+
+    public function lessons()
+    {
+        return $this->morphOne(Lesson::class, 'lessonable');
+    }
+
+    public function questions()
+    {
+        return $this->hasMany(Question::class);
+    }
 }

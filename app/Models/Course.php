@@ -69,12 +69,20 @@ class Course extends Model
     {
         return $this->hasMany(Chapter::class);
     }
+    public function invoices(){
+        return $this->hasMany(Invoice::class);
+    }
 
     public function scopeSearch($query, $searchQuery)
     {
         return $query->when($searchQuery, function ($query) use ($searchQuery) {
             $query->where('name', 'like', '%' . $searchQuery . '%');
         });
+    }
+
+    public function approvables()
+    {
+        return $this->morphMany(Approvable::class, 'approvable');
     }
 
 }

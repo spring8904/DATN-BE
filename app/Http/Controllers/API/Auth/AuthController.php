@@ -3,39 +3,29 @@
 namespace App\Http\Controllers\API\Auth;
 
 use App\Http\Controllers\Controller;
-
 use App\Http\Requests\API\Auth\ForgotPassWordRequest;
 use App\Http\Requests\API\Auth\ResetPasswordRequest;
+use App\Http\Requests\API\Auth\SigninInstructorRequest;
+use App\Http\Requests\API\Auth\SinginUserRequest;
+use App\Http\Requests\API\Auth\SingupUserRequest;
 use App\Http\Requests\API\Auth\VerifyEmailRequest;
-
-use App\Http\Requests\API\Users\SigninInstructorRequest;
-use App\Http\Requests\API\Users\SinginUserRequest;
-use App\Http\Requests\API\Users\SingupUserRequest;
 use App\Models\Education;
 use App\Models\Profile;
-
 use App\Models\User;
 use App\Traits\LoggableTrait;
 use Carbon\Carbon;
 use F9Web\ApiResponseHelpers;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
-use Spatie\Permission\Models\Role;
-
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Illuminate\Auth\Events\Verified;
-
-use function PHPUnit\Framework\isEmpty;
 
 
 class AuthController extends Controller
 {
     use LoggableTrait, ApiResponseHelpers;
-
 
     public function forgotPassword(ForgotPassWordRequest $forgotPassWordRequest)
     {
@@ -51,8 +41,8 @@ class AuthController extends Controller
                 ],200);
             }
 
-        } catch (\Throwable $th) {
-            //throw $th;
+        } catch (\Exception $e) {
+            $this->logError($e);
 
             return response()->json([
                 'message' => 'Không thể gửi liên kết đặt lại mật khẩu. Vui lòng thử lại.',
@@ -67,7 +57,7 @@ class AuthController extends Controller
             $data = $resetPasswordRequest->only('email', 'password', 'password_confirmation', 'token');
 
             $status = Password::reset(
-                $data, 
+                $data,
                 function($user, $password) {
                 $user->forceFill([
                     'password' => Hash::make($password),
@@ -83,9 +73,9 @@ class AuthController extends Controller
                     'message' => __($status),
                 ], 200);
             }
-            
-        } catch (\Throwable $th) {
-            //throw $th;
+
+        } catch (\Exception $e) {
+            $this->logError($e);
 
             return response()->json([
                 'success' => false,
@@ -93,27 +83,22 @@ class AuthController extends Controller
             ], 400);
         }
     }
+
     public function verifyEmail(VerifyEmailRequest $verifyEmailRequest)
     {
         try {
             //code...
-            $user = User::findOrFail($verifyEmailRequest->id);
+            $user = User::where('email', $verifyEmailRequest->email)->first();
 
-            if (!hash_equals((string) $verifyEmailRequest->hash, sha1($user->getEmailForVerification()))) {
-                return response()->json(['message' => 'Liên kết xác minh không hợp lệ'], 400);
+            if ($user || Hash::check($verifyEmailRequest->password, $user->password)) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Mật khẩu chính xác.',
+                ], 200);
             }
-    
-            if ($user->hasVerifiedEmail()) {
-                return response()->json(['message' => 'Email đã tồn tại'], 200);
-            }
-    
-            $user->markEmailAsVerified();
-            event(new Verified($user));
-    
-            return response()->json(['message' => 'Email đã được xác minh thành công'], 200);
 
-        } catch (\Throwable $th) {
-            //throw $th;
+        } catch (\Exception $e) {
+            $this->logError($e);
 
             return response()->json([
                 'success' => false,
@@ -224,11 +209,12 @@ class AuthController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
     public function registerInstructor(SigninInstructorRequest $request)
     {
         try {
             DB::beginTransaction();
-            
+
             $validated = $request->validated();
 
             $data = $request->only(['name', 'email', 'password', 'repassword']);

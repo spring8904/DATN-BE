@@ -37,14 +37,14 @@
                                 @method('PUT')
                                 <div class="d-flex">
                                     <div class="mb-3 col-6 pe-3">
-                                        <label class="form-label">Name</label>
+                                        <label class="form-label">Tên mã giảm giá</label>
                                         <input type="text" name="name" class="form-control" value="{{ $coupon->name }}">
                                         @error('name')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
                                     </div>
                                     <div class="mb-3 col-6">
-                                        <label class="form-label">Code</label>
+                                        <label class="form-label">Mã giảm giá</label>
                                         <input type="text" name="code" class="form-control"
                                             value="{{ $coupon->code }}">
                                         @error('code')
@@ -54,7 +54,7 @@
                                 </div>
                                 <div class="d-flex">
                                     <div class="mb-3 col-6 pe-3">
-                                        <label class="form-label">Discount_type</label>
+                                        <label class="form-label">Loại giảm giá</label>
                                         <select name="discount_type" class="form-control" value="{{ old('discount_type') }}">
                                             <option value="fixed" <?=$coupon->discount_type =="fixed" ? 'selected' : ""?> >Fixed</option>
                                             <option value="percentage" <?=$coupon->discount_type =="percentage" ? 'selected' : ""?>>Percentage</option>
@@ -64,7 +64,7 @@
                                         @enderror
                                     </div>
                                     <div class="mb-3 col-6">
-                                        <label class="form-label">Discount_value</label>
+                                        <label class="form-label">Giá trị giảm giá</label>
                                         <input type="number" name="discount_value" class="form-control" value="{{ $coupon->discount_value }}">
                                         @error('discount_value')
                                             <div class="text-danger">{{ $message }}</div>
@@ -73,18 +73,18 @@
                                 </div>
                                 <div class="d-flex">
                                     <div class="mb-3 col-6 pe-3">
-                                        <label class="form-label">Used_count</label>
+                                        <label class="form-label">Số lượt sử dụng</label>
                                         <input type="int" name="used_count" class="form-control" value="{{ $coupon->used_count }}">
                                         @error('used_count')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
                                     </div>
                                         <div class="mb-3 col-6">
-                                        <label class="form-label">Status</label>
+                                        <label class="form-label">Trạng Thái</label>
                                         <select name="status" class="form-select" value="{{ old('status') }}">
                                             <option value="" selected>Chọn trạng thái</option>
-                                            <option value="1" <?=$coupon->status =="1" ? 'selected' : ""?>>Active</option>
-                                            <option value="0" <?=$coupon->status =="0" ? 'selected' : ""?>>InActive</option>
+                                            <option value="1" <?=$coupon->status =="1" ? 'selected' : ""?>>Hoạt động</option>
+                                            <option value="0" <?=$coupon->status =="0" ? 'selected' : ""?>>Không hoạt động</option>
                                         </select>
                                         @error('status')
                                             <div class="text-danger">{{ $message }}</div>
@@ -93,14 +93,14 @@
                                 </div>
                                 <div class="d-flex">
                                     <div class="mb-3 col-6 pe-3">
-                                        <label class="form-label">start_date</label>
+                                        <label class="form-label">Ngày bắt đầu</label>
                                         <input type="date" name="start_date" class="form-control" value="{{ $coupon->start_date }}">
                                         @error('start_date')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
                                     </div>
                                     <div class="mb-3 col-6">
-                                        <label class="form-label">Expire_date</label>
+                                        <label class="form-label">Ngày kết thúc</label>
                                         <input type="date" name="expire_date" class="form-control" value="{{ $coupon->expire_date }}">
                                         @error('expire_date')
                                             <div class="text-danger">{{ $message }}</div>
@@ -109,7 +109,7 @@
                                         
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">Description</label>
+                                    <label class="form-label">Mô tả</label>
                                     <textarea name="description" class="form-control">{{$coupon->description}}</textarea>
                                     @error('description')
                                         <div class="text-danger">{{ $message }}</div>

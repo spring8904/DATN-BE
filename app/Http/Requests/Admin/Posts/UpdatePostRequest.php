@@ -31,6 +31,8 @@ class UpdatePostRequest extends FormRequest
             'view' => ['nullable', 'integer', 'min:0'],
             'is_hot' => ['nullable', 'boolean'],
             'published_at' => ['nullable', 'date'],
+            'tags' => ['nullable', 'array'],
+            'tags.*' => ['nullable'],
         ];
     }
     public function messages()

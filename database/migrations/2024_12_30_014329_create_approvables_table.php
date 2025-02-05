@@ -14,10 +14,10 @@ return new class extends Migration
     {
         Schema::create('approvables', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
-            $table->morphs('approvable');
+            $table->foreignId('approver_id')->nullable()->constrained('users')->cascadeOnDelete();
             $table->string('status')->default('Đang xử lý');
             $table->text('note')->nullable();
+            $table->morphs('approvable');
             $table->datetime('request_date')->nullable();
             $table->datetime('approved_at')->nullable();
             $table->datetime('rejected_at')->nullable();

@@ -24,7 +24,7 @@ class Post extends Model
         'content',
         'thumbnail',
         'status',
-        'view',
+        'views',
         'is_hot',
         'published_at',
     ];
@@ -34,10 +34,11 @@ class Post extends Model
         return $this->morphToMany(Tag::class, 'taggable');
     }
 
-    public function categories() {
-        return $this->morphToMany(Category::class, 'categorizable');
-    }
     public function user(){
         return $this->belongsTo(User::class);
+    }
+
+    public function category(){
+        return $this->belongsTo(Category::class);
     }
 }

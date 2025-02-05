@@ -13,17 +13,15 @@ class Lesson extends Model
         'chapter_id',
         'title',
         'slug',
-        'duration',
         'content',
-        'playback_id',
         'is_free_preview',
         'order',
+        'type',
         'lessonable_type',
         'lessonable_id',
     ];
 
     public $attributes = [
-        'duration' => 0,
         'is_free_preview' => 0,
         'order' => 0,
     ];
@@ -31,5 +29,10 @@ class Lesson extends Model
     public function chapter()
     {
         return $this->belongsTo(Chapter::class);
+    }
+
+    public function lessonable()
+    {
+        return $this->morphTo();
     }
 }

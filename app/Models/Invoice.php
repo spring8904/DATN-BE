@@ -14,8 +14,7 @@ class Invoice extends Model
         'course_id',
         'coupon_code',
         'coupon_discount',
-        'total_coin',
-        'total_coin_discount',
+        'total',
         'final_total',
         'status'
     ];
@@ -23,4 +22,14 @@ class Invoice extends Model
     protected $attributes = [
         'status' => 'pending'
     ];
+
+    public function course()
+    {
+        return $this->belongsTo(Course::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

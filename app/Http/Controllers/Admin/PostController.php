@@ -29,7 +29,6 @@ class PostController extends Controller
     public function index(Request $request)
     {
         try {
-
             $title = 'Quản lý bài viết';
             $subTitle = 'Danh sách bài viết';
 
@@ -37,19 +36,14 @@ class PostController extends Controller
 
             $searchPost = $request->input('searchPost');
 
-            // kiểm tra xem có từ khóa không 
+            // kiểm tra xem có từ khóa không
             if (!empty($searchPost)) {
-                $posts =  Post::with('user')
+                $posts = Post::with('user')
                     ->where('title', 'LIKE', '%' . $searchPost . '%')
                     ->paginate(10);
             } else {
                 $posts = Post::with('user')->paginate(10);
             }
-
-            // Kiểm tra xem trong collection có phần tử nào không 
-            $message =$posts->isEmpty() ? 'Không có bản ghi nào' :  '';
-            $key =$posts->isEmpty() ? 'success' :  '';
-            session()->flash($key,$message);
 
             return view('posts.index', compact([
                 'title',
@@ -105,29 +99,32 @@ class PostController extends Controller
             }
 
             $data['user_id'] = Auth::id();
-            
-            $data['category_id'] = $request->input('categories')[0];
-            
+
+            $data['category_id'] = $request->input('categories');
+
+            $data['published_at'] = $request->input('published_at') ?? now();
+
             do {
                 $data['slug'] = Str::slug($request->title) . '?' . Str::uuid();
-            } while (Post::query()->where('slug',$data['slug'])->exists());
+            } while (Post::query()->where('slug', $data['slug'])->exists());
 
-            // dd($data);
-
-            $posts = Post::query()->create($data);
-
-            if (!empty($request->input('categories'))) {
-                $posts->categories()->sync($request->input('categories'));
-            }
+            $post = Post::query()->create($data);
 
             if (!empty($request->input('tags'))) {
-                $posts->tags()->sync($request->input('tags'));
+                $tags = collect($request->input('tags'))->map(function ($tagName) {
+                    return Tag::query()->firstOrCreate([
+                        'name' => $tagName,
+                        'slug' => Str::slug($tagName) ?? Str::uuid()
+                    ]);
+                });
+
+                $post->tags()->sync($tags->pluck('id'));
             }
 
             DB::commit();
 
             return redirect()->route('admin.posts.index')->with('success', 'Thao tác thành công');
-            
+
         } catch (\Exception $e) {
 
             DB::rollBack();
@@ -155,8 +152,8 @@ class PostController extends Controller
             $subTitle = 'Chi tiết bài viết';
 
             $post = Post::query()
-            ->with(['tags:id,name', 'categories:id,name,parent_id', 'user:id,name'])
-            ->findOrFail($id);
+                ->with(['tags:id,name', 'categories:id,name,parent_id', 'user:id,name'])
+                ->findOrFail($id);
 
             return view('posts.show', compact([
                 'title',
@@ -182,10 +179,10 @@ class PostController extends Controller
             $categories = Category::query()->get();
             $tags = Tag::query()->get();
             $post = Post::query()
-            ->with(['tags:id,name', 'categories:id,name,parent_id'])
-            ->findOrFail($id);
-            
-            $categoryIds = $post->categories->pluck('id')->toArray();
+                ->with(['tags:id,name', 'category:id,name,parent_id'])
+                ->findOrFail($id);
+
+            $categoryIds = $post->category->pluck('id')->toArray();
             $tagIds = $post->tags->pluck('id')->toArray();
 
             return view('posts.edit', compact([
@@ -212,40 +209,42 @@ class PostController extends Controller
         try {
             DB::beginTransaction();
 
-            $validated = $request->validated();
+            $data = $request->except('thumbnail', 'categories', 'is_hot');
 
-            $data = $request->except('thumbnail', 'categories','is_hot');
-
-            $post = Post::query()->with(['tags', 'categories'])->findOrFail($id);
+            $post = Post::query()->with(['tags'])->findOrFail($id);
 
             if ($request->hasFile('thumbnail')) {
+                if ($post->thumbnail && filter_var($post->thumbnail, FILTER_VALIDATE_URL)) {
+                    $this->deleteImage($post->thumbnail, self::FOLDER);
+                }
+
                 $data['thumbnail'] = $this->uploadImage($request->file('thumbnail'), self::FOLDER);
             }
 
             $data['is_hot'] = $request->input('is_hot') ?? 0;
-            $data['category_id'] = $request->input('categories')[0];
+            $data['category_id'] = $request->input('categories');
+            $data['published_at'] = $request->input('published_at') ?? now();
 
             do {
                 $data['slug'] = Str::slug($request->title) . '?' . Str::uuid();
-            } while (Post::query()->where('slug',$data['slug'])->exists());
-
-            $currencyThumbnail = $post->thumbnail;
+            } while (Post::query()->where('slug', $data['slug'])->exists());
 
             $post->update($data);
 
-            $post->categories()->sync($request->input('categories'));
+            if (!empty($request->input('tags'))) {
+                $tags = collect($request->input('tags'))->map(function ($tagName) {
+                    return Tag::firstOrCreate([
+                        'name' => $tagName,
+                        'slug' => Str::slug($tagName) ?? Str::uuid()
+                    ]);
+                });
 
-            $post->tags()->sync($request->input('tags'));
+                $post->tags()->sync($tags->pluck('id'));
+            } else {
+                $post->tags()->detach();
+            }
 
             DB::commit();
-
-            if (
-                isset($data['thumbnail']) && !empty($data['thumbnail'])
-                && filter_var($data['thumbnail'], FILTER_VALIDATE_URL)
-                && !empty($currencyThumbnail)
-            ) {
-                $this->deleteImage($currencyThumbnail, self::FOLDER);
-            }
 
             CrudNotification::sendToMany([], $id);
 
@@ -254,7 +253,7 @@ class PostController extends Controller
             DB::rollBack();
 
             if (isset($data['thumbnail']) && !empty($data['thumbnail']) && filter_var($data['thumbnail'], FILTER_VALIDATE_URL)) {
-                $this->deleteImage($data['thumbnail'],self::FOLDER);
+                $this->deleteImage($data['thumbnail'], self::FOLDER);
             }
 
             $this->logError($e);
@@ -269,16 +268,13 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         try {
-            //code...
             $post->delete();
 
-            if(isset($category->icon))
-            {
+            if (isset($category->icon)) {
                 $this->deleteImage($post->thubmnail, self::FOLDER);
             }
             return response()->json($data = ['status' => 'success', 'message' => 'Mục đã được xóa.']);
         } catch (\Exception $e) {
-            //throw $th;
             $this->logError($e);
 
             return response()->json($data = ['status' => 'error', 'message' => 'Lỗi thao tác.']);

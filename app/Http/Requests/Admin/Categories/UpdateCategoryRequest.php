@@ -27,8 +27,7 @@ class UpdateCategoryRequest extends FormRequest
         return [
             //
             'name'        => ['required','string','max:255'],
-            'slug'        => ['required','max:255',Rule::unique('categories')->ignore($segment)],
-            'icon'        => Rule::requiredIf(empty(request('icon_url'))),
+            'icon'        => 'nullable|image|max:2048',
             'status'      => [ Rule::in([0,1])],
         ];
 

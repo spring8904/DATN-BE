@@ -10,7 +10,7 @@ class Approvable extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
+        'approver_id',
         'status',
         'approvable_type',
         'approvable_id',
@@ -19,4 +19,20 @@ class Approvable extends Model
         'approved_at',
         'rejected_at'
     ];
+
+    protected $casts = [
+        'request_date' => 'datetime',
+        'approved_at' => 'datetime',
+        'rejected_at' => 'datetime',
+    ];
+
+    public function approvable()
+    {
+        return $this->morphTo();
+    }
+
+    public function approver()
+    {
+        return $this->belongsTo(User::class, 'approver_id');
+    }
 }

@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -12,11 +14,24 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
+        $startTime = microtime(true);
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        $this->call([
+            RoleSeeder::class,
+            PermissionsSeeder::class,
+            SupportedBankSeeder::class,
+            UserSeeder::class,
+            WalletSedder::class,
+            BannerSeeder::class,
+            CategorySeeder::class,
+            CourseSeeder::class,
+            InvoiceSeeder::class,
+            WithdrawalsRequestSeeder::class,
+            TransactionSeeder::class,
+        ]);
+
+        $endTime = microtime(true);
+
+        echo 'Thời gian thực hiện: '. round($endTime - $startTime) . 's';
     }
 }
