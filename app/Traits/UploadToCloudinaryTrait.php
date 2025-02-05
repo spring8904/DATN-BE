@@ -32,6 +32,33 @@ trait UploadToCloudinaryTrait
         }
     }
 
+    public function uploadImageMultiple($files, $folder = null)
+    {
+        try {
+            $uploadedUrls = [];
+
+            foreach ($files as $file) {
+                if (!$file->isValid()) {
+                    continue;
+                }
+
+                $uploadResult = Cloudinary::upload($file->getRealPath(), [
+                    'folder' => $folder ?? 'images',
+                    'public_id' => Str::random(10),
+                ]);
+
+                $uploadedUrls[] = $uploadResult->getSecurePath() ?? null;
+            }
+
+            return $uploadedUrls;
+
+        } catch (\Exception $e) {
+            $this->logError($e);
+
+            return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại sau', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
     public function uploadVideo($file, $folder = null, $fullInfo = false)
     {
         try {

@@ -20,9 +20,11 @@ class NotificationController extends Controller
             $count = $request->query('count', 10);
 
             $notifications = $user->notifications()->latest()->take($count)->get();
+            $unreadNotificationsCount = $user->unreadNotifications()->count();
 
             return $this->respondOk('Danh sách thông báo', [
                 'notifications' => $notifications,
+                'unread_notifications_count' => $unreadNotificationsCount,
             ]);
         } catch (\Exception $e) {
             $this->logError($e, $request->all());

@@ -224,8 +224,8 @@
                         aria-haspopup="true" aria-expanded="false">
                     <i class='bx bx-bell fs-22'></i>
                     <span
-                        class="position-absolute topbar-badge fs-10 translate-middle badge rounded-pill bg-danger">3<span
-                            class="visually-hidden">unread messages</span></span>
+                        class="position-absolute topbar-badge fs-10 translate-middle badge rounded-pill bg-danger"
+                        id="unread-notification-count"></span>
                 </button>
                 <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
                      aria-labelledby="page-header-notifications-dropdown">
@@ -382,8 +382,6 @@
                 }, 500);
             }
 
-            triggerBellAnimation()
-
             const userID = `{{ Auth::check() ? Auth::user()->id : '' }}`;
             if (!userID) {
                 console.log('Người dùng chưa đăng nhập.');
@@ -424,36 +422,45 @@
 
             function renderNotification(notification, isRealTime) {
                 if (!notification?.data) return;
-                const {thumbnail, slug, course_name, message} = notification.data;
-                const timeFormatted = notification?.created_at ? moment(notification?.created_at).fromNow() : 'Không xác định';
+                const {type, message, url} = notification.data;
+                let title = 'Thông báo mới';
+                let thumbnail = '';
+
+                if (type === 'register_course') {
+                    title = notification.data.course_name || 'Khóa học';
+                    thumbnail = notification.data.thumbnail;
+                } else if (type === 'register_instructor') {
+                    title = notification.data.user_name || 'Giảng viên';
+                    thumbnail = 'https://res.cloudinary.com/dvrexlsgx/image/upload/v1732148083/Avatar-trang-den_apceuv_pgbce6.png';
+                }
 
                 const isChecked = notification.read_at ? 'checked' : '';
-                const notificationItemClass = notification.read_at ? 'notification-read' : '';
+                const timeFormatted = notification?.created_at ? moment(notification?.created_at).fromNow() : 'Không xác định';
 
                 const notificationItem = `
-            <div id="notification-${notification?.id}" class="text-reset notification-item d-block dropdown-item">
-                <div class="d-flex">
-                    <img src="${thumbnail || ''}" class="me-3 rounded-circle avatar-xs" alt="user-pic">
-                    <div class="flex-grow-1">
-                        <a href="${slug || '#'}" class="stretched-link">
-                            <h6 class="mt-0 mb-1 fs-13 fw-semibold">${course_name || 'Thông báo mới'}</h6>
-                        </a>
-                        <div class="fs-13 text-muted">
-                            <p class="mb-1">${message || ''}</p>
-                        </div>
-                        <p class="mb-0 fs-11 fw-medium text-uppercase text-muted">
-                            <span><i class="mdi mdi-clock-outline"></i> ${timeFormatted}</span>
-                        </p>
+        <div id="notification-${notification.id}" class="text-reset notification-item d-block dropdown-item">
+            <div class="d-flex">
+                <img src="${thumbnail}" class="me-3 rounded-circle avatar-xs" alt="user-pic">
+                <div class="flex-grow-1">
+                    <a href="${url || '#'}" class="stretched-link">
+                        <h6 class="mt-0 mb-1 fs-13 fw-semibold">${title}</h6>
+                    </a>
+                    <div class="fs-13 text-muted">
+                        <p class="mb-1">${message || ''}</p>
                     </div>
-<div class="px-2 fs-15">
-                                                <div class="form-check notification-check">
-         <input class="form-check-input" type="checkbox" data-notification-id="${notification?.id}" id="notification-check-${notification?.id}" ${isChecked}>
-                                <label class="form-check-label" for="notification-check-${notification?.id}"></label>
-                                                </div>
-                                            </div>
+                    <p class="mb-0 fs-11 fw-medium text-uppercase text-muted">
+                        <span><i class="mdi mdi-clock-outline"></i> ${timeFormatted}</span>
+                    </p>
+                </div>
+                <div class="px-2 fs-15">
+                    <div class="form-check notification-check">
+                        <input class="form-check-input" type="checkbox" data-notification-id="${notification.id}" id="notification-check-${notification.id}" ${isChecked}>
+                        <label class="form-check-label" for="notification-check-${notification.id}"></label>
+                    </div>
                 </div>
             </div>
-        `;
+        </div>
+    `;
 
                 if (isRealTime) {
                     $('#messages-notifications-container').prepend(notificationItem);
@@ -461,8 +468,6 @@
                     $('#messages-notifications-container').append(notificationItem);
                 }
             }
-
-            fetchNotifications();
 
             $(document).on('change', '.notification-check input', function () {
                 const notificationId = $(this).data('notification-id');
@@ -497,11 +502,27 @@
             window.Echo.private(`App.Models.User.${userID}`)
                 .notification((notification) => {
                     console.log('Thông báo mới:', notification);
-                    alert(`Khóa học mới cần kiểm duyệt: ${notification.data?.course_name || 'Thông báo mới'}`);
-                    renderNotification(notification, true);
+                    triggerBellAnimation()
 
+                    Toastify({
+                        text: `🔔 ${notification.message}`,
+                        duration: 5000,
+                        close: true,
+                        gravity: "top",
+                        position: "right",
+                        style: {
+                            background: "#2196F3",
+                            color: "#fff",
+                            borderRadius: "5px",
+                            padding: "10px",
+                        }
+                    }).showToast();
+
+                    renderNotification(notification, true);
                     fetchNotifications();
                 });
+
+            fetchNotifications();
         });
     </script>
 @endpush

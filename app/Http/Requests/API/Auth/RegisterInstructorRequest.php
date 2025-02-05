@@ -3,6 +3,7 @@
 namespace App\Http\Requests\API\Auth;
 
 use App\Http\Requests\API\Bases\BaseFormRequest;
+use App\Models\QaSystem;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,9 +24,12 @@ class RegisterInstructorRequest extends BaseFormRequest
      */
     public function rules()
     {
+        $qaSystemCount = QaSystem::query()->count();
+
         $rules = [];
 
         if (!Auth::check()) {
+            $rules['name'] = 'required|string|max:255';
             $rules['email'] = 'required|email|unique:users,email';
             $rules['password'] = 'required|string|min:6';
             $rules['confirm_password'] = 'required|same:password';
@@ -37,10 +41,10 @@ class RegisterInstructorRequest extends BaseFormRequest
             'institution_name' => 'nullable|string|max:255',
             'degree' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
             'major' => 'nullable|string|max:255',
-            'certificates' => 'required|array',
-            'certificates.*' => 'file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'qa_systems' => 'required|array|min:4',
-            'qa_systems.*' => 'required|string',
+            'certificates' => 'nullable|array',
+            'certificates.*' => 'file|mimes:jpg,jpeg,png,webp,pdf|max:2048',
+            'qa_systems' => 'nullable|array|size:' . $qaSystemCount,
+            'qa_systems.*' => 'required',
         ];
 
         return $rules;
@@ -64,11 +68,14 @@ class RegisterInstructorRequest extends BaseFormRequest
             'certificates.*.mimes' => 'Chứng chỉ chấp nhận các định dạng: jpg, jpeg, png, pdf.',
             'certificates.*.max' => 'Kích thước tệp chứng chỉ không được vượt quá 2MB.',
             'qa_systems.required' => 'Hãy trả lời câu hỏi được đưa ra từ hệ thống của chúng tôi.',
-            'qa_systems.min' => 'Bạn phải trả lời ít nhất :min câu hỏi.',
+            'qa_systems.size' => 'Bạn phải trả lời tất cả :size câu hỏi từ hệ thống.',
             'qa_systems.*.required' => 'Tất cả câu hỏi của hệ thống đều bắt buộc phải trả lời.'
         ];
 
         if (!Auth::check()) {
+            $messages['name.required'] = 'Vui lòng nhập tên của bạn';
+            $messages['name.string'] = 'Tên nhập sai định dạng';
+            $messages['name.max'] = 'Ten được nhập tối đa 255 ký tự';
             $messages['email.required'] = 'Vui lòng nhập email';
             $messages['email.email'] = 'Email nhập sai định dạng';
             $messages['email.unique'] = 'Email đã tồn tại';
