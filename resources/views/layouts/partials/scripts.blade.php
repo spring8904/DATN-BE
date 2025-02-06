@@ -1,5 +1,5 @@
 <script>
-    var PATH_ROOT = '';
+    var PATH_ROOT = "{{ env('APP_URL') }}";
 </script>
 
 <script src="{{ asset('assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
