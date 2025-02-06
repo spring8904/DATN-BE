@@ -117,7 +117,7 @@
 
                                 <div class="mt-3">
                                     <button type="submit" class="btn btn-danger waves-effect waves-light">Cập nhập</button>
-                                    {{-- <a href="{{ route('admin.categories.index') }}" type="button" class="btn btn-danger waves-effect waves-lightm ">Quay lại</a> --}}
+                                    <a href="{{ route('admin.categories.index') }}" type="button" class="btn btn-primary waves-effect waves-lightm ">Quay lại</a>
                                 </div>
                             </div>
                         </div>

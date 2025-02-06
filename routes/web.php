@@ -74,6 +74,9 @@ Route::prefix('admin')->as('admin.')
                     ->name('forceDelete')->can('user.update');
                 Route::put('/{user}/restore-delete', [UserController::class, 'restoreDelete'])
                     ->name('restoreDelete')->can('user.update');
+                Route::post('/import/{role?}', [UserController::class, 'import'])->name('import')
+                ->can('user.create');
+                Route::get('export/{role?}', [UserController::class, 'export'])->name('export');
             });
         });
 
