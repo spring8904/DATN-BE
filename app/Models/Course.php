@@ -73,6 +73,11 @@ class Course extends Model
         return $this->hasMany(Invoice::class);
     }
 
+    public function approvables()
+    {
+        return $this->morphOne(Approvable::class, 'approvable');
+    }
+
     public function scopeSearch($query, $searchQuery)
     {
         return $query->when($searchQuery, function ($query) use ($searchQuery) {
@@ -80,9 +85,5 @@ class Course extends Model
         });
     }
 
-    public function approvables()
-    {
-        return $this->morphMany(Approvable::class, 'approvable');
-    }
 
 }

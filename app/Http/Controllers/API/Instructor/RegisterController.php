@@ -33,13 +33,11 @@ class RegisterController extends Controller
 
             $user = Auth::check() ? Auth::user() : $this->createUser($request->validated());
 
-            $profile = $this->createProfile($user->id, $request->only(['phone', 'address', 'experience']));
-
             $uploadedCertificates = $this->uploadCertificates($request->file('certificates'));
 
             $qaSystemsData = $this->prepareQaSystemsData($request->qa_systems);
 
-            $this->createCareer($profile->id, $uploadedCertificates, $qaSystemsData);
+            $profile = $this->createProfile($user->id, $request->only(['phone', 'address', 'experience']), $uploadedCertificates, $qaSystemsData);
 
             $user->assignRole("instructor");
 
@@ -54,7 +52,7 @@ class RegisterController extends Controller
                 $approvable->status = 'pending';
                 $approvable->request_date = now();
                 $approvable->save();
-            }else {
+            } else {
                 return $this->respondOk('Yêu cầu kiểm duyệt đã được gửi');
             }
 
@@ -63,7 +61,7 @@ class RegisterController extends Controller
             ])->get();
 
             foreach ($managers as $manager) {
-                $manager->notify(new RegisterInstructorNotification($user));
+                $manager->notify(new RegisterInstructorNotification($user->load('approvables')));
             }
 
             DB::commit();
@@ -89,9 +87,13 @@ class RegisterController extends Controller
         ]);
     }
 
-    private function createProfile(int $userId, array $data)
+    private function createProfile(int $userId, array $data, array $certificates, array $qaSystemsData)
     {
-        return Profile::query()->create(array_merge($data, ['user_id' => $userId]));
+        return Profile::query()->create(array_merge($data, [
+            'user_id' => $userId,
+            'certificates' => json_encode($certificates),
+            'qa_systems' => json_encode($qaSystemsData),
+        ]));
     }
 
     private function uploadCertificates($certificates)
@@ -111,14 +113,5 @@ class RegisterController extends Controller
                 'options' => $qaSystem['options'],
             ];
         })->toArray();
-    }
-
-    private function createCareer(int $profileId, array $certificates, array $qaSystemsData)
-    {
-        Career::query()->create([
-            'profile_id' => $profileId,
-            'certificates' => json_encode($certificates),
-            'qa_systems' => json_encode($qaSystemsData),
-        ]);
     }
 }
