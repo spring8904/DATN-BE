@@ -76,8 +76,15 @@
                                     <div class="col-xxl-6 col-md-6">
                                         <div>
                                             <label for="placeholderInput" class="form-label">Danh mục gốc</label>
-                                            <input type="text" class="form-control" id="placeholderInput"
-                                                placeholder="Danh mục gốc" name="parent_id" value="{{ $category->parent_id }}">
+                                            <select class="form-select mb-3" aria-label="Default select example"
+                                                name="parent_id">
+                                                <option value="">Chọn danh mục </option>
+                                                @foreach ($parent_id as $item)
+                                                    <option @if (isset($category->parent_id) && $item->id == $category->parent_id)
+                                                        selected
+                                                    @endif value="{{ $item->id }}">{{ $item->name }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                     <!--end col-->

@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\SupportBankController;
 use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\Admin\WithDrawalsRequestController;
 use App\Http\Controllers\Admin\ApprovalCourseController;
+use App\Http\Controllers\Admin\CommissionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -202,6 +203,22 @@ Route::prefix('admin')->as('admin.')
                 ->can('support-bank.update');
             Route::delete('/{supportBank}', [SupportBankController::class, 'destroy'])->name('destroy')
                 ->can('support-bank.delete');
+        });
+
+        #============================== ROUTE COMMISSION =============================
+        Route::prefix('commissions')->as('commissions.')->group(function () {
+            Route::get('/', [CommissionController::class, 'index'])->name('index');
+            Route::get('/create', [CommissionController::class, 'create'])->name('create')
+                ->can('commission.create');
+            Route::post('/', [CommissionController::class, 'store'])->name('store')
+                ->can('commission.create');
+            Route::get('/{id}', [CommissionController::class, 'show'])->name('show');
+            Route::get('/edit/{commission}', [CommissionController::class, 'edit'])->name('edit')
+                ->can('commission.update');
+            Route::put('/{commission}', [CommissionController::class, 'update'])->name('update')
+                ->can('commission.update');
+            Route::delete('/{commission}', [CommissionController::class, 'destroy'])->name('destroy')
+                ->can('commission.delete');
         });
 
         #============================== ROUTE APPROVAL =============================
