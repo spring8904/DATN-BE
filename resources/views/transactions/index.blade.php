@@ -82,82 +82,90 @@
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="filterDropdown"
                                     style="min-width: 500px;">
-                                    <div class="container">
-                                        <li>
-                                            <label for="amountRange" class="form-label">Số tiền</label>
+                                    <form>
+                                        <div class="container">
+                                            <li>
+                                                <label for="amountRange" class="form-label">Số tiền</label>
 
-                                            <div class="d-flex justify-content-between">
-                                                <span id="amountMin">10,000 VND</span>
-                                                <span id="amountMax">99,999,999 VND</span>
-                                            </div>
+                                                <div class="d-flex justify-content-between">
+                                                    <span id="amountMin">10,000 VND</span>
+                                                    <span id="amountMax">99,999,999 VND</span>
+                                                </div>
 
-                                            <div class="d-flex justify-content-between">
-                                                <input type="range" class="form-range w-50" id="amountMinRange"
-                                                    name="amount_min" min="10000" max="49990000" step="10000"
-                                                    value="10000" oninput="updateRange()" data-filter>
-                                                <input type="range" class="form-range w-50" id="amountMaxRange"
-                                                    name="amount_max" min="50000000" max="99990000" step="10000"
-                                                    value="99990000" oninput="updateRange()" data-filter>
-                                            </div>
-                                        </li>
-                                        <div class="row">
-                                            <li class="col-6">
-                                                <div class="mb-2">
-                                                    <label for="startDate" class="form-label">Ngày yêu cầu</label>
-                                                    <input type="date" class="form-control form-control-sm"
-                                                        name="created_at" id="dateRequest" data-filter
-                                                        value="{{ request()->input('created_at') ?? '' }}">
+                                                <div class="d-flex justify-content-between">
+                                                    <input type="range" class="form-range w-50" id="amountMinRange"
+                                                        name="amount_min" min="10000" max="49990000" step="10000"
+                                                        value="10000" oninput="updateRange()" data-filter>
+                                                    <input type="range" class="form-range w-50" id="amountMaxRange"
+                                                        name="amount_max" min="50000000" max="99990000" step="10000"
+                                                        value="99990000" oninput="updateRange()" data-filter>
                                                 </div>
                                             </li>
-                                            <li class="col-6">
-                                                <div class="mb-2">
-                                                    <label for="endDate" class="form-label">Ngày xác nhận</label>
-                                                    <input type="date" class="form-control form-control-sm"
-                                                        name="updated_at" id="dateComplete" data-filter
-                                                        value="{{ request()->input('updated_at') ?? '' }}">
-                                                </div>
+                                            <div class="row">
+                                                <li class="col-6">
+                                                    <div class="mb-2">
+                                                        <label for="startDate" class="form-label">Ngày yêu cầu</label>
+                                                        <input type="date" class="form-control form-control-sm"
+                                                            name="created_at" id="dateRequest" data-filter
+                                                            value="{{ request()->input('created_at') ?? '' }}">
+                                                    </div>
+                                                </li>
+                                                <li class="col-6">
+                                                    <div class="mb-2">
+                                                        <label for="endDate" class="form-label">Ngày xác nhận</label>
+                                                        <input type="date" class="form-control form-control-sm"
+                                                            name="updated_at" id="dateComplete" data-filter
+                                                            value="{{ request()->input('updated_at') ?? '' }}">
+                                                    </div>
+                                                </li>
+                                            </div>
+                                            <li class="mt-2 d-flex gap-1">
+                                                <button class="btn btn-sm btn-success flex-grow-1" id="resetInput"
+                                                    type="reset">Reset</button>
+                                                <button class="btn btn-sm btn-primary flex-grow-1" id="applyFilter">Áp
+                                                    dụng</button>
                                             </li>
                                         </div>
-                                        <li class="mt-2">
-                                            <button class="btn btn-sm btn-primary w-100" id="applyFilter">Áp dụng</button>
-                                        </li>
-                                    </div>
+                                    </form>
                                 </ul>
                             </div>
                         </div>
                     </div>
                     <!-- Tìm kiếm nâng cao -->
                     <div id="advancedSearch" class="card-header" style="display:none;">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label class="form-label">Người thực hiện giao dịch</label>
-                                <input class="form-control form-control-sm" name="user_transaction" type="text"
-                                    placeholder="Nhập tên người thực hiện giao dịch..."
-                                    value="{{ request()->input('user_transaction') ?? '' }}" data-advanced-filter>
+                        <form>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="form-label">Người thực hiện giao dịch</label>
+                                    <input class="form-control form-control-sm" name="user_transaction" type="text"
+                                        placeholder="Nhập tên người thực hiện giao dịch..."
+                                        value="{{ request()->input('user_transaction') ?? '' }}" data-advanced-filter>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="statusTransaction" class="form-label">Trạng thái</label>
+                                    <select class="form-select form-select-sm" name="status" id="statusTransaction"
+                                        data-advanced-filter>
+                                        <option value="">Tất cả trạng thái</option>
+                                        <option value="completed" @selected(request()->input('status') === 'completed')>Hoàn thành</option>
+                                        <option value="pending" @selected(request()->input('status') === 'pending')>Đang xử lý</option>
+                                        <option value="failed" @selected(request()->input('status') === 'failed')>Thất bại</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="typeTransaction" class="form-label">Loại giao dịch</label>
+                                    <select class="form-select form-select-sm" name="type" id="typeTransaction"
+                                        data-advanced-filter>
+                                        <option value="">Tất cả trạng thái</option>
+                                        <option value="invoice" @selected(request()->input('type') === 'invoice')>Mua bán</option>
+                                        <option value="withdrawal" @selected(request()->input('type') === 'withdrawal')>Rút tiền</option>
+                                    </select>
+                                </div>
+                                <div class="mt-3 text-end">
+                                    <button class="btn btn-sm btn-success" type="reset">Reset</button>
+                                    <button class="btn btn-sm btn-primary" id="applyAdvancedFilter">Áp dụng</button>
+                                </div>
                             </div>
-                            <div class="col-md-4">
-                                <label for="statusTransaction" class="form-label">Trạng thái</label>
-                                <select class="form-select form-select-sm" name="status" id="statusTransaction"
-                                    data-advanced-filter>
-                                    <option value="">Tất cả trạng thái</option>
-                                    <option value="completed" @selected(request()->input('status') === 'completed')>Hoàn thành</option>
-                                    <option value="pending" @selected(request()->input('status') === 'pending')>Đang xử lý</option>
-                                    <option value="failed" @selected(request()->input('status') === 'failed')>Thất bại</option>
-                                </select>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="typeTransaction" class="form-label">Loại giao dịch</label>
-                                <select class="form-select form-select-sm" name="type" id="typeTransaction"
-                                    data-advanced-filter>
-                                    <option value="">Tất cả trạng thái</option>
-                                    <option value="invoice" @selected(request()->input('type') === 'invoice')>Mua bán</option>
-                                    <option value="withdrawal" @selected(request()->input('type') === 'withdrawal')>Rút tiền</option>
-                                </select>
-                            </div>
-                            <div class="mt-3 text-end">
-                                <button class="btn btn-sm btn-primary" id="applyAdvancedFilter">Áp dụng</button>
-                            </div>
-                        </div>
+                        </form>
                     </div>
                     <!-- end card header -->
                     <div class="card-body" id="item_List">
@@ -248,6 +256,12 @@
             return value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
         }
         updateRange();
+
+        $(document).on('click', '#resetInput', function() {
+            $('#amountMinRange').val(0);
+            $('#amountMaxRange').val(99990000);
+            updateRange();
+        });
     </script>
     <script src="{{ asset('assets/js/custom/custom.js') }}"></script>
     <script src="{{ asset('assets/js/common/filter.js') }}"></script>
