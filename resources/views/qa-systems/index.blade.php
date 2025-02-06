@@ -118,8 +118,8 @@
                                                            name="postID" value="{{ $qaSystem->id }}">
                                                 </div>
                                             </th>
-                                            <td >{{ $loop->iteration }}</td>
-                                            <td >{{ $qaSystem->title }}</td>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $qaSystem->title }}</td>
                                             <td>
                                                 @if ($qaSystem->answer_type === 'multiple')
                                                     <span class="badge bg-primary">
@@ -163,7 +163,7 @@
                             </div>
 
                             <div class="row justify-content-end">
-                                {{--                                {{ $posts->appends(request()->query())->links() }}--}}
+                                {{ $qaSystems->appends(request()->query())->links() }}
                             </div>
                         </div>
                     </div>

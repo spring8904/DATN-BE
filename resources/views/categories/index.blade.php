@@ -74,7 +74,7 @@
                                             <th>Slug</th>
                                             <th>Danh mục cha</th>
                                             <th>Trạng thái</th>
-                                            
+
 
                                             <th>Biểu tượng</th>
                                             <th>Action</th>
@@ -106,20 +106,27 @@
                                                     @endif
                                                 </td>
                                                 <td class="phone">
-                                                    <img src="{{ $category->icon }}" alt="{{ $category->name }}" width="100">
+                                                    <img src="{{ $category->icon }}" alt="{{ $category->name }}"
+                                                        width="100">
                                                 </td>
                                                 <td>
                                                     <div class="d-flex gap-2">
-                                                        <div >
-                                                            <a href="{{ route('admin.categories.show', $category->id) }}"
-                                                                class="btn btn-sm btn-success edit-item-btn">Show</a>
+                                                        <div>
+                                                            <a href="{{ route('admin.categories.show', $category->id) }}">
+                                                                <button class="btn btn-sm btn-warning edit-item-btn">
+                                                                    <span class="ri-edit-box-line"></span>
+                                                                </button>
+                                                            </a>
                                                         </div>
 
                                                         <div class="edit">
-                                                            <a href="{{ route('admin.categories.edit', $category->id) }}"
-                                                                class="btn btn-sm btn-warning edit-item-btn">Edit</a>
+                                                            <a href="{{ route('admin.categories.edit', $category->id) }}">
+                                                                <button class="btn btn-sm btn-info edit-item-btn">
+                                                                    <span class="ri-folder-user-line"></span>
+                                                                </button>
+                                                            </a>
                                                         </div>
-                                                        
+
                                                         <div class="remove">
                                                             <a href="{{ route('admin.categories.destroy', $category->id) }}"
                                                                 class="sweet-confirm btn btn-sm btn-danger remove-item-btn">

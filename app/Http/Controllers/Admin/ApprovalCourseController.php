@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Approvable;
 use App\Models\Course;
 use App\Traits\LoggableTrait;
 use Illuminate\Http\Request;
@@ -16,42 +17,37 @@ class ApprovalCourseController extends Controller
         $title = 'Kiểm duyệt khoá học';
         $subTitle = 'Danh sách khoá học ';
 
-        $courses = Course::query()
-            ->with('approvables')
-            ->where('status', '!=', 'draft')
-            ->whereHas('approvables')
+        $approvals = Approvable::query()
+            ->with([
+                'approver',
+                'course.user',
+            ])
+            ->where('approvable_type', Course::class)
             ->paginate(10);
 
         return view('approval.course.index', compact([
             'title',
             'subTitle',
-            'courses',
+            'approvals',
         ]));
     }
 
-    public function show(string $slug)
+    public function show(string $id)
     {
         try {
-            $course = Course::query()
+            $approval = Approvable::query()
                 ->with([
-                    'category',
-                    'user',
-                    'chapters.lessons',
-                ])
-                ->where('slug', $slug)
-                ->first();
-
-            dd($course);
-
-            if (!$course) {
-                return redirect()->route('admin.approval.course.index')->with('error', 'Khóa học không tồn tại');
-            }
+                    'approver',
+                    'course.user',
+                ])->findOrFail($id);
 
             $title = 'Kiểm duyệt khoá học';
-            $subTitle = 'Thông tin khoá học: ' . $course->name;
+            $subTitle = 'Thông tin khoá học: ' . $approval->course->name;
 
             return view('approval.course.show', compact([
-                'course',
+                'title',
+                'subTitle',
+                'approval',
             ]));
         } catch (\Exception $e) {
             $this->logError($e);

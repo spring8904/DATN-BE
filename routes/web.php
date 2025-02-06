@@ -75,6 +75,9 @@ Route::prefix('admin')->as('admin.')
                     ->name('forceDelete')->can('user.update');
                 Route::put('/{user}/restore-delete', [UserController::class, 'restoreDelete'])
                     ->name('restoreDelete')->can('user.update');
+                Route::post('/import/{role?}', [UserController::class, 'import'])->name('import')
+                ->can('user.create');
+                Route::get('export/{role?}', [UserController::class, 'export'])->name('export');
             });
         });
 
@@ -227,6 +230,15 @@ Route::prefix('admin')->as('admin.')
                     ->group(function () {
                         Route::get('/', [ApprovalCourseController::class, 'index'])->name('index');
                         Route::get('/{course}', [ApprovalCourseController::class, 'show'])->name('show');
+                    });
+
+                Route::prefix('instructors')
+                    ->as('instructors.')
+                    ->group(function () {
+                        Route::get('/', [\App\Http\Controllers\Admin\ApprovalInstructorController::class, 'index'])->name('index');
+                        Route::get('/{instructor}', [\App\Http\Controllers\Admin\ApprovalInstructorController::class, 'show'])->name('show');
+                        Route::put('/{instructor}', [\App\Http\Controllers\Admin\ApprovalInstructorController::class, 'approve'])->name('approve');
+                        Route::put('/{instructor}/reject', [\App\Http\Controllers\Admin\ApprovalInstructorController::class, 'reject'])->name('reject');
                     });
             });
 

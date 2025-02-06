@@ -38,7 +38,6 @@ Route::prefix('auth')->as('auth.')->group(function () {
     Route::post('verify-email', [AuthController::class, 'verifyEmail']);
     Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
     Route::post('reset-password', [AuthController::class, 'resetPassword']);
-    Route::post('register-instructor', [AuthController::class, 'registerInstructor']);
 
     Route::get('google', [GoogleController::class, 'redirectToGoogle']);
     Route::get('google/callback', [GoogleController::class, 'handleGoogleCallback']);
@@ -58,6 +57,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('auth')->as('auth.')->group(function () {
         Route::post('logout', [AuthController::class, 'logout']);
+
     });
 
     Route::get('user', function (Request $request) {
