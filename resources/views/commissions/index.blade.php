@@ -34,7 +34,7 @@
                             <div class="row g-4 mb-3">
                                 <div class="col-sm-auto">
                                     <div>
-                                        <a href="{{ route('admin.categories.create') }}" type="button"
+                                        <a href="{{ route('admin.commissions.create') }}" type="button"
                                             class="btn btn-success add-btn"><i class="ri-add-line align-bottom me-1"></i>
                                             Thêm</a>
                                         {{-- <button  data-bs-toggle="modal"
@@ -70,17 +70,13 @@
                                                 </div>
                                             </th>
                                             <th>ID</th>
-                                            <th>Tên danh mục</th>
-                                            <th>Slug</th>
-                                            <th>Danh mục cha</th>
-                                            <th>Trạng thái</th>
-                                            
-
-                                            <th>Biểu tượng</th>
+                                            <th>Mức độ khó</th>
+                                            <th>Phần trăm của hệ thống</th>
+                                            <th>Phần trăm của giáo viên</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
-                                    @foreach ($categories as $category)
+                                    @foreach ($commissions as $commission)
                                         <tbody class="list form-check-all">
                                             <tr>
                                                 <th scope="row">
@@ -91,37 +87,24 @@
                                                 </th>
                                                 <td class="id" style="display:none;"><a href="javascript:void(0);"
                                                         class="fw-medium link-primary">#VZ2101</a></td>
-                                                <td>{{ $category->id }}</td>
-                                                <td>{{ $category->name }}</td>
-                                                <td>{{ $category->slug }}</td>
-                                                <td>{{ $category->parent ? $category->parent->name : 'Không có' }}</td>
-                                                <td>
-                                                    @if ($category->status)
-                                                        <span
-                                                            class="badge bg-success-subtle text-success text-uppercase">Active<span>
-                                                            @else
-                                                                <span
-                                                                    class="badge bg-danger-subtle text-success text-uppercase">No
-                                                                    active<span>
-                                                    @endif
-                                                </td>
-                                                <td class="phone">
-                                                    <img src="{{ $category->icon }}" alt="{{ $category->name }}" width="100">
-                                                </td>
+                                                <td>{{ $commission->id }}</td>
+                                                <td>{{ $commission->difficulty_level }}</td>
+                                                <td>{{ $commission->system_percentage }}</td>
+                                                <td>{{ $commission->instructor_percentage    }}</td>
                                                 <td>
                                                     <div class="d-flex gap-2">
                                                         <div >
-                                                            <a href="{{ route('admin.categories.show', $category->id) }}"
+                                                            <a href="{{ route('admin.commissions.show', $commission->id) }}"
                                                                 class="btn btn-sm btn-success edit-item-btn">Show</a>
                                                         </div>
 
                                                         <div class="edit">
-                                                            <a href="{{ route('admin.categories.edit', $category->id) }}"
+                                                            <a href="{{ route('admin.commissions.edit', $commission->id) }}"
                                                                 class="btn btn-sm btn-warning edit-item-btn">Edit</a>
                                                         </div>
                                                         
                                                         <div class="remove">
-                                                            <a href="{{ route('admin.categories.destroy', $category->id) }}"
+                                                            <a href="{{ route('admin.commissions.destroy', $commission->id) }}"
                                                                 class="sweet-confirm btn btn-sm btn-danger remove-item-btn">
                                                                 <span class="ri-delete-bin-7-line"></span>
                                                             </a>
@@ -165,6 +148,9 @@
         </div>
         <!-- end row -->
 
+
+
+        
 
     </div>
 @endsection
