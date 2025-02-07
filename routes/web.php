@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\AnalyticController;
 use App\Http\Controllers\Admin\Auth\AuthController;
 use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\CategoryController;
@@ -17,6 +16,8 @@ use App\Http\Controllers\Admin\SupportBankController;
 use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\Admin\WithDrawalsRequestController;
 use App\Http\Controllers\Admin\ApprovalCourseController;
+use App\Http\Controllers\Admin\CommissionController;
+use App\Http\Controllers\Admin\AnalyticController;
 use App\Http\Controllers\Admin\RevenueStatisticController;
 use App\Http\Controllers\Admin\TopCourseController;
 
@@ -76,6 +77,9 @@ Route::prefix('admin')->as('admin.')
                     ->name('forceDelete')->can('user.update');
                 Route::put('/{user}/restore-delete', [UserController::class, 'restoreDelete'])
                     ->name('restoreDelete')->can('user.update');
+                Route::post('/import/{role?}', [UserController::class, 'import'])->name('import')
+                ->can('user.create');
+                Route::get('export/{role?}', [UserController::class, 'export'])->name('export');
             });
         });
 
@@ -203,6 +207,22 @@ Route::prefix('admin')->as('admin.')
                 ->can('support-bank.delete');
         });
 
+        #============================== ROUTE COMMISSION =============================
+        Route::prefix('commissions')->as('commissions.')->group(function () {
+            Route::get('/', [CommissionController::class, 'index'])->name('index');
+            Route::get('/create', [CommissionController::class, 'create'])->name('create')
+                ->can('commission.create');
+            Route::post('/', [CommissionController::class, 'store'])->name('store')
+                ->can('commission.create');
+            Route::get('/{id}', [CommissionController::class, 'show'])->name('show');
+            Route::get('/edit/{commission}', [CommissionController::class, 'edit'])->name('edit')
+                ->can('commission.update');
+            Route::put('/{commission}', [CommissionController::class, 'update'])->name('update')
+                ->can('commission.update');
+            Route::delete('/{commission}', [CommissionController::class, 'destroy'])->name('destroy')
+                ->can('commission.delete');
+        });
+
         #============================== ROUTE APPROVAL =============================
         Route::prefix('approvals')
             ->as('approvals.')
@@ -212,6 +232,15 @@ Route::prefix('admin')->as('admin.')
                     ->group(function () {
                         Route::get('/', [ApprovalCourseController::class, 'index'])->name('index');
                         Route::get('/{course}', [ApprovalCourseController::class, 'show'])->name('show');
+                    });
+
+                Route::prefix('instructors')
+                    ->as('instructors.')
+                    ->group(function () {
+                        Route::get('/', [\App\Http\Controllers\Admin\ApprovalInstructorController::class, 'index'])->name('index');
+                        Route::get('/{instructor}', [\App\Http\Controllers\Admin\ApprovalInstructorController::class, 'show'])->name('show');
+                        Route::put('/{instructor}', [\App\Http\Controllers\Admin\ApprovalInstructorController::class, 'approve'])->name('approve');
+                        Route::put('/{instructor}/reject', [\App\Http\Controllers\Admin\ApprovalInstructorController::class, 'reject'])->name('reject');
                     });
             });
 
@@ -228,9 +257,13 @@ Route::prefix('admin')->as('admin.')
             });
 
         #============================== ROUTE TRANSACTIONS =============================
-        Route::get('/transactions', [TransactionController::class, 'index'])
-            ->name('transactions.index');
-         
+        Route::prefix('transactions')
+        ->as('transactions.')
+        ->group(function () {
+            Route::get('/', [TransactionController::class, 'index'])->name('index');
+            Route::get('/{transaction}', [TransactionController::class, 'show'])->name('show');
+        });
+
         #============================== ROUTE ANALYTICS =============================
         Route::get('/analytics', [AnalyticController::class, 'index'])
             ->name('analytics.index');
@@ -241,6 +274,7 @@ Route::prefix('admin')->as('admin.')
         #============================== ROUTE TOP COURSE =============================
         Route::get('/top-courses', [TopCourseController::class, 'index'])
             ->name('top-courses.index');   
+
         #============================== ROUTE NOTIFICATIONS =============================
         Route::prefix('notifications')
             ->as('notifications.')

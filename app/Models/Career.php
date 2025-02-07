@@ -16,7 +16,5 @@ class Career extends Model
         'major',
         'start_date',
         'end_date',
-        'certificates',
-        'qa_systems',
     ];
 }

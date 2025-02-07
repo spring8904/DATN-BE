@@ -11,13 +11,21 @@ class Profile extends Model
 
     protected $fillable = [
         'user_id',
+        'about_me',
         'phone',
         'address',
         'experience',
-        'bio'
+        'bio',
+        'certificates',
+        'qa_systems',
     ];
-    
+
     public function user(){
         return $this->hasOne(User::class);
+    }
+
+    public function careers()
+    {
+        return $this->hasMany(Career::class);
     }
 }

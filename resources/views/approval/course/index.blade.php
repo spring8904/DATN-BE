@@ -157,38 +157,34 @@
                                     </tr>
                                     </thead>
                                     <tbody class="list">
-                                    @foreach($courses as $course)
+                                    @foreach($approvals as $approval)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $course->name }}</td>
-                                            <td>{{ $course->user->name }}</td>
+                                            <td>{{ \Illuminate\Support\Str::limit($approval->course->name, 50) }}</td>
+                                            <td>{{ $approval->user->name }}</td>
                                             <td>
-                                                <img src="{{ $course->thumbnail }}" alt=""
-                                                     class="avatar-sm object-fit-cover">
+                                                <img style="height: 80px" src="{{ $approval->course->thumbnail }}" alt=""
+                                                     class="w-100 object-fit-cover">
                                             </td>
-                                            <td>{{ number_format($course->price) }}</td>
-                                            <td>{{ $course->approvables->first()->request_date ?? '<span class="btn btn-sm btn-soft-warning">Chưa kiểm duyệt</span>' }}</td>
+                                            <td>{{ number_format($approval->course->price) }}</td>
+                                            <td>{{ $approval->request_date ?? '<span class="btn btn-sm btn-soft-warning">Chưa kiểm duyệt</span>' }}</td>
                                             <td>
-                                                @switch($course->status)
-                                                    @case('approved')
-                                                        <span class="btn btn-sm btn-soft-success">Đã kiểm duyệt</span>
-                                                        @break
-                                                    @case('pending')
-                                                        <span class="btn btn-sm btn-soft-warning">Đang xử lý</span>
-                                                        @break
-                                                    @case('reject')
-                                                        <span class="btn btn-sm btn-soft-danger">Đã từ chối</span>
-                                                        @break
-                                                @endswitch
+                                                @if($approval->status == 'pending')
+                                                    <span class="btn btn-sm btn-soft-warning">Chờ xử lý</span>
+                                                @elseif($approval->status == 'approved')
+                                                    <span class="btn btn-sm btn-soft-success">Đã kiểm duyệt</span>
+                                                @else
+                                                    <span class="btn btn-sm btn-soft-danger">Từ chối</span>
+                                                @endif
                                             </td>
                                             <td>
-                                                {!!   $course->approvables->first()->user->name  ?? '<span class="btn btn-sm btn-soft-warning">Chưa kiểm duyệt</span>' !!}
+                                                {!!   $approval->approver->name  ?? '<span class="btn btn-sm btn-soft-warning">Chưa kiểm duyệt</span>' !!}
                                             </td>
                                             <td>
-                                                {!! $course->approvables->first()->approved_at ?? '<span class="btn btn-sm btn-soft-warning">Chưa kiểm duyệt</span>' !!}
+                                                {!! $approval->approved_at ?? '<span class="btn btn-sm btn-soft-warning">Chưa kiểm duyệt</span>' !!}
                                             </td>
                                             <td>
-                                                <a href="{{ route('admin.approvals.courses.show', $course->slug) }}"
+                                                <a href="{{ route('admin.approvals.courses.show', $approval->id) }}"
                                                    class="btn btn-sm btn-soft-secondary ">Chi tiết</a>
                                             </td>
                                         </tr>
@@ -198,7 +194,7 @@
                             </div>
 
                             <div class="row justify-content-end">
-                                {{ $courses->appends(request()->query())->links() }}
+                                {{ $approvals->appends(request()->query())->links() }}
                             </div>
                         </div>
                     </div>

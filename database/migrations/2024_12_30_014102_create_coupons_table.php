@@ -22,9 +22,9 @@ return new class extends Migration
                 'fixed'
             ])->default('fixed');
             $table->decimal('discount_value', 10, 2)->default(0);
-            $table->date('start_date');
-            $table->date('expire_date');
-            $table->string('description');
+            $table->date('start_date')->nullable();
+            $table->date('expire_date')->nullable();
+            $table->string('description')->nullable();
             $table->integer('used_count')->default(0);
             $table->boolean('status')->default(true);
             $table->softDeletes();

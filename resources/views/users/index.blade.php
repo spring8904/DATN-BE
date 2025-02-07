@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', $title)
 @push('page-css')
     <link href="{{ asset('assets/css/custom.css') }}" rel="stylesheet" type="text/css" />
 @endpush
@@ -71,8 +71,12 @@
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h4 class="card-title mb-0">Danh sách {{ $roleUser['actor'] }}</h4>
                         <div class="d-flex gap-2">
-                            <button class="btn btn-sm btn-danger">Import dữ liệu</button>
-                            <button class="btn btn-sm btn-success">Export dữ liệu</button>
+                            @if ($roleUser['name'] !== 'deleted')
+                                <button class="btn btn-sm btn-danger" data-bs-toggle="modal"
+                                    data-bs-target="#importModal">Import dữ liệu</button>
+                            @endif
+                            <a class="btn btn-sm btn-success"
+                                href="{{ route('admin.users.export', $roleUser['name']) }}">Export dữ liệu</a>
                             <button class="btn btn-sm btn-primary" id="toggleAdvancedSearch">
                                 Tìm kiếm nâng cao
                             </button>
@@ -83,7 +87,7 @@
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="filterDropdown"
                                     style="min-width: 500px;">
-                                    <div class="container">
+                                    <form>
                                         <div class="container">
                                             <div class="row">
                                                 <li class="col-6">
@@ -103,12 +107,14 @@
                                                     </div>
                                                 </li>
                                             </div>
-                                            <li class="mt-2">
-                                                <button class="btn btn-sm btn-primary w-100" id="applyFilter">Áp
+                                            <li class="mt-2 d-flex gap-1">
+                                                <button class="btn btn-sm btn-success flex-grow-1"
+                                                    type="reset">Reset</button>
+                                                <button class="btn btn-sm btn-primary flex-grow-1" id="applyFilter">Áp
                                                     dụng</button>
                                             </li>
                                         </div>
-                                    </div>
+                                    </form>
                                 </ul>
                             </div>
                         </div>
@@ -116,45 +122,48 @@
 
                     <!-- Tìm kiếm nâng cao -->
                     <div id="advancedSearch" class="card-header" style="display:none;">
-                        <div class="row">
-                            <div class="col-md-3">
-                                <label class="form-label">Mã người dùng</label>
-                                <input class="form-control form-control-sm" name="code" type="text"
-                                    value="{{ request()->input('code') ?? '' }}" placeholder="Nhập mã người dùng..."
-                                    data-advanced-filter>
+                        <form>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label class="form-label">Mã người dùng</label>
+                                    <input class="form-control form-control-sm" name="code" type="text"
+                                        value="{{ request()->input('code') ?? '' }}" placeholder="Nhập mã người dùng..."
+                                        data-advanced-filter>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Tên khách hàng</label>
+                                    <input class="form-control form-control-sm" name="name" type="text"
+                                        value="{{ request()->input('name') ?? '' }}" placeholder="Nhập tên khách hàng..."
+                                        data-advanced-filter>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input class="form-control form-control-sm" name="email" name="email"
+                                        type="email" value="{{ request()->input('email') ?? '' }}"
+                                        placeholder="Nhập email..." data-advanced-filter>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label class="form-label">Số điện thoại</label>
+                                    <input class="form-control form-control-sm" name="profile_phone_user" type="text"
+                                        value="{{ request()->input('profile_phone_user') ?? '' }}"
+                                        placeholder="Nhập số điện thoại..." data-advanced-filter>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="statusItem" class="form-label">Trạng thái</label>
+                                    <select class="form-select form-select-sm" name="status" id="statusItem"
+                                        data-advanced-filter>
+                                        <option value="">Tất cả trạng thái</option>
+                                        <option @selected(request()->input('status') === 'active') value="active">Hoạt động</option>
+                                        <option @selected(request()->input('status') === 'inactive') value="inactive">Không hoạt động</option>
+                                        <option @selected(request()->input('status') === 'blocked') value="blocked">Khóa</option>
+                                    </select>
+                                </div>
+                                <div class="mt-3 text-end">
+                                    <button class="btn btn-sm btn-success" type="reset">Reset</button>
+                                    <button class="btn btn-sm btn-primary" id="applyAdvancedFilter">Áp dụng</button>
+                                </div>
                             </div>
-                            <div class="col-md-3">
-                                <label class="form-label">Tên khách hàng</label>
-                                <input class="form-control form-control-sm" name="name" type="text"
-                                    value="{{ request()->input('name') ?? '' }}" placeholder="Nhập tên khách hàng..."
-                                    data-advanced-filter>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label class="form-label">Email</label>
-                                <input class="form-control form-control-sm" name="email" name="email" type="email"
-                                    value="{{ request()->input('email') ?? '' }}" placeholder="Nhập email..."
-                                    data-advanced-filter>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label class="form-label">Số điện thoại</label>
-                                <input class="form-control form-control-sm" name="profile_phone_user" type="text"
-                                    value="{{ request()->input('profile_phone_user') ?? '' }}"
-                                    placeholder="Nhập số điện thoại..." data-advanced-filter>
-                            </div>
-                            <div class="col-md-3">
-                                <label for="statusItem" class="form-label">Trạng thái</label>
-                                <select class="form-select form-select-sm" name="status" id="statusItem"
-                                    data-advanced-filter>
-                                    <option value="">Tất cả trạng thái</option>
-                                    <option @selected(request()->input('status') === 'active') value="active">Hoạt động</option>
-                                    <option @selected(request()->input('status') === 'inactive') value="inactive">Không hoạt động</option>
-                                    <option @selected(request()->input('status') === 'blocked') value="blocked">Khóa</option>
-                                </select>
-                            </div>
-                            <div class="mt-3 text-end">
-                                <button class="btn btn-sm btn-primary" id="applyAdvancedFilter">Áp dụng</button>
-                            </div>
-                        </div>
+                        </form>
                     </div>
 
                     <!-- end card header -->
@@ -227,7 +236,7 @@
                                                         class="fw-medium link-primary">{{ $loop->index + 1 }}</a></td>
                                                 <td class="customer_name">{{ $user->name }}</td>
                                                 <td class="email">{{ $user->email }}</td>
-                                                <td class="phone">{{ $user->profile->phone ?? 'Chưa nhập' }}</td>
+                                                <td class="phone">{{ $user->profile->phone ?? 'Chưa có thông tin' }}</td>
                                                 <td>
                                                     <div class="form-check form-switch form-switch-warning">
                                                         <input class="form-check-input" type="checkbox" role="switch"
@@ -310,6 +319,38 @@
         </div>
         <!-- end List-customer -->
     </div>
+
+    @if ($roleUser['name'] !== 'deleted')
+        <!-- Modal import -->
+        <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="importModalLabel">Import Users từ Excel</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <a href="{{ asset('storage/csv/users_import_template.xlsx') }}" download
+                                class="btn btn-outline-primary btn-sm">Tải Mẫu</a>
+                        </div>
+                        <form action="{{ route('admin.users.import', $roleUser['name']) }}" method="POST"
+                            enctype="multipart/form-data">
+                            @csrf
+                            <div class="mb-3">
+                                <label for="file" class="form-label">Chọn File Excel</label>
+                                <input type="file" name="file" class="form-control" required>
+                                @error('file')
+                                    <span class="badge bg-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                            <button type="submit" class="btn btn-success">Import</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
 @endsection
 
 @push('page-scripts')

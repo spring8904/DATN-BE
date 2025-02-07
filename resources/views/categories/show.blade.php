@@ -31,18 +31,6 @@
 
                     <div class="card-body">
                         <div class="listjs-table" id="customerList">
-                            <div class="row g-4 mb-3">
-                                <div class="col-sm-auto">
-                                    <div>
-                                        <a href="{{ route('admin.categories.index') }}" type="button"
-                                            class="btn btn-danger add-btn">
-                                            Quay lại</a>
-                                        
-                                    </div>
-                                </div>
-
-                            </div>
-
                             <div class="table-responsive table-card mt-3 mb-1">
                                 <table class="table align-middle table-nowrap" id="customerTable">
                                     <thead class="table-light">
@@ -60,7 +48,7 @@
 
                                     <tbody class="list form-check-all">
                                         <tr>
-                                            
+
                                             <td>{{ $category->id }}</td>
                                             <td>{{ $category->name }}</td>
                                             <td>{{ $category->slug }}</td>
@@ -87,6 +75,17 @@
 
                             </div>
 
+
+                        </div>
+                        <div class="row g-4 mb-3">
+                            <div class="col-sm-auto">
+                                <div>
+                                    <a href="{{ route('admin.categories.index') }}" type="button"
+                                        class="btn btn-success add-btn">
+                                        Quay lại</a>
+
+                                </div>
+                            </div>
 
                         </div>
                     </div><!-- end card -->
