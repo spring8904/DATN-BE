@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\UserExport;
+use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Users\StoreUserRequest;
 use App\Http\Requests\Admin\Users\UpdateUserRequest;
+use App\Imports\UsersImport;
 use App\Models\User;
 use App\Traits\LoggableTrait;
 use App\Traits\UploadToCloudinaryTrait;
@@ -13,6 +16,10 @@ use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
 use App\Notifications\CrudNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
+use PhpParser\Node\Stmt\Return_;
 
 class UserController extends Controller
 {
@@ -254,6 +261,51 @@ class UserController extends Controller
                 $this->deleteImage($data['avatar']);
             }
 
+            $this->logError($e);
+
+            return redirect()->back()->with('error', 'Có lỗi xảy ra, vui lòng thử lại sau');
+        }
+    }
+    public function import(Request $request, string $role = null)
+    {
+        try {
+            $startTime = microtime(true);
+            $validator = Validator::make($request->all(), [
+                'file' => 'required|mimes:xlsx,csv',
+            ],[
+                'file.required' => 'Bắt buộc tải file',
+                'file.mimes' => 'File tải lên phải thuộc loại xlsx hoặc csv',
+            ]);
+
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator);
+            }
+
+            $validRoles = Role::pluck('name')->toArray();
+            $role = in_array($role, $validRoles) ? $role : 'member';
+
+            $import = new UsersImport($role);
+            Excel::import($import, $request->file('file'));
+            
+            $endTime = microtime(true);
+
+            Log::info(' Thời gian import: '. ($endTime - $startTime));
+
+            return redirect()->back()->with('success', 'Import thành công');
+        } catch (\Exception $e) {
+            $this->logError($e);
+
+            return redirect()->back()->with('error', 'Có lỗi xảy ra, vui lòng thử lại!');
+        }
+    }
+    public function export(string $role = null)
+    {
+        try {
+            $validRoles = Role::pluck('name')->toArray();
+            $role = in_array($role, $validRoles) ? $role : 'member';
+
+            return Excel::download(new UsersExport($role), 'Users.xlsx');
+        }catch (\Exception $e) {
             $this->logError($e);
 
             return redirect()->back()->with('error', 'Có lỗi xảy ra, vui lòng thử lại sau');

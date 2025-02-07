@@ -74,7 +74,7 @@
                                             <th>Slug</th>
                                             <th>Danh mục cha</th>
                                             <th>Trạng thái</th>
-                                            
+
 
                                             <th>Biểu tượng</th>
                                             <th>Action</th>
@@ -106,20 +106,27 @@
                                                     @endif
                                                 </td>
                                                 <td class="phone">
-                                                    <img src="{{ $category->icon }}" alt="{{ $category->name }}" width="100">
+                                                    <img src="{{ $category->icon }}" alt="{{ $category->name }}"
+                                                        width="100">
                                                 </td>
                                                 <td>
                                                     <div class="d-flex gap-2">
-                                                        <div >
-                                                            <a href="{{ route('admin.categories.show', $category->id) }}"
-                                                                class="btn btn-sm btn-success edit-item-btn">Show</a>
+                                                        <div>
+                                                            <a href="{{ route('admin.categories.show', $category->id) }}">
+                                                                <button class="btn btn-sm btn-warning edit-item-btn">
+                                                                    <span class="ri-edit-box-line"></span>
+                                                                </button>
+                                                            </a>
                                                         </div>
 
                                                         <div class="edit">
-                                                            <a href="{{ route('admin.categories.edit', $category->id) }}"
-                                                                class="btn btn-sm btn-warning edit-item-btn">Edit</a>
+                                                            <a href="{{ route('admin.categories.edit', $category->id) }}">
+                                                                <button class="btn btn-sm btn-info edit-item-btn">
+                                                                    <span class="ri-folder-user-line"></span>
+                                                                </button>
+                                                            </a>
                                                         </div>
-                                                        
+
                                                         <div class="remove">
                                                             <a href="{{ route('admin.categories.destroy', $category->id) }}"
                                                                 class="sweet-confirm btn btn-sm btn-danger remove-item-btn">
@@ -165,35 +172,6 @@
         </div>
         <!-- end row -->
 
-
-
-        <!-- Modal -->
-        {{-- <div class="modal fade zoomIn" id="deleteRecordModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-                            id="btn-close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mt-2 text-center">
-                            <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop"
-                                colors="primary:#f7b84b,secondary:#f06548" style="width:100px;height:100px"></lord-icon>
-                            <div class="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
-                                <h4>Are you Sure ?</h4>
-                                <p class="text-muted mx-4 mb-0">Are you Sure You want to Remove this Record ?</p>
-                            </div>
-                        </div>
-                        <div class="d-flex gap-2 justify-content-center mt-4 mb-2">
-                            <button type="button" class="btn w-sm btn-light" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn w-sm btn-danger " id="delete-record">Yes, Delete
-                                It!</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
-        <!--end modal -->
 
     </div>
 @endsection

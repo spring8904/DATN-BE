@@ -41,32 +41,36 @@
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="filterDropdown"
                                     style="min-width: 500px;">
-                                    <div class="container">
+                                    <form>
                                         <div class="container">
-                                            <div class="row">
-                                                <li class="col-6">
-                                                    <div class="mb-2">
-                                                        <label for="startDate" class="form-label">Ngày bắt đầu</label>
-                                                        <input type="date" class="form-control form-control-sm"
-                                                            name="created_at" id="startDate" data-filter
-                                                            value="{{ request()->input('created_at') ?? '' }}">
-                                                    </div>
-                                                </li>
-                                                <li class="col-6">
-                                                    <div class="mb-2">
-                                                        <label for="endDate" class="form-label">Ngày kết thúc</label>
-                                                        <input type="date" class="form-control form-control-sm"
-                                                            name="updated_at" id="endDate" data-filter
-                                                            value="{{ request()->input('updated_at') ?? '' }}">
-                                                    </div>
+                                            <div class="container">
+                                                <div class="row">
+                                                    <li class="col-6">
+                                                        <div class="mb-2">
+                                                            <label for="startDate" class="form-label">Ngày bắt đầu</label>
+                                                            <input type="date" class="form-control form-control-sm"
+                                                                name="created_at" id="startDate" data-filter
+                                                                value="{{ request()->input('created_at') ?? '' }}">
+                                                        </div>
+                                                    </li>
+                                                    <li class="col-6">
+                                                        <div class="mb-2">
+                                                            <label for="endDate" class="form-label">Ngày kết thúc</label>
+                                                            <input type="date" class="form-control form-control-sm"
+                                                                name="updated_at" id="endDate" data-filter
+                                                                value="{{ request()->input('updated_at') ?? '' }}">
+                                                        </div>
+                                                    </li>
+                                                </div>
+                                                <li class="mt-2 d-flex gap-1">
+                                                    <button class="btn btn-sm btn-success flex-grow-1" id="resetInput"
+                                                        type="reset">Reset</button>
+                                                    <button class="btn btn-sm btn-primary flex-grow-1" id="applyFilter">Áp
+                                                        dụng</button>
                                                 </li>
                                             </div>
-                                            <li class="mt-2">
-                                                <button class="btn btn-sm btn-primary w-100" id="applyFilter">Áp
-                                                    dụng</button>
-                                            </li>
                                         </div>
-                                    </div>
+                                    </form>
                                 </ul>
                             </div>
                         </div>
@@ -74,32 +78,35 @@
 
                     <!-- Tìm kiếm nâng cao -->
                     <div id="advancedSearch" class="card-header" style="display:none;">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label class="form-label">Mã banner</label>
-                                <input class="form-control form-control-sm" name="id" type="text"
-                                    value="{{ request()->input('id') ?? '' }}" placeholder="Nhập mã banner..."
-                                    data-advanced-filter>
+                        <form>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="form-label">Mã banner</label>
+                                    <input class="form-control form-control-sm" name="id" type="text"
+                                        value="{{ request()->input('id') ?? '' }}" placeholder="Nhập mã banner..."
+                                        data-advanced-filter>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Tiêu đề</label>
+                                    <input class="form-control form-control-sm" name="title" type="text"
+                                        value="{{ request()->input('title') ?? '' }}" placeholder="Nhập tiêu đề..."
+                                        data-advanced-filter>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="statusItem" class="form-label">Trạng thái</label>
+                                    <select class="form-select form-select-sm" name="status" id="statusItem"
+                                        data-advanced-filter>
+                                        <option value="">Tất cả trạng thái</option>
+                                        <option @selected(request()->input('status') === '1') value="1">Hoạt động</option>
+                                        <option @selected(request()->input('status') === '0') value="0">Không hoạt động</option>
+                                    </select>
+                                </div>
+                                <div class="mt-3 text-end">
+                                    <button class="btn btn-sm btn-success" type="reset">Reset</button>
+                                    <button class="btn btn-sm btn-primary" id="applyAdvancedFilter">Áp dụng</button>
+                                </div>
                             </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Tiêu đề</label>
-                                <input class="form-control form-control-sm" name="title" type="text"
-                                    value="{{ request()->input('title') ?? '' }}" placeholder="Nhập tiêu đề..."
-                                    data-advanced-filter>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="statusItem" class="form-label">Trạng thái</label>
-                                <select class="form-select form-select-sm" name="status" id="statusItem"
-                                    data-advanced-filter>
-                                    <option value="">Tất cả trạng thái</option>
-                                    <option @selected(request()->input('status') === '1') value="1">Hoạt động</option>
-                                    <option @selected(request()->input('status') === '0') value="0">Không hoạt động</option>
-                                </select>
-                            </div>
-                            <div class="mt-3 text-end">
-                                <button class="btn btn-sm btn-primary" id="applyAdvancedFilter">Áp dụng</button>
-                            </div>
-                        </div>
+                        </form>
                     </div>
 
                     <div class="card-body" id="item_List">
@@ -168,13 +175,11 @@
                                                 </td>
                                                 <td class="date">{{ $banner->order }}</td>
                                                 @if ($banner->status)
-                                                    <td class="status"><span
-                                                            class="badge bg-success-subtle text-success">
+                                                    <td class="status"><span class="badge bg-success-subtle text-success">
                                                             Hoạt động
                                                         </span></td>
                                                 @else
-                                                    <td class="status"><span
-                                                            class="badge bg-danger-subtle text-danger">
+                                                    <td class="status"><span class="badge bg-danger-subtle text-danger">
                                                             Không hoạt động
                                                         </span></td>
                                                 @endif
@@ -184,16 +189,23 @@
                                                 <td>
                                                     <div class="d-flex gap-2">
                                                         <div class="remove">
-                                                            <a href="{{ route('admin.banners.show', $banner->id) }}"
-                                                                class="btn btn-sm btn-primary remove-item-btn">Chi tiết</a>
+                                                            <a href="{{ route('admin.banners.show', $banner->id) }}">
+                                                                <button class="btn btn-sm btn-warning edit-item-btn">
+                                                                    <span class="ri-edit-box-line"></span>
+                                                                </button>
+                                                            </a>
                                                         </div>
                                                         <div class="edit">
-                                                            <a href="{{ route('admin.banners.edit', $banner->id) }}"
-                                                                class="btn btn-sm btn-success edit-item-btn">Sửa</a>
+                                                            <a href="{{ route('admin.banners.edit', $banner->id) }}">
+                                                                <button class="btn btn-sm btn-info edit-item-btn">
+                                                                    <span class="ri-folder-user-line"></span>
+                                                                </button>
+                                                            </a>
                                                         </div>
                                                         <div class="remove">
                                                             <a href="{{ route('admin.banners.destroy', $banner->id) }}"
-                                                                class="btn btn-sm btn-danger sweet-confirm">Xoá</a>
+                                                                class="btn btn-sm btn-danger sweet-confirm"> <span
+                                                                    class="ri-delete-bin-7-line"></span></a>
                                                         </div>
 
                                                     </div>

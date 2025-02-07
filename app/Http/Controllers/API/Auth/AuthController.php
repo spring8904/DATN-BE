@@ -15,6 +15,7 @@ use App\Models\User;
 use App\Traits\LoggableTrait;
 use Carbon\Carbon;
 use F9Web\ApiResponseHelpers;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -33,12 +34,11 @@ class AuthController extends Controller
             //code...
             $status = Password::sendResetLink($forgotPassWordRequest->only('email'));
 
-            if($status === Password::RESET_LINK_SENT)
-            {
+            if ($status === Password::RESET_LINK_SENT) {
                 return response()->json([
                     'success' => true,
                     'message' => __($status)
-                ],200);
+                ], 200);
             }
 
         } catch (\Exception $e) {
@@ -58,16 +58,15 @@ class AuthController extends Controller
 
             $status = Password::reset(
                 $data,
-                function($user, $password) {
-                $user->forceFill([
-                    'password' => Hash::make($password),
-                ])->save();
+                function ($user, $password) {
+                    $user->forceFill([
+                        'password' => Hash::make($password),
+                    ])->save();
 
-                $user->token()->delete(); // Hủy token API cũ nếu dùng Sanctum
-            });
+                    $user->token()->delete(); // Hủy token API cũ nếu dùng Sanctum
+                });
 
-            if($status === Password::PASSWORD_RESET)
-            {
+            if ($status === Password::PASSWORD_RESET) {
                 return response()->json([
                     'success' => true,
                     'message' => __($status),
@@ -106,6 +105,7 @@ class AuthController extends Controller
             ], 400);
         }
     }
+
     public function signUp(SingupUserRequest $request)
     {
         try {
@@ -210,58 +210,20 @@ class AuthController extends Controller
         }
     }
 
-    public function registerInstructor(SigninInstructorRequest $request)
+    public function logout()
     {
         try {
-            DB::beginTransaction();
+            Auth::user()->currentAccessToken()->delete();
 
-            $validated = $request->validated();
-
-            $data = $request->only(['name', 'email', 'password', 'repassword']);
-            $data['avatar'] = 'https://res.cloudinary.com/dvrexlsgx/image/upload/v1732148083/Avatar-trang-den_apceuv_pgbce6.png';
-
-            do {
-                $data['code'] = str_replace('-', '', Str::uuid()->toString());
-            } while (User::query()->where('code', $data['code'])->exists());
-
-            $user = User::query()->create($data);
-
-            $user->assignRole("member");
-
-            $dataProfiles = $request->only(['phone', 'address', 'experience']);
-            $dataProfiles['bio'] = json_encode($request->bio);
-            $dataProfiles['user_id'] = $user->id;
-
-            $profile = Profile::query()->create($dataProfiles);
-
-            $education = Education::query()->create([
-                'name' => $user->name,
-                'degree' => $request->degree,
-                'major' => $request->major,
-                'certificates' => json_encode($request->certificates),
-                'qa_systems' => json_encode($request->qa_systems),
-                'start_date' => now(env('APP_TIMEZONE')),
-                'profile_id' => $profile->id,
-            ]);
-
-            $user->assignRole("instructor");
-
-            DB::commit();
-
-            return response()->json([
-                'status' => true,
-                'message' => 'Đăng ký giảng viên thành công!',
-            ], Response::HTTP_CREATED);
+            return $this->respondOk('Đăng xuất thành công');
         } catch (\Exception $e) {
-            DB::rollBack();
-
             $this->logError($e);
 
             return response()->json([
                 'status' => false,
-                'message' => 'Có lỗi xảy ra, vui lòng thử lại',
+                'message' => 'Có lỗi xảy ra, vui lòng thử lại'
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
-
         }
     }
+
 }

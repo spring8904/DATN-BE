@@ -35,4 +35,14 @@ class Approvable extends Model
     {
         return $this->belongsTo(User::class, 'approver_id');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'approvable_id');
+    }
+
+    public function course()
+    {
+        return $this->belongsTo(Course::class, 'approvable_id');
+    }
 }

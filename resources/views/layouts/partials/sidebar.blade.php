@@ -45,7 +45,7 @@
             <a class="nav-link menu-link" href="{{ route('admin.approvals.courses.index') }}">
                 <i class="las la-book-reader"></i> <span data-key="t-authentication">Kiểm duyệt khoá học</span>
             </a>
-            <a class="nav-link menu-link" href="#sidebarCheck">
+            <a class="nav-link menu-link" href="{{ route('admin.approvals.instructors.index') }}">
                 <i class="las la-chalkboard-teacher"></i> <span data-key="t-authentication">Kiểm duyệt giảng viên</span>
             </a>
         </li>
@@ -208,7 +208,7 @@
                     </li>
                 </ul>
             </div>
-            <a class="nav-link menu-link" href="#sidebarComment">
+            <a class="nav-link menu-link" href="{{ route('admin.commissions.index') }}">
                 <i class="las la-comment"></i> <span data-key="t-authentication">Cấu hình thanh toán</span>
             </a>
             <a class="nav-link menu-link" href="{{ route('admin.qa-systems.index') }}">

@@ -40,8 +40,6 @@ class CategoryController extends Controller
     {
         //
 
-        // dd($request->all());
-
         try {
             //code...
 

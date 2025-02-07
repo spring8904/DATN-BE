@@ -12,6 +12,7 @@ class Invoice extends Model
     protected $fillable = [
         'user_id',
         'course_id',
+        'code',
         'coupon_code',
         'coupon_discount',
         'total',
@@ -20,7 +21,7 @@ class Invoice extends Model
     ];
 
     protected $attributes = [
-        'status' => 'pending'
+        'status' => 'Chờ xử lý'
     ];
 
     public function course()
@@ -32,4 +33,10 @@ class Invoice extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function transaction()
+    {
+        return $this->morphOne(Transaction::class, 'transactionable');
+    }
+
 }

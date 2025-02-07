@@ -10,6 +10,7 @@ class Transaction extends Model
     use HasFactory;
 
     protected $fillable = [
+        'transaction_code',
         'transactionable_id',
         'transactionable_type',
         'amount',
@@ -26,5 +27,10 @@ class Transaction extends Model
     public function transactionable()
     {
         return $this->morphTo();
+    }
+
+    public function invoice()
+    {
+        return $this->belongsTo(Invoice::class, 'transactionable_id');
     }
 }
