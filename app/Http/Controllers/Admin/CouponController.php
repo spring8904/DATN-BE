@@ -135,7 +135,7 @@ class CouponController extends Controller
             'user_id' => ['queryWhere' => 'LIKE'],
             'status' => ['queryWhere' => '='],
             'discount_type' => ['queryWhere' => '='],
-            'used_count' => ['queryWhere' => 'BETWEEN']
+            'used_count' => ['queryWhere' => '=']
         ];
     
         foreach ($filters as $filter => $value) {

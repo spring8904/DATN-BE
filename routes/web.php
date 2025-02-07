@@ -17,6 +17,9 @@ use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\Admin\WithDrawalsRequestController;
 use App\Http\Controllers\Admin\ApprovalCourseController;
 use App\Http\Controllers\Admin\CommissionController;
+use App\Http\Controllers\Admin\AnalyticController;
+use App\Http\Controllers\Admin\RevenueStatisticController;
+use App\Http\Controllers\Admin\TopCourseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -261,7 +264,18 @@ Route::prefix('admin')->as('admin.')
                 Route::get('/', [TransactionController::class, 'index'])->name('index');
                 Route::get('/{transaction}', [TransactionController::class, 'show'])->name('show');
             });
-
+        
+        #============================== ROUTE ANALYTICS =============================
+        Route::get('/analytics', [AnalyticController::class, 'index'])
+            ->name('analytics.index');
+            
+        #============================== ROUTE REVENUE STATISTICS =============================
+        Route::get('/revenue-statistics', [RevenueStatisticController::class, 'index'])
+            ->name('revenue-statistics.index');   
+        #============================== ROUTE TOP COURSE =============================
+        Route::get('/top-courses', [TopCourseController::class, 'index'])
+            ->name('top-courses.index');  
+      
         #============================== ROUTE NOTIFICATIONS =============================
         Route::prefix('notifications')
             ->as('notifications.')

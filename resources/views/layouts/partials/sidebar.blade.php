@@ -5,17 +5,17 @@
     <ul class="navbar-nav" id="navbar-nav">
         <li class="menu-title"><span data-key="t-menu">Bảng điều khiển</span></li>
         <li class="nav-item cusor-pointer">
-            <a class="nav-link menu-link">
+            <a class="nav-link menu-link" href="{{route('admin.revenue-statistics.index')}}">
                 <i class="ri-dashboard-2-line"></i> <span data-key="t-dashboards">Thống kê doanh thu</span>
             </a>
         </li>
         <li class="nav-item cusor-pointer">
-            <a class="nav-link menu-link">
+            <a class="nav-link menu-link" href="{{route('admin.top-courses.index')}}">
                 <i class=" ri-bar-chart-fill"></i> <span data-key="t-dashboards">Top khoá học bán chạy</span>
             </a>
         </li>
         <li class="nav-item cusor-pointer">
-            <a class="nav-link menu-link">
+            <a class="nav-link menu-link" href="{{route('admin.analytics.index')}}">
                 <i class=" ri-bar-chart-fill"></i> <span data-key="t-dashboards">Thống kê truy cập</span>
             </a>
         </li>
