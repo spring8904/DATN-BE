@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AnalyticController;
 use App\Http\Controllers\Admin\Auth\AuthController;
 use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\CategoryController;
@@ -16,6 +17,8 @@ use App\Http\Controllers\Admin\SupportBankController;
 use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\Admin\WithDrawalsRequestController;
 use App\Http\Controllers\Admin\ApprovalCourseController;
+use App\Http\Controllers\Admin\RevenueStatisticController;
+use App\Http\Controllers\Admin\TopCourseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,7 +52,6 @@ Route::prefix('admin')->as('admin.')
         Route::get('dashboard', function () {
             return view('dashboard');
         })->name('dashboard');
-
         #============================== ROUTE USER =============================
         Route::prefix('users')->group(function () {
             Route::get('user-clients', [UserController::class, 'index'])->name('clients.index');
@@ -228,7 +230,17 @@ Route::prefix('admin')->as('admin.')
         #============================== ROUTE TRANSACTIONS =============================
         Route::get('/transactions', [TransactionController::class, 'index'])
             ->name('transactions.index');
-
+         
+        #============================== ROUTE ANALYTICS =============================
+        Route::get('/analytics', [AnalyticController::class, 'index'])
+            ->name('analytics.index');
+            
+        #============================== ROUTE REVENUE STATISTICS =============================
+        Route::get('/revenue-statistics', [RevenueStatisticController::class, 'index'])
+            ->name('revenue-statistics.index');   
+        #============================== ROUTE TOP COURSE =============================
+        Route::get('/top-courses', [TopCourseController::class, 'index'])
+            ->name('top-courses.index');   
         #============================== ROUTE NOTIFICATIONS =============================
         Route::prefix('notifications')
             ->as('notifications.')
