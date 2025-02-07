@@ -160,10 +160,10 @@
                                     @foreach($approvals as $approval)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $approval->course->name }}</td>
+                                            <td>{{ \Illuminate\Support\Str::limit($approval->course->name, 50) }}</td>
                                             <td>{{ $approval->user->name }}</td>
                                             <td>
-                                                <img style="height: 100px" src="{{ $approval->course->thumbnail }}" alt=""
+                                                <img style="height: 80px" src="{{ $approval->course->thumbnail }}" alt=""
                                                      class="w-100 object-fit-cover">
                                             </td>
                                             <td>{{ number_format($approval->course->price) }}</td>

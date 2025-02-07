@@ -78,6 +78,11 @@ class Course extends Model
         return $this->morphOne(Approvable::class, 'approvable');
     }
 
+    public function coupons()
+    {
+        return $this->belongsToMany(Coupon::class );
+    }
+
     public function scopeSearch($query, $searchQuery)
     {
         return $query->when($searchQuery, function ($query) use ($searchQuery) {

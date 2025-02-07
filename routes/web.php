@@ -255,8 +255,12 @@ Route::prefix('admin')->as('admin.')
             });
 
         #============================== ROUTE TRANSACTIONS =============================
-        Route::get('/transactions', [TransactionController::class, 'index'])
-            ->name('transactions.index');
+        Route::prefix('transactions')
+            ->as('transactions.')
+            ->group(function () {
+                Route::get('/', [TransactionController::class, 'index'])->name('index');
+                Route::get('/{transaction}', [TransactionController::class, 'show'])->name('show');
+            });
 
         #============================== ROUTE NOTIFICATIONS =============================
         Route::prefix('notifications')
