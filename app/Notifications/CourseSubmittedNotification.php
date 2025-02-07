@@ -81,6 +81,4 @@ class CourseSubmittedNotification extends Notification implements ShouldBroadcas
     {
         return new BroadcastMessage($this->notificationData());
     }
-
-
 }

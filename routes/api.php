@@ -41,6 +41,7 @@ Route::prefix('auth')->as('auth.')->group(function () {
 
     Route::get('google', [GoogleController::class, 'redirectToGoogle']);
     Route::get('google/callback', [GoogleController::class, 'handleGoogleCallback']);
+
 });
 
 #============================== ROUTE SEARCH =============================
@@ -74,6 +75,14 @@ Route::middleware('auth:sanctum')->group(function () {
         #============================== ROUTE NOTIFICATION =============================
         Route::prefix('notifications')
             ->group(function () {});
+    });
+
+    #============================== ROUTE TRANSACTION =============================
+    Route::prefix('transactions')->as('transactions.')->group(function () {
+        Route::get('/', [TransactionController::class, 'index']);
+        Route::get('/{transactionID}', [TransactionController::class, 'show']);
+        Route::post('/deposit', [TransactionController::class, 'deposit']);
+        Route::post('/buyCourse', [TransactionController::class, 'buyCourse']);
     });
 
     #============================== ROUTE LEARNING =============================
@@ -187,7 +196,7 @@ Route::prefix('posts')->as('posts.')->group(function () {
 Route::get('/banners', [BannerController::class, 'index']);
 
 #============================== ROUTE CATEGORY =============================
-Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/categories', [\App\Http\Controllers\API\Common\CategoryController::class, 'index']);
 
 #============================== ROUTE SUPPORT BANK =================================
 Route::prefix('support-banks')->group(function () {
