@@ -53,6 +53,7 @@ Route::prefix('admin')->as('admin.')
         Route::get('dashboard', function () {
             return view('dashboard');
         })->name('dashboard');
+
         #============================== ROUTE USER =============================
         Route::prefix('users')->group(function () {
             Route::get('user-clients', [UserController::class, 'index'])->name('clients.index');
@@ -258,12 +259,12 @@ Route::prefix('admin')->as('admin.')
 
         #============================== ROUTE TRANSACTIONS =============================
         Route::prefix('transactions')
-        ->as('transactions.')
-        ->group(function () {
-            Route::get('/', [TransactionController::class, 'index'])->name('index');
-            Route::get('/{transaction}', [TransactionController::class, 'show'])->name('show');
-        });
-
+            ->as('transactions.')
+            ->group(function () {
+                Route::get('/', [TransactionController::class, 'index'])->name('index');
+                Route::get('/{transaction}', [TransactionController::class, 'show'])->name('show');
+            });
+        
         #============================== ROUTE ANALYTICS =============================
         Route::get('/analytics', [AnalyticController::class, 'index'])
             ->name('analytics.index');
@@ -273,8 +274,8 @@ Route::prefix('admin')->as('admin.')
             ->name('revenue-statistics.index');   
         #============================== ROUTE TOP COURSE =============================
         Route::get('/top-courses', [TopCourseController::class, 'index'])
-            ->name('top-courses.index');   
-
+            ->name('top-courses.index');  
+      
         #============================== ROUTE NOTIFICATIONS =============================
         Route::prefix('notifications')
             ->as('notifications.')
