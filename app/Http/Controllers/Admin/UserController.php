@@ -304,7 +304,7 @@ class UserController extends Controller
             $validRoles = Role::pluck('name')->toArray();
             $role = in_array($role, $validRoles) ? $role : 'member';
 
-            return Excel::download(new UsersExport($role), 'Users.xlsx');
+            return Excel::download(new UsersExport($role), 'Users_'. $role .'.xlsx');
         }catch (\Exception $e) {
             $this->logError($e);
 

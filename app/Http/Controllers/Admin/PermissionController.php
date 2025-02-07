@@ -28,9 +28,13 @@ class PermissionController extends Controller
             if ($request->has('search_full'))
                 $queryPermissions = $this->search($request->search_full, $queryPermissions);
 
-            $permissions = $queryPermissions->get()->groupBy(function ($permission) {
+            $permissions = $queryPermissions->paginate(12);
+
+            $groupedPermissions = $permissions->getCollection()->groupBy(function ($permission) {
                 return Str::before($permission->name, '.');
             });
+
+            $permissions->setCollection(collect($groupedPermissions));
 
             if ($request->ajax()) {
                 $html = view('permissions.table', compact('permissions'))->render();

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @push('page-css')
     <!-- plugin css -->
-    <link href="{{ asset('assets/libs/jsvectormap/css/jsvectormap.min.css') }}" rel="stylesheet" type="text/css"/>
+    <link href="{{ asset('assets/libs/jsvectormap/css/jsvectormap.min.css') }}" rel="stylesheet" type="text/css" />
 @endpush
 @php
     $title = 'Danh sách coupon';
@@ -15,7 +15,7 @@
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
                             <li class="breadcrumb-item active">Danh sách coupon</li>
                         </ol>
                     </div>
@@ -46,17 +46,17 @@
                                             <div class="row">
                                                 <li>
                                                     <label for="amountRange" class="form-label">Số lượt sử dụng</label>
-                    
+
                                                     <div class="d-flex justify-content-between">
                                                         <span id="amountMin">0</span>
                                                         <span id="amountMax">1000</span>
                                                     </div>
-                    
+
                                                     <div class="d-flex justify-content-between">
                                                         <input type="range" class="form-range w-100" id="amountMinRange"
                                                             name="used_count" min="0" max="1000" step="10"
                                                             value="0" oninput="updateRange()" data-filter>
-                                                        
+
                                                     </div>
                                                 </li>
                                                 <li class="col-6">
@@ -76,11 +76,12 @@
                                                     </div>
                                                 </li>
                                             </div>
-                                            <li class="mt-2">
-                                                <button class="btn btn-sm btn-primary w-100" id="applyFilter">Áp
+                                            <li class="mt-2 d-flex gap-1">
+                                                <button class="btn btn-sm btn-success flex-grow-1" type="reset"
+                                                    id="resetFilter">Reset</button>
+                                                <button class="btn btn-sm btn-primary flex-grow-1" id="applyFilter">Áp
                                                     dụng</button>
                                             </li>
-                                            
                                         </div>
                                     </div>
                                 </ul>
@@ -91,50 +92,50 @@
                     <!-- Tìm kiếm nâng cao -->
                     <div id="advancedSearch" class="card-header" style="display:none;">
                         <form id="filterForm">
-                        <div class="row">
-                            <div class="col-md-3">
-                                <label class="form-label">Mã giảm giá</label>
-                                <input class="form-control form-control-sm" name="code" type="text"
-                                    value="{{ request()->input('code') ?? '' }}" placeholder="Nhập mã giảm giá..."
-                                    data-advanced-filter>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label class="form-label">Mã giảm giá</label>
+                                    <input class="form-control form-control-sm" name="code" type="text"
+                                        value="{{ request()->input('code') ?? '' }}" placeholder="Nhập mã giảm giá..."
+                                        data-advanced-filter>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Tên mã giảm giá</label>
+                                    <input class="form-control form-control-sm" name="name" type="text"
+                                        value="{{ request()->input('name') ?? '' }}" placeholder="Nhập tên mã giảm giá..."
+                                        data-advanced-filter>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Người tạo</label>
+                                    <input class="form-control form-control-sm" name="user_id" type="text"
+                                        value="{{ request()->input('user_id') ?? '' }}" placeholder="Nhập người tạo..."
+                                        data-advanced-filter>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="statusItem" class="form-label">Loại giảm giá</label>
+                                    <select class="form-select form-select-sm" name="discount_type" id="statusItem"
+                                        data-advanced-filter>
+                                        <option value="">Tất cả loại giảm giá</option>
+                                        <option @selected(request()->input('discount_type') === 'percentage') value="percentage">Phần trăm</option>
+                                        <option @selected(request()->input('discount_type') === 'fixed') value="fixed">Giảm trực tiếp</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="statusItem" class="form-label">Trạng thái</label>
+                                    <select class="form-select form-select-sm" name="status" id="statusItem"
+                                        data-advanced-filter>
+                                        <option value="">Tất cả trạng thái</option>
+                                        <option @selected(request()->input('status') === '1') value="1">Hoạt động</option>
+                                        <option @selected(request()->input('status') === '0') value="0">Không hoạt động</option>
+                                    </select>
+                                </div>
+                                <div class="mt-3 text-end">
+                                    <button class="btn btn-sm btn-success" type="reset" id="resetFilter">Reset</button>
+                                    <button class="btn btn-sm btn-primary" id="applyAdvancedFilter">Áp dụng</button>
+                                </div>
+
                             </div>
-                            <div class="col-md-3">
-                                <label class="form-label">Tên mã giảm giá</label>
-                                <input class="form-control form-control-sm" name="name" type="text"
-                                    value="{{ request()->input('name') ?? '' }}" placeholder="Nhập tên mã giảm giá..."
-                                    data-advanced-filter>
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label">Người tạo</label>
-                                <input class="form-control form-control-sm" name="user_id" type="text"
-                                    value="{{ request()->input('user_id') ?? '' }}" placeholder="Nhập người tạo..."
-                                    data-advanced-filter>
-                            </div>
-                            <div class="col-md-3">
-                                <label for="statusItem" class="form-label">Loại giảm giá</label>
-                                <select class="form-select form-select-sm" name="discount_type" id="statusItem"
-                                    data-advanced-filter>
-                                    <option value="">Tất cả loại giảm giá</option>
-                                    <option @selected(request()->input('discount_type') === 'percentage') value="percentage">Phần trăm</option>
-                                    <option @selected(request()->input('discount_type') === 'fixed') value="fixed">Giảm trực tiếp</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <label for="statusItem" class="form-label">Trạng thái</label>
-                                <select class="form-select form-select-sm" name="status" id="statusItem"
-                                    data-advanced-filter>
-                                    <option value="">Tất cả trạng thái</option>
-                                    <option @selected(request()->input('status') === '1') value="1">Hoạt động</option>
-                                    <option @selected(request()->input('status') === '0') value="0">Không hoạt động</option>
-                                </select>
-                            </div>
-                            <div class="mt-3 text-end">
-                                <button class="btn btn-sm btn-success" type="reset" >Reset</button>
-                                <button class="btn btn-sm btn-primary" id="applyAdvancedFilter">Áp dụng</button>
-                            </div>
-                          
-                        </div>
-                    </form>
+                        </form>
                     </div>
 
                     <div class="card-body" id="item_List">
@@ -153,7 +154,7 @@
                                         <div class="search-box ms-2">
                                             <form action="{{ route('admin.coupons.index') }}" method="get">
                                                 <input type="text" name="query" class="form-control search"
-                                                       placeholder="Search..." value="{{ old('query') }}">
+                                                    placeholder="Search..." value="{{ old('query') }}">
                                                 <i class="ri-search-line search-icon"></i>
                                             </form>
                                         </div>
@@ -164,85 +165,85 @@
                             <div class="table-responsive table-card mt-3 mb-1">
                                 <table class="table align-middle table-nowrap" id="itemList">
                                     <thead class="table-light">
-                                    <tr>
-                                        <th scope="col" style="width: 50px;">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="checkAll"
-                                                       value="option">
-                                            </div>
-                                        </th>
-                                        <th>ID</th>
-                                        <th>Người tạo</th>
-                                        <th>Tên mã giảm giá</th>
-                                        <th>Mã giảm giá</th>
-                                        <th>Giảm giá</th>
-                                        <th>Trạng Thái</th>
-                                        <th>Ngày bắt đầu</th>
-                                        <th>Ngày kết thúc</th>
-                                        <th>Số lượng sử dụng</th>
-                                        <th>Hành động</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody class="list form-check-all">
-                                    @foreach ($coupons as $coupon)
                                         <tr>
-                                            <th scope="row">
+                                            <th scope="col" style="width: 50px;">
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" name="chk_child"
-                                                           value="option1">
+                                                    <input class="form-check-input" type="checkbox" id="checkAll"
+                                                        value="option">
                                                 </div>
                                             </th>
+                                            <th>ID</th>
+                                            <th>Người tạo</th>
+                                            <th>Tên mã giảm giá</th>
+                                            <th>Mã giảm giá</th>
+                                            <th>Giảm giá</th>
+                                            <th>Trạng Thái</th>
+                                            <th>Ngày bắt đầu</th>
+                                            <th>Ngày kết thúc</th>
+                                            <th>Số lượng sử dụng</th>
+                                            <th>Hành động</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="list form-check-all">
+                                        @foreach ($coupons as $coupon)
+                                            <tr>
+                                                <th scope="row">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="chk_child"
+                                                            value="option1">
+                                                    </div>
+                                                </th>
 
-                                            <td class="id">{{ $coupon->id }}</td>
-                                            <td class="id">{{ $coupon->user_id }}</td>
-                                            <td class="customer_name">{{ $coupon->name }}</td>
-                                            <td class="date">{{ $coupon->code }}</td>
-                                            <td class="date">{{ $coupon->discount_value }} ({{$coupon->discount_type}}
-                                                )
-                                            </td>
-                                            @if ($coupon->status)
-                                                <td class="status"><span
-                                                        class="badge bg-success-subtle text-success text-uppercase">
+                                                <td class="id">{{ $coupon->id }}</td>
+                                                <td class="id">{{ $coupon->user_id }}</td>
+                                                <td class="customer_name">{{ $coupon->name }}</td>
+                                                <td class="date">{{ $coupon->code }}</td>
+                                                <td class="date">{{ $coupon->discount_value }}
+                                                    ({{ $coupon->discount_type }})
+                                                </td>
+                                                @if ($coupon->status)
+                                                    <td class="status"><span
+                                                            class="badge bg-success-subtle text-success text-uppercase">
                                                             Active
                                                         </span></td>
-                                            @else
-                                                <td class="status"><span
-                                                        class="badge bg-danger-subtle text-danger text-uppercase">
+                                                @else
+                                                    <td class="status"><span
+                                                            class="badge bg-danger-subtle text-danger text-uppercase">
                                                             InActive
                                                         </span></td>
-                                            @endif
+                                                @endif
 
-                                            <td class="date">{{ $coupon->start_date }}</td>
-                                            <td class="date">{{ $coupon->expire_date }}</td>
-                                            <td class="date" >{{ $coupon->used_count }}</td>
-                                            <td>
-                                                <div class="d-flex gap-2">
-                                                    <div class="remove">
-                                                        <a href="{{ route('admin.coupons.show', $coupon->id) }}"
-                                                           class="btn btn-sm btn-primary remove-item-btn">Chi tiết</a>
+                                                <td class="date">{{ $coupon->start_date }}</td>
+                                                <td class="date">{{ $coupon->expire_date }}</td>
+                                                <td class="date">{{ $coupon->used_count }}</td>
+                                                <td>
+                                                    <div class="d-flex gap-2">
+                                                        <div class="remove">
+                                                            <a href="{{ route('admin.coupons.show', $coupon->id) }}"
+                                                                class="btn btn-sm btn-primary remove-item-btn">Chi tiết</a>
+                                                        </div>
+                                                        <div class="edit">
+                                                            <a href="{{ route('admin.coupons.edit', $coupon->id) }}"
+                                                                class="btn btn-sm btn-success edit-item-btn">Sửa</a>
+                                                        </div>
+                                                        <div class="remove">
+                                                            <a href="{{ route('admin.coupons.destroy', $coupon->id) }}"
+                                                                class="btn btn-sm btn-danger sweet-confirm">Xoá</a>
+                                                        </div>
+
                                                     </div>
-                                                    <div class="edit">
-                                                        <a href="{{ route('admin.coupons.edit', $coupon->id) }}"
-                                                           class="btn btn-sm btn-success edit-item-btn">Sửa</a>
-                                                    </div>
-                                                    <div class="remove">
-                                                        <a href="{{ route('admin.coupons.destroy', $coupon->id) }}"
-                                                           class="btn btn-sm btn-danger sweet-confirm">Xoá</a>
-                                                    </div>
-
-                                                </div>
-                                            </td>
+                                                </td>
 
 
-                                        </tr>
-                                    @endforeach
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                                 <div class="noresult" style="display: none">
                                     <div class="text-center">
                                         <lord-icon src="https://cdn.lordicon.com/msoeawqm.json" trigger="loop"
-                                                   colors="primary:#121331,secondary:#08a88a"
-                                                   style="width:75px;height:75px"></lord-icon>
+                                            colors="primary:#121331,secondary:#08a88a"
+                                            style="width:75px;height:75px"></lord-icon>
                                         <h5 class="mt-2">Sorry! No Result Found</h5>
                                         <p class="text-muted mb-0">We've searched more than 150+ Orders We did not find
                                             any
@@ -251,7 +252,7 @@
                                 </div>
                             </div>
 
-                            {{ $coupons->links() }}
+                            {{ $coupons->appends(request()->query())->links() }}
                         </div>
                     </div><!-- end card -->
                 </div>
@@ -266,21 +267,25 @@
 @push('page-scripts')
     <script>
         var routeUrlFilter = "{{ route('admin.coupons.index') }}";
-        function updateRange() {
-        let rangeValue = document.getElementById("amountMinRange").value;
-        document.getElementById("amountMin").textContent = rangeValue;
 
-        // Lọc danh sách theo số lượt sử dụng
-        let items = document.querySelectorAll("#itemList");
-        items.forEach(item => {
-            let usedCount = parseInt(item.getAttribute("used_count"), 10);
-            if (usedCount >= rangeValue) {
-                item.style.display = "block";
-            } else {
-                item.style.display = "none";
-            }
-        });
-    }
+        function updateRange() {
+            let rangeValue = document.getElementById("amountMinRange").value;
+            document.getElementById("amountMin").textContent = rangeValue;
+
+            // Lọc danh sách theo số lượt sử dụng
+            let items = document.querySelectorAll("#itemList");
+            items.forEach(item => {
+                let usedCount = parseInt(item.getAttribute("used_count"), 10);
+                if (usedCount >= rangeValue) {
+                    item.style.display = "block";
+                } else {
+                    item.style.display = "none";
+                }
+            });
+            $(document).on('click', '#resetFilter', function() {
+                handleSearchFilter('');
+            });
+        }
     </script>
     <script src="{{ asset('assets/js/custom/custom.js') }}"></script>
     <script src="{{ asset('assets/js/common/checkall-option.js') }}"></script>

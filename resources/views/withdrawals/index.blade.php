@@ -129,8 +129,7 @@
                                                 </li>
                                             </div>
                                             <li class="mt-2 d-flex gap-1">
-                                                <button class="btn btn-sm btn-success flex-grow-1" id="resetInput"
-                                                    type="reset">Reset</button>
+                                                <button class="btn btn-sm btn-success flex-grow-1" type="reset" id="resetFilter">Reset</button>
                                                 <button class="btn btn-sm btn-primary flex-grow-1" id="applyFilter">Áp
                                                     dụng</button>
                                             </li>
@@ -171,16 +170,15 @@
                                     <select class="form-select form-select-sm" name="bank_name" id="bankName"
                                         data-advanced-filter>
                                         <option value="">Chọn ngân hàng</option>
-                                        <option value="Vietcombank" @selected(request()->input('bank_name') === 'Vietcombank')>Vietcombank</option>
-                                        <option value="VIB" @selected(request()->input('bank_name') === 'VIB')>VIB</option>
-                                        <option value="VietinBank" @selected(request()->input('bank_name') === 'VietinBank')>VietinBank</option>
-                                        <option value="MB Bank" @selected(request()->input('bank_name') === 'Bank')>MB Bank</option>
-                                        <option value="VPBank" @selected(request()->input('bank_name') === 'VPBank')>VPBank</option>
-                                        <option value="OCB" @selected(request()->input('bank_name') === 'OCB')>OCB</option>
+                                        @foreach ($supportedBank as $bank)
+                                            <option value="{{ $bank->name }}" @selected(request()->input('bank_name') === $bank->name)>
+                                                {{ $bank->name . ' (' . $bank->short_name . ')' }}
+                                            </option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 <div class="mt-3 text-end">
-                                    <button class="btn btn-sm btn-success" type="reset">Reset</button>
+                                    <button class="btn btn-sm btn-success" type="reset" id="resetFilter">Reset</button>
                                     <button class="btn btn-sm btn-primary" id="applyAdvancedFilter">Áp dụng</button>
                                 </div>
                             </div>
@@ -271,10 +269,11 @@
         }
         updateRange();
 
-        $(document).on('click', '#resetInput', function() {
+        $(document).on('click', '#resetFilter', function() {
             $('#amountMinRange').val(0);
             $('#amountMaxRange').val(99990000);
             updateRange();
+            handleSearchFilter('');
         });
     </script>
     <script src="{{ asset('assets/js/custom/custom.js') }}"></script>

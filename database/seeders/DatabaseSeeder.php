@@ -25,6 +25,8 @@ class DatabaseSeeder extends Seeder
             BannerSeeder::class,
             CategorySeeder::class,
             CourseSeeder::class,
+            CouponSeeder::class,
+            PostSeeder::class,
             InvoiceSeeder::class,
             WithdrawalsRequestSeeder::class,
             TransactionSeeder::class,

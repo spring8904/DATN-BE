@@ -4,17 +4,17 @@
             <div>
                 <a href="{{ route('admin.banners.create') }}" class="btn btn-success add-btn"><i
                         class="ri-add-line align-bottom me-1"></i> Thêm mới</a>
-                        <button class="btn btn-danger" id="deleteSelected">
-                            <i class="ri-delete-bin-2-line"> Xóa nhiều</i>
-                        </button>
+                <button class="btn btn-danger" id="deleteSelected">
+                    <i class="ri-delete-bin-2-line"> Xóa nhiều</i>
+                </button>
             </div>
         </div>
         <div class="col-sm">
             <div class="d-flex justify-content-sm-end">
                 <div class="search-box ms-2">
                     <form action="{{ route('admin.banners.index') }}" method="get">
-                        <input type="text" name="query" class="form-control search"
-                            placeholder="Search..." value="{{ old('query') }}">
+                        <input type="text" name="query" class="form-control search" placeholder="Search..."
+                            value="{{ old('query') }}">
                         <i class="ri-search-line search-icon"></i>
                     </form>
                 </div>
@@ -61,13 +61,11 @@
                         </td>
                         <td class="order">{{ $banner->order }}</td>
                         @if ($banner->status)
-                            <td class="status"><span
-                                    class="badge bg-success-subtle text-success">
+                            <td class="status"><span class="badge bg-success-subtle text-success">
                                     Active
                                 </span></td>
                         @else
-                            <td class="status"><span
-                                    class="badge bg-danger-subtle text-danger">
+                            <td class="status"><span class="badge bg-danger-subtle text-danger">
                                     InActive
                                 </span></td>
                         @endif
@@ -77,15 +75,23 @@
                         <td>
                             <div class="d-flex gap-2">
                                 <div class="remove">
-                                    <a href="{{ route('admin.banners.show', $banner->id) }}"
-                                        class="btn btn-sm btn-primary remove-item-btn">Chi tiết</a>
+                                    <a href="{{ route('admin.banners.show', $banner->id) }}">
+                                        <button class="btn btn-sm btn-warning edit-item-btn">
+                                            <span class="ri-edit-box-line"></span>
+                                        </button>
+                                    </a>
                                 </div>
                                 <div class="edit">
-                                    <a href="{{ route('admin.banners.edit', $banner->id) }}"
-                                        class="btn btn-sm btn-success edit-item-btn">Sửa</a>
+                                    <a href="{{ route('admin.banners.edit', $banner->id) }}">
+                                        <button class="btn btn-sm btn-info edit-item-btn">
+                                            <span class="ri-folder-user-line"></span>
+                                        </button>
+                                    </a>
                                 </div>
                                 <div class="remove">
-                                    <a href="{{ route('admin.banners.destroy', $banner->id) }}" class="btn btn-sm btn-danger sweet-confirm">Xoá</a>
+                                    <a href="{{ route('admin.banners.destroy', $banner->id) }}"
+                                        class="btn btn-sm btn-danger sweet-confirm"> <span
+                                            class="ri-delete-bin-7-line"></span></a>
                                 </div>
 
                             </div>
@@ -99,8 +105,7 @@
         <div class="noresult" style="display: none">
             <div class="text-center">
                 <lord-icon src="https://cdn.lordicon.com/msoeawqm.json" trigger="loop"
-                    colors="primary:#121331,secondary:#08a88a"
-                    style="width:75px;height:75px"></lord-icon>
+                    colors="primary:#121331,secondary:#08a88a" style="width:75px;height:75px"></lord-icon>
                 <h5 class="mt-2">Sorry! No Result Found</h5>
                 <p class="text-muted mb-0">We've searched more than 150+ Orders We did not find any
                     orders for you search.</p>
@@ -108,5 +113,5 @@
         </div>
     </div>
 
-    {{ $banners->links() }}
+    {{ $banners->appends(request()->query())->links() }}
 </div>

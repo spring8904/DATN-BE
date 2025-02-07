@@ -63,8 +63,8 @@
                                                     </li>
                                                 </div>
                                                 <li class="mt-2 d-flex gap-1">
-                                                    <button class="btn btn-sm btn-success flex-grow-1" id="resetInput"
-                                                        type="reset">Reset</button>
+                                                    <button class="btn btn-sm btn-success flex-grow-1" type="reset"
+                                                        id="resetFilter">Reset</button>
                                                     <button class="btn btn-sm btn-primary flex-grow-1" id="applyFilter">Áp
                                                         dụng</button>
                                                 </li>
@@ -102,7 +102,7 @@
                                     </select>
                                 </div>
                                 <div class="mt-3 text-end">
-                                    <button class="btn btn-sm btn-success" type="reset">Reset</button>
+                                    <button class="btn btn-sm btn-success" type="reset" id="resetFilter">Reset</button>
                                     <button class="btn btn-sm btn-primary" id="applyAdvancedFilter">Áp dụng</button>
                                 </div>
                             </div>
@@ -228,7 +228,7 @@
                                 </div>
                             </div>
 
-                            {{ $banners->links() }}
+                            {{ $banners->appends(request()->query())->links() }}
                         </div>
                     </div><!-- end card -->
                 </div>
@@ -243,6 +243,9 @@
 @push('page-scripts')
     <script>
         var routeUrlFilter = "{{ route('admin.banners.index') }}";
+        $(document).on('click', '#resetFilter', function() {
+            handleSearchFilter('');
+        });
     </script>
     <script src="{{ asset('assets/js/custom/custom.js') }}"></script>
     <script src="{{ asset('assets/js/common/checkall-option.js') }}"></script>
