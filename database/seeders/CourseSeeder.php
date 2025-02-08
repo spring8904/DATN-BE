@@ -31,9 +31,25 @@ class CourseSeeder extends Seeder
                 'price' => fake()->randomFloat(2, 10000, 500000),
                 'price_sale' => fake()->randomFloat(2, 5000, 400000),
                 'level' => fake()->randomElement(['beginner', 'intermediate', 'advanced']),
-                'total_student' => random_int(0,100),
+                'total_student' => random_int(0, 100),
                 'status' => fake()->randomElement(['draft', 'pending', 'approved', 'rejected']),
                 'accepted' => fake()->dateTimeBetween('-1 year', 'now'),
+                'requirements' => json_encode([fake()->sentence(), fake()->sentence(), fake()->sentence()]),
+                'benefits' => json_encode([fake()->sentence(), fake()->sentence(), fake()->sentence()]),
+                'qa' => json_encode([
+                    [
+                        'question' => fake()->sentence(),
+                        'answers'  => fake()->sentence()
+                    ],
+                    [
+                        'question' => fake()->sentence(),
+                        'answers'  => fake()->sentence()
+                    ],
+                    [
+                        'question' => fake()->sentence(),
+                        'answers'  => fake()->sentence()
+                    ]
+                ],)
             ]);
         }
     }

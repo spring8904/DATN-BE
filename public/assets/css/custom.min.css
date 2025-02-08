@@ -37,3 +37,13 @@
     animation: shake 0.5s ease-in-out;
 }
 
+#notification-data,
+#messages-notifications-container {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.make-view-all {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}

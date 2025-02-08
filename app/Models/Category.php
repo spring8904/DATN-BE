@@ -20,16 +20,11 @@ class Category extends Model
 
     public function parent()
     {
-        return $this->belongsTo(Category::class, 'parent_id')->withTrashed();
+        return $this->belongsTo(Category::class, 'parent_id');
     }
 
     public function children()
     {
-        return $this->hasMany(Category::class, 'parent_id')->withTrashed();
-    }
-
-    public function posts()
-    {
-        return $this->morphedByMany(Post::class, 'categorizable');
+        return $this->hasMany(Category::class, 'parent_id');
     }
 }

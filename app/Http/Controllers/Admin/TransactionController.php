@@ -16,7 +16,13 @@ class TransactionController extends Controller
             $title = 'Quản lý thanh toán';
             $subTitle = 'Giao dịch thanh toán';
 
-            $queryTransactions = Transaction::query()->latest('id')->with('user');
+            $queryTransactions = Transaction::query()
+                ->with([
+                    'invoice.user',
+                    'invoice.course',
+                ])
+                ->latest('id');
+
             $countTransactions = Transaction::query()->selectRaw(
     'count(id) as total_transactions,
                 sum(type = "invoice") as invoice_transactions,
@@ -44,6 +50,45 @@ class TransactionController extends Controller
             return redirect()->back()->with('error', 'Có lỗi xảy ra, vui lòng thử lại sau');
         }
     }
+
+    public function show(string $transactionCode)
+    {
+        try {
+            $transaction = Transaction::query()
+                ->with([
+                    'invoice.user',
+                    'invoice.course',
+                ])
+                ->where('transaction_code', $transactionCode)
+                ->firstOrFail();
+
+            return view('transactions.show', compact('transaction'));
+        } catch (\Exception $e) {
+            $this->logError($e);
+
+            return redirect()->back()->with('error', 'Không tìm thấy giao dịch');
+        }
+    }
+
+    public function checkTransaction(Request $request)
+    {
+        try {
+            $transaction = Transaction::query()
+                ->with([
+                    'invoice.user',
+                    'invoice.course',
+                ])
+                ->where('transaction_code', $request->transaction_code)
+                ->firstOrFail();
+
+            return response()->json(['transaction' => $transaction]);
+        } catch (\Exception $e) {
+            $this->logError($e);
+
+            return response()->json(['error' => 'Không tìm thấy giao dịch']);
+        }
+    }
+
 
     private function filter($request, $query)
     {

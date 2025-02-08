@@ -37,7 +37,7 @@
                                 <div class="d-flex">
                                     <div class="mb-3 col-6 pe-3">
                                         <label class="form-label">Tên mã giảm giá</label>
-                                        <input type="text" name="name" class="form-control" value="{{ old('name') }}">
+                                        <input type="text" name="name" class="form-control" value="{{ old('name') }}" placeholder="Nhập tên mã giảm giá">
                                         @error('name')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
@@ -45,7 +45,7 @@
                                     <div class="mb-3 col-6">
                                         <label class="form-label">Mã giảm giá</label>
                                         <input type="text" name="code" class="form-control"
-                                            value="{{ old('code') }}">
+                                            value="{{ old('code') }}" placeholder="Nhập mã giảm giá">
                                         @error('code')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
@@ -55,6 +55,7 @@
                                     <div class="mb-3 col-6 pe-3">
                                         <label class="form-label">Loại giảm giá</label>
                                         <select name="discount_type" class="form-control" value="{{ old('discount_type') }}">
+                                            <option value="">Chọn loại giảm giá</option>
                                             <option value="fixed">Cố định</option>
                                             <option value="percentage">Phần trăm</option>
                                         </select>
@@ -64,7 +65,7 @@
                                     </div>
                                     <div class="mb-3 col-6">
                                         <label class="form-label">Giá trị giảm giá</label>
-                                        <input type="number" name="discount_value" class="form-control" value="{{ old('discount_value') }}">
+                                        <input type="number" name="discount_value" class="form-control" value="{{ old('discount_value') }}" placeholder="Nhập giá trị giảm giá">
                                         @error('discount_value')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
@@ -72,8 +73,8 @@
                                 </div>
                                 <div class="d-flex">
                                     <div class="mb-3 col-6 pe-3">
-                                        <label class="form-label">Số lượt dùng</label>
-                                        <input type="int" name="used_count" class="form-control" value="{{ old('used_count') }}">
+                                        <label class="form-label">Số lượng sử dụng</label>
+                                        <input type="int" name="used_count" class="form-control" value="{{ old('used_count') }}" placeholder="Nhập số lượng sử dụng">
                                         @error('used_count')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
@@ -109,12 +110,14 @@
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Mô tả</label>
-                                    <textarea name="description" class="form-control" value="{{ old('description') }}"></textarea>
+                                    <textarea name="description" class="form-control" value="{{ old('description') }}" placeholder="Nhập mô tả"></textarea>
                                     @error('description')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                <button type="submit" class="btn btn-soft-primary waves-effect waves-light">Thêm
+                                <button type="reset" class="btn btn-success waves-effect waves-light" onclick="resetFilters()">Reset
+                                    </button>
+                                <button type="submit" class="btn btn-primary waves-effect waves-light">Thêm
                                     mới</button>
                             </form>
                         </div>

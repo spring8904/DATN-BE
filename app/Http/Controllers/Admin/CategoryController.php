@@ -15,27 +15,19 @@ use Illuminate\Support\Str;
 class CategoryController extends Controller
 {
     use LoggableTrait, UploadToCloudinaryTrait;
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
-        try {
-            //code...
-            $title = 'Quản lí danh mục';
-            $subTitle = 'Danh sách danh mục';
-            $categories = Category::query()->with('parent')->get();
-            return view('categories.index', compact('categories'));
-        } catch (\Exception $e) {
-            //throw $th;
 
-            $this->logError($e);
+        $title = 'Quản lý danh mục';
+        $subTitle = 'Danh sách danh mục';
 
-            return redirect()
-                ->back()
-                ->with('fasle', 'Thao tác không thành công');
-        }
+        $categories = Category::query()->with('parent')->paginate(10);
+        return view('categories.index', compact('categories', 'title', 'subTitle'));
+
     }
 
     /**
@@ -43,23 +35,18 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //
-        try {
-            //code...
-            $title = 'Quản lí danh mục';
-            $subTitle = 'Thêm mới danh mục';
-            $parent_id = Category::query()->select('id', 'name')
-                ->whereNull('parent_id')->get();
 
-            return view('categories.create', compact('parent_id', 'title', 'subTitle'));
-        } catch (\Exception $e) {
-            //throw $th;
-            $this->logError($e);
+        $title = 'Quản lý danh mục';
+        $subTitle = 'Thêm mới danh mục';
 
-            return redirect()
-                ->back()
-                ->with('fasle', 'Thao tác không thành công');
-        }
+        $categories = Category::query()->with('parent')->get();
+
+        return view('categories.create', compact([
+            'title',
+            'subTitle',
+            'categories'
+        ]));
+
     }
 
     /**
@@ -67,36 +54,30 @@ class CategoryController extends Controller
      */
     public function store(StoreCategoryRequest $request)
     {
-        //
-
         try {
-            //code...
+            $data = $request->validated();
 
-            $data = $request->except('icon');
+            if ($data['parent_id']) {
+                $parentCategory = Category::query()->find($data['parent_id']);
+                if ($parentCategory && $parentCategory->hasGrandchildren()) {
+                    return redirect()->back()->withErrors(['parent_id' => 'Bạn không thể chọn cấp con thứ 3.']);
+                }
+            }
 
             $data['status'] ??= 0;
 
-            $data['slug'] = Str::slug($request->title) . '?' . Str::uuid();
 
-            if ($request->hasFile('icon')) {
-                $data['icon'] = $this->uploadImage($request->file('icon'), 'categories');
-            }
+            $data['slug'] = !empty($data['name']) ? Str::slug($data['name']) : null;
+
 
             Category::query()->create($data);
 
-            return redirect()->route('admin.categories.index')->with('success', 'Thao tác thành công');
+            return redirect()->route('admin.categories.index')
+                ->with('success', 'Thao tác thành công');
 
         } catch (\Exception $e) {
-            //throw $th;
 
-            if (
-                !empty($data['icon'])
-                && filter_var($data['icon'], FILTER_VALIDATE_URL)
-            ) {
-                $this->deleteImage($data['icon'], 'categories');
-            }
-
-            $this->logError($e);
+            $this->logError($e, $request->all());
 
             return redirect()
                 ->back()
@@ -109,26 +90,10 @@ class CategoryController extends Controller
      */
     public function show(string $id)
     {
-        //
-        try {
-            //code...
-            $title = 'Quản lí danh mục';
-
-            $subTitle = 'Chi tiết danh mục';
-
-            $category = Category::findOrFail($id);
-
-            return view('categories.show', compact('category','title', 'subTitle'));
-
-        } catch (\Exception $e) {
-            //throw $th;
-
-            $this->logError($e);
-
-            return redirect()
-                ->back()
-                ->with('fasle', 'Thao tác không thành công');
-        }
+        $title = 'Quản lý danh mục';
+        $subTitle = 'Chi tiết danh mục';
+        $category = Category::findOrFail($id);
+        return view('categories.show', compact('category','title','subTitle'));
     }
 
     /**
@@ -136,25 +101,14 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        //
-        try {
-            //code...
-            $title = 'Quản lí danh mục';
 
-            $subTitle = 'Cập nhập danh mục';
+        $title = 'Quản lý danh mục';
+        $subTitle = 'Chi tiết danh mục: ' . $category->name;
 
-            $parent_id = Category::query()->select('id', 'name')
-                ->whereNull('parent_id')->get();
+        $categories = Category::query()->whereNull('parent_id')->get();
 
-            return view('categories.edit', compact('category', 'parent_id', 'title', 'subTitle'));
-        } catch (\Exception $e) {
-            //throw $th;
-            $this->logError($e);
+        return view('categories.edit', compact('category', 'title', 'subTitle', 'categories'));
 
-            return redirect()
-                ->back()
-                ->with('fasle', 'Thao tác không thành công');
-        }
     }
 
     /**
@@ -162,22 +116,15 @@ class CategoryController extends Controller
      */
     public function update(UpdateCategoryRequest $request, string $id)
     {
-        //
-        // dd($request->all());
-
         try {
-
+            
             $category = Category::findOrFail($id);
 
-            $data = $request->except('icon');
+            $data = $request->validated();
+
+            $data['slug'] = !empty($data['name']) ? Str::slug($data['name']) : $category->slug;
 
             $data['status'] ??= 0;
-
-            if ($request->hasFile('icon')) {
-                $data['icon'] = $this->uploadImage($request->file('icon'), 'categories');
-            }
-
-            $currencyIcon = $category->icon;
 
             $category->update($data);
 
@@ -188,11 +135,12 @@ class CategoryController extends Controller
                 && filter_var($data['icon'], FILTER_VALIDATE_URL)
                 && !empty($currencyIcon)
             ) {
-                $this->deleteImage($currencyIcon,'categories');
+                $this->deleteImage($currencyIcon, 'categories');
             }
 
             return back()->with('success', 'Thao tác thành công');
         } catch (\Exception $e) {
+
             //throw $th;
             if (
                 !empty($data['icon']) 
@@ -201,7 +149,9 @@ class CategoryController extends Controller
                 $this->deleteImage($data['icon'], 'categories');
             }
 
-            $this->logError($e);
+            $this->logError($e, $request->all());
+
+
             return redirect()
                 ->back()
                 ->with('success', false);
@@ -213,20 +163,16 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        //
-
         try {
-            //code...
+            if ($category->children->count() > 0) {
+                return response()->json($data = ['status' => 'error', 'message' =>'Danh mục đang có cấp con.']);
+            }
+
             $category->delete();
 
-            if(isset($category->icon))
-            {
-                $this->deleteImage($category->icon, 'categories');
-            }
             return response()->json($data = ['status' => 'success', 'message' => 'Mục đã được xóa.']);
             
         } catch (\Exception $e) {
-            //throw $th;
             $this->logError($e);
 
             return response()->json($data = ['status' => 'error', 'message' => 'Lỗi thao tác.']);

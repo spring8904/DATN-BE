@@ -197,20 +197,13 @@ class BannerController extends Controller
         // Kiểm tra nếu có từ khóa tìm kiếm
         if ($request->has('query') && $request->input('query')) {
             $search = $request->input('query');
-            $queryBanners->where('name', 'like', "%$search%")
-                ->orWhere('code', 'like', "%$search%");
-        }
-        if ($request->hasAny(['code', 'name', 'user_id', 'discount_type', 'status', 'used_count', 'start_date', 'expire_date'])) {
-            $queryCoupons = $this->filter($request, $queryBanners);
-        }
-
-        $coupons = $queryCoupons->orderBy('id', 'desc')->paginate(10);
-        if ($request->ajax()) {
-            $html = view('banners.deleted', compact('coupons'))->render();
-            return response()->json(['html' => $html]);
+            $queryBanners->where('title', 'like', "%$search%");
+                
         }
         
-        return view('banners.deleted', compact('coupons'));
+        $banners = $queryBanners->orderBy('id', 'desc')->paginate(10);
+        
+        return view('banners.deleted', compact('banners'));
         
     }
 
@@ -221,9 +214,9 @@ class BannerController extends Controller
 
             if (str_contains($id, ',')) {
 
-                $userID = explode(',', $id);
+                $bannerID = explode(',', $id);
 
-                $this->restoreDeleteUsers($userID);
+                $this->restoreDeleteBanners($bannerID);
             } else {
                 $banner = Banner::query()->onlyTrashed()->findOrFail($id);
 
@@ -248,6 +241,71 @@ class BannerController extends Controller
                 'status' => 'error',
                 'message' => 'Khôi phục thất bại'
             ]);
+        }
+    }
+
+    
+    public function forceDelete(string $id)
+    {
+        try {
+            DB::beginTransaction();
+
+            if (str_contains($id, ',')) {
+
+                $bannerID = explode(',', $id);
+
+                $this->deleteBanners($bannerID);
+            } else {
+                $banner = Banner::query()->onlyTrashed()->findOrFail($id);
+
+                $banner->forceDelete();
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Xóa thành công'
+            ]);
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            $this->logError($e);
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Xóa thất bại'
+            ]);
+        }
+    }
+
+    
+    private function deleteBanners(array $bannerID)
+    {
+
+        $banners = Banner::query()->whereIn('id', $bannerID)->withTrashed()->get();
+
+        foreach ($banners as $banner) {
+
+            if ($banner->trashed()) {
+                $banner->forceDelete();
+            } else {
+                $banner->delete();
+
+            }
+        }
+    }
+    private function restoreDeleteBanners(array $bannerID)
+    {
+
+        $banners = Banner::query()->whereIn('id', $bannerID)->onlyTrashed()->get();
+
+        foreach ($banners as $banner) {
+
+            if ($banner->trashed()) {
+                $banner->restore();
+            }
         }
     }
     private function filter($request, $query)

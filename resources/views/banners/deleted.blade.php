@@ -86,55 +86,6 @@
                     </div>
                     <!-- end card header -->
 
-                    <!-- Tìm kiếm nâng cao -->
-                    <div id="advancedSearch" class="card-header" style="display:none;">
-                        <form id="filterForm">
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <label class="form-label">Mã giảm giá</label>
-                                    <input class="form-control form-control-sm" name="code" type="text"
-                                        value="{{ request()->input('code') ?? '' }}" placeholder="Nhập mã giảm giá..."
-                                        data-advanced-filter>
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="form-label">Tên mã giảm giá</label>
-                                    <input class="form-control form-control-sm" name="name" type="text"
-                                        value="{{ request()->input('name') ?? '' }}" placeholder="Nhập tên mã giảm giá..."
-                                        data-advanced-filter>
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="form-label">Người tạo</label>
-                                    <input class="form-control form-control-sm" name="user_id" type="text"
-                                        value="{{ request()->input('user_id') ?? '' }}" placeholder="Nhập người tạo..."
-                                        data-advanced-filter>
-                                </div>
-                                <div class="col-md-3">
-                                    <label for="statusItem" class="form-label">Loại giảm giá</label>
-                                    <select class="form-select form-select-sm" name="discount_type" id="statusItem"
-                                        data-advanced-filter>
-                                        <option value="">Tất cả loại giảm giá</option>
-                                        <option @selected(request()->input('discount_type') === 'percentage') value="percentage">Phần trăm</option>
-                                        <option @selected(request()->input('discount_type') === 'fixed') value="fixed">Giảm trực tiếp</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3">
-                                    <label for="statusItem" class="form-label">Trạng thái</label>
-                                    <select class="form-select form-select-sm" name="status" id="statusItem"
-                                        data-advanced-filter>
-                                        <option value="">Tất cả trạng thái</option>
-                                        <option @selected(request()->input('status') === '1') value="1">Hoạt động</option>
-                                        <option @selected(request()->input('status') === '0') value="0">Không hoạt động</option>
-                                    </select>
-                                </div>
-                                <div class="mt-3 text-end">
-                                    <button class="btn btn-sm btn-success" type="reset">Reset</button>
-                                    <button class="btn btn-sm btn-primary" id="applyAdvancedFilter">Áp dụng</button>
-                                </div>
-
-                            </div>
-                        </form>
-                    </div>
-
                     <div class="card-body" id="item_List">
                         <div class="listjs-table" id="customerList">
 
@@ -171,56 +122,51 @@
                                                     <input class="form-check-input" type="checkbox" id="checkAll">
                                                 </div>
                                             </th>
-                                            <th>ID</th>
-                                            <th>Người tạo</th>
-                                            <th>Tên mã giảm giá</th>
-                                            <th>Mã giảm giá</th>
-                                            <th>Giảm giá</th>
-                                            <th>Trạng Thái</th>
-                                            <th>Ngày bắt đầu</th>
-                                            <th>Ngày kết thúc</th>
-                                            <th>Số lượng sử dụng</th>
-                                            <th>Thời gian xóa</th>
+                                            <th>Mã banner</th>
+                                            <th>Tiêu đề</th>
+                                            <th>Ảnh</th>
+                                            <th>Thứ tự</th>
+                                            <th>Trạng thái</th>
+                                            <th>Ngày tạo</th>
+                                            <th>Ngày cập nhật</th>
+                                            <th>Thời gian đã xóa</th>
                                         </tr>
                                     </thead>
                                     <tbody class="list form-check-all">
-                                        @foreach ($coupons as $coupon)
+                                        @foreach ($banners as $banner)
                                             <tr>
                                                 <th scope="row">
                                                     <div class="form-check">
                                                         <input class="form-check-input" type="checkbox" name="itemID"
-                                                            value="{{ $coupon->id }}">
+                                                            value="{{ $banner->id }}">
                                                     </div>
                                                 </th>
 
-                                                <td class="id">{{ $coupon->id }}</td>
-                                                <td class="id">{{ $coupon->user_id }}</td>
-                                                <td class="customer_name">{{ $coupon->name }}</td>
-                                                <td class="date">{{ $coupon->code }}</td>
-                                                <td class="date">{{ $coupon->discount_value }}
-                                                    ({{ $coupon->discount_type }})
+                                                <td class="id">{{ $banner->id }}</td>
+                                                <td class="customer_name">{{ $banner->title }}</td>
+                                                <td class="phone">
+                                                    @if ($banner->image)
+                                                        <img src="{{ $banner->image }}" alt="" width="100px">
+                                                    @else
+                                                        <p>Không có ảnh</p>
+                                                    @endif
+
                                                 </td>
-                                                @if ($coupon->status)
-                                                    <td class="status"><span
-                                                            class="badge bg-success-subtle text-success text-uppercase">
-                                                            Active
+                                                <td class="date">{{ $banner->order }}</td>
+                                                @if ($banner->status)
+                                                    <td class="status"><span class="badge bg-success-subtle text-success">
+                                                            Hoạt động
                                                         </span></td>
                                                 @else
-                                                    <td class="status"><span
-                                                            class="badge bg-danger-subtle text-danger text-uppercase">
-                                                            InActive
+                                                    <td class="status"><span class="badge bg-danger-subtle text-danger">
+                                                            Không hoạt động
                                                         </span></td>
                                                 @endif
 
-                                                <td class="date">{{ $coupon->start_date }}</td>
-                                                <td class="date">{{ $coupon->expire_date }}</td>
-                                                <td class="date">{{ $coupon->used_count }}</td>9
-                                                <td class="date">{{ $coupon->deleted_at }}</td>
-
-
-
-
-
+                                                <td class="date">{{ $banner->created_at }}</td>
+                                                <td class="date">{{ $banner->updated_at }}</td>
+                                                <td class="date">{{ $banner->deleted_at }}</td>
+                                                
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -238,8 +184,7 @@
                                 </div>
                             </div>
 
-                            {{ $coupons->links() }}
-
+                            {{ $banners->links() }}
 
                         </div>
                     </div><!-- end card -->
@@ -256,9 +201,9 @@
 
 @push('page-scripts')
     <script>
-        var routeUrlFilter = "{{ route('admin.coupons.index') }}";
-        var routeDeleteAll = "{{ route('admin.coupons.forceDelete', ':itemID')}}";
-        var routeRestoreUrl = "{{ route('admin.coupons.restoreDelete', ':itemID') }}";
+        var routeUrlFilter = "{{ route('admin.banners.index') }}";
+        var routeDeleteAll = "{{ route('admin.banners.forceDelete', ':itemID')}}";
+        var routeRestoreUrl = "{{ route('admin.banners.restoreDelete', ':itemID') }}";
     </script>
     <script src="{{ asset('assets/js/custom/custom.js') }}"></script>
     <script src="{{ asset('assets/js/common/checkall-option.js') }}"></script>

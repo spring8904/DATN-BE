@@ -134,15 +134,8 @@ class CouponController extends Controller
             $queryCoupons->where('name', 'like', "%$search%")
                 ->orWhere('code', 'like', "%$search%");
         }
-        if ($request->hasAny(['code', 'name', 'user_id', 'discount_type', 'status', 'used_count', 'start_date', 'expire_date'])) {
-            $queryCoupons = $this->filter($request, $queryCoupons);
-        }
 
         $coupons = $queryCoupons->orderBy('id', 'desc')->paginate(10);
-        if ($request->ajax()) {
-            $html = view('coupons.deleted', compact('coupons'))->render();
-            return response()->json(['html' => $html]);
-        }
         
         return view('coupons.deleted', compact('coupons'));
         
@@ -157,11 +150,11 @@ class CouponController extends Controller
 
                 $couponID = explode(',', $id);
 
-                $this->deleteUsers($couponID);
+                $this->deleteCoupons($couponID);
             } else {
-                $user = Coupon::query()->onlyTrashed()->findOrFail($id);
+                $coupon = Coupon::query()->onlyTrashed()->findOrFail($id);
 
-                $user->forceDelete();
+                $coupon->forceDelete();
             }
 
             DB::commit();
@@ -257,7 +250,7 @@ class CouponController extends Controller
             'user_id' => ['queryWhere' => 'LIKE'],
             'status' => ['queryWhere' => '='],
             'discount_type' => ['queryWhere' => '='],
-            'used_count' => ['queryWhere' => 'BETWEEN']
+            'used_count' => ['queryWhere' => '=']
         ];
 
         foreach ($filters as $filter => $value) {
@@ -267,10 +260,7 @@ class CouponController extends Controller
                 if (is_array($value) && !empty($value['queryWhere'])) {
 
                     if ($value['queryWhere'] === 'BETWEEN') {
-                        $range = explode(',', $filterValue);
-                        if (count($range) === 2) {
-                            $query->whereBetween($filter, [$range[0], $range[1]]);
-                        }
+                            $query->whereBetween($filter, [$filterValue, 10000]);
                     } else {
                         $filterValue = $value['queryWhere'] === 'LIKE' ? "%$filterValue%" : $filterValue;
                         $query->where($filter, $value['queryWhere'], $filterValue);

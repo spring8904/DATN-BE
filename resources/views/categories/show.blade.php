@@ -56,16 +56,14 @@
                                             <td>{{ $category->parent ? $category->parent->name : 'Không có' }}</td>
                                             <td>
                                                 @if ($category->status)
-                                                    <span
-                                                        class="badge bg-success-subtle text-success text-uppercase">Active<span>
-                                                        @else
-                                                            <span
-                                                                class="badge bg-danger-subtle text-success text-uppercase">No
-                                                                active<span>
+                                                    <span class="badge bg-success ">Hoạt động</span>
+                                                @else
+                                                    <span class="badge bg-danger">Không hoạt động<span>
                                                 @endif
                                             </td>
                                             <td class="phone">
-                                                <img src="{{ $category->icon }}" alt="{{ $category->name }}" width="100">
+                                                <img src="{{ $category->icon }}" alt="{{ $category->name }}"
+                                                    width="100">
                                             </td>
                                             <td>{{ $category->created_at }}</td>
                                             <td>{{ $category->updated_at }}</td>

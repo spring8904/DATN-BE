@@ -25,9 +25,11 @@
                         <td>
                             <span class="badge bg-primary">Hoàn thành</span>
                         </td>
-                        <td>{{ optional(\Carbon\Carbon::parse($invoice->created_at))->format('d/m/Y') ?? 'NULL' }}
+                        <td>
+                            {!! $invoice->created_at ?\Carbon\Carbon::parse($invoice->created_at)->format('d/m/Y') : '<span class="btn btn-sm btn-soft-warning">Trống</span>' !!}
                         </td>
-                        <td>{{ optional(\Carbon\Carbon::parse($invoice->updated_at))->format('d/m/Y') ?? 'NULL' }}
+                        <td>
+                            {!! $invoice->updated_at ?\Carbon\Carbon::parse($invoice->updated_at)->format('d/m/Y') : '<span class="btn btn-sm btn-soft-warning">Không thay đổi</span>' !!}
                         </td>
                     </tr>
                 @endforeach

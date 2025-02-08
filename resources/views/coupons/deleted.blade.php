@@ -217,10 +217,6 @@
                                                 <td class="date">{{ $coupon->used_count }}</td>9
                                                 <td class="date">{{ $coupon->deleted_at }}</td>
 
-
-
-
-
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -249,15 +245,13 @@
             <!-- end col -->
         </div>
         <!-- end row -->
-
-
     </div>
 @endsection
 
 @push('page-scripts')
     <script>
         var routeUrlFilter = "{{ route('admin.coupons.index') }}";
-        var routeDeleteAll = "{{ route('admin.coupons.forceDelete', ':itemID')}}";
+        var routeDeleteAll = "{{ route('admin.coupons.forceDelete', ':itemID') }}";
         var routeRestoreUrl = "{{ route('admin.coupons.restoreDelete', ':itemID') }}";
     </script>
     <script src="{{ asset('assets/js/custom/custom.js') }}"></script>

@@ -5,22 +5,22 @@
     <ul class="navbar-nav" id="navbar-nav">
         <li class="menu-title"><span data-key="t-menu">Bảng điều khiển</span></li>
         <li class="nav-item cusor-pointer">
-            <a class="nav-link menu-link">
+            <a class="nav-link menu-link" href="{{route('admin.revenue-statistics.index')}}">
                 <i class="ri-dashboard-2-line"></i> <span data-key="t-dashboards">Thống kê doanh thu</span>
             </a>
         </li>
         <li class="nav-item cusor-pointer">
-            <a class="nav-link menu-link">
+            <a class="nav-link menu-link" href="{{route('admin.top-courses.index')}}">
                 <i class=" ri-bar-chart-fill"></i> <span data-key="t-dashboards">Top khoá học bán chạy</span>
             </a>
         </li>
         <li class="nav-item cusor-pointer">
-            <a class="nav-link menu-link">
+            <a class="nav-link menu-link" href="{{route('admin.analytics.index')}}">
                 <i class=" ri-bar-chart-fill"></i> <span data-key="t-dashboards">Thống kê truy cập</span>
             </a>
         </li>
 
-        <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-pages">Quản lý thanh toán</span>
+        <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-pages">Quản lý giao dịch</span>
         </li>
 
         <li class="nav-item">
@@ -172,6 +172,10 @@
                     <li class="nav-item">
                         <a href="{{ route('admin.posts.create') }}" class="nav-link" data-key="t-chat">
                             Thêm mới bài viết </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.posts.list-post-delete') }}" class="nav-link" data-key="t-chat">
+                            Danh sách bài viết đã xóa </a>
                     </li>
                 </ul>
             </div>

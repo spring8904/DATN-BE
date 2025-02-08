@@ -22,16 +22,17 @@ class StoreCommissionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'difficulty_level' => 'required',
-            'system_percentage' => 'required',
-            'instructor_percentage' => 'required',
+            'difficulty_level' => 'required|in:easy,medium,difficult,very_difficult',
+            'system_percentage' => 'required|numeric',
+            'instructor_percentage' => 'required|numeric',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'difficulty_level.required' => 'Vui lòng chọn độ khó',
+            'difficulty_level.required' => 'Vui lòng chọn cấp độ',
+            'difficulty_level.in' => 'Cấp độ không hợp lệ',
             'system_percentage.required' => 'Vui lòng chọn phần trăm của hệ thống',
             'instructor_percentage.required' => 'Vui lòng chọn phần trăm của giáo viên',
         ];

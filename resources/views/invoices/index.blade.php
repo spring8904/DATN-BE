@@ -65,10 +65,10 @@
                                                 <div class="d-flex justify-content-between">
                                                     <input type="range" class="form-range w-50" id="amountMinRange"
                                                         name="amount_min" min="10000" max="49990000" step="10000"
-                                                        value="10000" oninput="updateRange()" data-filter>
+                                                        value="{{ request()->input('amount_min') ?? 10000 }}" oninput="updateRange()" data-filter>
                                                     <input type="range" class="form-range w-50" id="amountMaxRange"
                                                         name="amount_max" min="50000000" max="99990000" step="10000"
-                                                        value="99990000" oninput="updateRange()" data-filter>
+                                                        value="{{ request()->input('amount_max') ?? 99990000 }}" oninput="updateRange()" data-filter>
                                                 </div>
                                             </li>
                                             <div class="row">
@@ -90,8 +90,8 @@
                                                 </li>
                                             </div>
                                             <li class="mt-2 d-flex gap-1">
-                                                <button class="btn btn-sm btn-success flex-grow-1" id="resetInput"
-                                                    type="reset">Reset</button>
+                                                <button class="btn btn-sm btn-success flex-grow-1" type="reset"
+                                                    id="resetFilter">Reset</button>
                                                 <button class="btn btn-sm btn-primary flex-grow-1" id="applyFilter">Áp
                                                     dụng</button>
                                             </li>
@@ -148,23 +148,36 @@
                                         </tr>
                                     </thead>
                                     <tbody class="list">
-                                        @foreach ($invoices as $invoice)
-                                            <tr>
-                                                <td>{{ $loop->index + 1 }}</td>
-                                                <td><span class="text-danger fw-bold">{{ $invoice->user->name }}</span>
-                                                </td>
-                                                <td>{{ $invoice->course->code }}</td>
-                                                <td>{{ Str::limit($invoice->course->name, 40) }}</td>
-                                                <td>{{ number_format($invoice->final_total) }} VND</td>
-                                                <td>
-                                                    <span class="badge bg-primary">Hoàn thành</span>
-                                                </td>
-                                                <td>{{ optional(\Carbon\Carbon::parse($invoice->created_at))->format('d/m/Y') ?? 'NULL' }}
-                                                </td>
-                                                <td>{{ optional(\Carbon\Carbon::parse($invoice->updated_at))->format('d/m/Y') ?? 'NULL' }}
-                                                </td>
-                                            </tr>
-                                        @endforeach
+                                    @foreach ($invoices as $invoice)
+                                        <tr>
+                                            <td>{{ $loop->index + 1 }}</td>
+                                            <td>{{ $invoice->code }}</td>
+                                            <td><span class="text-danger fw-bold">{{ $invoice->user->name }}</span>
+                                            </td>
+                                            <td>
+                                                <img style="width: 100px; height: 100px"
+                                                     src="{{ $invoice->course->thumbnail }}"
+                                                     class="object-fit-cover rounded" alt="">
+                                            </td>
+                                            <td>{{ Str::limit($invoice->course->name, 40) }}</td>
+                                            <td>
+                                                {{ $invoice->course->user->name ?? ''}}
+                                            </td>
+                                            <td>{{ number_format($invoice->final_total) }} VND</td>
+                                            <td>
+                                                <span class="badge bg-primary">Hoàn thành</span>
+                                            </td>
+                                            <td>{{ optional(\Carbon\Carbon::parse($invoice->created_at))->format('d/m/Y') ?? 'NULL' }}
+                                            </td>
+                                           <td>
+                                               <a href="">
+                                                   <button class="btn btn-sm btn-info edit-item-btn">
+                                                       <span class="ri-eye-line"></span>
+                                                   </button>
+                                               </a>
+                                           </td>
+                                        </tr>
+                                    @endforeach
                                     </tbody>
                                 </table>
                             </div>

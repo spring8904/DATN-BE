@@ -14,6 +14,7 @@ use App\Traits\UploadToCloudinaryTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use function PHPUnit\Framework\isEmpty;
 
@@ -33,16 +34,19 @@ class PostController extends Controller
             $subTitle = 'Danh sách bài viết';
 
             $categories = Category::query()->get();
+            $queryPost = $posts = Post::with(['user:id,name', 'category:id,name']);
 
-            $searchPost = $request->input('searchPost');
+            if ($request->hasAny(['title', 'user_name_post', 'category_id', 'status', 'startDate', 'endDate']))
+                $queryPost = $this->filter($request, $queryPost);
 
-            // kiểm tra xem có từ khóa không
-            if (!empty($searchPost)) {
-                $posts = Post::with('user')
-                    ->where('title', 'LIKE', '%' . $searchPost . '%')
-                    ->paginate(10);
-            } else {
-                $posts = Post::with('user')->paginate(10);
+            if ($request->has('search_full'))
+                $queryPost = $this->search($request->search_full, $queryPost);
+
+            $posts = $queryPost->paginate(10);
+
+            if ($request->ajax()) {
+                $html = view('posts.table', compact('posts'))->render();
+                return response()->json(['html' => $html]);
             }
 
             return view('posts.index', compact([
@@ -105,7 +109,7 @@ class PostController extends Controller
             $data['published_at'] = $request->input('published_at') ?? now();
 
             do {
-                $data['slug'] = Str::slug($request->title) . '?' . Str::uuid();
+                $data['slug'] = Str::slug($request->title) . '-' . substr(Str::uuid(), 0, 10);
             } while (Post::query()->where('slug', $data['slug'])->exists());
 
             $post = Post::query()->create($data);
@@ -124,7 +128,6 @@ class PostController extends Controller
             DB::commit();
 
             return redirect()->route('admin.posts.index')->with('success', 'Thao tác thành công');
-
         } catch (\Exception $e) {
 
             DB::rollBack();
@@ -152,7 +155,7 @@ class PostController extends Controller
             $subTitle = 'Chi tiết bài viết';
 
             $post = Post::query()
-                ->with(['tags:id,name', 'categories:id,name,parent_id', 'user:id,name'])
+                ->with(['tags:id,name', 'category:id,name,parent_id', 'user:id,name'])
                 ->findOrFail($id);
 
             return view('posts.show', compact([
@@ -278,6 +281,201 @@ class PostController extends Controller
             $this->logError($e);
 
             return response()->json($data = ['status' => 'error', 'message' => 'Lỗi thao tác.']);
+        }
+    }
+    private function filter($request, $query)
+    {
+        $filters = [
+            'title' => ['queryWhere' => 'LIKE'],
+            'category_id' => ['queryWhere' => '='],
+            'status' => ['queryWhere' => '='],
+            'user_name_post' => null,
+        ];
+
+        foreach ($filters as $filter => $value) {
+            $filterValue = $request->input($filter);
+
+            if (!empty($filterValue)) {
+
+                if (is_array($value) && !empty($value['queryWhere'])) {
+                    $filterValue = $value['queryWhere'] === 'LIKE' ? "%$filterValue%" : $filterValue;
+                    $query->where($filter, $value['queryWhere'], $filterValue);
+                } else {
+                    if (str_contains($filter, '_')) {
+                        $elementFilter = explode('_', $filter);
+                        $relation = $elementFilter[0];
+                        $field = $elementFilter[1];
+
+                        if (method_exists($query->getModel(), $relation)) {
+
+                            $query->whereHas($relation, function ($query) use ($field, $filterValue) {
+                                $query->where($field, 'LIKE', "%$filterValue%");
+                            });
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!empty($request->input('startDate'))) {
+            $query->where('published_at', '>=', $request->input('startDate'));
+        }
+        if (!empty($request->input('endDate'))) {
+            $query->where('published_at', '<=', $request->input('endDate'));
+        }
+
+        return $query;
+    }
+
+    private function search($searchTerm, $query)
+    {
+        if (!empty($searchTerm)) {
+            $query->where(function ($query) use ($searchTerm) {
+                $query->where('title', 'LIKE', "%$searchTerm%")
+                    ->orWhere('description', 'LIKE', "%$searchTerm%")
+                    ->orWhere('content', 'LIKE', "%$searchTerm%")
+                    ->orWhereHas('user', function ($q) use ($searchTerm) {
+                        $q->where('name', 'LIKE', "%$searchTerm%");
+                    });
+            });
+        }
+
+        return $query;
+    }
+    public function forceDelete(string $id)
+    {
+        try {
+            DB::beginTransaction();
+
+            if (str_contains($id, ',')) {
+
+                $postID = explode(',', $id);
+
+                $this->deleteposts($postID);
+            } else {
+                $post = Post::query()->onlyTrashed()->findOrFail($id);
+
+                $post->forceDelete();
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Xóa thành công'
+            ]);
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            $this->logError($e);
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Xóa thất bại'
+            ]);
+        }
+    }
+    private function deletePosts(array $postID)
+    {
+
+        $posts = Post::query()->whereIn('id', $postID)->withTrashed()->get();
+
+        foreach ($posts as $post) {
+
+            $thumbnail = $post->thumbnail;
+
+            if ($post->trashed()) {
+                $post->forceDelete();
+            } else {
+                $post->delete();
+
+                if (
+                    isset($thumbnail) && !empty($thumbnail)
+                    && filter_var($thumbnail, FILTER_VALIDATE_URL)
+                ) {
+                    $this->deleteImage($thumbnail, self::FOLDER);
+                }
+            }
+        }
+    }
+    public function restoreDelete(string $id)
+    {
+        try {
+            DB::beginTransaction();
+
+            if (str_contains($id, ',')) {
+
+                $postID = explode(',', $id);
+
+                $this->restoreDeletePosts($postID);
+            } else {
+                $post = Post::query()->onlyTrashed()->findOrFail($id);
+
+                if ($post->trashed()) {
+                    $post->restore();
+                }
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Khôi phục thành công'
+            ]);
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            $this->logError($e);
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Khôi phục thất bại'
+            ]);
+        }
+    }
+    public function listPostDelete(Request $request)
+    {
+        try {
+            $title = 'Quản lý bài viết';
+            $subTitle = 'Danh sách bài viết đã xóa';
+
+            $categories = Category::query()->get();
+            $searchPost = $request->input('searchPost');
+
+            // kiểm tra xem có từ khóa không
+            if (!empty($searchPost)) {
+                $posts = Post::with('user')
+                    ->where('title', 'LIKE', '%' . $searchPost . '%')
+                    ->paginate(10);
+            } else {
+                $posts = Post::with('user')->onlyTrashed()->paginate(10);
+            }
+            return view('posts.list-post-delete', compact([
+                'title',
+                'subTitle',
+                'categories',
+                'posts'
+            ]));
+        } catch (\Exception $e) {
+            $this->logError($e);
+
+            return redirect()->back()->with('error', 'Có lỗi xảy ra, vui lòng thử lại');
+        }
+    }
+    private function restoreDeletePosts(array $postID)
+    {
+
+        $posts = Post::query()->whereIn('id', $postID)->onlyTrashed()->get();
+
+        foreach ($posts as $post) {
+
+            $thumbnail = $post->thumbnail;
+
+            if ($post->trashed()) {
+                $post->restore();
+            }
         }
     }
 }

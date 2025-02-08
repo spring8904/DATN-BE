@@ -95,10 +95,10 @@
                                                 <div class="d-flex justify-content-between">
                                                     <input type="range" class="form-range w-50" id="amountMinRange"
                                                         name="amount_min" min="10000" max="49990000" step="10000"
-                                                        value="10000" oninput="updateRange()" data-filter>
+                                                        value="{{ request()->input('amount_min') ?? 10000 }}" oninput="updateRange()" data-filter>
                                                     <input type="range" class="form-range w-50" id="amountMaxRange"
                                                         name="amount_max" min="50000000" max="99990000" step="10000"
-                                                        value="99990000" oninput="updateRange()" data-filter>
+                                                        value="{{ request()->input('amount_max') ?? 99990000 }}" oninput="updateRange()" data-filter>
                                                 </div>
                                             </li>
                                             <div class="row">
@@ -120,8 +120,8 @@
                                                 </li>
                                             </div>
                                             <li class="mt-2 d-flex gap-1">
-                                                <button class="btn btn-sm btn-success flex-grow-1" id="resetInput"
-                                                    type="reset">Reset</button>
+                                                <button class="btn btn-sm btn-success flex-grow-1" type="reset"
+                                                    id="resetFilter">Reset</button>
                                                 <button class="btn btn-sm btn-primary flex-grow-1" id="applyFilter">Áp
                                                     dụng</button>
                                             </li>
@@ -145,23 +145,33 @@
                                     <label for="statusTransaction" class="form-label">Trạng thái</label>
                                     <select class="form-select form-select-sm" name="status" id="statusTransaction"
                                         data-advanced-filter>
-                                        <option value="">Tất cả trạng thái</option>
-                                        <option value="completed" @selected(request()->input('status') === 'completed')>Hoàn thành</option>
-                                        <option value="pending" @selected(request()->input('status') === 'pending')>Đang xử lý</option>
-                                        <option value="failed" @selected(request()->input('status') === 'failed')>Thất bại</option>
+                                        <option value="">Chọn trạng thái</option>
+                                        <option value="completed" @selected(request()->input('status') === 'completed')>
+                                            Hoàn thành
+                                        </option>
+                                        <option value="pending" @selected(request()->input('status') === 'pending')>Đang
+                                            xử lý
+                                        </option>
+                                        <option value="failed" @selected(request()->input('status') === 'failed')>Thất
+                                            bại
+                                        </option>
                                     </select>
                                 </div>
                                 <div class="col-md-4">
                                     <label for="typeTransaction" class="form-label">Loại giao dịch</label>
                                     <select class="form-select form-select-sm" name="type" id="typeTransaction"
                                         data-advanced-filter>
-                                        <option value="">Tất cả trạng thái</option>
-                                        <option value="invoice" @selected(request()->input('type') === 'invoice')>Mua bán</option>
-                                        <option value="withdrawal" @selected(request()->input('type') === 'withdrawal')>Rút tiền</option>
+                                        <option value="">Chọn loại giao dịch</option>
+                                        <option value="invoice" @selected(request()->input('type') === 'invoice')>Mua
+                                            bán
+                                        </option>
+                                        <option value="withdrawal" @selected(request()->input('type') === 'withdrawal')>
+                                            Rút tiền
+                                        </option>
                                     </select>
                                 </div>
                                 <div class="mt-3 text-end">
-                                    <button class="btn btn-sm btn-success" type="reset">Reset</button>
+                                    <button class="btn btn-sm btn-success" type="reset" id="resetFilter">Reset</button>
                                     <button class="btn btn-sm btn-primary" id="applyAdvancedFilter">Áp dụng</button>
                                 </div>
                             </div>
@@ -175,21 +185,25 @@
                                     <thead class="table-light">
                                         <tr>
                                             <th>STT</th>
+                                            <th>Mã giao dịch</th>
                                             <th>Người thực hiện giao dịch</th>
+                                            <th>Email</th>
                                             <th>Số tiền</th>
                                             <th>Loại giao dịch</th>
                                             <th>Trạng thái</th>
                                             <th>Ngày tạo giao dịch</th>
-                                            <th>Ngày cập nhật giao dịch</th>
+                                            <th>Thao tác</th>
                                         </tr>
                                     </thead>
                                     <tbody class="list">
                                         @foreach ($transactions as $transaction)
                                             <tr>
                                                 <td>{{ $loop->index + 1 }}</td>
+                                                <td>{{ $transaction->transaction_code ?? '' }}</td>
                                                 <td><span
-                                                        class="text-primary fw-bold">{{ $transaction->user->name }}</span>
+                                                        class="text-primary fw-bold">{{ $transaction->invoice->user->name ?? '' }}</span>
                                                 </td>
+                                                <td>{{ $transaction->invoice->user->email ?? '' }}</td>
                                                 <td>{{ number_format($transaction->amount) }} VND</td>
                                                 <td>
                                                     @if ($transaction->type === 'invoice')
@@ -203,11 +217,11 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    @if ($transaction->status === 'completed')
+                                                    @if ($transaction->status === 'Giao dịch thành công')
                                                         <span class="badge bg-success w-75">
                                                             Hoàn thành
                                                         </span>
-                                                    @elseif($transaction->status === 'pending')
+                                                    @elseif($transaction->status === 'Chờ xử lý')
                                                         <span class="badge bg-warning w-75">
                                                             Đang xử lý
                                                         </span>
@@ -217,9 +231,15 @@
                                                         </span>
                                                     @endif
                                                 </td>
-                                                <td>{{ optional(\Carbon\Carbon::parse($transaction->created_at))->format('d/m/Y') ?? 'NULL' }}
+                                                <td>{{ $transaction->created_at }}
                                                 </td>
-                                                <td>{{ optional(\Carbon\Carbon::parse($transaction->updated_at))->format('d/m/Y') ?? 'NULL' }}
+                                                <td>
+                                                    <a
+                                                        href="{{ route('admin.transactions.show', $transaction->transaction_code) }}">
+                                                        <button class="btn btn-sm btn-info edit-item-btn">
+                                                            <span class="ri-eye-line"></span>
+                                                        </button>
+                                                    </a>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -255,12 +275,11 @@
         function formatCurrency(value) {
             return value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
         }
+
         updateRange();
 
-        $(document).on('click', '#resetInput', function() {
-            $('#amountMinRange').val(0);
-            $('#amountMaxRange').val(99990000);
-            updateRange();
+        $(document).on('click', '#resetFilter', function() {
+            window.location = routeUrlFilter;
         });
     </script>
     <script src="{{ asset('assets/js/custom/custom.js') }}"></script>

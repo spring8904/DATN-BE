@@ -16,31 +16,36 @@
             </thead>
             <tbody class="list">
                 @foreach ($withdrawals as $withdrawal)
-                <tr>
-                    <td>{{ $loop->index + 1 }}</td>
-                    <td>{{ $withdrawal->account_holder }}</td>
-                    <td><span class="text-danger">{{ $withdrawal->account_number }}</span></td>
-                    <td>{{ $withdrawal->bank_name }}</td>
-                    <td>{{ number_format($withdrawal->amount) }} VND</td>
-                    <td><textarea class="border-0 bg-white" disabled>{{ $withdrawal->note }}</textarea></td>
-                    <td>
-                        @if ($withdrawal->status === 'completed')
-                        <span class="badge bg-success w-100">
-                            Hoàn thành
-                        </span>
-                        @elseif($withdrawal->status === 'pending')
-                        <span class="badge bg-warning w-100">
-                            Chờ xử lý
-                        </span>
-                        @else
-                        <span class="badge bg-danger w-100">
-                            Thất bại
-                        </span>
-                        @endif
-                    </td>
-                    <td>{{ optional(\Carbon\Carbon::parse($withdrawal->request_date))->format('d/m/Y') ?? 'NULL' }}</td>
-                    <td>{{ optional(\Carbon\Carbon::parse($withdrawal->completed_date))->format('d/m/Y') ?? 'NULL'}}</td>
-                </tr>
+                    <tr>
+                        <td>{{ $loop->index + 1 }}</td>
+                        <td>{{ $withdrawal->account_holder }}</td>
+                        <td><span class="text-danger">{{ $withdrawal->account_number }}</span>
+                        </td>
+                        <td>{{ \Illuminate\Support\Str::limit($withdrawal->bank_name,40) }}</td>
+                        <td>{{ number_format($withdrawal->amount) }} VND</td>
+                        <td>
+                            <textarea class="border-0 bg-white" disabled>{{ $withdrawal->note }}</textarea>
+                        </td>
+                        <td>
+                            @if ($withdrawal->status === 'completed')
+                                <span class="badge bg-success w-100">
+                                    Hoàn thành
+                                </span>
+                            @elseif($withdrawal->status === 'pending')
+                                <span class="badge bg-warning w-100">
+                                    Đang xử lý
+                                </span>
+                            @else
+                                <span class="badge bg-danger w-100">
+                                    Thất bại
+                                </span>
+                            @endif
+                        </td>
+                        <td>{{ $withdrawal->request_date ? \Carbon\Carbon::parse($withdrawal->request_date)->format('d/m/Y') : 'NULL' }}
+                        </td>
+                        <td>{!! $withdrawal->completed_date ? \Carbon\Carbon::parse($withdrawal->completed_date)->format('d/m/Y') : '<span class="btn btn-sm btn-soft-warning">Chưa xác nhận</span>' !!}
+                        </td>
+                    </tr>
                 @endforeach
             </tbody>
         </table>

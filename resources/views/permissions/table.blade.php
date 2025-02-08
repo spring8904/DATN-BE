@@ -38,4 +38,7 @@
             </tbody>
         </table>
     </div>
+    <div class="row justify-content-end mt-3">
+        {{ $permissions->appends(request()->query())->links() }}
+    </div>
 </div>

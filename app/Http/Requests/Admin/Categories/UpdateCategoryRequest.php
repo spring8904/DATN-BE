@@ -22,12 +22,9 @@ class UpdateCategoryRequest extends FormRequest
      */
     public function rules(): array
     {
-        $segment = $this->segment(3);
-        // dd(request('icon_url'), $this->input('icon_url'));
         return [
-            //
             'name'        => ['required','string','max:255'],
-            'icon'        => 'nullable|image|max:2048',
+            'parent_id'   => ['nullable','exists:categories,id'],
             'status'      => [ Rule::in([0,1])],
         ];
 
@@ -39,10 +36,7 @@ class UpdateCategoryRequest extends FormRequest
             'name.required' => 'Tên không được để trống',
             'name.string'   => 'Tên phải là một chuỗi',
             'name.max'      => 'Tên không được quá 255 kí tự',
-
-            'slug.required' => 'Url không được để trống',
-            'icon.required' => 'Icon không được để trống',
-            'slug.unique'   => 'Url đã tồn tại, Vui lòng nhập lại',
+            'parent_id.exists' => 'Danh mục cha không tồn tại',
         ];
     }
 }

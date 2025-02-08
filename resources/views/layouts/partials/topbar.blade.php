@@ -70,7 +70,8 @@
                             <!-- item -->
                             <a href="javascript:void(0);" class="dropdown-item notify-item py-2">
                                 <div class="d-flex">
-                                    <img src="{{ asset('assets/images/users/avatar-2.jpg') }}" class="me-3 rounded-circle avatar-xs"
+                                    <img src="{{ asset('assets/images/users/avatar-2.jpg') }}"
+                                         class="me-3 rounded-circle avatar-xs"
                                          alt="user-pic">
                                     <div class="flex-grow-1">
                                         <h6 class="m-0">Angela Bernier</h6>
@@ -81,7 +82,8 @@
                             <!-- item -->
                             <a href="javascript:void(0);" class="dropdown-item notify-item py-2">
                                 <div class="d-flex">
-                                    <img src="{{ asset('assets/images/users/avatar-3.jpg') }}" class="me-3 rounded-circle avatar-xs"
+                                    <img src="{{ asset('assets/images/users/avatar-3.jpg') }}"
+                                         class="me-3 rounded-circle avatar-xs"
                                          alt="user-pic">
                                     <div class="flex-grow-1">
                                         <h6 class="m-0">David Grasso</h6>
@@ -92,7 +94,8 @@
                             <!-- item -->
                             <a href="javascript:void(0);" class="dropdown-item notify-item py-2">
                                 <div class="d-flex">
-                                    <img src="{{ asset('assets/images/users/avatar-5.jpg') }}" class="me-3 rounded-circle avatar-xs"
+                                    <img src="{{ asset('assets/images/users/avatar-5.jpg') }}"
+                                         class="me-3 rounded-circle avatar-xs"
                                          alt="user-pic">
                                     <div class="flex-grow-1">
                                         <h6 class="m-0">Mike Bunch</h6>
@@ -163,7 +166,7 @@
                         <div class="p-3">
                             <div class="row align-items-center">
                                 <div class="col">
-                                    <h6 class="m-0 fs-16 fw-semibold text-white"> Thông báo </h6>
+                                    <h6 class="m-0 fs-16 fw-semibold text-white"> Tin tức </h6>
                                 </div>
                                 <div class="col-auto dropdown-tabs">
                                     <span id="unread-notification-count"
@@ -200,27 +203,29 @@
 
                     <div class="tab-content position-relative" id="notificationItemsTabContent">
                         <div class="tab-pane fade show active py-2 ps-2" id="all-noti-tab" role="tabpanel">
-                            <div data-simplebar style="max-height: 300px;" class="pe-2">
+                            <div data-simplebar style="max-height: 300px;" class="pe-2" id="notification-data">
+                            </div>
 
-                                <div class="my-3 text-center view-all">
-                                    <button type="button" class="btn btn-soft-success waves-effect waves-light">View
-                                        All Notifications <i class="ri-arrow-right-line align-middle"></i></button>
-                                </div>
+                            <div class="my-3 text-center view-all">
+                                <button type="button" class="btn btn-soft-success waves-effect waves-light">
+                                    Xem tất cả <i class="ri-arrow-right-line align-middle"></i>
+                                </button>
                             </div>
                         </div>
+
 
                         <div class="tab-pane fade py-2 ps-2" id="messages-tab" role="tabpanel"
                              aria-labelledby="messages-tab">
                             <div data-simplebar style="max-height: 300px;" class="pe-2"
                                  id="messages-notifications-container">
 
+                                <div class="my-3 text-center view-all">
+                                    <button type="button" class="btn btn-soft-success waves-effect waves-light">
+                                       Xem tất cả <i class="ri-arrow-right-line align-middle"></i>
+                                    </button>
+                                </div>
                             </div>
 
-                            <div class="my-3 text-center view-all">
-                                <button type="button" class="btn btn-soft-success waves-effect waves-light">
-                                    View All Messages <i class="ri-arrow-right-line align-middle"></i>
-                                </button>
-                            </div>
                         </div>
 
                         <div class="tab-pane fade p-4" id="alerts-tab" role="tabpanel" aria-labelledby="alerts-tab">
@@ -245,7 +250,7 @@
                         aria-haspopup="true" aria-expanded="false">
                     <span class="d-flex align-items-center">
                         <img class="rounded-circle header-profile-user" src="{{ Auth::user()->avatar ?? '' }}"
-                             alt="Header Avatar">
+                             alt="Header Avatar" crossorigin="anonymous">
                         <span class="text-start ms-xl-2">
                             <span
                                 class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ Auth::user()->name ?? '' }}</span>
@@ -355,6 +360,10 @@
                 let title = 'Thông báo mới';
                 let thumbnail = '';
 
+                if (type === 'user_buy_course') {
+                    title = 'Mua khoá học';
+                    thumbnail = notification.data.user_avatar || 'https://res.cloudinary.com/dvrexlsgx/image/upload/v1732148083/Avatar-trang-den_apceuv_pgbce6.png';
+                }
                 if (type === 'register_course') {
                     title = notification.data.course_name || 'Khóa học';
                     thumbnail = notification.data.course_thumbnail;
@@ -391,10 +400,18 @@
         </div>
     `;
 
-                if (isRealTime) {
-                    $('#messages-notifications-container').prepend(notificationItem);
-                } else {
-                    $('#messages-notifications-container').append(notificationItem);
+                if (type === 'register_course' || type === 'register_instructor') {
+                    if (isRealTime) {
+                        $('#messages-notifications-container').prepend(notificationItem);
+                    } else {
+                        $('#messages-notifications-container').append(notificationItem);
+                    }
+                }else if (type === 'user_buy_course') {
+                    if(isRealTime) {
+                        $('#notification-data').prepend(notificationItem);
+                    } else {
+                        $('#notification-data').append(notificationItem);
+                    }
                 }
             }
 
@@ -412,7 +429,6 @@
                     data: data,
                     success: function (response) {
                         console.log('Thông báo đã được đánh dấu là đã đọc:', response);
-                        fetchNotifications();
 
                         if (isChecked) {
                             $(`#notification-check-${notificationId}`).prop('checked', true);
@@ -421,6 +437,8 @@
                             $(`#notification-check-${notificationId}`).prop('checked', false);
                             $(`#notification-${notificationId}`).css('background-color', '');
                         }
+
+                        fetchNotifications();
                     },
                     error: function (error) {
                         console.error('Có lỗi xảy ra khi cập nhật trạng thái đọc:', error);

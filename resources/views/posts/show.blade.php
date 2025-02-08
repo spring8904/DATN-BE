@@ -74,9 +74,7 @@
                         <div class="mb-3">
                             <label class="form-label">Danh mục:</label>
                             <select class="select2-categories form-control" multiple="multiple" disabled>
-                                @foreach ($post->categories as $category)
-                                    <option selected>{{ $category->name }}</option>
-                                @endforeach
+                                <option selected>{{ $post->category->name }}</option>
                             </select>
                         </div>
                         <div class="mb-3">
@@ -128,13 +126,13 @@
             Laraberg.init('laraberg');
 
             $('.select2-categories').select2({
-                placeholder: 'Chọn danh mục'
+                placeholder: 'Không có'
             });
 
             $('.select2-tags').select2({
                 tags: true,
                 tokenSeparators: [','],
-                placeholder: 'Chọn thẻ đính kèm'
+                placeholder: 'Không có'
             });
 
             ClassicEditor.create($('#ckeditor-classic')[0])

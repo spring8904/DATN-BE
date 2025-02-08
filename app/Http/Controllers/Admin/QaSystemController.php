@@ -18,7 +18,7 @@ class QaSystemController extends Controller
             $title = 'Hệ thống quản lý câu hỏi';
             $subTitle = 'Danh sách hệ thống quản lý câu hỏi';
 
-            $qaSystems = QaSystem::all();
+            $qaSystems = QaSystem::query()->latest('id')->paginate(10);
 
             return view('qa-systems.index', compact([
                 'title',

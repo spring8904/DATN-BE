@@ -63,8 +63,8 @@
                                                     </li>
                                                 </div>
                                                 <li class="mt-2 d-flex gap-1">
-                                                    <button class="btn btn-sm btn-success flex-grow-1" id="resetInput"
-                                                        type="reset">Reset</button>
+                                                    <button class="btn btn-sm btn-success flex-grow-1" type="reset"
+                                                        id="resetFilter">Reset</button>
                                                     <button class="btn btn-sm btn-primary flex-grow-1" id="applyFilter">Áp
                                                         dụng</button>
                                                 </li>
@@ -96,13 +96,13 @@
                                     <label for="statusItem" class="form-label">Trạng thái</label>
                                     <select class="form-select form-select-sm" name="status" id="statusItem"
                                         data-advanced-filter>
-                                        <option value="">Tất cả trạng thái</option>
+                                        <option value="">Chọn trạng thái</option>
                                         <option @selected(request()->input('status') === '1') value="1">Hoạt động</option>
                                         <option @selected(request()->input('status') === '0') value="0">Không hoạt động</option>
                                     </select>
                                 </div>
                                 <div class="mt-3 text-end">
-                                    <button class="btn btn-sm btn-success" type="reset">Reset</button>
+                                    <button class="btn btn-sm btn-success" type="reset" id="resetFilter">Reset</button>
                                     <button class="btn btn-sm btn-primary" id="applyAdvancedFilter">Áp dụng</button>
                                 </div>
                             </div>
@@ -114,10 +114,11 @@
                             <div class="row g-4 mb-3">
                                 <div class="col-sm-auto">
                                     <div>
-                                        <a href="{{ route('admin.banners.create') }}" class="btn btn-success add-btn"><i
+                                        <a href="{{ route('admin.banners.create') }}" class="btn btn-primary add-btn"><i
                                                 class="ri-add-line align-bottom me-1"></i> Thêm mới</a>
-                                        <button class="btn btn-soft-danger" onClick="deleteMultiple()"><i
-                                                class="ri-delete-bin-2-line"></i></button>
+                                        <button class="btn btn-danger" id="deleteSelected">
+                                            <i class="ri-delete-bin-2-line"> Xóa nhiều</i>
+                                        </button>
                                     </div>
                                 </div>
                                 <div class="col-sm">
@@ -189,14 +190,14 @@
                                                 <td>
                                                     <div class="d-flex gap-2">
                                                         <div class="remove">
-                                                            <a href="{{ route('admin.banners.show', $banner->id) }}">
+                                                            <a href="{{ route('admin.banners.edit', $banner->id) }}">
                                                                 <button class="btn btn-sm btn-warning edit-item-btn">
                                                                     <span class="ri-edit-box-line"></span>
                                                                 </button>
                                                             </a>
                                                         </div>
                                                         <div class="edit">
-                                                            <a href="{{ route('admin.banners.edit', $banner->id) }}">
+                                                            <a href="{{ route('admin.banners.show', $banner->id) }}">
                                                                 <button class="btn btn-sm btn-info edit-item-btn">
                                                                     <span class="ri-folder-user-line"></span>
                                                                 </button>
@@ -204,8 +205,9 @@
                                                         </div>
                                                         <div class="remove">
                                                             <a href="{{ route('admin.banners.destroy', $banner->id) }}"
-                                                                class="btn btn-sm btn-danger sweet-confirm"> <span
-                                                                    class="ri-delete-bin-7-line"></span></a>
+                                                                class="btn btn-sm btn-danger sweet-confirm">
+                                                                <span class="ri-delete-bin-7-line"></span>
+                                                            </a>
                                                         </div>
 
                                                     </div>
@@ -228,7 +230,7 @@
                                 </div>
                             </div>
 
-                            {{ $banners->links() }}
+                            {{ $banners->appends(request()->query())->links() }}
                         </div>
                     </div><!-- end card -->
                 </div>
@@ -243,6 +245,9 @@
 @push('page-scripts')
     <script>
         var routeUrlFilter = "{{ route('admin.banners.index') }}";
+        $(document).on('click', '#resetFilter', function() {
+            window.location = routeUrlFilter;
+        });
     </script>
     <script src="{{ asset('assets/js/custom/custom.js') }}"></script>
     <script src="{{ asset('assets/js/common/checkall-option.js') }}"></script>
