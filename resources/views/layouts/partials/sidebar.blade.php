@@ -151,6 +151,11 @@
                             Thêm mới banner </a>
                     </li>
                     {{-- @endcan --}}
+
+                    <li class="nav-item">
+                        <a href="{{ route('admin.banners.deleted') }}" class="nav-link" data-key="t-chat">
+                            Danh sách banner đã xóa </a>
+                    </li>
                 </ul>
             </div>
 
@@ -184,6 +189,10 @@
                     <li class="nav-item">
                         <a href="{{ route('admin.coupons.create') }}" class="nav-link" data-key="t-chat">
                             Thêm mới mã giảm giá </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.coupons.deleted') }}" class="nav-link" data-key="t-chat">
+                            Danh sách mã giảm giá đã xóa </a>
                     </li>
                 </ul>
             </div>

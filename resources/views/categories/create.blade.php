@@ -56,27 +56,23 @@
                                         @endif
                                     </div>
                                     <!--end col-->
-                                    <div class="col-xxl-6 col-md-6">
-                                        <div>
-                                            <label for="placeholderInput" class="form-label">URL thân thiện</label>
-                                            <input type="text" class="form-control" id="placeholderInput"
-                                                placeholder="Nhập URL thân thiện" name="slug"
-                                                value="{{ old('slug') }}">
-                                        </div>
-                                        @if ($errors->has('slug'))
-                                            <span class="text-danger">{{ $errors->first('slug') }}</span>
-                                        @endif
-                                    </div>
-                                    <!--end col-->
 
                                     <div class="col-xxl-6 col-md-6">
                                         <div>
-                                            <label for="placeholderInput" class="form-label">Danh mục gốc</label>
-                                            <input type="text" class="form-control" id="placeholderInput"
-                                                placeholder="Nhập id của danh mục" name="parent_id" value="{{ old('parent_id') }}">
+                                            <label for="placeholderInput" class="form-label">Danh mục con</label>
+                                            <select class="form-select mb-3" aria-label="Default select example"
+                                                name="parent_id">
+                                                <option value="">Chọn danh mục </option>
+                                                @foreach ($parent_id as $item)
+                                                    <option @if (isset($category->parent_id) && $item->id == $category->parent_id)
+                                                        selected
+                                                    @endif value="{{ $item->id }}">{{ $item->name }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                     <!--end col-->
+
                                     <div class="col-xxl-6 col-md-6">
                                         <div>
                                             <label for="placeholderInput" class="form-label">Biểu tượng</label>
@@ -115,17 +111,6 @@
             <!--end col-->
         </div>
         <!-- end row -->
-
-
-
-
-
     </div>
 @endsection
-<div>
-    <!-- People find pleasure in different ways. I find it in keeping my mind clear. - Marcus Aurelius -->
-</div>
 
-<div>
-    <!-- Waste no more time arguing what a good man should be, be one. - Marcus Aurelius -->
-</div>

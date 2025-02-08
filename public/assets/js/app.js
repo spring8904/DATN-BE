@@ -2206,15 +2206,3 @@ fullscreenButtons.forEach((button) => {
 });
 
 
-//commmissions
-$(document).ready(function () {
-    $("#system_percentage").on("change", function () {
-        let systemPercentage = $(this).val(); // Lấy giá trị phần trăm hệ thống
-        if (systemPercentage) {
-            let teacherPercentage = 100 - parseInt(systemPercentage); // Tính toán phần trăm của giáo viên
-            $("#teacher_percentage").val(teacherPercentage); // Gán giá trị vào select
-        } else {
-            $("#teacher_percentage").val(""); // Nếu không chọn gì thì reset
-        }
-    });
-});

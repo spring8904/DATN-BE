@@ -189,6 +189,67 @@ class BannerController extends Controller
                 ->with('error', 'Lỗi.');
         }
     }
+
+    public function listDeleted(Request $request)
+    {
+        $queryBanners = Banner::onlyTrashed();
+
+        // Kiểm tra nếu có từ khóa tìm kiếm
+        if ($request->has('query') && $request->input('query')) {
+            $search = $request->input('query');
+            $queryBanners->where('name', 'like', "%$search%")
+                ->orWhere('code', 'like', "%$search%");
+        }
+        if ($request->hasAny(['code', 'name', 'user_id', 'discount_type', 'status', 'used_count', 'start_date', 'expire_date'])) {
+            $queryCoupons = $this->filter($request, $queryBanners);
+        }
+
+        $coupons = $queryCoupons->orderBy('id', 'desc')->paginate(10);
+        if ($request->ajax()) {
+            $html = view('banners.deleted', compact('coupons'))->render();
+            return response()->json(['html' => $html]);
+        }
+        
+        return view('banners.deleted', compact('coupons'));
+        
+    }
+
+    public function restoreDelete(string $id)
+    {
+        try {
+            DB::beginTransaction();
+
+            if (str_contains($id, ',')) {
+
+                $userID = explode(',', $id);
+
+                $this->restoreDeleteUsers($userID);
+            } else {
+                $banner = Banner::query()->onlyTrashed()->findOrFail($id);
+
+                if ($banner->trashed()) {
+                    $banner->restore();
+                }
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Khôi phục thành công'
+            ]);
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            $this->logError($e);
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Khôi phục thất bại'
+            ]);
+        }
+    }
     private function filter($request, $query)
     {
         $filters = [

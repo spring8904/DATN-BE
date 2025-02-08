@@ -10,6 +10,7 @@ use App\Traits\LoggableTrait;
 use App\Traits\UploadToCloudinaryTrait;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
@@ -20,8 +21,21 @@ class CategoryController extends Controller
     public function index()
     {
         //
-        $categories = Category::query()->with('parent')->get();
-        return view('categories.index', compact('categories'));
+        try {
+            //code...
+            $title = 'Quản lí danh mục';
+            $subTitle = 'Danh sách danh mục';
+            $categories = Category::query()->with('parent')->get();
+            return view('categories.index', compact('categories'));
+        } catch (\Exception $e) {
+            //throw $th;
+
+            $this->logError($e);
+
+            return redirect()
+                ->back()
+                ->with('fasle', 'Thao tác không thành công');
+        }
     }
 
     /**
@@ -30,7 +44,22 @@ class CategoryController extends Controller
     public function create()
     {
         //
-        return view('categories.create');
+        try {
+            //code...
+            $title = 'Quản lí danh mục';
+            $subTitle = 'Thêm mới danh mục';
+            $parent_id = Category::query()->select('id', 'name')
+                ->whereNull('parent_id')->get();
+
+            return view('categories.create', compact('parent_id', 'title', 'subTitle'));
+        } catch (\Exception $e) {
+            //throw $th;
+            $this->logError($e);
+
+            return redirect()
+                ->back()
+                ->with('fasle', 'Thao tác không thành công');
+        }
     }
 
     /**
@@ -47,6 +76,8 @@ class CategoryController extends Controller
 
             $data['status'] ??= 0;
 
+            $data['slug'] = Str::slug($request->title) . '?' . Str::uuid();
+
             if ($request->hasFile('icon')) {
                 $data['icon'] = $this->uploadImage($request->file('icon'), 'categories');
             }
@@ -61,8 +92,7 @@ class CategoryController extends Controller
             if (
                 !empty($data['icon'])
                 && filter_var($data['icon'], FILTER_VALIDATE_URL)
-                )
-            {
+            ) {
                 $this->deleteImage($data['icon'], 'categories');
             }
 
@@ -80,8 +110,25 @@ class CategoryController extends Controller
     public function show(string $id)
     {
         //
-        $category = Category::findOrFail($id);
-        return view('categories.show', compact('category'));
+        try {
+            //code...
+            $title = 'Quản lí danh mục';
+
+            $subTitle = 'Chi tiết danh mục';
+
+            $category = Category::findOrFail($id);
+
+            return view('categories.show', compact('category','title', 'subTitle'));
+
+        } catch (\Exception $e) {
+            //throw $th;
+
+            $this->logError($e);
+
+            return redirect()
+                ->back()
+                ->with('fasle', 'Thao tác không thành công');
+        }
     }
 
     /**
@@ -90,7 +137,24 @@ class CategoryController extends Controller
     public function edit(Category $category)
     {
         //
-        return view('categories.edit', compact('category'));
+        try {
+            //code...
+            $title = 'Quản lí danh mục';
+
+            $subTitle = 'Cập nhập danh mục';
+
+            $parent_id = Category::query()->select('id', 'name')
+                ->whereNull('parent_id')->get();
+
+            return view('categories.edit', compact('category', 'parent_id', 'title', 'subTitle'));
+        } catch (\Exception $e) {
+            //throw $th;
+            $this->logError($e);
+
+            return redirect()
+                ->back()
+                ->with('fasle', 'Thao tác không thành công');
+        }
     }
 
     /**
@@ -117,7 +181,7 @@ class CategoryController extends Controller
 
             $category->update($data);
 
-            // kiem tra truong icon co tin tai hay khong , url co hop le hay khong va url cu co hay khong
+            // kiem tra truong icon co tin tai hay khong , url co hop le hay khong va url cu co hay khong 
 
             if (
                 !empty($data['icon'])
@@ -131,7 +195,7 @@ class CategoryController extends Controller
         } catch (\Exception $e) {
             //throw $th;
             if (
-                !empty($data['icon'])
+                !empty($data['icon']) 
                 && filter_var($data['icon'], FILTER_VALIDATE_URL)
             ) {
                 $this->deleteImage($data['icon'], 'categories');
@@ -160,6 +224,7 @@ class CategoryController extends Controller
                 $this->deleteImage($category->icon, 'categories');
             }
             return response()->json($data = ['status' => 'success', 'message' => 'Mục đã được xóa.']);
+            
         } catch (\Exception $e) {
             //throw $th;
             $this->logError($e);

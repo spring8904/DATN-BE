@@ -76,7 +76,7 @@ Route::prefix('admin')->as('admin.')
                 Route::put('/{user}/restore-delete', [UserController::class, 'restoreDelete'])
                     ->name('restoreDelete')->can('user.update');
                 Route::post('/import/{role?}', [UserController::class, 'import'])->name('import')
-                ->can('user.create');
+                    ->can('user.create');
                 Route::get('export/{role?}', [UserController::class, 'export'])->name('export');
             });
         });
@@ -131,10 +131,12 @@ Route::prefix('admin')->as('admin.')
         #============================== ROUTE BANNER =============================
         Route::prefix('banners')->as('banners.')->group(function () {
             Route::get('/', [BannerController::class, 'index'])->name('index');
+            Route::get('/deleted', [CouponController::class, 'listDeleted'])->name('deleted');
             Route::get('/create', [BannerController::class, 'create'])->name('create')
                 ->can('banner.create');
             Route::post('/', [BannerController::class, 'store'])->name('store')
                 ->can('banner.create');
+
             Route::get('/{id}', [BannerController::class, 'show'])->name('show');
             Route::get('/edit/{banner}', [BannerController::class, 'edit'])->name('edit');
             Route::put('/{banner}', [BannerController::class, 'update'])->name('update')
@@ -166,12 +168,17 @@ Route::prefix('admin')->as('admin.')
                 ->can('coupon.create');
             Route::post('/', [CouponController::class, 'store'])->name('store')
                 ->can('coupon.create');
+            Route::get('/deleted', [CouponController::class, 'listDeleted'])->name('deleted');
             Route::get('/{id}', [CouponController::class, 'show'])->name('show');
             Route::get('/edit/{coupon}', [CouponController::class, 'edit'])->name('edit');
             Route::put('/{coupon}', [CouponController::class, 'update'])->name('update')
                 ->can('coupon.update');
             Route::delete('/{coupon}', [CouponController::class, 'destroy'])->name('destroy')
                 ->can('coupon.delete');
+            Route::put('/{coupon}/restore-delete', [CouponController::class, 'restoreDelete'])
+                ->name('restoreDelete')->can('coupon.update');
+            Route::delete('/{coupon}/force-delete', [CouponController::class, 'forceDelete'])
+                ->name('forceDelete')->can('coupon.update');
         });
 
         #============================== ROUTE SETTINGS =============================
