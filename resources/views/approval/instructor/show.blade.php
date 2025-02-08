@@ -108,7 +108,7 @@
                                                         <div class="mb-3">
                                                             <label for="rejectReason" class="form-label">Lý do từ
                                                                 chối</label>
-                                                            <textarea class="form-control" id="rejectNote" name="note"
+                                                            <textarea placeholder="Nhập lý do từ chối..." class="form-control" id="rejectNote" name="note"
                                                                       rows="3"></textarea>
                                                         </div>
                                                     </div>

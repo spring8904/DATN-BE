@@ -239,6 +239,8 @@ Route::prefix('admin')->as('admin.')
                     ->group(function () {
                         Route::get('/', [ApprovalCourseController::class, 'index'])->name('index');
                         Route::get('/{course}', [ApprovalCourseController::class, 'show'])->name('show');
+                        Route::put('/{course}', [ApprovalCourseController::class, 'approve'])->name('approve');
+                        Route::put('/{course}/reject', [ApprovalCourseController::class, 'reject'])->name('reject');
                     });
 
                 Route::prefix('instructors')
