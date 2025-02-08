@@ -34,7 +34,7 @@ trait FilterTrait
 
                         foreach ($value['attribute'] as $keyAttribute => $valueAttribute) {
                             $filterValue = $request->input($keyAttribute);
-                            if (!empty($filterValue)) {
+                            if ($filterValue !== null) {
                                 $hasValidFilter = true;
                                 break;
                             }
@@ -43,7 +43,7 @@ trait FilterTrait
                             $query->whereHas($relation, function ($query) use ($field, $value, $request) {
                                 foreach ($value['attribute'] as $keyAttribute => $valueAttribute) {
                                     $filterValue = $request->input($keyAttribute);
-                                    if (!empty($filterValue)) {
+                                    if ($filterValue !== null) {
                                         $query->where($field, $valueAttribute, $filterValue);
                                     }
                                 }
@@ -58,7 +58,7 @@ trait FilterTrait
                     }
                 }
             } else {
-                if (!empty($filterValue)) {
+                if ($filterValue !== null) {
                     $operator = isset($value['queryWhere']) ? $value['queryWhere'] : '=';
                     $filterValue = ($operator === 'LIKE') ? "%$filterValue%" : $filterValue;
                     $query->where($filter, $operator, $filterValue);
@@ -70,7 +70,7 @@ trait FilterTrait
                                     $query->orWhere(function ($query) use ($filed, $request, $value) {
                                         foreach ($value['attribute'] as $keyAttribute => $valueAttribute) {
                                             $filterValue = $request->input($keyAttribute);
-                                            if (!empty($filterValue)) {
+                                            if ($filterValue !== null) {
                                                 $query->where($filed, $valueAttribute, $filterValue);
                                             }
                                         }

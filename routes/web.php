@@ -220,7 +220,7 @@ Route::prefix('admin')->as('admin.')
             Route::get('/create', [CommissionController::class, 'create'])->name('create')
                 ->can('commission.create');
             Route::post('/', [CommissionController::class, 'store'])->name('store')
-                ->can('commission.create');
+               ;
             Route::get('/{id}', [CommissionController::class, 'show'])->name('show');
             Route::get('/edit/{commission}', [CommissionController::class, 'edit'])->name('edit')
                 ->can('commission.update');
@@ -269,6 +269,9 @@ Route::prefix('admin')->as('admin.')
             ->group(function () {
                 Route::get('/', [TransactionController::class, 'index'])->name('index');
                 Route::get('/{transaction}', [TransactionController::class, 'show'])->name('show');
+
+                Route::get('/check-transaction', [TransactionController::class, 'checkTransaction'])
+                    ->name('check-transaction');
             });
 
         #============================== ROUTE ANALYTICS =============================

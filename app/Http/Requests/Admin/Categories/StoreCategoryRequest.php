@@ -23,9 +23,8 @@ class StoreCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
             'name'        => ['required','string','max:255'],
-            'icon'        => 'nullable|image|max:2048',
+            'parent_id'   => ['nullable','integer','exists:categories,id'],
             'status'      => [Rule::in(0,1)],
         ];
     }
@@ -36,8 +35,8 @@ class StoreCategoryRequest extends FormRequest
             'name.required' => 'Tên không được để trống',
             'name.string'   => 'Tên phải là một chuỗi',
             'name.max'      => 'Tên không được quá 255 kí tự',
-            'icon.required' => 'Icon không được để trống',
-            'slug.unique'   => 'Url đã tồn tại, Vui lòng nhập lại',
+            'parent_id.integer' => 'Danh mục cha không hợp lệ',
+            'status.in'     => 'Trạng thái không hợp lệ',
         ];
     }
 }

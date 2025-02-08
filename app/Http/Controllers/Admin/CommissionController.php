@@ -7,17 +7,23 @@ use App\Http\Requests\Admin\Commissions\StoreCommissionRequest;
 use App\Http\Requests\Admin\Commissions\UpdateCommissionRequest;
 use App\Models\Comment;
 use App\Models\Commission;
+use App\Traits\LoggableTrait;
 use Illuminate\Http\Request;
 
 class CommissionController extends Controller
 {
+    use LoggableTrait;
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+        $title = 'Quản lý cấu hình lợi nhuận';
+        $subTitle = 'Danh sách cấu hình lợi nhuận của hệ thống';
+
         $commissions = Commission::query()->paginate(10);
-        return view('commissions.index', compact('commissions'));
+        return view('commissions.index', compact('commissions', 'title', 'subTitle'));
     }
 
     /**
@@ -25,7 +31,10 @@ class CommissionController extends Controller
      */
     public function create()
     {
-        return view('commissions.create');
+        $title = 'Quản lý cấu hình lợi nhuận';
+        $subTitle = 'Tạo mới cấu hình lợi nhuận';
+
+        return view('commissions.create', compact('title', 'subTitle'));
     }
 
     /**
@@ -34,8 +43,6 @@ class CommissionController extends Controller
     public function store(StoreCommissionRequest $request)
     {
         try {
-            //code...
-            // dd($request->all());
             $data = $request->validated();
 
             Commission::create($data);
@@ -43,9 +50,7 @@ class CommissionController extends Controller
             return redirect()->route('admin.commissions.index')->with('success', 'Thao tác thành công');
 
         } catch (\Exception $e) {
-            //throw $th;
-
-            // $this->logError($e);
+            $this->logError($e, $request->all());
 
             return redirect()
                 ->back()
@@ -59,7 +64,7 @@ class CommissionController extends Controller
     public function show(string $id)
     {
         $commission = Commission::findOrFail($id);
-        return view('commissions.show',compact('commission'));
+        return view('commissions.show', compact('commission'));
 
     }
 
@@ -69,7 +74,11 @@ class CommissionController extends Controller
     public function edit(string $id)
     {
         $commission = Commission::findOrFail($id);
-        return view('commissions.edit',compact('commission'));
+
+        $title = 'Quản lý cấu hình lợi nhuận';
+        $subTitle = 'Chỉnh sửa cấu hình lợi nhuận: ' . $commission->difficulty_level;
+
+        return view('commissions.edit', compact('commission', 'title', 'subTitle'));
     }
 
     /**
@@ -78,11 +87,7 @@ class CommissionController extends Controller
     public function update(UpdateCommissionRequest $request, string $id)
     {
         try {
-            //code...
-            
-
             $data = $request->validated();
-            dd($data);
 
             $commission = Commission::findOrFail($id);
 
@@ -91,9 +96,7 @@ class CommissionController extends Controller
             return back()->with('success', 'Thao tác thành công');
 
         } catch (\Exception $e) {
-            //throw $th;
-
-            // $this->logError($e);
+             $this->logError($e, $request->all());
 
             return redirect()
                 ->back()
@@ -109,7 +112,7 @@ class CommissionController extends Controller
         try {
             //code...
             $commission = Commission::findOrFail($id);
-            
+
             $commission->delete();
 
             return response()->json($data = ['status' => 'success', 'message' => 'Mục đã được xóa.']);

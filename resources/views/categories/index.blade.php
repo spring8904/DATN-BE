@@ -1,6 +1,7 @@
 @extends('layouts.app')
-
-
+@push('page-css')
+    <link href="{{ asset('assets/css/custom.css') }}" rel="stylesheet" type="text/css" />
+@endpush
 @section('content')
     <div class="container-fluid">
 
@@ -8,47 +9,133 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0">Listjs</h4>
+                    <h4 class="mb-sm-0">{{ $title }}</h4>
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="javascript: void(0);">Tables</a></li>
-                            <li class="breadcrumb-item active">Listjs</li>
+                            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+                            <li class="breadcrumb-item active"><a href="">{{ $subTitle }}</a></li>
                         </ol>
                     </div>
-
                 </div>
             </div>
         </div>
         <!-- end page title -->
 
+        <!-- List-customer -->
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title mb-0">Quản lí danh mục</h4>
-                    </div><!-- end card header -->
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4 class="card-title mb-0">{{ $subTitle }}</h4>
+                        <div class="d-flex gap-2">
+                            <a class="btn btn-sm btn-success" href="">Export dữ liệu</a>
+                            <button class="btn btn-sm btn-primary" id="toggleAdvancedSearch">
+                                Tìm kiếm nâng cao
+                            </button>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-primary" type="button" id="filterDropdown"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="ri-filter-2-line"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="filterDropdown"
+                                    style="min-width: 500px;">
+                                    <form>
+                                        <div class="container">
+                                            <div class="row">
+                                                <li class="col-6">
+                                                    <div class="mb-2">
+                                                        <label for="startDate" class="form-label">Ngày bắt đầu</label>
+                                                        <input type="date" class="form-control form-control-sm"
+                                                               name="startDate" id="startDate" data-filter
+                                                               value="{{ request()->input('startDate') ?? '' }}">
+                                                    </div>
+                                                </li>
+                                                <li class="col-6">
+                                                    <div class="mb-2">
+                                                        <label for="endDate" class="form-label">Ngày kết thúc</label>
+                                                        <input type="date" class="form-control form-control-sm"
+                                                               name="endDate" id="endDate" data-filter
+                                                               value="{{ request()->input('endDate') ?? '' }}">
+                                                    </div>
+                                                </li>
+                                            </div>
+                                            <li class="mt-2 d-flex gap-1">
+                                                <button class="btn btn-sm btn-success flex-grow-1" type="reset"
+                                                        id="resetFilter">Reset
+                                                </button>
+                                                <button class="btn btn-sm btn-primary flex-grow-1" id="applyFilter">Áp
+                                                    dụng
+                                                </button>
+                                            </li>
+                                        </div>
+                                    </form>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
 
-                    <div class="card-body">
+                    <div id="advancedSearch" class="card-header" style="display:none;">
+                        <form>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Danh mục</label>
+                                    <select class="form-select form-select-sm" name="id" id="statusItem"
+                                            data-advanced-filter>
+                                        <option value="">Chọn danh mục</option>
+                                        @foreach ($categories as $category)
+                                            <option
+                                                    @selected(request()->input('id') === $category->id) value="{{ $category->id }}">
+                                                {{ $category->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="statusItem" class="form-label">Trạng thái</label>
+                                    <select class="form-select form-select-sm" name="status" id="statusItem"
+                                            data-advanced-filter>
+                                        <option value="">Chọn trạng thái</option>
+                                        <option @selected(request()->input('status') === '1') value="1">
+                                            Hoạt động
+                                        </option>
+                                        <option @selected(request()->input('status') === '0') value="0">
+                                            Không hoạt động
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="mt-3 text-end">
+                                    <button class="btn btn-sm btn-success" type="reset" id="resetFilter">Reset</button>
+                                    <button class="btn btn-sm btn-primary" id="applyAdvancedFilter">Áp dụng</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- end card header -->
+                    <div class="card-body" id="item_List">
                         <div class="listjs-table" id="customerList">
                             <div class="row g-4 mb-3">
                                 <div class="col-sm-auto">
                                     <div>
-                                        <a href="{{ route('admin.categories.create') }}" type="button"
-                                            class="btn btn-success add-btn"><i class="ri-add-line align-bottom me-1"></i>
-                                            Thêm</a>
-                                        {{-- <button  data-bs-toggle="modal"
-                                            id="create-btn" data-bs-target="#showModal"> </button> --}}
-                                        <button class="btn btn-soft-danger" onClick="deleteMultiple()"><i
-                                                class="ri-delete-bin-2-line"></i></button>
+                                        <a href="{{ route('admin.categories.create') }}">
+                                            <button type="button" class="btn btn-primary add-btn">
+                                                <i class="ri-add-line align-bottom me-1"></i> Thêm mới
+                                            </button>
+                                        </a>
+                                        <button class="btn btn-danger" id="deleteSelected">
+                                            <i class="ri-delete-bin-2-line"> Xóa nhiều</i>
+                                        </button>
                                     </div>
                                 </div>
-
                                 <div class="col-sm">
                                     <div class="d-flex justify-content-sm-end">
                                         <div class="search-box ms-2">
-                                            <input type="text" class="form-control search" placeholder="Search...">
-                                            <i class="ri-search-line search-icon"></i>
+                                            <input type="text" name="search_full" id="searchFull"
+                                                   class="form-control search" placeholder="Tìm kiếm..." data-search
+                                                   value="{{ request()->input('search_full') ?? '' }}">
+                                            <button id="search-full" class="ri-search-line search-icon m-0 p-0 border-0"
+                                                    style="background: none;"></button>
                                         </div>
                                     </div>
                                 </div>
@@ -57,83 +144,57 @@
                             <div class="table-responsive table-card mt-3 mb-1">
                                 <table class="table align-middle table-nowrap" id="customerTable">
                                     <thead class="table-light">
-                                        <tr>
-                                            <th scope="col" style="width: 50px;">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="checkAll"
-                                                        value="option">
-                                                </div>
-                                            </th>
-                                            <th>ID</th>
-                                            <th>Tên danh mục</th>
-                                            <th>Slug</th>
-                                            <th>Danh mục cha</th>
-                                            <th>Trạng thái</th>
-
-
-                                            <th>Biểu tượng</th>
-                                            <th>Action</th>
-                                        </tr>
+                                    <tr>
+                                        <th scope="col" style="width: 50px;">
+                                            <input type="checkbox" id="checkAll">
+                                        </th>
+                                        <th>STT</th>
+                                        <th>Tên danh mục</th>
+                                        <th>Cấp độ</th>
+                                        <th>Trạng thái</th>
+                                        <th>Ngày tạo</th>
+                                        <th>Hành Động</th>
+                                    </tr>
                                     </thead>
-                                    @foreach ($categories as $category)
-                                        <tbody class="list form-check-all">
-                                            <tr>
-                                                <th scope="row">
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" name="chk_child"
-                                                            value="option1">
-                                                    </div>
-                                                </th>
-                                                <td class="id" style="display:none;"><a href="javascript:void(0);"
-                                                        class="fw-medium link-primary">#VZ2101</a></td>
-                                                <td>{{ $category->id }}</td>
-                                                <td>{{ $category->name }}</td>
-                                                <td>{{ $category->slug }}</td>
-                                                <td>{{ $category->parent ? $category->parent->name : 'Không có' }}</td>
-                                                <td>
-                                                    @if ($category->status)
-                                                        <span
-                                                            class="badge bg-success-subtle text-success text-uppercase">Active<span>
-                                                            @else
-                                                                <span
-                                                                    class="badge bg-danger-subtle text-success text-uppercase">No
-                                                                    active<span>
-                                                    @endif
-                                                </td>
-                                                <td class="phone">
-                                                    <img src="{{ $category->icon }}" alt="{{ $category->name }}"
-                                                        width="100">
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex gap-2">
-                                                        <div>
-                                                            <a href="{{ route('admin.categories.show', $category->id) }}">
-                                                                <button class="btn btn-sm btn-warning edit-item-btn">
-                                                                    <span class="ri-edit-box-line"></span>
-                                                                </button>
-                                                            </a>
-                                                        </div>
-
-                                                        <div class="edit">
-                                                            <a href="{{ route('admin.categories.edit', $category->id) }}">
-                                                                <button class="btn btn-sm btn-info edit-item-btn">
-                                                                    <span class="ri-folder-user-line"></span>
-                                                                </button>
-                                                            </a>
-                                                        </div>
-
-                                                        <div class="remove">
-                                                            <a href="{{ route('admin.categories.destroy', $category->id) }}"
-                                                                class="sweet-confirm btn btn-sm btn-danger remove-item-btn">
-                                                                <span class="ri-delete-bin-7-line"></span>
-                                                            </a>
-                                                        </div>
-
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        </tbody>
+                                    <tbody class="list">
+                                    @foreach($categories as $category)
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" class="checkItem" value="{{ $category->id }}">
+                                            </td>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $category->name }}</td>
+                                            <td>
+                                                @if(is_null($category->parent_id))
+                                                    <span class="badge bg-primary">Danh mục cha</span>
+                                                @else
+                                                    <span class="badge bg-info">Danh mục con</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($category->status === 1)
+                                                    <span class="badge bg-success ">Hoạt động</span>
+                                                @else
+                                                    <span class="badge bg-danger">Không hoạt động</span>
+                                                @endif
+                                            </td>
+                                            <td>{{ $category->created_at }}</td>
+                                            <td>
+                                                <div class="d-flex gap-2">
+                                                    <a href="{{ route('admin.categories.edit', $category->id) }}">
+                                                        <button class="btn btn-sm btn-warning edit-item-btn">
+                                                            <span class="ri-edit-box-line"></span>
+                                                        </button>
+                                                    </a>
+                                                    <a href="{{ route('admin.categories.destroy', $category->id) }}"
+                                                       class="btn btn-sm btn-danger sweet-confirm">
+                                                        <span class="ri-delete-bin-7-line"></span>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
                                     @endforeach
+                                    </tbody>
                                 </table>
                             </div>
 
@@ -141,17 +202,28 @@
                                 {{ $categories->appends(request()->query())->links() }}
                             </div>
                         </div>
-                    </div><!-- end card -->
+                    </div>
+                    <!-- end card -->
                 </div>
-                <!-- end col -->
             </div>
             <!-- end col -->
         </div>
-        <!-- end row -->
-
-
+        <!-- end List-customer -->
     </div>
 @endsection
-<div>
-    <!-- People find pleasure in different ways. I find it in keeping my mind clear. - Marcus Aurelius -->
-</div>
+@push('page-scripts')
+    <script>
+        var routeUrlFilter = "{{ route('admin.categories.index') }}";
+        var routeDeleteAll = "{{ route('admin.categories.destroy', ':itemID') }}";
+
+        $(document).on('click', '#resetFilter', function() {
+            window.location = routeUrlFilter;
+        });
+    </script>
+    <script src="{{ asset('assets/js/custom/custom.js') }}"></script>
+    <script src="{{ asset('assets/js/common/checkall-option.js') }}"></script>
+    <script src="{{ asset('assets/js/common/delete-all-selected.js') }}"></script>
+    <script src="{{ asset('assets/js/common/filter.js') }}"></script>
+    <script src="{{ asset('assets/js/common/search.js') }}"></script>
+    <script src="{{ asset('assets/js/common/handle-ajax-search&filter.js') }}"></script>
+@endpush
