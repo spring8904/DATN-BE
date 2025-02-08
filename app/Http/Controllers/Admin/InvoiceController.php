@@ -16,8 +16,13 @@ class InvoiceController extends Controller
             $title = 'Quản lý thanh toán';
             $subTitle = 'Khóa học đã bán';
 
-            $queryInvoice = Invoice::query()->latest('id')
-            ->where('status', 'completed')->with('user','course');
+            $queryInvoice = Invoice::query()
+                ->with([
+                    'course',
+                    'user'
+                ])
+                ->latest('id')
+            ->where('status', 'Đã thanh toán');
 
             if ($request->hasAny(['user_name_invoice', 'course_code_invoice', 'course_name_invoice', 'amount_min', 'amount_max', 'created_at', 'updated_at']))
                 $queryInvoice = $this->filter($request, $queryInvoice);
@@ -47,8 +52,8 @@ class InvoiceController extends Controller
             'created_at' => ['queryWhere' => '>='],
             'updated_at' => ['queryWhere' => '<='],
             'final_total' => ['queryWhere' => 'BETWEEN', 'attribute' => ['amount_min', 'amount_max']],
-            'user_name_invoice' => null, 
-            'course_code_invoice' => null, 
+            'user_name_invoice' => null,
+            'course_code_invoice' => null,
             'course_name_invoice' => null,
         ];
 
@@ -64,7 +69,7 @@ class InvoiceController extends Controller
                     } else {
                         $filterValueBetweenA = $request->input($value['attribute'][0]);
                         $filterValueBetweenB = $request->input($value['attribute'][1]);
-    
+
                         if (!empty($filterValueBetweenA) && !empty($filterValueBetweenB)) {
                             $query->whereBetween($filter, [$filterValueBetweenA, $filterValueBetweenB]);
                         }
@@ -74,9 +79,9 @@ class InvoiceController extends Controller
                         $elementFilter = explode('_', $filter);
                         $relation = $elementFilter[0];
                         $field = $elementFilter[1];
-                    
+
                         if (method_exists($query->getModel(), $relation)) {
-                    
+
                             $query->whereHas($relation, function ($query) use ($field, $filterValue) {
                                 $query->where($field, 'LIKE', "%$filterValue%");
                             });

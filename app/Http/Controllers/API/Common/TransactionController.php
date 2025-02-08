@@ -87,6 +87,128 @@ class TransactionController extends Controller
         }
     }
 
+    public function createVNPayPayment(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'amount' => 'required|numeric|min:1000',
+                'order_info' => 'required|string',
+            ]);
+
+            $vnp_TmnCode = config('vnpay.vnp_TmnCode');
+            $vnp_HashSecret = config('vnpay.vnp_HashSecret');
+            $vnp_Url = config('vnpay.vnp_Url');
+            $vnp_ReturnUrl = config('vnpay.vnp_ReturnUrl');
+
+            $vnp_TxnRef = Str::random(10);
+            $vnp_OrderInfo = $validated['order_info'];
+            $vnp_Amount = $validated['amount'] * 100;
+            $vnp_Locale = 'vn';
+            $vnp_IpAddr = request()->ip();
+
+            $inputData = [
+                "vnp_Version" => "2.1.0",
+                "vnp_TmnCode" => $vnp_TmnCode,
+                "vnp_Amount" => $vnp_Amount,
+                "vnp_Command" => "pay",
+                "vnp_CreateDate" => now()->format('YmdHis'),
+                "vnp_CurrCode" => "VND",
+                "vnp_IpAddr" => $vnp_IpAddr,
+                "vnp_Locale" => $vnp_Locale,
+                "vnp_OrderInfo" => $vnp_OrderInfo,
+                "vnp_OrderType" => "billpayment",
+                "vnp_ReturnUrl" => $vnp_ReturnUrl,
+                "vnp_TxnRef" => $vnp_TxnRef,
+            ];
+
+            ksort($inputData);
+            $query = "";
+            $i = 0;
+            $hashdata = "";
+
+            foreach ($inputData as $key => $value) {
+                if ($i == 1) {
+                    $hashdata .= '&' . urlencode($key) . "=" . urlencode($value);
+                } else {
+                    $hashdata .= urlencode($key) . "=" . urlencode($value);
+                    $i = 1;
+                }
+                $query .= urlencode($key) . "=" . urlencode($value) . '&';
+            }
+
+            $vnp_Url = $vnp_Url . "?" . $query;
+            if (isset($vnp_HashSecret)) {
+                $vnpSecureHash = hash_hmac('sha512', $hashdata, $vnp_HashSecret);
+                $vnp_Url .= 'vnp_SecureHash=' . $vnpSecureHash;
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Tạo URL thanh toán thành công',
+                'payment_url' => $vnp_Url,
+            ], Response::HTTP_OK);
+        }catch (\Exception $e) {
+            $this->logError($e, $request->all());
+
+            return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại');
+        }
+    }
+
+    public function vnpayCallback(Request $request)
+    {
+        try {
+            $vnp_HashSecret = config('vnpay.vnp_HashSecret');
+            $inputData = $request->all();
+
+            $vnp_SecureHash = $inputData['vnp_SecureHash'];
+            unset($inputData['vnp_SecureHash']);
+            ksort($inputData);
+            $hashData = "";
+            foreach ($inputData as $key => $value) {
+                $hashData .= urlencode($key) . "=" . urlencode($value) . '&';
+            }
+
+            $hashData = rtrim($hashData, '&');
+            $secureHash = hash_hmac('sha512', $hashData, $vnp_HashSecret);
+
+            if ($secureHash === $vnp_SecureHash) {
+                if ($inputData['vnp_ResponseCode'] == '00') {
+                    // Thanh toán thành công
+                    Transaction::create([
+                        'transaction_code' => $inputData['vnp_TxnRef'],
+                        'amount' => $inputData['vnp_Amount'] / 100,
+                        'transactionable_id' => Auth::id(),
+                        'transactionable_type' => 'App\Models\User',
+                        'status' => 'Giao dịch thành công',
+                        'type' => 'deposit',
+                    ]);
+
+                    return response()->json([
+                        'status' => true,
+                        'message' => 'Thanh toán thành công',
+                    ], Response::HTTP_OK);
+                } else {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Thanh toán thất bại',
+                    ], Response::HTTP_BAD_REQUEST);
+                }
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Chữ ký không hợp lệ',
+                ], Response::HTTP_BAD_REQUEST);
+            }
+        } catch (\Exception $e) {
+            $this->logError($e);
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Lỗi xử lý callback từ VNPAY',
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
     public function buyCourse(Request $request)
     {
         try {

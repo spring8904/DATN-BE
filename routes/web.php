@@ -76,7 +76,7 @@ Route::prefix('admin')->as('admin.')
                 Route::put('/{user}/restore-delete', [UserController::class, 'restoreDelete'])
                     ->name('restoreDelete')->can('user.update');
                 Route::post('/import/{role?}', [UserController::class, 'import'])->name('import')
-                ->can('user.create');
+                    ->can('user.create');
                 Route::get('export/{role?}', [UserController::class, 'export'])->name('export');
             });
         });
@@ -260,6 +260,9 @@ Route::prefix('admin')->as('admin.')
             ->group(function () {
                 Route::get('/', [TransactionController::class, 'index'])->name('index');
                 Route::get('/{transaction}', [TransactionController::class, 'show'])->name('show');
+
+                Route::get('/check-transaction', [TransactionController::class, 'checkTransaction'])
+                    ->name('check-transaction');
             });
 
         #============================== ROUTE NOTIFICATIONS =============================

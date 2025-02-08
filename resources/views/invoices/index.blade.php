@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', $title)
 @push('page-css')
-    <link href="{{ asset('assets/css/custom.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/css/custom.css') }}" rel="stylesheet" type="text/css"/>
 @endpush
 
 @section('content')
@@ -35,9 +35,10 @@
                                 <div class="d-flex justify-content-sm-end">
                                     <div class="search-box ms-2">
                                         <input type="text" name="search_full" class="form-control search h-75"
-                                            placeholder="Tìm kiếm..." data-search>
-                                        <button id="search-full" class="h-75 ri-search-line search-icon m-0 p-0 border-0"
-                                            style="background: none;"></button>
+                                               placeholder="Tìm kiếm..." data-search>
+                                        <button id="search-full"
+                                                class="h-75 ri-search-line search-icon m-0 p-0 border-0"
+                                                style="background: none;"></button>
                                     </div>
                                 </div>
                             </div>
@@ -47,7 +48,7 @@
                             </button>
                             <div class="dropdown">
                                 <button class="btn btn-sm btn-primary h-75" type="button" id="filterDropdown"
-                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                        data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="ri-filter-2-line"></i>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="filterDropdown"
@@ -64,11 +65,11 @@
 
                                                 <div class="d-flex justify-content-between">
                                                     <input type="range" class="form-range w-50" id="amountMinRange"
-                                                        name="amount_min" min="10000" max="49990000" step="10000"
-                                                        value="10000" oninput="updateRange()" data-filter>
+                                                           name="amount_min" min="10000" max="49990000" step="10000"
+                                                           value="10000" oninput="updateRange()" data-filter>
                                                     <input type="range" class="form-range w-50" id="amountMaxRange"
-                                                        name="amount_max" min="50000000" max="99990000" step="10000"
-                                                        value="99990000" oninput="updateRange()" data-filter>
+                                                           name="amount_max" min="50000000" max="99990000" step="10000"
+                                                           value="99990000" oninput="updateRange()" data-filter>
                                                 </div>
                                             </li>
                                             <div class="row">
@@ -76,24 +77,26 @@
                                                     <div class="mb-2">
                                                         <label for="startDate" class="form-label">Ngày mua</label>
                                                         <input type="date" class="form-control form-control-sm"
-                                                            name="created_at" id="dateRequest" data-filter
-                                                            value="{{ request()->input('created_at') ?? '' }}">
+                                                               name="created_at" id="dateRequest" data-filter
+                                                               value="{{ request()->input('created_at') ?? '' }}">
                                                     </div>
                                                 </li>
                                                 <li class="col-6">
                                                     <div class="mb-2">
                                                         <label for="endDate" class="form-label">Ngày xác nhận</label>
                                                         <input type="date" class="form-control form-control-sm"
-                                                            name="updated_at" id="dateComplete" data-filter
-                                                            value="{{ request()->input('updated_at') ?? '' }}">
+                                                               name="updated_at" id="dateComplete" data-filter
+                                                               value="{{ request()->input('updated_at') ?? '' }}">
                                                     </div>
                                                 </li>
                                             </div>
                                             <li class="mt-2 d-flex gap-1">
                                                 <button class="btn btn-sm btn-success flex-grow-1" id="resetInput"
-                                                    type="reset">Reset</button>
+                                                        type="reset">Reset
+                                                </button>
                                                 <button class="btn btn-sm btn-primary flex-grow-1" id="applyFilter">Áp
-                                                    dụng</button>
+                                                    dụng
+                                                </button>
                                             </li>
                                         </div>
                                     </form>
@@ -108,20 +111,23 @@
                                 <div class="col-md-4">
                                     <label class="form-label">Người mua</label>
                                     <input class="form-control form-control-sm" name="user_name_invoice" type="text"
-                                        placeholder="Nhập tên người mua khóa học..."
-                                        value="{{ request()->input('user_name_invoice') ?? '' }}" data-advanced-filter>
+                                           placeholder="Nhập tên người mua khóa học..."
+                                           value="{{ request()->input('user_name_invoice') ?? '' }}"
+                                           data-advanced-filter>
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label">Mã khóa học</label>
                                     <input class="form-control form-control-sm" name="course_code_invoice" type="text"
-                                        placeholder="Nhập mã khóa học..."
-                                        value="{{ request()->input('course_code_invoice') ?? '' }}" data-advanced-filter>
+                                           placeholder="Nhập mã khóa học..."
+                                           value="{{ request()->input('course_code_invoice') ?? '' }}"
+                                           data-advanced-filter>
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label">Tên khóa học</label>
                                     <input class="form-control form-control-sm" name="course_name_invoice" type="text"
-                                        placeholder="Nhập tên khóa học..."
-                                        value="{{ request()->input('course_name_invoice') ?? '' }}" data-advanced-filter>
+                                           placeholder="Nhập tên khóa học..."
+                                           value="{{ request()->input('course_name_invoice') ?? '' }}"
+                                           data-advanced-filter>
                                 </div>
                                 <div class="mt-3 text-end">
                                     <button class="btn btn-sm btn-success" type="reset">Reset</button>
@@ -136,35 +142,50 @@
                             <div class="table-responsive table-card mt-3 mb-1">
                                 <table class="table align-middle table-nowrap" id="customerTable">
                                     <thead class="table-light">
-                                        <tr>
-                                            <th>STT</th>
-                                            <th>Người mua</th>
-                                            <th>Mã khóa học</th>
-                                            <th>Tên khóa học</th>
-                                            <th>Tổng thanh toán</th>
-                                            <th>Trạng thái</th>
-                                            <th>Ngày mua</th>
-                                            <th>Ngày xác nhận mua</th>
-                                        </tr>
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>Mã hoá đơn</th>
+                                        <th>Người mua</th>
+                                        <th>Hình ảnh</th>
+                                        <th>Tên khóa học</th>
+                                        <th>Người hướng dẫn</th>
+                                        <th>Tổng thanh toán</th>
+                                        <th>Trạng thái</th>
+                                        <th>Ngày mua</th>
+                                        <th>Thao tác</th>
+                                    </tr>
                                     </thead>
                                     <tbody class="list">
-                                        @foreach ($invoices as $invoice)
-                                            <tr>
-                                                <td>{{ $loop->index + 1 }}</td>
-                                                <td><span class="text-danger fw-bold">{{ $invoice->user->name }}</span>
-                                                </td>
-                                                <td>{{ $invoice->course->code }}</td>
-                                                <td>{{ Str::limit($invoice->course->name, 40) }}</td>
-                                                <td>{{ number_format($invoice->final_total) }} VND</td>
-                                                <td>
-                                                    <span class="badge bg-primary">Hoàn thành</span>
-                                                </td>
-                                                <td>{{ optional(\Carbon\Carbon::parse($invoice->created_at))->format('d/m/Y') ?? 'NULL' }}
-                                                </td>
-                                                <td>{{ optional(\Carbon\Carbon::parse($invoice->updated_at))->format('d/m/Y') ?? 'NULL' }}
-                                                </td>
-                                            </tr>
-                                        @endforeach
+                                    @foreach ($invoices as $invoice)
+                                        <tr>
+                                            <td>{{ $loop->index + 1 }}</td>
+                                            <td>{{ $invoice->code }}</td>
+                                            <td><span class="text-danger fw-bold">{{ $invoice->user->name }}</span>
+                                            </td>
+                                            <td>
+                                                <img style="width: 100px; height: 100px"
+                                                     src="{{ $invoice->course->thumbnail }}"
+                                                     class="object-fit-cover rounded" alt="">
+                                            </td>
+                                            <td>{{ Str::limit($invoice->course->name, 40) }}</td>
+                                            <td>
+                                                {{ $invoice->course->user->name ?? ''}}
+                                            </td>
+                                            <td>{{ number_format($invoice->final_total) }} VND</td>
+                                            <td>
+                                                <span class="badge bg-primary">Hoàn thành</span>
+                                            </td>
+                                            <td>{{ optional(\Carbon\Carbon::parse($invoice->created_at))->format('d/m/Y') ?? 'NULL' }}
+                                            </td>
+                                           <td>
+                                               <a href="">
+                                                   <button class="btn btn-sm btn-info edit-item-btn">
+                                                       <span class="ri-eye-line"></span>
+                                                   </button>
+                                               </a>
+                                           </td>
+                                        </tr>
+                                    @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -197,8 +218,9 @@
         function formatCurrency(value) {
             return value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
         }
+
         updateRange();
-        $(document).on('click', '#resetInput', function() {
+        $(document).on('click', '#resetInput', function () {
             $('#amountMinRange').val(0);
             $('#amountMaxRange').val(99990000);
             updateRange();
