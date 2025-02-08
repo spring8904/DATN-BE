@@ -11,11 +11,11 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0">Quản lí coupon</h4>
+                    <h4 class="mb-sm-0">Quản lí mã giảm giá</h4>
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Dashboard</a></li>
                             <li class="breadcrumb-item active">Danh sách coupon</li>
                         </ol>
                     </div>
@@ -46,18 +46,17 @@
                                             <div class="row">
                                                 <li>
                                                     <label for="amountRange" class="form-label">Số lượt sử dụng</label>
-
+                    
                                                     <div class="d-flex justify-content-between">
                                                         <span id="amountMin">0</span>
                                                         <span id="amountMax">1000</span>
                                                     </div>
-
+                    
                                                     <div class="d-flex justify-content-between">
                                                         <input type="range" class="form-range w-100" id="amountMinRange"
                                                             name="used_count" min="0" max="1000" step="10"
-                                                            value="{{ request()->input('used_count') ?? 0 }}"
-                                                            oninput="updateRange()" data-filter>
-
+                                                            value="0" oninput="updateRange()" data-filter>
+                                                        
                                                     </div>
                                                 </li>
                                                 <li class="col-6">
@@ -77,12 +76,11 @@
                                                     </div>
                                                 </li>
                                             </div>
-                                            <li class="mt-2 d-flex gap-1">
-                                                <button class="btn btn-sm btn-success flex-grow-1" type="reset"
-                                                    id="resetFilter">Reset</button>
-                                                <button class="btn btn-sm btn-primary flex-grow-1" id="applyFilter">Áp
+                                            <li class="mt-2">
+                                                <button class="btn btn-sm btn-primary w-100" id="applyFilter">Áp
                                                     dụng</button>
                                             </li>
+                                            
                                         </div>
                                     </div>
                                 </ul>
@@ -276,13 +274,20 @@
         var routeUrlFilter = "{{ route('admin.coupons.index') }}";
 
         function updateRange() {
-            let rangeValue = document.getElementById("amountMinRange").value;
-            document.getElementById("amountMin").textContent = rangeValue;
-        }
-        updateRange();
-        $(document).on('click', '#resetFilter', function() {
-            window.location = routeUrlFilter;
+        let rangeValue = document.getElementById("amountMinRange").value;
+        document.getElementById("amountMin").textContent = rangeValue;
+
+        // Lọc danh sách theo số lượt sử dụng
+        let items = document.querySelectorAll("#itemList");
+        items.forEach(item => {
+            let usedCount = parseInt(item.getAttribute("used_count"), 10);
+            if (usedCount >= rangeValue) {
+                item.style.display = "block";
+            } else {
+                item.style.display = "none";
+            }
         });
+    }
     </script>
     <script src="{{ asset('assets/js/custom/custom.js') }}"></script>
     <script src="{{ asset('assets/js/common/checkall-option.js') }}"></script>
