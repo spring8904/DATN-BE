@@ -22,6 +22,7 @@ class CategoryController extends Controller
      */
     public function index(Request $request)
     {
+
         $title = 'Quản lý danh mục';
         $subTitle = 'Danh sách danh mục';
 
@@ -40,6 +41,7 @@ class CategoryController extends Controller
             return response()->json(['html' => $html]);
         }
         return view('categories.index', compact('categories', 'title', 'subTitle'));
+
     }
 
     /**
@@ -47,6 +49,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
+
         $title = 'Quản lý danh mục';
         $subTitle = 'Thêm mới danh mục';
 
@@ -57,6 +60,7 @@ class CategoryController extends Controller
             'subTitle',
             'categories'
         ]));
+
     }
 
     /**
@@ -76,13 +80,16 @@ class CategoryController extends Controller
 
             $data['status'] ??= 0;
 
+
             $data['slug'] = !empty($data['name']) ? Str::slug($data['name']) : null;
+
 
             Category::query()->create($data);
 
             return redirect()->route('admin.categories.index')
                 ->with('success', 'Thao tác thành công');
         } catch (\Exception $e) {
+
             $this->logError($e, $request->all());
 
             return redirect()
@@ -96,8 +103,10 @@ class CategoryController extends Controller
      */
     public function show(string $id)
     {
+        $title = 'Quản lý danh mục';
+        $subTitle = 'Chi tiết danh mục';
         $category = Category::findOrFail($id);
-        return view('categories.show', compact('category'));
+        return view('categories.show', compact('category','title','subTitle'));
     }
 
     /**
@@ -105,12 +114,14 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
+
         $title = 'Quản lý danh mục';
         $subTitle = 'Chi tiết danh mục: ' . $category->name;
 
         $categories = Category::query()->whereNull('parent_id')->get();
 
         return view('categories.edit', compact('category', 'title', 'subTitle', 'categories'));
+
     }
 
     /**
@@ -119,6 +130,7 @@ class CategoryController extends Controller
     public function update(UpdateCategoryRequest $request, string $id)
     {
         try {
+            
             $category = Category::findOrFail($id);
 
             $data = $request->validated();
@@ -128,6 +140,8 @@ class CategoryController extends Controller
             $data['status'] ??= 0;
 
             $category->update($data);
+
+            // kiem tra truong icon co tin tai hay khong , url co hop le hay khong va url cu co hay khong 
 
             if (
                 !empty($data['icon'])
@@ -139,7 +153,17 @@ class CategoryController extends Controller
 
             return back()->with('success', 'Thao tác thành công');
         } catch (\Exception $e) {
+
+            //throw $th;
+            if (
+                !empty($data['icon']) 
+                && filter_var($data['icon'], FILTER_VALIDATE_URL)
+            ) {
+                $this->deleteImage($data['icon'], 'categories');
+            }
+
             $this->logError($e, $request->all());
+
 
             return redirect()
                 ->back()
@@ -160,6 +184,7 @@ class CategoryController extends Controller
             $category->delete();
 
             return response()->json($data = ['status' => 'success', 'message' => 'Mục đã được xóa.']);
+            
         } catch (\Exception $e) {
             $this->logError($e);
 

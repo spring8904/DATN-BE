@@ -16,7 +16,8 @@
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
                             <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                            <li class="breadcrumb-item active"><a href="">{{ $subTitle }}</a></li>
+                            <li class="breadcrumb-item active">{{ $subTitle }}</li>
+
                         </ol>
                     </div>
                 </div>
@@ -27,7 +28,9 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header align-items-center d-flex">
+
                         <h4 class="card-title mb-0 flex-grow-1">{{ $subTitle ?? '' }}</h4>
+
                     </div>
 
                     <form action="{{ route('admin.categories.update', $category->id ?? '') }}" method="post" enctype="multipart/form-data">
@@ -84,6 +87,7 @@
         </div>
         <!-- end row -->
 
-
     </div>
 @endsection
+
+

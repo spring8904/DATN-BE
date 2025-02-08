@@ -188,6 +188,125 @@ class BannerController extends Controller
                 ->with('error', 'Lỗi.');
         }
     }
+
+    public function listDeleted(Request $request)
+    {
+        $queryBanners = Banner::onlyTrashed();
+
+        // Kiểm tra nếu có từ khóa tìm kiếm
+        if ($request->has('query') && $request->input('query')) {
+            $search = $request->input('query');
+            $queryBanners->where('title', 'like', "%$search%");
+                
+        }
+        
+        $banners = $queryBanners->orderBy('id', 'desc')->paginate(10);
+        
+        return view('banners.deleted', compact('banners'));
+        
+    }
+
+    public function restoreDelete(string $id)
+    {
+        try {
+            DB::beginTransaction();
+
+            if (str_contains($id, ',')) {
+
+                $bannerID = explode(',', $id);
+
+                $this->restoreDeleteBanners($bannerID);
+            } else {
+                $banner = Banner::query()->onlyTrashed()->findOrFail($id);
+
+                if ($banner->trashed()) {
+                    $banner->restore();
+                }
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Khôi phục thành công'
+            ]);
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            $this->logError($e);
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Khôi phục thất bại'
+            ]);
+        }
+    }
+
+    
+    public function forceDelete(string $id)
+    {
+        try {
+            DB::beginTransaction();
+
+            if (str_contains($id, ',')) {
+
+                $bannerID = explode(',', $id);
+
+                $this->deleteBanners($bannerID);
+            } else {
+                $banner = Banner::query()->onlyTrashed()->findOrFail($id);
+
+                $banner->forceDelete();
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Xóa thành công'
+            ]);
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            $this->logError($e);
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Xóa thất bại'
+            ]);
+        }
+    }
+
+    
+    private function deleteBanners(array $bannerID)
+    {
+
+        $banners = Banner::query()->whereIn('id', $bannerID)->withTrashed()->get();
+
+        foreach ($banners as $banner) {
+
+            if ($banner->trashed()) {
+                $banner->forceDelete();
+            } else {
+                $banner->delete();
+
+            }
+        }
+    }
+    private function restoreDeleteBanners(array $bannerID)
+    {
+
+        $banners = Banner::query()->whereIn('id', $bannerID)->onlyTrashed()->get();
+
+        foreach ($banners as $banner) {
+
+            if ($banner->trashed()) {
+                $banner->restore();
+            }
+        }
+    }
     private function filter($request, $query)
     {
         $filters = [
