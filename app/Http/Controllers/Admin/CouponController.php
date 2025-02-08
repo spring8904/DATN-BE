@@ -26,16 +26,24 @@ class CouponController extends Controller
             $queryCoupons->where('name', 'like', "%$search%")
                 ->orWhere('code', 'like', "%$search%");
         }
+        $queryCouponCounts = Coupon::query()
+        ->selectRaw('
+            COUNT(id) as total_coupons,
+            SUM(CASE WHEN status = 1 THEN 1 ELSE 0 END) as active_coupons,
+            SUM(CASE WHEN expire_date < NOW() THEN 1 ELSE 0 END) as expire_coupons,
+            SUM(CASE WHEN used_count > 0 THEN 1 ELSE 0 END) as used_coupons
+        ');    
         if ($request->hasAny(['code','name','user_id','discount_type','status','used_count','start_date','expire_date'])) {
            $queryCoupons = $this->filter($request,$queryCoupons);
         }
         // Lấy dữ liệu và phân trang
         $coupons = $queryCoupons->orderBy('id', 'desc')->paginate(10);
+        $couponCounts = $queryCouponCounts->first();
         if ($request->ajax()) {
             $html = view('coupons.table', compact('coupons'))->render();
             return response()->json(['html' => $html]);
         }
-        return view('coupons.index', compact('coupons'));
+        return view('coupons.index', compact('coupons','couponCounts'));
     }
 
     /**
@@ -135,7 +143,7 @@ class CouponController extends Controller
             'user_id' => ['queryWhere' => 'LIKE'],
             'status' => ['queryWhere' => '='],
             'discount_type' => ['queryWhere' => '='],
-            'used_count' => ['queryWhere' => '=']
+            'used_count' => ['queryWhere' => '<=']
         ];
     
         foreach ($filters as $filter => $value) {
