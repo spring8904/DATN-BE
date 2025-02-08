@@ -23,6 +23,40 @@
                 </div>
             </div>
         </div>
+        <div class="row mb-2">
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="card text-center h-75">
+                    <div class="card-body">
+                        <h5 class="card-title">Tổng số mã giảm giá</h5>
+                        <p class="card-text fs-4">{{ $couponCounts->total_coupons ?? 0 }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="card text-center h-75">
+                    <div class="card-body">
+                        <h5 class="card-title">Mã giảm giá đang hoạt động</h5>
+                        <p class="card-text fs-4 text-success">{{ $couponCounts->active_coupons ?? 0 }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="card text-center h-75">
+                    <div class="card-body">
+                        <h5 class="card-title">Mã giảm giá sắp hết hạn</h5>
+                        <p class="card-text fs-4 text-warning">{{ $couponCounts->expire_coupons ?? 0 }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="card text-center h-75">
+                    <div class="card-body">
+                        <h5 class="card-title">Mã giảm giá đã được sử dụng</h5>
+                        <p class="card-text fs-4 text-danger">{{ $couponCounts->used_coupons ?? 0 }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
@@ -144,8 +178,9 @@
                                     <div>
                                         <a href="{{ route('admin.coupons.create') }}" class="btn btn-primary add-btn"><i
                                                 class="ri-add-line align-bottom me-1"></i> Thêm mới</a>
-                                        <button class="btn btn-danger" onClick="deleteMultiple()"><i
-                                                class="ri-delete-bin-2-line"> Xóa nhiều</i></button>
+                                                <button class="btn btn-danger" id="deleteSelected">
+                                                    <i class="ri-delete-bin-2-line"> Xóa nhiều</i>
+                                                </button>
                                     </div>
                                 </div>
                                 <div class="col-sm">
@@ -162,7 +197,7 @@
                             </div>
 
                             <div class="table-responsive table-card mt-3 mb-1">
-                                <table class="table align-middle table-nowrap" id="itemList">
+                                <table class="table align-middle table-nowrap">
                                     <thead class="table-light">
                                         <tr>
                                             <th scope="col" style="width: 50px;">
@@ -188,8 +223,8 @@
                                             <tr>
                                                 <th scope="row">
                                                     <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" name="chk_child"
-                                                            value="option1">
+                                                        <input class="form-check-input" type="checkbox" name="itemID"
+                                                            value="{{ $coupon->id }}">
                                                     </div>
                                                 </th>
 
@@ -272,21 +307,10 @@
 @push('page-scripts')
     <script>
         var routeUrlFilter = "{{ route('admin.coupons.index') }}";
-
+        var routeDeleteAll = "{{ route('admin.coupons.destroy', ':itemID') }}";
         function updateRange() {
         let rangeValue = document.getElementById("amountMinRange").value;
         document.getElementById("amountMin").textContent = rangeValue;
-
-        // Lọc danh sách theo số lượt sử dụng
-        let items = document.querySelectorAll("#itemList");
-        items.forEach(item => {
-            let usedCount = parseInt(item.getAttribute("used_count"), 10);
-            if (usedCount >= rangeValue) {
-                item.style.display = "block";
-            } else {
-                item.style.display = "none";
-            }
-        });
     }
     </script>
     <script src="{{ asset('assets/js/custom/custom.js') }}"></script>
