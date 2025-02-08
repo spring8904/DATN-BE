@@ -15,12 +15,10 @@
         <div class="col-sm">
             <div class="d-flex justify-content-sm-end">
                 <div class="search-box ms-2">
-                    <form action="{{ route('admin.posts.index') }}" method="GET">
-                        <input type="text" name="searchPost" class="form-control search" id="search-options"
-                            placeholder="Tìm kiếm..." value="{{ request('searchUser') }}">
-                        <button type="submit" class="ri-search-line search-icon m-0 p-0 border-0"
-                            style="background: none;"></button>
-                    </form>
+                    <input type="text" name="search_full" id="searchFull" class="form-control search"
+                        placeholder="Tìm kiếm..." data-search value="{{ request()->input('search_full') ?? '' }}">
+                    <button id="search-full" class="ri-search-line search-icon m-0 p-0 border-0"
+                        style="background: none;"></button>
                 </div>
             </div>
         </div>
@@ -40,6 +38,7 @@
                     <th>Danh mục</th>
                     <th>Trạng thái</th>
                     <th>Ngày đăng tải</th>
+                    <th>Thời gian xóa</th>
                     <th>Hành Động</th>
                 </tr>
             </thead>
@@ -79,12 +78,14 @@
                                 </span>
                             @endif
                         </td>
-
                         <td>
-                            {!! $post->published_at ?\Carbon\Carbon::parse($post->published_at)->format('d/m/Y') : '<span class="btn btn-sm btn-soft-warning">Chưa đăng</span>' !!}
+                            {!! $post->published_at
+                                ? \Carbon\Carbon::parse($post->published_at)->format('d/m/Y')
+                                : '<span class="btn btn-sm btn-soft-warning">Chưa đăng</span>' !!}
                         </td>
-
-
+                        <td>
+                            {{ optional(\Carbon\Carbon::parse($post->deleted_at))->format('d/m/Y') ?? 'NULL' }}
+                        </td>
                         <td>
                             <div class="d-flex gap-2">
                                 <a href="{{ route('admin.posts.edit', $post->id) }}">

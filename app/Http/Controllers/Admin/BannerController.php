@@ -28,8 +28,7 @@ class BannerController extends Controller
         // Kiểm tra nếu có từ khóa tìm kiếm
         if ($request->has('query') && $request->input('query')) {
             $search = $request->input('query');
-            $queryBanners->where('title', 'like', "%$search%")
-                ->orWhere('content', 'like', "%$search%");
+            $queryBanners = $queryBanners->where('title', 'LIKE', "%$search%");
         }
         if ($request->hasAny(['title', 'id', 'status', 'created_at', 'updated_at'])) {
             $queryBanners = $this->filter($request, $queryBanners);

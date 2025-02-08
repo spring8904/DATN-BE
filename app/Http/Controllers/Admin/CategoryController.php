@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Categories\StoreCategoryRequest;
 use App\Http\Requests\Admin\Categories\UpdateCategoryRequest;
 use App\Models\Category;
+use App\Traits\FilterTrait;
 use App\Traits\LoggableTrait;
 use App\Traits\UploadToCloudinaryTrait;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
@@ -14,18 +15,31 @@ use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
-    use LoggableTrait, UploadToCloudinaryTrait;
+    use LoggableTrait, UploadToCloudinaryTrait, FilterTrait;
 
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
 
         $title = 'Quản lý danh mục';
         $subTitle = 'Danh sách danh mục';
 
-        $categories = Category::query()->with('parent')->paginate(10);
+        $queryCategories = Category::query()->with('parent');
+
+        if ($request->hasAny(['id', 'status', 'startDate', 'endDate']))
+            $queryCategories = $this->filter($request, $queryCategories);
+
+        if ($request->has('search_full'))
+            $queryCategories = $this->search($request->search_full, $queryCategories);
+
+        $categories = $queryCategories->paginate(10);
+
+        if ($request->ajax()) {
+            $html = view('categories.table', compact(['categories']))->render();
+            return response()->json(['html' => $html]);
+        }
         return view('categories.index', compact('categories', 'title', 'subTitle'));
 
     }
@@ -74,7 +88,6 @@ class CategoryController extends Controller
 
             return redirect()->route('admin.categories.index')
                 ->with('success', 'Thao tác thành công');
-
         } catch (\Exception $e) {
 
             $this->logError($e, $request->all());
@@ -165,7 +178,7 @@ class CategoryController extends Controller
     {
         try {
             if ($category->children->count() > 0) {
-                return response()->json($data = ['status' => 'error', 'message' =>'Danh mục đang có cấp con.']);
+                return response()->json($data = ['status' => 'error', 'message' => 'Danh mục đang có cấp con.']);
             }
 
             $category->delete();
@@ -177,5 +190,26 @@ class CategoryController extends Controller
 
             return response()->json($data = ['status' => 'error', 'message' => 'Lỗi thao tác.']);
         }
+    }
+    private function filter(Request $request, $query)
+    {
+        $filters = [
+            'id' => ['queryWhere' => '='],
+            'status' => ['queryWhere' => '='],
+            'created_at' => ['attribute' => ['startDate' => '>=', 'endDate' => '<=',]],
+        ];
+
+        $query = $this->filterTrait($filters, $request, $query);
+
+        return $query;
+    }
+
+    private function search($searchTerm, $query)
+    {
+        if (!empty($searchTerm)) {
+            $query->where('name', 'LIKE', "%$searchTerm%");
+        }
+
+        return $query;
     }
 }

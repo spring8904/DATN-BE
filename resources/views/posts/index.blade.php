@@ -39,34 +39,32 @@
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="filterDropdown"
                                     style="min-width: 500px;">
-                                    <form>
-                                        <div class="container">
-                                            <div class="row">
-                                                <li class="col-6">
-                                                    <div class="mb-2">
-                                                        <label for="startDate" class="form-label">Ngày bắt đầu</label>
-                                                        <input type="date" class="form-control form-control-sm"
-                                                            name="startDate" id="startDate" data-filter
-                                                            value="{{ request()->input('startDate') ?? '' }}">
-                                                    </div>
-                                                </li>
-                                                <li class="col-6">
-                                                    <div class="mb-2">
-                                                        <label for="endDate" class="form-label">Ngày kết thúc</label>
-                                                        <input type="date" class="form-control form-control-sm"
-                                                            name="endDate" id="endDate" data-filter
-                                                            value="{{ request()->input('endDate') ?? '' }}">
-                                                    </div>
-                                                </li>
-                                            </div>
-                                            <li class="mt-2 d-flex gap-1">
-                                                <button class="btn btn-sm btn-success flex-grow-1" type="reset"
-                                                    id="resetFilter">Reset</button>
-                                                <button class="btn btn-sm btn-primary flex-grow-1" id="applyFilter">Áp
-                                                    dụng</button>
+                                    <div class="container">
+                                        <div class="row">
+                                            <li class="col-6">
+                                                <div class="mb-2">
+                                                    <label for="startDate" class="form-label">Ngày bắt đầu</label>
+                                                    <input type="date" class="form-control form-control-sm"
+                                                        name="startDate" id="startDate" data-filter
+                                                        value="{{ request()->input('startDate') ?? '' }}">
+                                                </div>
+                                            </li>
+                                            <li class="col-6">
+                                                <div class="mb-2">
+                                                    <label for="endDate" class="form-label">Ngày kết thúc</label>
+                                                    <input type="date" class="form-control form-control-sm"
+                                                        name="endDate" id="endDate" data-filter
+                                                        value="{{ request()->input('endDate') ?? '' }}">
+                                                </div>
                                             </li>
                                         </div>
-                                    </form>
+                                        <li class="mt-2 d-flex gap-1">
+                                            <button class="btn btn-sm btn-success flex-grow-1" type="reset"
+                                                id="resetFilter">Reset</button>
+                                            <button class="btn btn-sm btn-primary flex-grow-1" id="applyFilter">Áp
+                                                dụng</button>
+                                        </li>
+                                    </div>
                                 </ul>
                             </div>
                         </div>
@@ -74,49 +72,47 @@
 
                     <!-- Tìm kiếm nâng cao -->
                     <div id="advancedSearch" class="card-header" style="display:none;">
-                        <form>
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <label class="form-label">Tiêu đề</label>
-                                    <input class="form-control form-control-sm" name="title" type="text"
-                                        value="{{ request()->input('title') ?? '' }}" placeholder="Nhập tiêu đề..."
-                                        data-advanced-filter>
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="form-label">Tác giả</label>
-                                    <input class="form-control form-control-sm" name="user_name_post" type="text"
-                                        value="{{ request()->input('name') ?? '' }}" placeholder="Nhập tên tác giả..."
-                                        data-advanced-filter>
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label class="form-label">Danh mục</label>
-                                    <select class="form-select form-select-sm" name="category_id" id="statusItem"
-                                        data-advanced-filter>
-                                        <option value="">Chọn danh mục</option>
-                                        @foreach ($categories as $category)
-                                            <option @selected(request()->input('category_id') === $category->id) value="{{ $category->id }}">
-                                                {{ $category->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-md-3">
-                                    <label for="statusItem" class="form-label">Trạng thái</label>
-                                    <select class="form-select form-select-sm" name="status" id="statusItem"
-                                        data-advanced-filter>
-                                        <option value="">Chọn trạng thái</option>
-                                        <option @selected(request()->input('status') === 'published') value="published">Xuất bản</option>
-                                        <option @selected(request()->input('status') === 'private') value="private">Riêng tư</option>
-                                        <option @selected(request()->input('status') === 'pending') value="pending">Chờ xử lí</option>
-                                        <option @selected(request()->input('status') === 'draft') value="draft">Bản nháp</option>
-                                    </select>
-                                </div>
-                                <div class="mt-3 text-end">
-                                    <button class="btn btn-sm btn-success" type="reset" id="resetFilter">Reset</button>
-                                    <button class="btn btn-sm btn-primary" id="applyAdvancedFilter">Áp dụng</button>
-                                </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label class="form-label">Tiêu đề</label>
+                                <input class="form-control form-control-sm" name="title" type="text"
+                                    value="{{ request()->input('title') ?? '' }}" placeholder="Nhập tiêu đề..."
+                                    data-advanced-filter>
                             </div>
-                        </form>
+                            <div class="col-md-3">
+                                <label class="form-label">Tác giả</label>
+                                <input class="form-control form-control-sm" name="user_name_post" type="text"
+                                    value="{{ request()->input('name') ?? '' }}" placeholder="Nhập tên tác giả..."
+                                    data-advanced-filter>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">Danh mục</label>
+                                <select class="form-select form-select-sm" name="category_id" id="statusItem"
+                                    data-advanced-filter>
+                                    <option value="">Chọn danh mục</option>
+                                    @foreach ($categories as $category)
+                                        <option @selected(request()->input('category_id') === $category->id) value="{{ $category->id }}">
+                                            {{ $category->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="statusItem" class="form-label">Trạng thái</label>
+                                <select class="form-select form-select-sm" name="status" id="statusItem"
+                                    data-advanced-filter>
+                                    <option value="">Chọn trạng thái</option>
+                                    <option @selected(request()->input('status') === 'published') value="published">Xuất bản</option>
+                                    <option @selected(request()->input('status') === 'private') value="private">Riêng tư</option>
+                                    <option @selected(request()->input('status') === 'pending') value="pending">Chờ xử lí</option>
+                                    <option @selected(request()->input('status') === 'draft') value="draft">Bản nháp</option>
+                                </select>
+                            </div>
+                            <div class="mt-3 text-end">
+                                <button class="btn btn-sm btn-success" type="reset" id="resetFilter">Reset</button>
+                                <button class="btn btn-sm btn-primary" id="applyAdvancedFilter">Áp dụng</button>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- end card header -->
@@ -204,7 +200,9 @@
                                                 </td>
 
                                                 <td>
-                                                    {!! $post->published_at ?\Carbon\Carbon::parse($post->published_at)->format('d/m/Y') : '<span class="btn btn-sm btn-soft-warning">Chưa đăng</span>' !!}
+                                                    {!! $post->published_at
+                                                        ? \Carbon\Carbon::parse($post->published_at)->format('d/m/Y')
+                                                        : '<span class="btn btn-sm btn-soft-warning">Chưa đăng</span>' !!}
                                                 </td>
 
 
@@ -248,7 +246,6 @@
 @endsection
 
 @push('page-scripts')
-    <script src="{{ asset('assets/libs/list.pagination.js/list.pagination.min.js') }}"></script>
     <script>
         var routeUrlFilter = "{{ route('admin.posts.index') }}";
         var routeDeleteAll = "{{ route('admin.posts.destroy', ':itemID') }}";

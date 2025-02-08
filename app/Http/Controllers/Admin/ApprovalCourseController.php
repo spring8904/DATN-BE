@@ -5,12 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Approvable;
 use App\Models\Course;
+use App\Traits\FilterTrait;
 use App\Traits\LoggableTrait;
 use Illuminate\Http\Request;
 
 class ApprovalCourseController extends Controller
 {
-    use LoggableTrait;
+    use LoggableTrait, FilterTrait;
 
     public function index(Request $request)
     {
@@ -91,7 +92,7 @@ class ApprovalCourseController extends Controller
         }
     }
 
-    private function filter($request, $query)
+    private function filter(Request $request, $query)
     {
         $filters = [
             'status' => ['queryWhere' => '='],
@@ -103,80 +104,7 @@ class ApprovalCourseController extends Controller
             'approval_date' => ['filed' => ['approved_at', 'rejected_at'], 'attribute' => ['approval_start_date' => '>=', 'approval_end_date' => '<=']],
         ];
 
-
-        foreach ($filters as $filter => $value) {
-            $filterValue = $request->input($filter);
-            $elementFilter = explode('_', $filter);
-
-            if (str_contains($filter, '_') && count($elementFilter) === 3) {
-                $elementFilter = explode('_', $filter);
-                $relation = $elementFilter[0];
-                $field = $elementFilter[1];
-
-                if (method_exists($query->getModel(), $relation)) {
-                    if (!empty($value) && is_array($value) && !empty($value['attribute'])) {
-                        $hasValidFilter = false;
-
-                        foreach ($value['attribute'] as $keyAttribute => $valueAttribute) {
-                            $filterValue = $request->input($keyAttribute);
-                            if (!empty($filterValue)) {
-                                $hasValidFilter = true;
-                                break;
-                            }
-                        }
-                        if ($hasValidFilter) {
-                            $query->whereHas($relation, function ($query) use ($field, $value, $request) {
-                                foreach ($value['attribute'] as $keyAttribute => $valueAttribute) {
-                                    $filterValue = $request->input($keyAttribute);
-                                    if (!empty($filterValue)) {
-                                        $query->where($field, $valueAttribute, $filterValue);
-                                    }
-                                }
-                            });
-                        }
-                    } else {
-                        if (!empty($filterValue)) {
-                            $query->whereHas($relation, function ($query) use ($field, $filterValue) {
-                                $query->where($field, 'LIKE', "%$filterValue%");
-                            });
-                        }
-                    }
-                }
-            } else {
-                if (!empty($filterValue)) {
-                    $operator = isset($value['queryWhere']) ? $value['queryWhere'] : '=';
-                    $filterValue = ($operator === 'LIKE') ? "%$filterValue%" : $filterValue;
-                    $query->where($filter, $operator, $filterValue);
-                } else {
-                    if (!empty($value['attribute']) && is_array($value['attribute'])) {
-                        if (isset($value['filed']) && is_array($value['filed']) && sizeof($value['filed']) >= 1) {
-                            $query->where(function ($query) use ($request, $value) {
-                                foreach ($value['filed'] as $filed) {
-                                    $query->orWhere(function ($query) use ($filed, $request, $value) {
-                                        foreach ($value['attribute'] as $keyAttribute => $valueAttribute) {
-                                            $filterValue = $request->input($keyAttribute);
-                                            if (!empty($filterValue)) {
-                                                $query->where($filed, $valueAttribute, $filterValue);
-                                            }
-                                        }
-                                    });
-                                }
-                            });
-                        } else {
-                            foreach ($value['attribute'] as $keyAttribute => $valueAttribute) {
-                                $filterValue = $request->input($keyAttribute);
-                                if (!empty($filterValue)) {
-                                    $query->where(function ($query) use ($filter, $filterValue, $valueAttribute) {
-                                        $query->where($filter, $valueAttribute, $filterValue);
-                                    });
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
+        $query = $this->filterTrait($filters,$request,$query);
 
         return $query;
     }
