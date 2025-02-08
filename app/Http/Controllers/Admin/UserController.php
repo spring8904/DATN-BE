@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Exports\UserExport;
 use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Users\StoreUserRequest;
@@ -14,7 +13,6 @@ use App\Traits\UploadToCloudinaryTrait;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
-use App\Notifications\CrudNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -142,8 +140,6 @@ class UserController extends Controller
 
             DB::commit();
 
-            CrudNotification::sendToMany([], $user->id);
-
             $routeUserByRole = $request->role === 'admin' ? 'admins'
                 : ($request->role === 'instructor' ? 'instructors' : 'clients');
 
@@ -251,8 +247,6 @@ class UserController extends Controller
 
             DB::commit();
 
-            CrudNotification::sendToMany([], $user->id);
-
             return redirect()->route('admin.users.edit', $user)->with('success', 'Cập nhật thành công');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -272,7 +266,7 @@ class UserController extends Controller
             $startTime = microtime(true);
             $validator = Validator::make($request->all(), [
                 'file' => 'required|mimes:xlsx,csv',
-            ],[
+            ], [
                 'file.required' => 'Bắt buộc tải file',
                 'file.mimes' => 'File tải lên phải thuộc loại xlsx hoặc csv',
             ]);
@@ -286,10 +280,10 @@ class UserController extends Controller
 
             $import = new UsersImport($role);
             Excel::import($import, $request->file('file'));
-            
+
             $endTime = microtime(true);
 
-            Log::info(' Thời gian import: '. ($endTime - $startTime));
+            Log::info(' Thời gian import: ' . ($endTime - $startTime));
 
             return redirect()->back()->with('success', 'Import thành công');
         } catch (\Exception $e) {
@@ -304,8 +298,8 @@ class UserController extends Controller
             $validRoles = Role::pluck('name')->toArray();
             $role = in_array($role, $validRoles) ? $role : 'member';
 
-            return Excel::download(new UsersExport($role), 'Users_'. $role .'.xlsx');
-        }catch (\Exception $e) {
+            return Excel::download(new UsersExport($role), 'Users_' . $role . '.xlsx');
+        } catch (\Exception $e) {
             $this->logError($e);
 
             return redirect()->back()->with('error', 'Có lỗi xảy ra, vui lòng thử lại sau');
@@ -341,8 +335,6 @@ class UserController extends Controller
             }
 
             DB::commit();
-
-            CrudNotification::sendToMany([], $id);
 
             return response()->json([
                 'status' => 'success',
@@ -455,51 +447,6 @@ class UserController extends Controller
         }
     }
 
-    public function listUserDelete(Request $request)
-    {
-        try {
-            $title = 'Quản lý thành viên';
-            $subTitle = 'Danh sách người dùng';
-            session()->forget('nameRouteUser');
-            $roleUser = $this->getRoleFromSegment();
-            $actorRole = $roleUser['role_name'];
-            session(['nameRouteUser' => $roleUser]);
-
-            $queryUsers = User::query()
-                ->whereHas('roles', function ($query) use ($roleUser) {
-                    $query->where('name', $roleUser['name']);
-                })
-                ->latest('id');
-
-            $queryUserCounts = User::query()
-                ->whereHas('roles', function ($query) use ($roleUser) {
-                    $query->where('name', $roleUser['name']);
-                })
-                ->selectRaw('
-                    count(id) as total_users,
-                    sum(status = "active") as active_users,
-                    sum(status = "inactive") as inactive_users,
-                    sum(status = "blocked") as blocked_users
-                ');
-
-            list($queryUsers, $queryUserCounts) = $this->filterSearch($queryUsers, $request);
-
-            $users = $queryUsers->paginate(10);
-            $userCounts = $queryUserCounts->first();
-
-            if ($request->ajax() && $request->hasAny(['status', 'start_date', 'end_date', 'search_full'])) {
-                $html = view('users.listdelete', compact(['users', 'userCounts', 'subTitle', 'title', 'roleUser', 'actorRole']))->render();
-                return response()->json(['html' => $html]);
-            }
-
-            return view('users.listdeleteduser', compact(['users', 'userCounts', 'subTitle', 'title', 'roleUser', 'actorRole']));
-        } catch (\Exception $e) {
-
-            $this->logError($e);
-
-            return redirect()->back()->with('error', 'Có lỗi xảy ra, vui lòng thử lại sau');
-        }
-    }
     private function deleteUsers(array $userID)
     {
 
@@ -573,18 +520,8 @@ class UserController extends Controller
             if (!empty($filterValue)) {
 
                 if (is_array($value) && !empty($value['queryWhere'])) {
-
-                    if ($value['queryWhere'] !== 'BETWEEN') {
-                        $filterValue = $value['queryWhere'] === 'LIKE' ? "%$filterValue%" : $filterValue;
-                        $query->where($filter, $value['queryWhere'], $filterValue);
-                    } else {
-                        $filterValueBetweenA = $request->input($value['attribute'][0]);
-                        $filterValueBetweenB = $request->input($value['attribute'][1]);
-
-                        if (!empty($filterValueBetweenA) && !empty($filterValueBetweenB)) {
-                            $query->whereBetween($filter, [$filterValueBetweenA, $filterValueBetweenB]);
-                        }
-                    }
+                    $filterValue = $value['queryWhere'] === 'LIKE' ? "%$filterValue%" : $filterValue;
+                    $query->where($filter, $value['queryWhere'], $filterValue);
                 } else {
                     if (str_contains($filter, '_')) {
                         $elementFilter = explode('_', $filter);

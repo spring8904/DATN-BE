@@ -65,10 +65,10 @@
                                                 <div class="d-flex justify-content-between">
                                                     <input type="range" class="form-range w-50" id="amountMinRange"
                                                         name="amount_min" min="10000" max="49990000" step="10000"
-                                                        value="10000" oninput="updateRange()" data-filter>
+                                                        value="{{ request()->input('amount_min') ?? 10000 }}" oninput="updateRange()" data-filter>
                                                     <input type="range" class="form-range w-50" id="amountMaxRange"
                                                         name="amount_max" min="50000000" max="99990000" step="10000"
-                                                        value="99990000" oninput="updateRange()" data-filter>
+                                                        value="{{ request()->input('amount_max') ?? 99990000 }}" oninput="updateRange()" data-filter>
                                                 </div>
                                             </li>
                                             <div class="row">
@@ -159,9 +159,11 @@
                                                 <td>
                                                     <span class="badge bg-primary">Hoàn thành</span>
                                                 </td>
-                                                <td>{{ optional(\Carbon\Carbon::parse($invoice->created_at))->format('d/m/Y') ?? 'NULL' }}
+                                                <td>
+                                                    {!! $invoice->created_at ?\Carbon\Carbon::parse($invoice->created_at)->format('d/m/Y') : '<span class="btn btn-sm btn-soft-warning">Trống</span>' !!}
                                                 </td>
-                                                <td>{{ optional(\Carbon\Carbon::parse($invoice->updated_at))->format('d/m/Y') ?? 'NULL' }}
+                                                <td>
+                                                    {!! $invoice->updated_at ?\Carbon\Carbon::parse($invoice->updated_at)->format('d/m/Y') : '<span class="btn btn-sm btn-soft-warning">Không thay đổi</span>' !!}
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -199,10 +201,7 @@
         }
         updateRange();
         $(document).on('click', '#resetFilter', function() {
-            $('#amountMinRange').val(0);
-            $('#amountMaxRange').val(99990000);
-            updateRange();
-            handleSearchFilter('');
+            window.location = routeUrlFilter;
         });
     </script>
     <script src="{{ asset('assets/js/custom/custom.js') }}"></script>

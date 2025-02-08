@@ -132,8 +132,8 @@ class CourseController extends Controller
                 ->where('slug', $slug)
                 ->first();
 
-            $thumbnailOld = $course->thumbnail ?? null;
-            $introOld = $course->intro ?? null;
+            $thumbnailOld = $course->thumbnail;
+            $introOld = $course->intro;
 
             if (!$course) {
                 return $this->respondNotFound('Không tìm thấy khoá học');

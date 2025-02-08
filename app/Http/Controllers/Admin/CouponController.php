@@ -145,10 +145,7 @@ class CouponController extends Controller
                 if (is_array($value) && !empty($value['queryWhere'])) {
                     
                     if ($value['queryWhere'] === 'BETWEEN') {
-                        $range = explode(',', $filterValue);
-                        if (count($range) === 2) {
-                            $query->whereBetween($filter, [$range[0], $range[1]]);
-                        }
+                            $query->whereBetween($filter, [$filterValue, 10000]);
                     } else {
                         $filterValue = $value['queryWhere'] === 'LIKE' ? "%$filterValue%" : $filterValue;
                         $query->where($filter, $value['queryWhere'], $filterValue);

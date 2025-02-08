@@ -162,7 +162,10 @@ class PermissionController extends Controller
     private function search($searchTerm, $query)
     {
         if (!empty($searchTerm)) {
-            $query->where('name', 'LIKE', "%$searchTerm%")->orWhere('description', 'LIKE', "%$searchTerm%");
+            $query->where(function ($query) use ($searchTerm) {
+                $query->where('name', 'LIKE', "%$searchTerm%")
+                    ->orWhere('description', 'LIKE', "%$searchTerm%");
+            });
         }
 
         return $query;

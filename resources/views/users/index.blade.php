@@ -152,7 +152,7 @@
                                     <label for="statusItem" class="form-label">Trạng thái</label>
                                     <select class="form-select form-select-sm" name="status" id="statusItem"
                                         data-advanced-filter>
-                                        <option value="">Tất cả trạng thái</option>
+                                        <option value="">Chọn trạng thái</option>
                                         <option @selected(request()->input('status') === 'active') value="active">Hoạt động</option>
                                         <option @selected(request()->input('status') === 'inactive') value="inactive">Không hoạt động</option>
                                         <option @selected(request()->input('status') === 'blocked') value="blocked">Khóa</option>
@@ -375,8 +375,8 @@
                 },
             });
         });
-        $(document).on('click', '#resetFilter', function(){
-            handleSearchFilter('');
+        $(document).on('click', '#resetFilter', function() {
+            window.location = routeUrlFilter;
         });
     </script>
     <script src="{{ asset('assets/js/custom/custom.js') }}"></script>

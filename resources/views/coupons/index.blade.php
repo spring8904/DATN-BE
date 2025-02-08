@@ -55,7 +55,8 @@
                                                     <div class="d-flex justify-content-between">
                                                         <input type="range" class="form-range w-100" id="amountMinRange"
                                                             name="used_count" min="0" max="1000" step="10"
-                                                            value="0" oninput="updateRange()" data-filter>
+                                                            value="{{ request()->input('used_count') ?? 0 }}"
+                                                            oninput="updateRange()" data-filter>
 
                                                     </div>
                                                 </li>
@@ -91,7 +92,7 @@
 
                     <!-- Tìm kiếm nâng cao -->
                     <div id="advancedSearch" class="card-header" style="display:none;">
-                        <form id="filterForm">
+                        <form>
                             <div class="row">
                                 <div class="col-md-3">
                                     <label class="form-label">Mã giảm giá</label>
@@ -115,16 +116,16 @@
                                     <label for="statusItem" class="form-label">Loại giảm giá</label>
                                     <select class="form-select form-select-sm" name="discount_type" id="statusItem"
                                         data-advanced-filter>
-                                        <option value="">Tất cả loại giảm giá</option>
+                                        <option value="">Chọn loại giảm giá</option>
                                         <option @selected(request()->input('discount_type') === 'percentage') value="percentage">Phần trăm</option>
                                         <option @selected(request()->input('discount_type') === 'fixed') value="fixed">Giảm trực tiếp</option>
                                     </select>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-3 mt-2">
                                     <label for="statusItem" class="form-label">Trạng thái</label>
                                     <select class="form-select form-select-sm" name="status" id="statusItem"
                                         data-advanced-filter>
-                                        <option value="">Tất cả trạng thái</option>
+                                        <option value="">Chọn trạng thái</option>
                                         <option @selected(request()->input('status') === '1') value="1">Hoạt động</option>
                                         <option @selected(request()->input('status') === '0') value="0">Không hoạt động</option>
                                     </select>
@@ -143,10 +144,10 @@
                             <div class="row g-4 mb-3">
                                 <div class="col-sm-auto">
                                     <div>
-                                        <a href="{{ route('admin.coupons.create') }}" class="btn btn-success add-btn"><i
+                                        <a href="{{ route('admin.coupons.create') }}" class="btn btn-primary add-btn"><i
                                                 class="ri-add-line align-bottom me-1"></i> Thêm mới</a>
-                                        <button class="btn btn-soft-danger" onClick="deleteMultiple()"><i
-                                                class="ri-delete-bin-2-line"></i></button>
+                                        <button class="btn btn-danger" onClick="deleteMultiple()"><i
+                                                class="ri-delete-bin-2-line"> Xóa nhiều</i></button>
                                     </div>
                                 </div>
                                 <div class="col-sm">
@@ -198,17 +199,15 @@
                                                 <td class="id">{{ $coupon->user_id }}</td>
                                                 <td class="customer_name">{{ $coupon->name }}</td>
                                                 <td class="date">{{ $coupon->code }}</td>
-                                                <td class="date">{{ $coupon->discount_value }}
-                                                    ({{ $coupon->discount_type }})
+                                                <td class="date">{{ number_format($coupon->discount_value) }}
+                                                    {{ $coupon->discount_type == 'fixed' ? 'VND' : '%' }}
                                                 </td>
                                                 @if ($coupon->status)
-                                                    <td class="status"><span
-                                                            class="badge bg-success-subtle text-success text-uppercase">
+                                                    <td class="status"><span class="badge bg-success text-uppercase">
                                                             Active
                                                         </span></td>
                                                 @else
-                                                    <td class="status"><span
-                                                            class="badge bg-danger-subtle text-danger text-uppercase">
+                                                    <td class="status"><span class="badge bg-danger text-uppercase">
                                                             InActive
                                                         </span></td>
                                                 @endif
@@ -219,16 +218,24 @@
                                                 <td>
                                                     <div class="d-flex gap-2">
                                                         <div class="remove">
-                                                            <a href="{{ route('admin.coupons.show', $coupon->id) }}"
-                                                                class="btn btn-sm btn-primary remove-item-btn">Chi tiết</a>
+                                                            <a href="{{ route('admin.coupons.edit', $coupon->id) }}">
+                                                                <button class="btn btn-sm btn-warning edit-item-btn">
+                                                                    <span class="ri-edit-box-line"></span>
+                                                                </button>
+                                                            </a>
                                                         </div>
                                                         <div class="edit">
-                                                            <a href="{{ route('admin.coupons.edit', $coupon->id) }}"
-                                                                class="btn btn-sm btn-success edit-item-btn">Sửa</a>
+                                                            <a href="{{ route('admin.coupons.show', $coupon->id) }}">
+                                                                <button class="btn btn-sm btn-info edit-item-btn">
+                                                                    <span class="ri-folder-user-line"></span>
+                                                                </button>
+                                                            </a>
                                                         </div>
                                                         <div class="remove">
                                                             <a href="{{ route('admin.coupons.destroy', $coupon->id) }}"
-                                                                class="btn btn-sm btn-danger sweet-confirm">Xoá</a>
+                                                                class="sweet-confirm btn btn-sm btn-danger remove-item-btn">
+                                                                <span class="ri-delete-bin-7-line"></span>
+                                                            </a>
                                                         </div>
 
                                                     </div>
@@ -271,21 +278,11 @@
         function updateRange() {
             let rangeValue = document.getElementById("amountMinRange").value;
             document.getElementById("amountMin").textContent = rangeValue;
-
-            // Lọc danh sách theo số lượt sử dụng
-            let items = document.querySelectorAll("#itemList");
-            items.forEach(item => {
-                let usedCount = parseInt(item.getAttribute("used_count"), 10);
-                if (usedCount >= rangeValue) {
-                    item.style.display = "block";
-                } else {
-                    item.style.display = "none";
-                }
-            });
-            $(document).on('click', '#resetFilter', function() {
-                handleSearchFilter('');
-            });
         }
+        updateRange();
+        $(document).on('click', '#resetFilter', function() {
+            window.location = routeUrlFilter;
+        });
     </script>
     <script src="{{ asset('assets/js/custom/custom.js') }}"></script>
     <script src="{{ asset('assets/js/common/checkall-option.js') }}"></script>

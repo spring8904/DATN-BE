@@ -104,10 +104,12 @@
                                                 <div class="d-flex justify-content-between">
                                                     <input type="range" class="form-range w-50" id="amountMinRange"
                                                         name="amount_min" min="10000" max="49990000" step="10000"
-                                                        value="10000" oninput="updateRange()" data-filter>
+                                                        value="{{ request()->input('amount_min') ?? 10000 }}"
+                                                        oninput="updateRange()" data-filter>
                                                     <input type="range" class="form-range w-50" id="amountMaxRange"
                                                         name="amount_max" min="50000000" max="99990000" step="10000"
-                                                        value="99990000" oninput="updateRange()" data-filter>
+                                                        value="{{ request()->input('amount_max') ?? 99990000 }}"
+                                                        oninput="updateRange()" data-filter>
                                                 </div>
                                             </li>
                                             <div class="row">
@@ -129,7 +131,8 @@
                                                 </li>
                                             </div>
                                             <li class="mt-2 d-flex gap-1">
-                                                <button class="btn btn-sm btn-success flex-grow-1" type="reset" id="resetFilter">Reset</button>
+                                                <button class="btn btn-sm btn-success flex-grow-1" type="reset"
+                                                    id="resetFilter">Reset</button>
                                                 <button class="btn btn-sm btn-primary flex-grow-1" id="applyFilter">Áp
                                                     dụng</button>
                                             </li>
@@ -159,7 +162,7 @@
                                     <label for="statusItem" class="form-label">Trạng thái</label>
                                     <select class="form-select form-select-sm" name="status" id="statusItem"
                                         data-advanced-filter>
-                                        <option value="">Tất cả trạng thái</option>
+                                        <option value="">Chọn trạng thái</option>
                                         <option value="completed" @selected(request()->input('status') === 'completed')>Hoàn thành</option>
                                         <option value="pending" @selected(request()->input('status') === 'pending')>Đang xử lý</option>
                                         <option value="failed" @selected(request()->input('status') === 'failed')>Thất bại</option>
@@ -209,7 +212,7 @@
                                                 <td>{{ $withdrawal->account_holder }}</td>
                                                 <td><span class="text-danger">{{ $withdrawal->account_number }}</span>
                                                 </td>
-                                                <td>{{ $withdrawal->bank_name }}</td>
+                                                <td>{{ \Illuminate\Support\Str::limit($withdrawal->bank_name,40) }}</td>
                                                 <td>{{ number_format($withdrawal->amount) }} VND</td>
                                                 <td>
                                                     <textarea class="border-0 bg-white" disabled>{{ $withdrawal->note }}</textarea>
@@ -229,9 +232,9 @@
                                                         </span>
                                                     @endif
                                                 </td>
-                                                <td>{{ optional(\Carbon\Carbon::parse($withdrawal->request_date))->format('d/m/Y') ?? 'NULL' }}
+                                                <td>{{ $withdrawal->request_date ? \Carbon\Carbon::parse($withdrawal->request_date)->format('d/m/Y') : 'NULL' }}
                                                 </td>
-                                                <td>{{ optional(\Carbon\Carbon::parse($withdrawal->completed_date))->format('d/m/Y') ?? 'NULL' }}
+                                                <td>{!! $withdrawal->completed_date ? \Carbon\Carbon::parse($withdrawal->completed_date)->format('d/m/Y') : '<span class="btn btn-sm btn-soft-warning">Chưa xác nhận</span>' !!}
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -270,10 +273,7 @@
         updateRange();
 
         $(document).on('click', '#resetFilter', function() {
-            $('#amountMinRange').val(0);
-            $('#amountMaxRange').val(99990000);
-            updateRange();
-            handleSearchFilter('');
+            window.location = routeUrlFilter;
         });
     </script>
     <script src="{{ asset('assets/js/custom/custom.js') }}"></script>

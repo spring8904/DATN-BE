@@ -95,10 +95,10 @@
                                                 <div class="d-flex justify-content-between">
                                                     <input type="range" class="form-range w-50" id="amountMinRange"
                                                         name="amount_min" min="10000" max="49990000" step="10000"
-                                                        value="10000" oninput="updateRange()" data-filter>
+                                                        value="{{ request()->input('amount_min') ?? 10000 }}" oninput="updateRange()" data-filter>
                                                     <input type="range" class="form-range w-50" id="amountMaxRange"
                                                         name="amount_max" min="50000000" max="99990000" step="10000"
-                                                        value="99990000" oninput="updateRange()" data-filter>
+                                                        value="{{ request()->input('amount_max') ?? 99990000 }}" oninput="updateRange()" data-filter>
                                                 </div>
                                             </li>
                                             <div class="row">
@@ -145,7 +145,7 @@
                                     <label for="statusTransaction" class="form-label">Trạng thái</label>
                                     <select class="form-select form-select-sm" name="status" id="statusTransaction"
                                         data-advanced-filter>
-                                        <option value="">Tất cả trạng thái</option>
+                                        <option value="">Chọn trạng thái</option>
                                         <option value="completed" @selected(request()->input('status') === 'completed')>
                                             Hoàn thành
                                         </option>
@@ -161,7 +161,7 @@
                                     <label for="typeTransaction" class="form-label">Loại giao dịch</label>
                                     <select class="form-select form-select-sm" name="type" id="typeTransaction"
                                         data-advanced-filter>
-                                        <option value="">Tất cả trạng thái</option>
+                                        <option value="">Chọn loại giao dịch</option>
                                         <option value="invoice" @selected(request()->input('type') === 'invoice')>Mua
                                             bán
                                         </option>
@@ -279,10 +279,7 @@
         updateRange();
 
         $(document).on('click', '#resetFilter', function() {
-            $('#amountMinRange').val(0);
-            $('#amountMaxRange').val(99990000);
-            updateRange();
-            handleSearchFilter('');
+            window.location = routeUrlFilter;
         });
     </script>
     <script src="{{ asset('assets/js/custom/custom.js') }}"></script>
