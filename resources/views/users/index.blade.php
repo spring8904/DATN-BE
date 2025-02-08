@@ -92,24 +92,36 @@
                                             <div class="row">
                                                 <li class="col-6">
                                                     <div class="mb-2">
-                                                        <label for="startDate" class="form-label">Ngày bắt đầu</label>
-                                                        <input type="date" class="form-control form-control-sm"
-                                                            name="created_at" id="startDate" data-filter
-                                                            value="{{ request()->input('created_at') ?? '' }}">
+                                                        <label class="form-label">Ngày bắt đầu</label>
+                                                        @if ($roleUser['name'] !== 'deleted')
+                                                            <input type="date" class="form-control form-control-sm"
+                                                                name="created_at"  data-filter
+                                                                value="{{ request()->input('created_at') ?? '' }}">
+                                                        @else
+                                                            <input type="date" class="form-control form-control-sm"
+                                                                name="start_deleted" data-filter
+                                                                value="{{ request()->input('created_at') ?? '' }}">
+                                                        @endif
                                                     </div>
                                                 </li>
                                                 <li class="col-6">
                                                     <div class="mb-2">
-                                                        <label for="endDate" class="form-label">Ngày kết thúc</label>
-                                                        <input type="date" class="form-control form-control-sm"
-                                                            name="updated_at" id="endDate" data-filter
-                                                            value="{{ request()->input('updated_at') ?? '' }}">
+                                                        <label class="form-label">Ngày kết thúc</label>
+                                                        @if ($roleUser['name'] !== 'deleted')
+                                                            <input type="date" class="form-control form-control-sm"
+                                                                name="updated_at" id="endDate" data-filter
+                                                                value="{{ request()->input('updated_at') ?? '' }}">
+                                                        @else
+                                                            <input type="date" class="form-control form-control-sm"
+                                                                name="end_deleted" data-filter
+                                                                value="{{ request()->input('updated_at') ?? '' }}">
+                                                        @endif
                                                     </div>
                                                 </li>
                                             </div>
                                             <li class="mt-2 d-flex gap-1">
-                                                <button class="btn btn-sm btn-success flex-grow-1"
-                                                    type="reset" id="resetFilter">Reset</button>
+                                                <button class="btn btn-sm btn-success flex-grow-1" type="reset"
+                                                    id="resetFilter">Reset</button>
                                                 <button class="btn btn-sm btn-primary flex-grow-1" id="applyFilter">Áp
                                                     dụng</button>
                                             </li>
@@ -215,8 +227,8 @@
                                             <th>Xác minh email</th>
                                             <th>Trạng Thái</th>
                                             <th>Vai Trò</th>
-                                            <th>Ngày Tham Gia</th>
                                             @if ($roleUser['name'] !== 'deleted')
+                                                <th>Ngày Tham Gia</th>
                                                 <th>Hành Động</th>
                                             @else
                                                 <th>Thời gian xóa</th>
@@ -276,9 +288,11 @@
                                                         {{ Str::ucfirst($roleName) }}
                                                     </span>
                                                 </td>
-                                                <td>
-                                                    {{ optional(\Carbon\Carbon::parse($user->created_at))->format('d/m/Y') ?? 'NULL' }}
-                                                </td>
+                                                @if ($roleUser['name'] !== 'deleted')
+                                                    <td>
+                                                        {{ optional(\Carbon\Carbon::parse($user->created_at))->format('d/m/Y') ?? 'NULL' }}
+                                                    </td>
+                                                @endif
                                                 <td>
                                                     @if ($roleUser['name'] !== 'deleted')
                                                         <div class="d-flex gap-2">
