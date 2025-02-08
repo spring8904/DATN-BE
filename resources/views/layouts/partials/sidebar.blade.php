@@ -168,6 +168,10 @@
                         <a href="{{ route('admin.posts.create') }}" class="nav-link" data-key="t-chat">
                             Thêm mới bài viết </a>
                     </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.posts.list-post-delete') }}" class="nav-link" data-key="t-chat">
+                            Danh sách bài viết đã xóa </a>
+                    </li>
                 </ul>
             </div>
 

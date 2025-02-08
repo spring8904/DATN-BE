@@ -14,6 +14,7 @@ use App\Traits\UploadToCloudinaryTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use function PHPUnit\Framework\isEmpty;
 
@@ -278,6 +279,142 @@ class PostController extends Controller
             $this->logError($e);
 
             return response()->json($data = ['status' => 'error', 'message' => 'Lỗi thao tác.']);
+        }
+    }
+    public function forceDelete(string $id)
+    {
+        try {
+            DB::beginTransaction();
+
+            if (str_contains($id, ',')) {
+
+                $postID = explode(',', $id);
+
+                $this->deleteposts($postID);
+            } else {
+                $post = Post::query()->onlyTrashed()->findOrFail($id);
+
+                $post->forceDelete();
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Xóa thành công'
+            ]);
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            $this->logError($e);
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Xóa thất bại'
+            ]);
+        }
+    }
+    private function deletePosts(array $postID)
+    {
+
+        $posts = Post::query()->whereIn('id', $postID)->withTrashed()->get();
+
+        foreach ($posts as $post) {
+
+            $thumbnail = $post->thumbnail;
+
+            if ($post->trashed()) {
+                $post->forceDelete();
+            } else {
+                $post->delete();
+
+                if (
+                    isset($thumbnail) && !empty($thumbnail)
+                    && filter_var($thumbnail, FILTER_VALIDATE_URL)
+                ) {
+                    $this->deleteImage($thumbnail, self::FOLDER);
+                }
+            }
+        }
+    }
+    public function restoreDelete(string $id)
+    {
+        try {
+            DB::beginTransaction();
+
+            if (str_contains($id, ',')) {
+
+                $postID = explode(',', $id);
+
+                $this->restoreDeletePosts($postID);
+            } else {
+                $post = Post::query()->onlyTrashed()->findOrFail($id);
+
+                if ($post->trashed()) {
+                    $post->restore();
+                }
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Khôi phục thành công'
+            ]);
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            $this->logError($e);
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Khôi phục thất bại'
+            ]);
+        }
+    }
+    public function listPostDelete(Request $request)
+    {
+        try {
+            $title = 'Quản lý bài viết';
+            $subTitle = 'Danh sách bài viết đã xóa';
+
+            $categories = Category::query()->get();
+            $searchPost = $request->input('searchPost');
+
+            // kiểm tra xem có từ khóa không
+            if (!empty($searchPost)) {
+                $posts = Post::with('user')
+                    ->where('title', 'LIKE', '%' . $searchPost . '%')
+                    ->paginate(10);
+            } else {
+                $posts = Post::with('user')->onlyTrashed()->paginate(10);
+            }
+            return view('posts.list-post-delete', compact([
+                'title',
+                'subTitle',
+                'categories',
+                'posts'
+            ]));
+        } catch (\Exception $e) {
+            $this->logError($e);
+
+            return redirect()->back()->with('error', 'Có lỗi xảy ra, vui lòng thử lại');
+        }
+    }
+    private function restoreDeletePosts(array $postID)
+    {
+
+        $posts = Post::query()->whereIn('id', $postID)->onlyTrashed()->get();
+
+        foreach ($posts as $post) {
+
+            $thumbnail = $post->thumbnail;
+
+            if ($post->trashed()) {
+                $post->restore();
+            }
         }
     }
 }
