@@ -62,8 +62,6 @@ class TransactionController extends Controller
                 ->where('transaction_code', $transactionCode)
                 ->firstOrFail();
 
-            dd($transaction);
-
             return view('transactions.show', compact('transaction'));
         } catch (\Exception $e) {
             $this->logError($e);

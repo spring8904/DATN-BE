@@ -89,48 +89,56 @@
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="filterDropdown"
                                     style="min-width: 500px;">
-                                    <div class="container">
-                                        <div class="row">
-                                            <li class="col-6">
-                                                <div class="mb-2">
-                                                    <label for="startDate" class="form-label">Từ ngày</label>
-                                                    <input type="date" class="form-control form-control-sm"
-                                                        name="created_at" id="dateRequest" data-filter>
-                                                </div>
-                                            </li>
-                                            <li class="col-6">
-                                                <div class="mb-2">
-                                                    <label for="endDate" class="form-label">Đến ngày</label>
-                                                    <input type="date" class="form-control form-control-sm"
-                                                        name="updated_at" id="dateComplete" data-filter>
-                                                </div>
+                                    <form>
+                                        <div class="container">
+                                            <div class="row">
+                                                <li class="col-6">
+                                                    <div class="mb-2">
+                                                        <label for="startDate" class="form-label">Từ ngày</label>
+                                                        <input type="date" class="form-control form-control-sm"
+                                                            name="created_at" id="dateRequest" data-filter>
+                                                    </div>
+                                                </li>
+                                                <li class="col-6">
+                                                    <div class="mb-2">
+                                                        <label for="endDate" class="form-label">Đến ngày</label>
+                                                        <input type="date" class="form-control form-control-sm"
+                                                            name="updated_at" id="dateComplete" data-filter>
+                                                    </div>
+                                                </li>
+                                            </div>
+                                            <li class="mt-2 d-flex gap-1">
+                                                <button class="btn btn-sm btn-success flex-grow-1" type="reset"
+                                                    id="resetFilter">Reset</button>
+                                                <button class="btn btn-sm btn-primary flex-grow-1" id="applyFilter">Áp
+                                                    dụng</button>
                                             </li>
                                         </div>
-                                        <li class="mt-2">
-                                            <button class="btn btn-sm btn-primary w-100" id="applyFilter">Áp dụng</button>
-                                        </li>
-                                    </div>
+                                    </form>
                                 </ul>
                             </div>
                         </div>
                     </div>
                     <!-- Tìm kiếm nâng cao -->
                     <div id="advancedSearch" class="card-header" style="display:none;">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label class="form-label">Quyền</label>
-                                <input class="form-control form-control-sm" name="name" type="text"
-                                    placeholder="Nhập quyền..." data-advanced-filter>
+                        <form>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label class="form-label">Quyền</label>
+                                    <input class="form-control form-control-sm" name="name" type="text"
+                                        placeholder="Nhập quyền..." data-advanced-filter>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Mô tả</label>
+                                    <input class="form-control form-control-sm" name="description" type="text"
+                                        placeholder="Nhập mô tả quyền..." data-advanced-filter>
+                                </div>
+                                <div class="mt-3 text-end">
+                                    <button class="btn btn-sm btn-success" type="reset" id="resetFilter">Reset</button>
+                                    <button class="btn btn-sm btn-primary" id="applyAdvancedFilter">Áp dụng</button>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Mô tả</label>
-                                <input class="form-control form-control-sm" name="description" type="text"
-                                    placeholder="Nhập mô tả quyền..." data-advanced-filter>
-                            </div>
-                            <div class="mt-3 text-end">
-                                <button class="btn btn-sm btn-primary" id="applyAdvancedFilter">Áp dụng</button>
-                            </div>
-                        </div>
+                        </form>
                     </div>
                     <div class="card-body" id="item_List">
                         <div class="live-preview">
@@ -173,6 +181,9 @@
                                     </tbody>
                                 </table>
                             </div>
+                            <div class="row justify-content-end mt-3">
+                                {{ $permissions->appends(request()->query())->links() }}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -184,6 +195,9 @@
 @push('page-scripts')
     <script>
         var routeUrlFilter = "{{ route('admin.permissions.index') }}";
+        $(document).on('click', '#resetFilter', function() {
+            handleSearchFilter('');
+        });
     </script>
     <script src="{{ asset('assets/js/custom/custom.js') }}"></script>
     <script src="{{ asset('assets/js/common/filter.js') }}"></script>

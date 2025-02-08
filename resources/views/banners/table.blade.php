@@ -2,11 +2,11 @@
     <div class="row g-4 mb-3">
         <div class="col-sm-auto">
             <div>
-                <a href="{{ route('admin.banners.create') }}" class="btn btn-success add-btn"><i
+                <a href="{{ route('admin.banners.create') }}" class="btn btn-primary add-btn"><i
                         class="ri-add-line align-bottom me-1"></i> Thêm mới</a>
-                        <button class="btn btn-danger" id="deleteSelected">
-                            <i class="ri-delete-bin-2-line"> Xóa nhiều</i>
-                        </button>
+                <button class="btn btn-danger" id="deleteSelected">
+                    <i class="ri-delete-bin-2-line"> Xóa nhiều</i>
+                </button>
             </div>
         </div>
         <div class="col-sm">
@@ -23,20 +23,23 @@
     </div>
 
     <div class="table-responsive table-card mt-3 mb-1">
-        <table class="table align-middle table-nowrap" id="customerTable">
+        <table class="table align-middle table-nowrap">
             <thead class="table-light">
                 <tr>
                     <th scope="col" style="width: 50px;">
-                        <input type="checkbox" id="checkAll">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="checkAll"
+                                value="option">
+                        </div>
                     </th>
-                    <th>ID</th>
-                    <th>Title</th>
-                    <th>Image</th>
-                    <th>Order</th>
-                    <th>Status</th>
-                    <th>Created_at</th>
-                    <th>Updated_at</th>
-                    <th>Action</th>
+                    <th>Mã banner</th>
+                    <th>Tiêu đề</th>
+                    <th>Ảnh</th>
+                    <th>Thứ tự</th>
+                    <th>Trạng thái</th>
+                    <th>Ngày tạo</th>
+                    <th>Ngày cập nhật</th>
+                    <th>Hành động</th>
                 </tr>
             </thead>
             <tbody class="list form-check-all">
@@ -44,48 +47,55 @@
                     <tr>
                         <th scope="row">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="itemID"
-                                    value="{{ $banner->id }}">
+                                <input class="form-check-input" type="checkbox" name="chk_child"
+                                    value="option1">
                             </div>
                         </th>
 
                         <td class="id">{{ $banner->id }}</td>
-                        <td class="title">{{ $banner->title }}</td>
-                        <td class="image">
+                        <td class="customer_name">{{ $banner->title }}</td>
+                        <td class="phone">
                             @if ($banner->image)
                                 <img src="{{ $banner->image }}" alt="" width="100px">
                             @else
-                                <p>No photo</p>
+                                <p>Không có ảnh</p>
                             @endif
 
                         </td>
-                        <td class="order">{{ $banner->order }}</td>
+                        <td class="date">{{ $banner->order }}</td>
                         @if ($banner->status)
-                            <td class="status"><span
-                                    class="badge bg-success-subtle text-success">
-                                    Active
+                            <td class="status"><span class="badge bg-success-subtle text-success">
+                                    Hoạt động
                                 </span></td>
                         @else
-                            <td class="status"><span
-                                    class="badge bg-danger-subtle text-danger">
-                                    InActive
+                            <td class="status"><span class="badge bg-danger-subtle text-danger">
+                                    Không hoạt động
                                 </span></td>
                         @endif
 
-                        <td class="created_at">{{ $banner->created_at }}</td>
-                        <td class="updated_at">{{ $banner->updated_at }}</td>
+                        <td class="date">{{ $banner->created_at }}</td>
+                        <td class="date">{{ $banner->updated_at }}</td>
                         <td>
                             <div class="d-flex gap-2">
                                 <div class="remove">
-                                    <a href="{{ route('admin.banners.show', $banner->id) }}"
-                                        class="btn btn-sm btn-primary remove-item-btn">Chi tiết</a>
+                                    <a href="{{ route('admin.banners.edit', $banner->id) }}">
+                                        <button class="btn btn-sm btn-warning edit-item-btn">
+                                            <span class="ri-edit-box-line"></span>
+                                        </button>
+                                    </a>
                                 </div>
                                 <div class="edit">
-                                    <a href="{{ route('admin.banners.edit', $banner->id) }}"
-                                        class="btn btn-sm btn-success edit-item-btn">Sửa</a>
+                                    <a href="{{ route('admin.banners.show', $banner->id) }}">
+                                        <button class="btn btn-sm btn-info edit-item-btn">
+                                            <span class="ri-folder-user-line"></span>
+                                        </button>
+                                    </a>
                                 </div>
                                 <div class="remove">
-                                    <a href="{{ route('admin.banners.destroy', $banner->id) }}" class="btn btn-sm btn-danger sweet-confirm">Xoá</a>
+                                    <a href="{{ route('admin.banners.destroy', $banner->id) }}"
+                                        class="btn btn-sm btn-danger sweet-confirm">
+                                        <span class="ri-delete-bin-7-line"></span>
+                                    </a>
                                 </div>
 
                             </div>
@@ -108,5 +118,5 @@
         </div>
     </div>
 
-    {{ $banners->links() }}
+    {{ $banners->appends(request()->query())->links() }}
 </div>

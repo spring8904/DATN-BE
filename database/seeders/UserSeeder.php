@@ -14,7 +14,7 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        for ($i = 1; $i <= 10000; $i++) {
+        for ($i = 1; $i <= 1000; $i++) {
             $user = User::create([
                 'code' => str_replace('-', '', Str::uuid()),
                 'name' => fake()->name(),

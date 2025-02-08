@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', $title)
 @push('page-css')
-    <link href="{{ asset('assets/css/custom.css') }}" rel="stylesheet" type="text/css"/>
+    <link href="{{ asset('assets/css/custom.css') }}" rel="stylesheet" type="text/css" />
 @endpush
 
 @section('content')
@@ -65,10 +65,9 @@
                                 <div class="d-flex justify-content-sm-end">
                                     <div class="search-box ms-2">
                                         <input type="text" name="search_full" class="form-control search h-75"
-                                               placeholder="Tìm kiếm..." data-search>
-                                        <button id="search-full"
-                                                class="h-75 ri-search-line search-icon m-0 p-0 border-0"
-                                                style="background: none;"></button>
+                                            placeholder="Tìm kiếm..." data-search>
+                                        <button id="search-full" class="h-75 ri-search-line search-icon m-0 p-0 border-0"
+                                            style="background: none;"></button>
                                     </div>
                                 </div>
                             </div>
@@ -78,7 +77,7 @@
                             </button>
                             <div class="dropdown">
                                 <button class="btn btn-sm btn-primary h-75" type="button" id="filterDropdown"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                    data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="ri-filter-2-line"></i>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="filterDropdown"
@@ -95,11 +94,11 @@
 
                                                 <div class="d-flex justify-content-between">
                                                     <input type="range" class="form-range w-50" id="amountMinRange"
-                                                           name="amount_min" min="10000" max="49990000" step="10000"
-                                                           value="10000" oninput="updateRange()" data-filter>
+                                                        name="amount_min" min="10000" max="49990000" step="10000"
+                                                        value="{{ request()->input('amount_min') ?? 10000 }}" oninput="updateRange()" data-filter>
                                                     <input type="range" class="form-range w-50" id="amountMaxRange"
-                                                           name="amount_max" min="50000000" max="99990000" step="10000"
-                                                           value="99990000" oninput="updateRange()" data-filter>
+                                                        name="amount_max" min="50000000" max="99990000" step="10000"
+                                                        value="{{ request()->input('amount_max') ?? 99990000 }}" oninput="updateRange()" data-filter>
                                                 </div>
                                             </li>
                                             <div class="row">
@@ -107,26 +106,24 @@
                                                     <div class="mb-2">
                                                         <label for="startDate" class="form-label">Ngày yêu cầu</label>
                                                         <input type="date" class="form-control form-control-sm"
-                                                               name="created_at" id="dateRequest" data-filter
-                                                               value="{{ request()->input('created_at') ?? '' }}">
+                                                            name="created_at" id="dateRequest" data-filter
+                                                            value="{{ request()->input('created_at') ?? '' }}">
                                                     </div>
                                                 </li>
                                                 <li class="col-6">
                                                     <div class="mb-2">
                                                         <label for="endDate" class="form-label">Ngày xác nhận</label>
                                                         <input type="date" class="form-control form-control-sm"
-                                                               name="updated_at" id="dateComplete" data-filter
-                                                               value="{{ request()->input('updated_at') ?? '' }}">
+                                                            name="updated_at" id="dateComplete" data-filter
+                                                            value="{{ request()->input('updated_at') ?? '' }}">
                                                     </div>
                                                 </li>
                                             </div>
                                             <li class="mt-2 d-flex gap-1">
-                                                <button class="btn btn-sm btn-success flex-grow-1" id="resetInput"
-                                                        type="reset">Reset
-                                                </button>
+                                                <button class="btn btn-sm btn-success flex-grow-1" type="reset"
+                                                    id="resetFilter">Reset</button>
                                                 <button class="btn btn-sm btn-primary flex-grow-1" id="applyFilter">Áp
-                                                    dụng
-                                                </button>
+                                                    dụng</button>
                                             </li>
                                         </div>
                                     </form>
@@ -141,15 +138,14 @@
                                 <div class="col-md-4">
                                     <label class="form-label">Người thực hiện giao dịch</label>
                                     <input class="form-control form-control-sm" name="user_transaction" type="text"
-                                           placeholder="Nhập tên người thực hiện giao dịch..."
-                                           value="{{ request()->input('user_transaction') ?? '' }}"
-                                           data-advanced-filter>
+                                        placeholder="Nhập tên người thực hiện giao dịch..."
+                                        value="{{ request()->input('user_transaction') ?? '' }}" data-advanced-filter>
                                 </div>
                                 <div class="col-md-4">
                                     <label for="statusTransaction" class="form-label">Trạng thái</label>
                                     <select class="form-select form-select-sm" name="status" id="statusTransaction"
-                                            data-advanced-filter>
-                                        <option value="">Tất cả trạng thái</option>
+                                        data-advanced-filter>
+                                        <option value="">Chọn trạng thái</option>
                                         <option value="completed" @selected(request()->input('status') === 'completed')>
                                             Hoàn thành
                                         </option>
@@ -164,8 +160,8 @@
                                 <div class="col-md-4">
                                     <label for="typeTransaction" class="form-label">Loại giao dịch</label>
                                     <select class="form-select form-select-sm" name="type" id="typeTransaction"
-                                            data-advanced-filter>
-                                        <option value="">Tất cả trạng thái</option>
+                                        data-advanced-filter>
+                                        <option value="">Chọn loại giao dịch</option>
                                         <option value="invoice" @selected(request()->input('type') === 'invoice')>Mua
                                             bán
                                         </option>
@@ -175,7 +171,7 @@
                                     </select>
                                 </div>
                                 <div class="mt-3 text-end">
-                                    <button class="btn btn-sm btn-success" type="reset">Reset</button>
+                                    <button class="btn btn-sm btn-success" type="reset" id="resetFilter">Reset</button>
                                     <button class="btn btn-sm btn-primary" id="applyAdvancedFilter">Áp dụng</button>
                                 </div>
                             </div>
@@ -187,65 +183,66 @@
                             <div class="table-responsive table-card mt-3 mb-1">
                                 <table class="table align-middle table-nowrap" id="customerTable">
                                     <thead class="table-light">
-                                    <tr>
-                                        <th>STT</th>
-                                        <th>Mã giao dịch</th>
-                                        <th>Người thực hiện giao dịch</th>
-                                        <th>Email</th>
-                                        <th>Số tiền</th>
-                                        <th>Loại giao dịch</th>
-                                        <th>Trạng thái</th>
-                                        <th>Ngày tạo giao dịch</th>
-                                        <th>Thao tác</th>
-                                    </tr>
+                                        <tr>
+                                            <th>STT</th>
+                                            <th>Mã giao dịch</th>
+                                            <th>Người thực hiện giao dịch</th>
+                                            <th>Email</th>
+                                            <th>Số tiền</th>
+                                            <th>Loại giao dịch</th>
+                                            <th>Trạng thái</th>
+                                            <th>Ngày tạo giao dịch</th>
+                                            <th>Thao tác</th>
+                                        </tr>
                                     </thead>
                                     <tbody class="list">
-                                    @foreach ($transactions as $transaction)
-                                        <tr>
-                                            <td>{{ $loop->index + 1 }}</td>
-                                            <td>{{ $transaction->transaction_code ?? '' }}</td>
-                                            <td><span
-                                                    class="text-primary fw-bold">{{ $transaction->invoice->user->name ?? '' }}</span>
-                                            </td>
-                                            <td>{{ $transaction->invoice->user->email ?? '' }}</td>
-                                            <td>{{ number_format($transaction->amount) }} VND</td>
-                                            <td>
-                                                @if ($transaction->type === 'invoice')
-                                                    <span class="badge bg-success w-50">
+                                        @foreach ($transactions as $transaction)
+                                            <tr>
+                                                <td>{{ $loop->index + 1 }}</td>
+                                                <td>{{ $transaction->transaction_code ?? '' }}</td>
+                                                <td><span
+                                                        class="text-primary fw-bold">{{ $transaction->invoice->user->name ?? '' }}</span>
+                                                </td>
+                                                <td>{{ $transaction->invoice->user->email ?? '' }}</td>
+                                                <td>{{ number_format($transaction->amount) }} VND</td>
+                                                <td>
+                                                    @if ($transaction->type === 'invoice')
+                                                        <span class="badge bg-success w-50">
                                                             Mua bán
                                                         </span>
-                                                @elseif($transaction->type === 'withdrawal')
-                                                    <span class="badge bg-info w-50">
+                                                    @elseif($transaction->type === 'withdrawal')
+                                                        <span class="badge bg-info w-50">
                                                             Rút tiền
                                                         </span>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @if ($transaction->status === 'Giao dịch thành công')
-                                                    <span class="badge bg-success w-75">
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if ($transaction->status === 'Giao dịch thành công')
+                                                        <span class="badge bg-success w-75">
                                                             Hoàn thành
                                                         </span>
-                                                @elseif($transaction->status === 'Chờ xử lý')
-                                                    <span class="badge bg-warning w-75">
+                                                    @elseif($transaction->status === 'Chờ xử lý')
+                                                        <span class="badge bg-warning w-75">
                                                             Đang xử lý
                                                         </span>
-                                                @else
-                                                    <span class="badge bg-danger w-75">
+                                                    @else
+                                                        <span class="badge bg-danger w-75">
                                                             Thất bại
                                                         </span>
-                                                @endif
-                                            </td>
-                                            <td>{{ $transaction->created_at }}
-                                            </td>
-                                            <td>
-                                                <a href="{{ route('admin.transactions.show', $transaction->transaction_code) }}">
-                                                    <button class="btn btn-sm btn-info edit-item-btn">
-                                                        <span class="ri-eye-line"></span>
-                                                    </button>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    @endforeach
+                                                    @endif
+                                                </td>
+                                                <td>{{ $transaction->created_at }}
+                                                </td>
+                                                <td>
+                                                    <a
+                                                        href="{{ route('admin.transactions.show', $transaction->transaction_code) }}">
+                                                        <button class="btn btn-sm btn-info edit-item-btn">
+                                                            <span class="ri-eye-line"></span>
+                                                        </button>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -281,10 +278,8 @@
 
         updateRange();
 
-        $(document).on('click', '#resetInput', function () {
-            $('#amountMinRange').val(0);
-            $('#amountMaxRange').val(99990000);
-            updateRange();
+        $(document).on('click', '#resetFilter', function() {
+            window.location = routeUrlFilter;
         });
     </script>
     <script src="{{ asset('assets/js/custom/custom.js') }}"></script>

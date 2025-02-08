@@ -34,16 +34,19 @@ class PostController extends Controller
             $subTitle = 'Danh sách bài viết';
 
             $categories = Category::query()->get();
+            $queryPost = $posts = Post::with(['user:id,name', 'category:id,name']);
 
-            $searchPost = $request->input('searchPost');
+            if ($request->hasAny(['title', 'user_name_post', 'category_id', 'status', 'startDate', 'endDate']))
+                $queryPost = $this->filter($request, $queryPost);
 
-            // kiểm tra xem có từ khóa không
-            if (!empty($searchPost)) {
-                $posts = Post::with('user')
-                    ->where('title', 'LIKE', '%' . $searchPost . '%')
-                    ->paginate(10);
-            } else {
-                $posts = Post::with('user')->paginate(10);
+            if ($request->has('search_full'))
+                $queryPost = $this->search($request->search_full, $queryPost);
+
+            $posts = $queryPost->paginate(10);
+
+            if ($request->ajax()) {
+                $html = view('posts.table', compact('posts'))->render();
+                return response()->json(['html' => $html]);
             }
 
             return view('posts.index', compact([
@@ -106,7 +109,7 @@ class PostController extends Controller
             $data['published_at'] = $request->input('published_at') ?? now();
 
             do {
-                $data['slug'] = Str::slug($request->title) . '?' . Str::uuid();
+                $data['slug'] = Str::slug($request->title) . '-' . substr(Str::uuid(), 0, 10);
             } while (Post::query()->where('slug', $data['slug'])->exists());
 
             $post = Post::query()->create($data);
@@ -125,7 +128,6 @@ class PostController extends Controller
             DB::commit();
 
             return redirect()->route('admin.posts.index')->with('success', 'Thao tác thành công');
-
         } catch (\Exception $e) {
 
             DB::rollBack();
@@ -153,7 +155,7 @@ class PostController extends Controller
             $subTitle = 'Chi tiết bài viết';
 
             $post = Post::query()
-                ->with(['tags:id,name', 'categories:id,name,parent_id', 'user:id,name'])
+                ->with(['tags:id,name', 'category:id,name,parent_id', 'user:id,name'])
                 ->findOrFail($id);
 
             return view('posts.show', compact([
@@ -280,6 +282,65 @@ class PostController extends Controller
 
             return response()->json($data = ['status' => 'error', 'message' => 'Lỗi thao tác.']);
         }
+    }
+    private function filter($request, $query)
+    {
+        $filters = [
+            'title' => ['queryWhere' => 'LIKE'],
+            'category_id' => ['queryWhere' => '='],
+            'status' => ['queryWhere' => '='],
+            'user_name_post' => null,
+        ];
+
+        foreach ($filters as $filter => $value) {
+            $filterValue = $request->input($filter);
+
+            if (!empty($filterValue)) {
+
+                if (is_array($value) && !empty($value['queryWhere'])) {
+                    $filterValue = $value['queryWhere'] === 'LIKE' ? "%$filterValue%" : $filterValue;
+                    $query->where($filter, $value['queryWhere'], $filterValue);
+                } else {
+                    if (str_contains($filter, '_')) {
+                        $elementFilter = explode('_', $filter);
+                        $relation = $elementFilter[0];
+                        $field = $elementFilter[1];
+
+                        if (method_exists($query->getModel(), $relation)) {
+
+                            $query->whereHas($relation, function ($query) use ($field, $filterValue) {
+                                $query->where($field, 'LIKE', "%$filterValue%");
+                            });
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!empty($request->input('startDate'))) {
+            $query->where('published_at', '>=', $request->input('startDate'));
+        }
+        if (!empty($request->input('endDate'))) {
+            $query->where('published_at', '<=', $request->input('endDate'));
+        }
+
+        return $query;
+    }
+
+    private function search($searchTerm, $query)
+    {
+        if (!empty($searchTerm)) {
+            $query->where(function ($query) use ($searchTerm) {
+                $query->where('title', 'LIKE', "%$searchTerm%")
+                    ->orWhere('description', 'LIKE', "%$searchTerm%")
+                    ->orWhere('content', 'LIKE', "%$searchTerm%")
+                    ->orWhereHas('user', function ($q) use ($searchTerm) {
+                        $q->where('name', 'LIKE', "%$searchTerm%");
+                    });
+            });
+        }
+
+        return $query;
     }
     public function forceDelete(string $id)
     {

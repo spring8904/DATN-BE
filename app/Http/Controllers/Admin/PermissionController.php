@@ -28,9 +28,13 @@ class PermissionController extends Controller
             if ($request->has('search_full'))
                 $queryPermissions = $this->search($request->search_full, $queryPermissions);
 
-            $permissions = $queryPermissions->get()->groupBy(function ($permission) {
+            $permissions = $queryPermissions->paginate(12);
+
+            $groupedPermissions = $permissions->getCollection()->groupBy(function ($permission) {
                 return Str::before($permission->name, '.');
             });
+
+            $permissions->setCollection(collect($groupedPermissions));
 
             if ($request->ajax()) {
                 $html = view('permissions.table', compact('permissions'))->render();
@@ -158,7 +162,10 @@ class PermissionController extends Controller
     private function search($searchTerm, $query)
     {
         if (!empty($searchTerm)) {
-            $query->where('name', 'LIKE', "%$searchTerm%")->orWhere('description', 'LIKE', "%$searchTerm%");
+            $query->where(function ($query) use ($searchTerm) {
+                $query->where('name', 'LIKE', "%$searchTerm%")
+                    ->orWhere('description', 'LIKE', "%$searchTerm%");
+            });
         }
 
         return $query;

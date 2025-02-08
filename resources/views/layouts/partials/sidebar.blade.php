@@ -20,7 +20,7 @@
             </a>
         </li>
 
-        <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-pages">Quản lý thanh toán</span>
+        <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-pages">Quản lý giao dịch</span>
         </li>
 
         <li class="nav-item">
