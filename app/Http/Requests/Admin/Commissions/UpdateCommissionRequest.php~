@@ -4,7 +4,7 @@ namespace App\Http\Requests\Admin\Commissions;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreCommissionRequest extends FormRequest
+class UpdateCommissionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,17 +22,16 @@ class StoreCommissionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'difficulty_level' => 'required|in:easy,medium,difficult,very_difficult',
-            'system_percentage' => 'required|numeric',
-            'instructor_percentage' => 'required|numeric',
+            'difficulty_level' => 'required',
+            'system_percentage' => 'required',
+            'instructor_percentage' => 'required',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'difficulty_level.required' => 'Vui lòng chọn cấp độ',
-            'difficulty_level.in' => 'Cấp độ không hợp lệ',
+            'difficulty_level.required' => 'Vui lòng chọn độ khó',
             'system_percentage.required' => 'Vui lòng chọn phần trăm của hệ thống',
             'instructor_percentage.required' => 'Vui lòng chọn phần trăm của giáo viên',
         ];
