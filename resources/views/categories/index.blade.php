@@ -1,5 +1,7 @@
 @extends('layouts.app')
-
+@push('page-css')
+    <link href="{{ asset('assets/css/custom.css') }}" rel="stylesheet" type="text/css" />
+@endpush
 @section('content')
     <div class="container-fluid">
 
@@ -12,7 +14,9 @@
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
                             <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+
                             <li class="breadcrumb-item active"><a href="">{{ $subTitle }}</a></li>
+
                         </ol>
                     </div>
                 </div>
@@ -24,8 +28,10 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
+
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h4 class="card-title mb-0">{{ $subTitle }}</h4>
+
                         <div class="d-flex gap-2">
                             <a class="btn btn-sm btn-success" href="">Export dữ liệu</a>
                             <button class="btn btn-sm btn-primary" id="toggleAdvancedSearch">
@@ -71,53 +77,36 @@
                                 </ul>
                             </div>
                         </div>
+
                     </div>
 
                     <div id="advancedSearch" class="card-header" style="display:none;">
+
                         <form>
                             <div class="row">
-                                <div class="col-md-3">
-                                    <label class="form-label">Tiêu đề</label>
-                                    <input class="form-control form-control-sm" name="title" type="text"
-                                           value="{{ request()->input('title') ?? '' }}" placeholder="Nhập tiêu đề..."
-                                           data-advanced-filter>
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="form-label">Tác giả</label>
-                                    <input class="form-control form-control-sm" name="user_name_post" type="text"
-                                           value="{{ request()->input('name') ?? '' }}"
-                                           placeholder="Nhập tên tác giả..."
-                                           data-advanced-filter>
-                                </div>
-                                <div class="col-md-3 mb-3">
+                                <div class="col-md-6 mb-3">
                                     <label class="form-label">Danh mục</label>
-                                    <select class="form-select form-select-sm" name="category_id" id="statusItem"
+                                    <select class="form-select form-select-sm" name="id" id="statusItem"
                                             data-advanced-filter>
                                         <option value="">Chọn danh mục</option>
                                         @foreach ($categories as $category)
                                             <option
-                                                    @selected(request()->input('category_id') === $category->id) value="{{ $category->id }}">
+                                                    @selected(request()->input('id') === $category->id) value="{{ $category->id }}">
                                                 {{ $category->name }}
                                             </option>
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-6">
                                     <label for="statusItem" class="form-label">Trạng thái</label>
                                     <select class="form-select form-select-sm" name="status" id="statusItem"
                                             data-advanced-filter>
                                         <option value="">Chọn trạng thái</option>
-                                        <option @selected(request()->input('status') === 'published') value="published">
-                                            Xuất bản
+                                        <option @selected(request()->input('status') === '1') value="1">
+                                            Hoạt động
                                         </option>
-                                        <option @selected(request()->input('status') === 'private') value="private">
-                                            Riêng tư
-                                        </option>
-                                        <option @selected(request()->input('status') === 'pending') value="pending">Chờ
-                                            xử lí
-                                        </option>
-                                        <option @selected(request()->input('status') === 'draft') value="draft">Bản
-                                            nháp
+                                        <option @selected(request()->input('status') === '0') value="0">
+                                            Không hoạt động
                                         </option>
                                     </select>
                                 </div>
@@ -127,6 +116,7 @@
                                 </div>
                             </div>
                         </form>
+
                     </div>
 
                     <!-- end card header -->
@@ -225,6 +215,26 @@
             </div>
             <!-- end col -->
         </div>
+
+        <!-- end row -->
+    </div>
+
         <!-- end List-customer -->
     </div>
 @endsection
+@push('page-scripts')
+    <script>
+        var routeUrlFilter = "{{ route('admin.categories.index') }}";
+        var routeDeleteAll = "{{ route('admin.categories.destroy', ':itemID') }}";
+
+        $(document).on('click', '#resetFilter', function() {
+            window.location = routeUrlFilter;
+        });
+    </script>
+    <script src="{{ asset('assets/js/custom/custom.js') }}"></script>
+    <script src="{{ asset('assets/js/common/checkall-option.js') }}"></script>
+    <script src="{{ asset('assets/js/common/delete-all-selected.js') }}"></script>
+    <script src="{{ asset('assets/js/common/filter.js') }}"></script>
+    <script src="{{ asset('assets/js/common/search.js') }}"></script>
+    <script src="{{ asset('assets/js/common/handle-ajax-search&filter.js') }}"></script>
+@endpush

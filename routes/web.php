@@ -134,23 +134,29 @@ Route::prefix('admin')->as('admin.')
         #============================== ROUTE BANNER =============================
         Route::prefix('banners')->as('banners.')->group(function () {
             Route::get('/', [BannerController::class, 'index'])->name('index');
+            Route::get('/deleted', [BannerController::class, 'listDeleted'])->name('deleted');
             Route::get('/create', [BannerController::class, 'create'])->name('create')
                 ->can('banner.create');
             Route::post('/', [BannerController::class, 'store'])->name('store')
                 ->can('banner.create');
+
             Route::get('/{id}', [BannerController::class, 'show'])->name('show');
             Route::get('/edit/{banner}', [BannerController::class, 'edit'])->name('edit');
             Route::put('/{banner}', [BannerController::class, 'update'])->name('update')
                 ->can('banner.update');
             Route::delete('/{banner}', [BannerController::class, 'destroy'])->name('destroy')
                 ->can('banner.delete');
+            Route::put('/{banner}/restore-delete', [BannerController::class, 'restoreDelete'])
+                ->name('restoreDelete')->can('banner.update');
+            Route::delete('/{banner}/force-delete', [BannerController::class, 'forceDelete'])
+                ->name('forceDelete')->can('banner.update');
         });
 
         #============================== ROUTE POST =============================
         Route::prefix('posts')->as('posts.')->group(function () {
             Route::get('/', [PostController::class, 'index'])->name('index');
             Route::get('/post-deleted', [PostController::class, 'listPostDelete'])
-            ->name('list-post-delete');
+                ->name('list-post-delete');
             Route::get('/create', [PostController::class, 'create'])->name('create')
                 ->can('post.create');
             Route::post('/', [PostController::class, 'store'])->name('store')
@@ -175,12 +181,17 @@ Route::prefix('admin')->as('admin.')
                 ->can('coupon.create');
             Route::post('/', [CouponController::class, 'store'])->name('store')
                 ->can('coupon.create');
+            Route::get('/deleted', [CouponController::class, 'listDeleted'])->name('deleted');
             Route::get('/{id}', [CouponController::class, 'show'])->name('show');
             Route::get('/edit/{coupon}', [CouponController::class, 'edit'])->name('edit');
             Route::put('/{coupon}', [CouponController::class, 'update'])->name('update')
                 ->can('coupon.update');
             Route::delete('/{coupon}', [CouponController::class, 'destroy'])->name('destroy')
                 ->can('coupon.delete');
+            Route::put('/{coupon}/restore-delete', [CouponController::class, 'restoreDelete'])
+                ->name('restoreDelete')->can('coupon.update');
+            Route::delete('/{coupon}/force-delete', [CouponController::class, 'forceDelete'])
+                ->name('forceDelete')->can('coupon.update');
         });
 
         #============================== ROUTE SETTINGS =============================
@@ -219,8 +230,7 @@ Route::prefix('admin')->as('admin.')
             Route::get('/', [CommissionController::class, 'index'])->name('index');
             Route::get('/create', [CommissionController::class, 'create'])->name('create')
                 ->can('commission.create');
-            Route::post('/', [CommissionController::class, 'store'])->name('store')
-               ;
+            Route::post('/', [CommissionController::class, 'store'])->name('store');
             Route::get('/{id}', [CommissionController::class, 'show'])->name('show');
             Route::get('/edit/{commission}', [CommissionController::class, 'edit'])->name('edit')
                 ->can('commission.update');

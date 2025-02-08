@@ -21,8 +21,9 @@
         <div class="col-sm">
             <div class="d-flex justify-content-sm-end">
                 <div class="search-box ms-2">
-                    <input type="text" name="search_full" id="searchFull" class="form-control search"
-                        placeholder="Tìm kiếm..." data-search value="{{ request()->input('search_full') ?? '' }}">
+                    <input type="text" name="search_full" id="searchFull"
+                        class="form-control search" placeholder="Tìm kiếm..." data-search
+                        value="{{ request()->input('search_full') ?? '' }}">
                     <button id="search-full" class="ri-search-line search-icon m-0 p-0 border-0"
                         style="background: none;"></button>
                 </div>
@@ -44,8 +45,8 @@
                     <th>Xác minh email</th>
                     <th>Trạng Thái</th>
                     <th>Vai Trò</th>
-                    <th>Ngày Tham Gia</th>
                     @if ($roleUser['name'] !== 'deleted')
+                        <th>Ngày Tham Gia</th>
                         <th>Hành Động</th>
                     @else
                         <th>Thời gian xóa</th>
@@ -61,10 +62,11 @@
                                     value="{{ $user->id }}">
                             </div>
                         </th>
-                        <td class="id"><a class="fw-medium link-primary">{{ $loop->index + 1 }}</a></td>
+                        <td class="id"><a
+                                class="fw-medium link-primary">{{ $loop->index + 1 }}</a></td>
                         <td class="customer_name">{{ $user->name }}</td>
                         <td class="email">{{ $user->email }}</td>
-                        <td class="phone">{{ $user->profile->phone ?? 'Chưa nhập' }}</td>
+                        <td class="phone">{{ $user->profile->phone ?? 'Chưa có thông tin' }}</td>
                         <td>
                             <div class="form-check form-switch form-switch-warning">
                                 <input class="form-check-input" type="checkbox" role="switch"
@@ -90,7 +92,9 @@
                         <td>
                             @php
                                 $roleName =
-                                    $roleUser['name'] === 'deleted' ? $user->roles->first()?->name : $roleUser['name'];
+                                    $roleUser['name'] === 'deleted'
+                                        ? $user->roles->first()?->name
+                                        : $roleUser['name'];
                                 $badgeColor = match ($roleName) {
                                     'admin' => 'bg-danger',
                                     'member' => 'bg-primary',
@@ -102,9 +106,11 @@
                                 {{ Str::ucfirst($roleName) }}
                             </span>
                         </td>
-                        <td>
-                            {{ optional(\Carbon\Carbon::parse($user->created_at))->format('d/m/Y') ?? 'NULL' }}
-                        </td>
+                        @if ($roleUser['name'] !== 'deleted')
+                            <td>
+                                {{ optional(\Carbon\Carbon::parse($user->created_at))->format('d/m/Y') ?? 'NULL' }}
+                            </td>
+                        @endif
                         <td>
                             @if ($roleUser['name'] !== 'deleted')
                                 <div class="d-flex gap-2">

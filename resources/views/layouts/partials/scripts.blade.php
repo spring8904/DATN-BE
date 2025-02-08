@@ -44,7 +44,7 @@
 
         $(".sweet-confirm").click(function(event) {
             event.preventDefault();
-
+            
             let deleteUrl = $(this).attr("href");
 
             Swal.fire({

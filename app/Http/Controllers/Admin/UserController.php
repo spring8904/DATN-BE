@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\Users\StoreUserRequest;
 use App\Http\Requests\Admin\Users\UpdateUserRequest;
 use App\Imports\UsersImport;
 use App\Models\User;
+use App\Traits\FilterTrait;
 use App\Traits\LoggableTrait;
 use App\Traits\UploadToCloudinaryTrait;
 use Illuminate\Support\Facades\DB;
@@ -21,7 +22,7 @@ use PhpParser\Node\Stmt\Return_;
 
 class UserController extends Controller
 {
-    use LoggableTrait, UploadToCloudinaryTrait;
+    use LoggableTrait, UploadToCloudinaryTrait, FilterTrait;
 
     const FOLDER = 'users';
     const URLIMAGEDEFAULT = "https://res.cloudinary.com/dvrexlsgx/image/upload/v1732148083/Avatar-trang-den_apceuv_pgbce6.png";
@@ -50,7 +51,7 @@ class UserController extends Controller
                     sum(status = "blocked") as blocked_users
                 ');
 
-            if ($request->hasAny(['code', 'name', 'email', 'profile_phone_user', 'status', 'created_at', 'updated_at'])) {
+            if ($request->hasAny(['code', 'name', 'email', 'profile_phone_user', 'status', 'created_at', 'updated_at', 'start_deleted', 'end_deleted'])) {
                 $queryUsers = $this->filter($request, $queryUsers);
             }
 
@@ -325,13 +326,6 @@ class UserController extends Controller
                 $data['avatar'] = $user->avatar;
 
                 $user->delete();
-
-                if (
-                    isset($data['avatar']) && !empty($data['avatar']) && filter_var($data['avatar'], FILTER_VALIDATE_URL)
-                    && $data['avatar'] !== self::URLIMAGEDEFAULT
-                ) {
-                    $this->deleteImage($data['avatar'], self::FOLDER);
-                }
             }
 
             DB::commit();
@@ -388,7 +382,16 @@ class UserController extends Controller
             } else {
                 $user = User::query()->onlyTrashed()->findOrFail($id);
 
+                $data['avatar'] = $user->avatar;
+
                 $user->forceDelete();
+
+                if (
+                    isset($data['avatar']) && !empty($data['avatar']) && filter_var($data['avatar'], FILTER_VALIDATE_URL)
+                    && $data['avatar'] !== self::URLIMAGEDEFAULT
+                ) {
+                    $this->deleteImage($data['avatar'], self::FOLDER);
+                }
             }
 
             DB::commit();
@@ -458,9 +461,7 @@ class UserController extends Controller
 
             if ($user->trashed()) {
                 $user->forceDelete();
-            } else {
-                $user->delete();
-
+                
                 if (
                     isset($avatar) && !empty($avatar)
                     && filter_var($avatar, FILTER_VALIDATE_URL)
@@ -468,6 +469,8 @@ class UserController extends Controller
                 ) {
                     $this->deleteImage($avatar, self::FOLDER);
                 }
+            } else {
+                $user->delete();
             }
         }
     }
@@ -502,11 +505,12 @@ class UserController extends Controller
         return $roles[$role] ?? ['name' => 'member', 'actor' => 'khách hàng', 'role_name' => 'clients'];
     }
 
-    private function filter($request, $query)
+    private function filter(Request $request, $query)
     {
         $filters = [
             'created_at' => ['queryWhere' => '>='],
             'updated_at' => ['queryWhere' => '<='],
+            'deleted_at' => ['attribute' => ['start_deleted' => '>=', 'end_deleted' => '<=']],
             'code' => ['queryWhere' => 'LIKE'],
             'name' => ['queryWhere' => 'LIKE'],
             'email' => ['queryWhere' => 'LIKE'],
@@ -514,30 +518,7 @@ class UserController extends Controller
             'profile_phone_user' => null,
         ];
 
-        foreach ($filters as $filter => $value) {
-            $filterValue = $request->input($filter);
-
-            if (!empty($filterValue)) {
-
-                if (is_array($value) && !empty($value['queryWhere'])) {
-                    $filterValue = $value['queryWhere'] === 'LIKE' ? "%$filterValue%" : $filterValue;
-                    $query->where($filter, $value['queryWhere'], $filterValue);
-                } else {
-                    if (str_contains($filter, '_')) {
-                        $elementFilter = explode('_', $filter);
-                        $relation = $elementFilter[0];
-                        $field = $elementFilter[1];
-
-                        if (method_exists($query->getModel(), $relation)) {
-
-                            $query->whereHas($relation, function ($query) use ($field, $filterValue) {
-                                $query->where($field, 'LIKE', "%$filterValue%");
-                            });
-                        }
-                    }
-                }
-            }
-        }
+        $query = $this->filterTrait($filters, $request,$query);
 
         return $query;
     }

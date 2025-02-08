@@ -1,70 +1,33 @@
 @extends('layouts.app')
-@push('page-css')
-    <!-- plugin css -->
-    <link href="{{ asset('assets/libs/jsvectormap/css/jsvectormap.min.css') }}" rel="stylesheet" type="text/css" />
-@endpush
-@php
-    $title = 'Danh sách coupon';
-@endphp
+
+
 @section('content')
     <div class="container-fluid">
+
+        <!-- start page title -->
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0">Quản lí mã giảm giá</h4>
+                    <h4 class="mb-sm-0">Quản lí coupons đã xóa</h4>
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Dashboard</a></li>
-                            <li class="breadcrumb-item active">Danh sách coupon</li>
+                            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+                            <li class="breadcrumb-item active">Danh sách coupon đã xóa</li>
                         </ol>
                     </div>
 
                 </div>
             </div>
         </div>
-        <div class="row mb-2">
-            <div class="col-12 col-sm-6 col-md-3">
-                <div class="card text-center h-75">
-                    <div class="card-body">
-                        <h5 class="card-title">Tổng số mã giảm giá</h5>
-                        <p class="card-text fs-4">{{ $couponCounts->total_coupons ?? 0 }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-6 col-md-3">
-                <div class="card text-center h-75">
-                    <div class="card-body">
-                        <h5 class="card-title">Mã giảm giá đang hoạt động</h5>
-                        <p class="card-text fs-4 text-success">{{ $couponCounts->active_coupons ?? 0 }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-6 col-md-3">
-                <div class="card text-center h-75">
-                    <div class="card-body">
-                        <h5 class="card-title">Mã giảm giá sắp hết hạn</h5>
-                        <p class="card-text fs-4 text-warning">{{ $couponCounts->expire_coupons ?? 0 }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-6 col-md-3">
-                <div class="card text-center h-75">
-                    <div class="card-body">
-                        <h5 class="card-title">Mã giảm giá đã được sử dụng</h5>
-                        <p class="card-text fs-4 text-danger">{{ $couponCounts->used_coupons ?? 0 }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!-- end page title -->
+
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h4 class="card-title mb-0">Danh sách mã giảm giá</h4>
+                        <h4 class="card-title mb-0">Quản lí mã giảm giá đã xóa</h4>
                         <div class="d-flex gap-2">
-                            <button class="btn btn-sm btn-danger">Import dữ liệu</button>
-                            <button class="btn btn-sm btn-success">Export dữ liệu</button>
                             <button class="btn btn-sm btn-primary" id="toggleAdvancedSearch">
                                 Tìm kiếm nâng cao
                             </button>
@@ -121,10 +84,11 @@
                             </div>
                         </div>
                     </div>
+                    <!-- end card header -->
 
                     <!-- Tìm kiếm nâng cao -->
                     <div id="advancedSearch" class="card-header" style="display:none;">
-                        <form>
+                        <form id="filterForm">
                             <div class="row">
                                 <div class="col-md-3">
                                     <label class="form-label">Mã giảm giá</label>
@@ -148,22 +112,22 @@
                                     <label for="statusItem" class="form-label">Loại giảm giá</label>
                                     <select class="form-select form-select-sm" name="discount_type" id="statusItem"
                                         data-advanced-filter>
-                                        <option value="">Chọn loại giảm giá</option>
+                                        <option value="">Tất cả loại giảm giá</option>
                                         <option @selected(request()->input('discount_type') === 'percentage') value="percentage">Phần trăm</option>
                                         <option @selected(request()->input('discount_type') === 'fixed') value="fixed">Giảm trực tiếp</option>
                                     </select>
                                 </div>
-                                <div class="col-md-3 mt-2">
+                                <div class="col-md-3">
                                     <label for="statusItem" class="form-label">Trạng thái</label>
                                     <select class="form-select form-select-sm" name="status" id="statusItem"
                                         data-advanced-filter>
-                                        <option value="">Chọn trạng thái</option>
+                                        <option value="">Tất cả trạng thái</option>
                                         <option @selected(request()->input('status') === '1') value="1">Hoạt động</option>
                                         <option @selected(request()->input('status') === '0') value="0">Không hoạt động</option>
                                     </select>
                                 </div>
                                 <div class="mt-3 text-end">
-                                    <button class="btn btn-sm btn-success" type="reset" id="resetFilter">Reset</button>
+                                    <button class="btn btn-sm btn-success" type="reset">Reset</button>
                                     <button class="btn btn-sm btn-primary" id="applyAdvancedFilter">Áp dụng</button>
                                 </div>
 
@@ -172,21 +136,23 @@
                     </div>
 
                     <div class="card-body" id="item_List">
-                        <div class="listjs-table">
+                        <div class="listjs-table" id="customerList">
+
                             <div class="row g-4 mb-3">
                                 <div class="col-sm-auto">
                                     <div>
-                                        <a href="{{ route('admin.coupons.create') }}" class="btn btn-primary add-btn"><i
-                                                class="ri-add-line align-bottom me-1"></i> Thêm mới</a>
-                                                <button class="btn btn-danger" id="deleteSelected">
-                                                    <i class="ri-delete-bin-2-line"> Xóa nhiều</i>
-                                                </button>
+                                        <button class="btn btn-danger" id="restoreSelected">
+                                            <i class=" ri-restart-line"> Khôi phục</i>
+                                        </button>
+                                        <button class="btn btn-danger" id="deleteSelected">
+                                            <i class="ri-delete-bin-2-line"> Xóa nhiều</i>
+                                        </button>
                                     </div>
                                 </div>
                                 <div class="col-sm">
                                     <div class="d-flex justify-content-sm-end">
                                         <div class="search-box ms-2">
-                                            <form action="{{ route('admin.coupons.index') }}" method="get">
+                                            <form action="{{ route('admin.coupons.deleted') }}" method="get">
                                                 <input type="text" name="query" class="form-control search"
                                                     placeholder="Search..." value="{{ old('query') }}">
                                                 <i class="ri-search-line search-icon"></i>
@@ -197,13 +163,12 @@
                             </div>
 
                             <div class="table-responsive table-card mt-3 mb-1">
-                                <table class="table align-middle table-nowrap">
+                                <table class="table align-middle table-nowrap" id="itemList">
                                     <thead class="table-light">
                                         <tr>
                                             <th scope="col" style="width: 50px;">
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="checkAll"
-                                                        value="option">
+                                                    <input class="form-check-input" type="checkbox" id="checkAll">
                                                 </div>
                                             </th>
                                             <th>ID</th>
@@ -214,8 +179,8 @@
                                             <th>Trạng Thái</th>
                                             <th>Ngày bắt đầu</th>
                                             <th>Ngày kết thúc</th>
-                                            <th>Số lượng</th>
-                                            <th>Hành động</th>
+                                            <th>Số lượng sử dụng</th>
+                                            <th>Thời gian xóa</th>
                                         </tr>
                                     </thead>
                                     <tbody class="list form-check-all">
@@ -232,48 +197,25 @@
                                                 <td class="id">{{ $coupon->user_id }}</td>
                                                 <td class="customer_name">{{ $coupon->name }}</td>
                                                 <td class="date">{{ $coupon->code }}</td>
-                                                <td class="date">{{ number_format($coupon->discount_value) }}
-                                                    {{ $coupon->discount_type == 'fixed' ? 'VND' : '%' }}
+                                                <td class="date">{{ $coupon->discount_value }}
+                                                    ({{ $coupon->discount_type }})
                                                 </td>
                                                 @if ($coupon->status)
-                                                    <td class="status"><span class="badge bg-success text-uppercase">
+                                                    <td class="status"><span
+                                                            class="badge bg-success-subtle text-success text-uppercase">
                                                             Active
                                                         </span></td>
                                                 @else
-                                                    <td class="status"><span class="badge bg-danger text-uppercase">
+                                                    <td class="status"><span
+                                                            class="badge bg-danger-subtle text-danger text-uppercase">
                                                             InActive
                                                         </span></td>
                                                 @endif
 
                                                 <td class="date">{{ $coupon->start_date }}</td>
                                                 <td class="date">{{ $coupon->expire_date }}</td>
-                                                <td class="date">{{ $coupon->used_count }}</td>
-                                                <td>
-                                                    <div class="d-flex gap-2">
-                                                        <div class="remove">
-                                                            <a href="{{ route('admin.coupons.edit', $coupon->id) }}">
-                                                                <button class="btn btn-sm btn-warning edit-item-btn">
-                                                                    <span class="ri-edit-box-line"></span>
-                                                                </button>
-                                                            </a>
-                                                        </div>
-                                                        <div class="edit">
-                                                            <a href="{{ route('admin.coupons.show', $coupon->id) }}">
-                                                                <button class="btn btn-sm btn-info edit-item-btn">
-                                                                    <span class="ri-folder-user-line"></span>
-                                                                </button>
-                                                            </a>
-                                                        </div>
-                                                        <div class="remove">
-                                                            <a href="{{ route('admin.coupons.destroy', $coupon->id) }}"
-                                                                class="sweet-confirm btn btn-sm btn-danger remove-item-btn">
-                                                                <span class="ri-delete-bin-7-line"></span>
-                                                            </a>
-                                                        </div>
-
-                                                    </div>
-                                                </td>
-
+                                                <td class="date">{{ $coupon->used_count }}</td>9
+                                                <td class="date">{{ $coupon->deleted_at }}</td>
 
                                             </tr>
                                         @endforeach
@@ -292,7 +234,9 @@
                                 </div>
                             </div>
 
-                            {{ $coupons->appends(request()->query())->links() }}
+                            {{ $coupons->links() }}
+
+
                         </div>
                     </div><!-- end card -->
                 </div>
@@ -301,17 +245,14 @@
             <!-- end col -->
         </div>
         <!-- end row -->
-
     </div>
 @endsection
+
 @push('page-scripts')
     <script>
         var routeUrlFilter = "{{ route('admin.coupons.index') }}";
-        var routeDeleteAll = "{{ route('admin.coupons.destroy', ':itemID') }}";
-        function updateRange() {
-        let rangeValue = document.getElementById("amountMinRange").value;
-        document.getElementById("amountMin").textContent = rangeValue;
-    }
+        var routeDeleteAll = "{{ route('admin.coupons.forceDelete', ':itemID') }}";
+        var routeRestoreUrl = "{{ route('admin.coupons.restoreDelete', ':itemID') }}";
     </script>
     <script src="{{ asset('assets/js/custom/custom.js') }}"></script>
     <script src="{{ asset('assets/js/common/checkall-option.js') }}"></script>
@@ -319,6 +260,5 @@
     <script src="{{ asset('assets/js/common/restore-all-selected.js') }}"></script>
     <script src="{{ asset('assets/js/common/filter.js') }}"></script>
     <script src="{{ asset('assets/js/common/search.js') }}"></script>
-    <script src="{{ asset('assets/js/common/resetFilter.js') }}"></script>
     <script src="{{ asset('assets/js/common/handle-ajax-search&filter.js') }}"></script>
 @endpush
