@@ -46,6 +46,7 @@
                                             <span class="text-danger">{{ $errors->first('name') }}</span>
                                         @endif
                                     </div>
+
                                     <div class="col-xxl-12 col-md-12">
                                         <label for="placeholderInput" class="form-label">Danh mục gốc</label>
                                         <select class="form-control mb-3 select2-categories" name="parent_id">
@@ -70,6 +71,7 @@
                                             </label>
                                         </div>
                                     </div>
+
                                 </div>
                                 <div class="mt-3">
                                     <button type="submit" class="btn btn-primary waves-effect waves-light">Thêm
@@ -89,6 +91,7 @@
         </div>
         <!-- end row -->
 
-
     </div>
 @endsection
+
+

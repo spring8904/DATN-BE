@@ -12,7 +12,9 @@
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
                             <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+
                             <li class="breadcrumb-item active"><a href="">{{ $subTitle }}</a></li>
+
                         </ol>
                     </div>
                 </div>
@@ -24,8 +26,10 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
+
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h4 class="card-title mb-0">{{ $subTitle }}</h4>
+
                         <div class="d-flex gap-2">
                             <a class="btn btn-sm btn-success" href="">Export dữ liệu</a>
                             <button class="btn btn-sm btn-primary" id="toggleAdvancedSearch">
@@ -71,9 +75,11 @@
                                 </ul>
                             </div>
                         </div>
+
                     </div>
 
                     <div id="advancedSearch" class="card-header" style="display:none;">
+
                         <form>
                             <div class="row">
                                 <div class="col-md-3">
@@ -127,6 +133,7 @@
                                 </div>
                             </div>
                         </form>
+
                     </div>
 
                     <!-- end card header -->
@@ -225,6 +232,11 @@
             </div>
             <!-- end col -->
         </div>
+
+        <!-- end row -->
+    </div>
+
         <!-- end List-customer -->
     </div>
 @endsection
+
