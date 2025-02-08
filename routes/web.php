@@ -17,6 +17,9 @@ use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\Admin\WithDrawalsRequestController;
 use App\Http\Controllers\Admin\ApprovalCourseController;
 use App\Http\Controllers\Admin\CommissionController;
+use App\Http\Controllers\Admin\AnalyticController;
+use App\Http\Controllers\Admin\RevenueStatisticController;
+use App\Http\Controllers\Admin\TopCourseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -146,6 +149,8 @@ Route::prefix('admin')->as('admin.')
         #============================== ROUTE POST =============================
         Route::prefix('posts')->as('posts.')->group(function () {
             Route::get('/', [PostController::class, 'index'])->name('index');
+            Route::get('/post-deleted', [PostController::class, 'listPostDelete'])
+            ->name('list-post-delete');
             Route::get('/create', [PostController::class, 'create'])->name('create')
                 ->can('post.create');
             Route::post('/', [PostController::class, 'store'])->name('store')
@@ -157,6 +162,10 @@ Route::prefix('admin')->as('admin.')
                 ->can('post.update');
             Route::delete('/{post}', [PostController::class, 'destroy'])->name('destroy')
                 ->can('post.delete');
+            Route::delete('/{post}/force-delete', [PostController::class, 'forceDelete'])
+                ->name('forceDelete')->can('post.update');
+            Route::put('/{post}/restore-delete', [PostController::class, 'restoreDelete'])
+                ->name('restoreDelete')->can('post.update');
         });
 
         #============================== ROUTE COUPON =============================
@@ -264,6 +273,17 @@ Route::prefix('admin')->as('admin.')
                 Route::get('/check-transaction', [TransactionController::class, 'checkTransaction'])
                     ->name('check-transaction');
             });
+
+        #============================== ROUTE ANALYTICS =============================
+        Route::get('/analytics', [AnalyticController::class, 'index'])
+            ->name('analytics.index');
+
+        #============================== ROUTE REVENUE STATISTICS =============================
+        Route::get('/revenue-statistics', [RevenueStatisticController::class, 'index'])
+            ->name('revenue-statistics.index');
+        #============================== ROUTE TOP COURSE =============================
+        Route::get('/top-courses', [TopCourseController::class, 'index'])
+            ->name('top-courses.index');
 
         #============================== ROUTE NOTIFICATIONS =============================
         Route::prefix('notifications')
