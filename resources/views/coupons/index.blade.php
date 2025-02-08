@@ -80,17 +80,17 @@
                                             <div class="row">
                                                 <li>
                                                     <label for="amountRange" class="form-label">Số lượt sử dụng</label>
-                    
+
                                                     <div class="d-flex justify-content-between">
                                                         <span id="amountMin">0</span>
                                                         <span id="amountMax">1000</span>
                                                     </div>
-                    
+
                                                     <div class="d-flex justify-content-between">
                                                         <input type="range" class="form-range w-100" id="amountMinRange"
                                                             name="used_count" min="0" max="1000" step="10"
                                                             value="0" oninput="updateRange()" data-filter>
-                                                        
+
                                                     </div>
                                                 </li>
                                                 <li class="col-6">
@@ -114,7 +114,7 @@
                                                 <button class="btn btn-sm btn-primary w-100" id="applyFilter">Áp
                                                     dụng</button>
                                             </li>
-                                            
+
                                         </div>
                                     </div>
                                 </ul>
@@ -214,7 +214,7 @@
                                             <th>Trạng Thái</th>
                                             <th>Ngày bắt đầu</th>
                                             <th>Ngày kết thúc</th>
-                                            <th>Số lượng sử dụng</th>
+                                            <th>Số lượng</th>
                                             <th>Hành động</th>
                                         </tr>
                                     </thead>
