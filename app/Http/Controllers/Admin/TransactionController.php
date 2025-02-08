@@ -70,6 +70,25 @@ class TransactionController extends Controller
         }
     }
 
+    public function checkTransaction(Request $request)
+    {
+        try {
+            $transaction = Transaction::query()
+                ->with([
+                    'invoice.user',
+                    'invoice.course',
+                ])
+                ->where('transaction_code', $request->transaction_code)
+                ->firstOrFail();
+
+            return response()->json(['transaction' => $transaction]);
+        } catch (\Exception $e) {
+            $this->logError($e);
+
+            return response()->json(['error' => 'Không tìm thấy giao dịch']);
+        }
+    }
+
 
     private function filter($request, $query)
     {

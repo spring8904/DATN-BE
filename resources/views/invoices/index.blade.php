@@ -124,7 +124,7 @@
                                         value="{{ request()->input('course_name_invoice') ?? '' }}" data-advanced-filter>
                                 </div>
                                 <div class="mt-3 text-end">
-                                    <button class="btn btn-sm btn-success" type="reset" id="resetFilter">Reset</button>
+                                    <button class="btn btn-sm btn-success" type="reset">Reset</button>
                                     <button class="btn btn-sm btn-primary" id="applyAdvancedFilter">Áp dụng</button>
                                 </div>
                             </div>
@@ -148,25 +148,36 @@
                                         </tr>
                                     </thead>
                                     <tbody class="list">
-                                        @foreach ($invoices as $invoice)
-                                            <tr>
-                                                <td>{{ $loop->index + 1 }}</td>
-                                                <td><span class="text-danger fw-bold">{{ $invoice->user->name }}</span>
-                                                </td>
-                                                <td>{{ $invoice->course->code }}</td>
-                                                <td>{{ Str::limit($invoice->course->name, 40) }}</td>
-                                                <td>{{ number_format($invoice->final_total) }} VND</td>
-                                                <td>
-                                                    <span class="badge bg-primary">Hoàn thành</span>
-                                                </td>
-                                                <td>
-                                                    {!! $invoice->created_at ?\Carbon\Carbon::parse($invoice->created_at)->format('d/m/Y') : '<span class="btn btn-sm btn-soft-warning">Trống</span>' !!}
-                                                </td>
-                                                <td>
-                                                    {!! $invoice->updated_at ?\Carbon\Carbon::parse($invoice->updated_at)->format('d/m/Y') : '<span class="btn btn-sm btn-soft-warning">Không thay đổi</span>' !!}
-                                                </td>
-                                            </tr>
-                                        @endforeach
+                                    @foreach ($invoices as $invoice)
+                                        <tr>
+                                            <td>{{ $loop->index + 1 }}</td>
+                                            <td>{{ $invoice->code }}</td>
+                                            <td><span class="text-danger fw-bold">{{ $invoice->user->name }}</span>
+                                            </td>
+                                            <td>
+                                                <img style="width: 100px; height: 100px"
+                                                     src="{{ $invoice->course->thumbnail }}"
+                                                     class="object-fit-cover rounded" alt="">
+                                            </td>
+                                            <td>{{ Str::limit($invoice->course->name, 40) }}</td>
+                                            <td>
+                                                {{ $invoice->course->user->name ?? ''}}
+                                            </td>
+                                            <td>{{ number_format($invoice->final_total) }} VND</td>
+                                            <td>
+                                                <span class="badge bg-primary">Hoàn thành</span>
+                                            </td>
+                                            <td>{{ optional(\Carbon\Carbon::parse($invoice->created_at))->format('d/m/Y') ?? 'NULL' }}
+                                            </td>
+                                           <td>
+                                               <a href="">
+                                                   <button class="btn btn-sm btn-info edit-item-btn">
+                                                       <span class="ri-eye-line"></span>
+                                                   </button>
+                                               </a>
+                                           </td>
+                                        </tr>
+                                    @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -200,8 +211,10 @@
             return value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
         }
         updateRange();
-        $(document).on('click', '#resetFilter', function() {
-            window.location = routeUrlFilter;
+        $(document).on('click', '#resetInput', function() {
+            $('#amountMinRange').val(0);
+            $('#amountMaxRange').val(99990000);
+            updateRange();
         });
     </script>
     <script src="{{ asset('assets/js/custom/custom.js') }}"></script>

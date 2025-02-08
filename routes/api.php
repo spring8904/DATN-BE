@@ -74,7 +74,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
         #============================== ROUTE NOTIFICATION =============================
         Route::prefix('notifications')
-            ->group(function () {});
+            ->group(function () {
+            });
     });
 
     #============================== ROUTE TRANSACTION =============================
@@ -87,7 +88,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     #============================== ROUTE LEARNING =============================
     Route::prefix('learning-path')
-        ->group(function () {});
+        ->group(function () {
+        });
 
     #============================== ROUTE INSTRUCTOR MANAGE =============================
     Route::prefix('instructor')
@@ -95,7 +97,8 @@ Route::middleware('auth:sanctum')->group(function () {
         ->as('instructor.')
         ->group(function () {
             Route::prefix('statistics')
-                ->group(function () {});
+                ->group(function () {
+                });
 
             Route::prefix('manage')
                 ->group(function () {
@@ -154,7 +157,8 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     #============================== ROUTE COUPON =============================
-    Route::prefix('coupons')->as('coupons.')->group(function () {});
+    Route::prefix('coupons')->as('coupons.')->group(function () {
+    });
 
     #============================== ROUTE TRANSACTION =============================
     Route::prefix('transactions')->as('transactions.')->group(function () {
@@ -166,15 +170,18 @@ Route::middleware('auth:sanctum')->group(function () {
 
     #============================== ROUTE CHAT =============================
     Route::prefix('chats')
-        ->group(function () {});
+        ->group(function () {
+        });
 
     #============================== ROUTE COMMENT =============================
     Route::prefix('comments')
-        ->group(function () {});
+        ->group(function () {
+        });
 
     #============================== ROUTE RATING =============================
     Route::prefix('ratings')
-        ->group(function () {});
+        ->group(function () {
+        });
 
     #============================== ROUTE LIVESTREAM =============================
     Route::prefix('livestreams')
@@ -185,7 +192,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
 #============================== ROUTE COURSE =============================
 Route::prefix('courses')
-    ->group(function () {});
+    ->group(function () {
+    });
 
 #============================== ROUTE POST =============================
 Route::prefix('posts')->as('posts.')->group(function () {
@@ -202,4 +210,9 @@ Route::get('/categories', [\App\Http\Controllers\API\Common\CategoryController::
 Route::prefix('support-banks')->group(function () {
     Route::post('/', [SupportBankController::class, 'index']);
     Route::post('/generate-qr', [SupportBankController::class, 'generateQR']);
+});
+
+#============================== ROUTE QA SYSTEM =================================
+Route::prefix('qa-systems')->group(function () {
+    Route::get('/', [\App\Http\Controllers\API\Common\QaSystemController::class,'index']);
 });
