@@ -65,10 +65,10 @@
                                                 <div class="d-flex justify-content-between">
                                                     <input type="range" class="form-range w-50" id="amountMinRange"
                                                         name="amount_min" min="10000" max="49990000" step="10000"
-                                                        value="10000" oninput="updateRange()" data-filter>
+                                                        value="{{ request()->input('amount_min') ?? 10000 }}" oninput="updateRange()" data-filter>
                                                     <input type="range" class="form-range w-50" id="amountMaxRange"
                                                         name="amount_max" min="50000000" max="99990000" step="10000"
-                                                        value="99990000" oninput="updateRange()" data-filter>
+                                                        value="{{ request()->input('amount_max') ?? 99990000 }}" oninput="updateRange()" data-filter>
                                                 </div>
                                             </li>
                                             <div class="row">
@@ -90,8 +90,8 @@
                                                 </li>
                                             </div>
                                             <li class="mt-2 d-flex gap-1">
-                                                <button class="btn btn-sm btn-success flex-grow-1" id="resetInput"
-                                                    type="reset">Reset</button>
+                                                <button class="btn btn-sm btn-success flex-grow-1" type="reset"
+                                                    id="resetFilter">Reset</button>
                                                 <button class="btn btn-sm btn-primary flex-grow-1" id="applyFilter">Áp
                                                     dụng</button>
                                             </li>
@@ -124,7 +124,7 @@
                                         value="{{ request()->input('course_name_invoice') ?? '' }}" data-advanced-filter>
                                 </div>
                                 <div class="mt-3 text-end">
-                                    <button class="btn btn-sm btn-success" type="reset">Reset</button>
+                                    <button class="btn btn-sm btn-success" type="reset" id="resetFilter">Reset</button>
                                     <button class="btn btn-sm btn-primary" id="applyAdvancedFilter">Áp dụng</button>
                                 </div>
                             </div>
@@ -159,9 +159,11 @@
                                                 <td>
                                                     <span class="badge bg-primary">Hoàn thành</span>
                                                 </td>
-                                                <td>{{ optional(\Carbon\Carbon::parse($invoice->created_at))->format('d/m/Y') ?? 'NULL' }}
+                                                <td>
+                                                    {!! $invoice->created_at ?\Carbon\Carbon::parse($invoice->created_at)->format('d/m/Y') : '<span class="btn btn-sm btn-soft-warning">Trống</span>' !!}
                                                 </td>
-                                                <td>{{ optional(\Carbon\Carbon::parse($invoice->updated_at))->format('d/m/Y') ?? 'NULL' }}
+                                                <td>
+                                                    {!! $invoice->updated_at ?\Carbon\Carbon::parse($invoice->updated_at)->format('d/m/Y') : '<span class="btn btn-sm btn-soft-warning">Không thay đổi</span>' !!}
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -198,10 +200,8 @@
             return value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
         }
         updateRange();
-        $(document).on('click', '#resetInput', function() {
-            $('#amountMinRange').val(0);
-            $('#amountMaxRange').val(99990000);
-            updateRange();
+        $(document).on('click', '#resetFilter', function() {
+            window.location = routeUrlFilter;
         });
     </script>
     <script src="{{ asset('assets/js/custom/custom.js') }}"></script>

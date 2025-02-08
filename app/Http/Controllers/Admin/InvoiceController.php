@@ -17,7 +17,7 @@ class InvoiceController extends Controller
             $subTitle = 'Khóa học đã bán';
 
             $queryInvoice = Invoice::query()->latest('id')
-            ->where('status', 'completed')->with('user','course');
+                ->where('status', 'completed')->with('user', 'course');
 
             if ($request->hasAny(['user_name_invoice', 'course_code_invoice', 'course_name_invoice', 'amount_min', 'amount_max', 'created_at', 'updated_at']))
                 $queryInvoice = $this->filter($request, $queryInvoice);
@@ -47,40 +47,39 @@ class InvoiceController extends Controller
             'created_at' => ['queryWhere' => '>='],
             'updated_at' => ['queryWhere' => '<='],
             'final_total' => ['queryWhere' => 'BETWEEN', 'attribute' => ['amount_min', 'amount_max']],
-            'user_name_invoice' => null, 
-            'course_code_invoice' => null, 
+            'user_name_invoice' => null,
+            'course_code_invoice' => null,
             'course_name_invoice' => null,
         ];
 
         foreach ($filters as $filter => $value) {
             $filterValue = $request->input($filter);
 
-            if(!empty($filterValue)){
+            if (is_array($value) && !empty($value['queryWhere'])) {
 
-                if (is_array($value) && !empty($value['queryWhere'])) {
-
-                    if ($value['queryWhere'] !== 'BETWEEN') {
-                            $query->where($filter, $value['queryWhere'], $filterValue);
-                    } else {
-                        $filterValueBetweenA = $request->input($value['attribute'][0]);
-                        $filterValueBetweenB = $request->input($value['attribute'][1]);
-    
-                        if (!empty($filterValueBetweenA) && !empty($filterValueBetweenB)) {
-                            $query->whereBetween($filter, [$filterValueBetweenA, $filterValueBetweenB]);
-                        }
+                if ($value['queryWhere'] !== 'BETWEEN') {
+                    if(!empty($filterValue)){
+                        $query->where($filter, $value['queryWhere'], $filterValue);
                     }
-                }else{
-                    if (str_contains( $filter, '_')) {
-                        $elementFilter = explode('_', $filter);
-                        $relation = $elementFilter[0];
-                        $field = $elementFilter[1];
-                    
-                        if (method_exists($query->getModel(), $relation)) {
-                    
-                            $query->whereHas($relation, function ($query) use ($field, $filterValue) {
-                                $query->where($field, 'LIKE', "%$filterValue%");
-                            });
-                        }
+                } else {
+                    $filterValueBetweenA = $request->input($value['attribute'][0]);
+                    $filterValueBetweenB = $request->input($value['attribute'][1]);
+
+                    if (!empty($filterValueBetweenA) && !empty($filterValueBetweenB)) {
+                        $query->whereBetween($filter, [$filterValueBetweenA, $filterValueBetweenB]);
+                    }
+                }
+            } else {
+                if (str_contains($filter, '_') && !empty($filterValue)) {
+                    $elementFilter = explode('_', $filter);
+                    $relation = $elementFilter[0];
+                    $field = $elementFilter[1];
+
+                    if (method_exists($query->getModel(), $relation)) {
+
+                        $query->whereHas($relation, function ($query) use ($field, $filterValue) {
+                            $query->where($field, 'LIKE', "%$filterValue%");
+                        });
                     }
                 }
             }
@@ -92,16 +91,16 @@ class InvoiceController extends Controller
     private function search($searchTerm, $query)
     {
         if (!empty($searchTerm)) {
-        $query->where(function ($query) use ($searchTerm) {
-            $query->whereHas('user', function ($query) use ($searchTerm) {
-                $query->where('name', 'LIKE', "%$searchTerm%");
-            })
-            ->orWhereHas('course', function ($query) use ($searchTerm) {
-                $query->where('name', 'LIKE', "%$searchTerm%")
-                      ->orWhere('code', 'LIKE', "%$searchTerm%");
+            $query->where(function ($query) use ($searchTerm) {
+                $query->whereHas('user', function ($query) use ($searchTerm) {
+                    $query->where('name', 'LIKE', "%$searchTerm%");
+                })
+                    ->orWhereHas('course', function ($query) use ($searchTerm) {
+                        $query->where('name', 'LIKE', "%$searchTerm%")
+                            ->orWhere('code', 'LIKE', "%$searchTerm%");
+                    });
             });
-        });
-    }
+        }
 
         return $query;
     }

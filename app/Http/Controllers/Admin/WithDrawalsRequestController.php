@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Exports\WithDrawalExport;
 use App\Http\Controllers\Controller;
+use App\Models\SupportedBank;
 use App\Models\WithdrawalRequest;
 use App\Traits\LoggableTrait;
 use Illuminate\Http\Request;
@@ -33,13 +34,14 @@ class WithDrawalsRequestController extends Controller
                 $queryWithdrawals = $this->search($request, $queryWithdrawals);
 
             $withdrawals = $queryWithdrawals->paginate(10);
+            $supportedBank = SupportedBank::query()->select('short_name', 'name', 'logo', 'code')->get();
 
             if ($request->ajax()) {
                 $html = view('withdrawals.table', compact('withdrawals'))->render();
                 return response()->json(['html' => $html]);
             }
 
-            return view('withdrawals.index', compact(['title', 'subTitle', 'withdrawals', 'countWithdrawals']));
+            return view('withdrawals.index', compact(['title', 'subTitle', 'withdrawals', 'countWithdrawals', 'supportedBank']));
         } catch (\Exception $e) {
 
             $this->logError($e);
