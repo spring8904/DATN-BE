@@ -47,7 +47,10 @@ class LessonController extends Controller
             $lessonable = $this->updateOrCreateLessonable($data);
             $lesson = $this->createLesson($data, $lessonable);
 
-            return $this->respondCreated('Tạo bài học thành công', $lesson->load('lessonable'));
+            return $this->respondCreated([
+                'message' => 'Tạo bài học thành công', 
+                'data' => $lesson->load('lessonable')
+            ]);
         } catch (\Exception $e) {
             $this->logError($e, $request->all());
 
