@@ -15,7 +15,7 @@
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
                             <li class="breadcrumb-item active">Danh sách coupon</li>
                         </ol>
                     </div>
@@ -178,9 +178,9 @@
                                     <div>
                                         <a href="{{ route('admin.coupons.create') }}" class="btn btn-primary add-btn"><i
                                                 class="ri-add-line align-bottom me-1"></i> Thêm mới</a>
-                                                <button class="btn btn-danger" id="deleteSelected">
-                                                    <i class="ri-delete-bin-2-line"> Xóa nhiều</i>
-                                                </button>
+                                        <button class="btn btn-danger" id="deleteSelected">
+                                            <i class="ri-delete-bin-2-line"> Xóa nhiều</i>
+                                        </button>
                                     </div>
                                 </div>
                                 <div class="col-sm">
@@ -308,10 +308,15 @@
     <script>
         var routeUrlFilter = "{{ route('admin.coupons.index') }}";
         var routeDeleteAll = "{{ route('admin.coupons.destroy', ':itemID') }}";
+
         function updateRange() {
-        let rangeValue = document.getElementById("amountMinRange").value;
-        document.getElementById("amountMin").textContent = rangeValue;
-    }
+            let rangeValue = document.getElementById("amountMinRange").value;
+            document.getElementById("amountMin").textContent = rangeValue;
+        }
+
+        $(document).on('click', '#resetFilter', function() {
+            window.location = routeUrlFilter;
+        });
     </script>
     <script src="{{ asset('assets/js/custom/custom.js') }}"></script>
     <script src="{{ asset('assets/js/common/checkall-option.js') }}"></script>

@@ -6,13 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Coupons\StoreCouponRequest;
 use App\Http\Requests\Admin\Coupons\UpdateCouponRequest;
 use App\Models\Coupon;
+use App\Traits\FilterTrait;
 use App\Traits\LoggableTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class CouponController extends Controller
 {
-    use LoggableTrait;
+    use LoggableTrait, FilterTrait;
     /**
      * Display a listing of the resource.
      */
@@ -20,7 +21,6 @@ class CouponController extends Controller
     {
         $queryCoupons = Coupon::query();
 
-        // Kiểm tra nếu có từ khóa tìm kiếm
         if ($request->has('query') && $request->input('query')) {
             $search = $request->input('query');
             $queryCoupons->where('name', 'like', "%$search%")
@@ -29,23 +29,23 @@ class CouponController extends Controller
 
         if ($request->hasAny(['code', 'name', 'user_id', 'discount_type', 'status', 'used_count', 'start_date', 'expire_date'])) {
             $queryCoupons = $this->filter($request, $queryCoupons);
+        }
 
-        $queryCouponCounts = Coupon::query()
-        ->selectRaw('
+        $couponCounts = Coupon::query()
+            ->selectRaw('
             COUNT(id) as total_coupons,
             SUM(CASE WHEN status = 1 THEN 1 ELSE 0 END) as active_coupons,
             SUM(CASE WHEN expire_date < NOW() THEN 1 ELSE 0 END) as expire_coupons,
             SUM(CASE WHEN used_count > 0 THEN 1 ELSE 0 END) as used_coupons
-        ');    
-  
-        // Lấy dữ liệu và phân trang
+        ')->first();
+
         $coupons = $queryCoupons->orderBy('id', 'desc')->paginate(10);
-        $couponCounts = $queryCouponCounts->first();
+
         if ($request->ajax()) {
             $html = view('coupons.table', compact('coupons'))->render();
             return response()->json(['html' => $html]);
         }
-        return view('coupons.index', compact('coupons','couponCounts'));
+        return view('coupons.index', compact('coupons', 'couponCounts'));
     }
 
     /**
@@ -139,16 +139,26 @@ class CouponController extends Controller
     {
         $queryCoupons = Coupon::onlyTrashed();
 
+        $coupon_deleted_at = true;
+
         if ($request->has('query') && $request->input('query')) {
             $search = $request->input('query');
             $queryCoupons->where('name', 'like', "%$search%")
                 ->orWhere('code', 'like', "%$search%");
         }
 
+        if ($request->hasAny(['code', 'name', 'user_id', 'discount_type', 'status', 'used_count', 'start_deleted', 'end_deleted'])) {
+            $queryCoupons = $this->filter($request, $queryCoupons);
+        }
+
         $coupons = $queryCoupons->orderBy('id', 'desc')->paginate(10);
-        
+
+        if ($request->ajax()) {
+            $html = view('coupons.table', compact(['coupons', 'coupon_deleted_at']))->render();
+            return response()->json(['html' => $html]);
+        }
+
         return view('coupons.deleted', compact('coupons'));
-        
     }
 
     public function forceDelete(string $id)
@@ -222,7 +232,7 @@ class CouponController extends Controller
             ]);
         }
     }
-    
+
     private function deleteCoupons(array $couponID)
     {
 
@@ -234,7 +244,6 @@ class CouponController extends Controller
                 $coupon->forceDelete();
             } else {
                 $coupon->delete();
-
             }
         }
     }
@@ -250,7 +259,7 @@ class CouponController extends Controller
             }
         }
     }
-    private function filter($request, $query)
+    private function filter(Request $request, $query)
     {
         $filters = [
             'start_date' => ['queryWhere' => '>='],
@@ -260,27 +269,12 @@ class CouponController extends Controller
             'user_id' => ['queryWhere' => 'LIKE'],
             'status' => ['queryWhere' => '='],
             'discount_type' => ['queryWhere' => '='],
-            'used_count' => ['queryWhere' => '<=']
+            'used_count' => ['queryWhere' => '>='],
+            'deleted_at' => ['attribute' => ['start_deleted' => '>=', 'end_deleted' => '<=',]],
         ];
 
-        foreach ($filters as $filter => $value) {
-            $filterValue = $request->input($filter);
-
-            if ($filterValue !== null) {
-                if (is_array($value) && !empty($value['queryWhere'])) {
-
-                    if ($value['queryWhere'] === 'BETWEEN') {
-                            $query->whereBetween($filter, [$filterValue, 10000]);
-                    } else {
-                        $filterValue = $value['queryWhere'] === 'LIKE' ? "%$filterValue%" : $filterValue;
-                        $query->where($filter, $value['queryWhere'], $filterValue);
-                    }
-                }
-            }
-        }
+        $query = $this->filterTrait($filters, $request, $query);
 
         return $query;
     }
-
-    
 }

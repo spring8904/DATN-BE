@@ -36,10 +36,16 @@
                     <th>Mã giảm giá</th>
                     <th>Giảm giá</th>
                     <th>Trạng Thái</th>
-                    <th>Ngày bắt đầu</th>
-                    <th>Ngày kết thúc</th>
+                    @if (empty($coupon_deleted_at))
+                        <th>Ngày bắt đầu</th>
+                        <th>Ngày kết thúc</th>
+                    @endif
                     <th>Số lượng sử dụng</th>
-                    <th>Hành động</th>
+                    @if (!empty($coupon_deleted_at))
+                        <th>Thời gian xóa</th>
+                    @else
+                        <th>Hành động</th>
+                    @endif
                 </tr>
             </thead>
             <tbody class="list form-check-all">
@@ -67,35 +73,40 @@
                                     InActive
                                 </span></td>
                         @endif
-
-                        <td class="date">{{ $coupon->start_date }}</td>
-                        <td class="date">{{ $coupon->expire_date }}</td>
+                        @if (empty($coupon_deleted_at) && !$coupon->deleted_at)
+                            <td class="date">{{ $coupon->start_date }}</td>
+                            <td class="date">{{ $coupon->expire_date }}</td>
+                        @endif
                         <td class="date">{{ $coupon->used_count }}</td>
-                        <td>
-                            <div class="d-flex gap-2">
-                                <div class="remove">
-                                    <a href="{{ route('admin.coupons.edit', $coupon->id) }}">
-                                        <button class="btn btn-sm btn-warning edit-item-btn">
-                                            <span class="ri-edit-box-line"></span>
-                                        </button>
-                                    </a>
-                                </div>
-                                <div class="edit">
-                                    <a href="{{ route('admin.coupons.show', $coupon->id) }}">
-                                        <button class="btn btn-sm btn-info edit-item-btn">
-                                            <span class="ri-folder-user-line"></span>
-                                        </button>
-                                    </a>
-                                </div>
-                                <div class="remove">
-                                    <a href="{{ route('admin.coupons.destroy', $coupon->id) }}"
-                                        class="sweet-confirm btn btn-sm btn-danger remove-item-btn">
-                                        <span class="ri-delete-bin-7-line"></span>
-                                    </a>
-                                </div>
+                        @if (!empty($coupon_deleted_at) && $coupon->deleted_at)
+                            <td class="date">{{ $coupon->deleted_at }}</td>
+                        @else
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <div class="remove">
+                                        <a href="{{ route('admin.coupons.edit', $coupon->id) }}">
+                                            <button class="btn btn-sm btn-warning edit-item-btn">
+                                                <span class="ri-edit-box-line"></span>
+                                            </button>
+                                        </a>
+                                    </div>
+                                    <div class="edit">
+                                        <a href="{{ route('admin.coupons.show', $coupon->id) }}">
+                                            <button class="btn btn-sm btn-info edit-item-btn">
+                                                <span class="ri-folder-user-line"></span>
+                                            </button>
+                                        </a>
+                                    </div>
+                                    <div class="remove">
+                                        <a href="{{ route('admin.coupons.destroy', $coupon->id) }}"
+                                            class="sweet-confirm btn btn-sm btn-danger remove-item-btn">
+                                            <span class="ri-delete-bin-7-line"></span>
+                                        </a>
+                                    </div>
 
-                            </div>
-                        </td>
+                                </div>
+                            </td>
+                        @endif
 
 
                     </tr>
