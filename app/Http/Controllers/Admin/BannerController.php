@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Banners\StoreBannerRequest;
-use App\Http\Requests\Admin\StoreBannerRequest as AdminStoreBannerRequest;
+use App\Http\Requests\Admin\StoreBannerRequest;
 use App\Http\Requests\API\Banners\UpdateBannerRequest;
 use App\Models\Banner;
+use App\Traits\FilterTrait;
 use App\Traits\LoggableTrait;
 use App\Traits\UploadToCloudinaryTrait;
 use Illuminate\Http\Request;
@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 
 class BannerController extends Controller
 {
-    use LoggableTrait, UploadToCloudinaryTrait;
+    use LoggableTrait, UploadToCloudinaryTrait, FilterTrait;
 
     const FOLDER = 'banners';
 
@@ -23,18 +23,19 @@ class BannerController extends Controller
      */
     public function index(Request $request)
     {
-        $queryBanners = Banner::query();
+        $queryBanners = Banner::query()->latest('id');
 
         // Kiểm tra nếu có từ khóa tìm kiếm
-        if ($request->has('query') && $request->input('query')) {
-            $search = $request->input('query');
+        if ($request->has('search_full') && $request->input('search_full')) {
+            $search = $request->input('search_full');
             $queryBanners = $queryBanners->where('title', 'LIKE', "%$search%");
         }
         if ($request->hasAny(['title', 'id', 'status', 'created_at', 'updated_at'])) {
             $queryBanners = $this->filter($request, $queryBanners);
         }
         // Lấy dữ liệu và phân trang
-        $banners = $queryBanners->orderBy('created_at', 'desc')->paginate(10);
+        $banners = $queryBanners->paginate(10);
+
         if ($request->ajax()) {
             $html = view('banners.table', compact('banners'))->render();
             return response()->json(['html' => $html]);
@@ -60,7 +61,7 @@ class BannerController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(AdminStoreBannerRequest $request)
+    public function store(StoreBannerRequest $request)
     {
         try {
             DB::beginTransaction();
@@ -191,19 +192,25 @@ class BannerController extends Controller
 
     public function listDeleted(Request $request)
     {
-        $queryBanners = Banner::onlyTrashed();
+        $queryBanners = Banner::latest('id')->onlyTrashed();
+        $banner_deleted_at = true;
 
-        // Kiểm tra nếu có từ khóa tìm kiếm
-        if ($request->has('query') && $request->input('query')) {
-            $search = $request->input('query');
-            $queryBanners->where('title', 'like', "%$search%");
-                
+        if ($request->has('search_full') && $request->input('search_full')) {
+            $search = $request->input('search_full');
+            $queryBanners = $queryBanners->where('title', 'LIKE', "%$search%");
         }
-        
-        $banners = $queryBanners->orderBy('id', 'desc')->paginate(10);
-        
+        if ($request->hasAny(['title', 'id', 'status', 'start_deleted', 'end_deleted' ])) {
+            $queryBanners = $this->filter($request, $queryBanners);
+        }
+
+        $banners = $queryBanners->paginate(10);
+
+        if ($request->ajax()) {
+            $html = view('banners.table', compact(['banners','banner_deleted_at']))->render();
+            return response()->json(['html' => $html]);
+        }
+
         return view('banners.deleted', compact('banners'));
-        
     }
 
     public function restoreDelete(string $id)
@@ -243,7 +250,7 @@ class BannerController extends Controller
         }
     }
 
-    
+
     public function forceDelete(string $id)
     {
         try {
@@ -279,7 +286,7 @@ class BannerController extends Controller
         }
     }
 
-    
+
     private function deleteBanners(array $bannerID)
     {
 
@@ -291,7 +298,6 @@ class BannerController extends Controller
                 $banner->forceDelete();
             } else {
                 $banner->delete();
-
             }
         }
     }
@@ -314,23 +320,11 @@ class BannerController extends Controller
             'updated_at' => ['queryWhere' => '<='],
             'id' => ['queryWhere' => 'LIKE'],
             'title' => ['queryWhere' => 'LIKE'],
-            'status' => ['queryWhere' => '=']
+            'status' => ['queryWhere' => '='],
+            'deleted_at' => ['attribute' => ['start_deleted' => '>=', 'end_deleted' => '<=',]],
         ];
 
-        foreach ($filters as $filter => $value) {
-            $filterValue = $request->input($filter);
-
-            if ($filterValue !== null) {
-
-                if (is_array($value) && !empty($value['queryWhere'])) {
-
-                    if ($value['queryWhere'] !== 'BETWEEN') {
-                        $filterValue = $value['queryWhere'] === 'LIKE' ? "%$filterValue%" : $filterValue;
-                        $query->where($filter, $value['queryWhere'], $filterValue);
-                    }
-                }
-            }
-        }
+        $query = $this->filterTrait($filters, $request,$query);
 
         return $query;
     }

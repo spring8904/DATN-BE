@@ -411,6 +411,7 @@ class PostController extends Controller
         try {
             $title = 'Quản lý bài viết';
             $subTitle = 'Danh sách bài viết đã xóa';
+            $post_deleted_at = true;
 
             $categories = Category::query()->get();
 
@@ -425,7 +426,7 @@ class PostController extends Controller
             $posts = $queryPost->paginate(10);
 
             if ($request->ajax()) {
-                $html = view('posts.table', compact(['posts']))->render();
+                $html = view('posts.table', compact(['posts', 'post_deleted_at']))->render();
                 return response()->json(['html' => $html]);
             }
             return view('posts.list-post-delete', compact([

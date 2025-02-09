@@ -11,9 +11,12 @@
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
                             <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                            <li class="breadcrumb-item active"><a href="{{ route('admin.' . (session('nameRouteUser')['role_name'] ?? 'clients') . '.index') }}">Danh sách người
+                            <li class="breadcrumb-item active"><a
+                                    href="{{ route('admin.' . (session('nameRouteUser')['role_name'] ?? 'clients') . '.index') }}">Danh
+                                    sách người
                                     dùng</a></li>
-                            <li class="breadcrumb-item active"><a href="{{ route('admin.users.create') }}">Thêm mới người
+                            <li class="breadcrumb-item active"><a href="{{ route('admin.users.create') }}">Thêm mới
+                                    người
                                     dùng</a></li>
                         </ol>
                     </div>
@@ -29,55 +32,56 @@
             <div class="card-body">
                 <div class="live-preview">
                     <form action="{{ route('admin.users.store') }}" method="post" enctype="multipart/form-data"
-                        class="row g-3">
+                          class="row g-3">
                         @csrf
                         <div class="col-md-12">
                             <label for="fullname" class="form-label">Họ Và Tên</label>
                             <input type="text" class="form-control mb-2" name="name" id="fullname"
-                                placeholder="Nhập họ và tên của bạn" value="{{ old('name') }}">
+                                   placeholder="Nhập họ và tên của bạn" value="{{ old('name') }}">
                             @error('name')
-                                <span class="text-danger mt-2">{{ $message }}</span>
+                            <span class="text-danger mt-2">{{ $message }}</span>
                             @enderror
                         </div>
                         <div class="col-md-12">
                             <label for="inputEmail4" class="form-label">Email</label>
                             <input type="email" class="form-control mb-2" name="email" id="inputEmail4"
-                                placeholder="Nhập email" value="{{ old('email') }}">
+                                   placeholder="Nhập email" value="{{ old('email') }}">
                             @error('email')
-                                <span class="text-danger mt-2">{{ $message }}</span>
+                            <span class="text-danger mt-2">{{ $message }}</span>
                             @enderror
                         </div>
                         <div class="col-md-6">
                             <label for="passwordInput" class="form-label">Password</label>
                             <div class="position-relative">
                                 <input type="password" class="form-control pe-5 mb-2" name="password" id="passwordInput"
-                                    placeholder="Nhập password">
+                                       placeholder="Nhập password">
                                 <i class="ri-eye-off-line position-absolute end-0 top-50 translate-middle-y pe-3"
-                                    id="togglePassword" style="cursor: pointer; color: blue;"></i>
+                                   id="togglePassword" style="cursor: pointer; color: blue;"></i>
                             </div>
                             @error('password')
-                                <span class="text-danger mt-2">{{ $message }}</span>
+                            <span class="text-danger mt-2">{{ $message }}</span>
                             @enderror
                         </div>
                         <div class="col-md-6 position-relative">
                             <label for="repasswordInput" class="form-label">Repassword</label>
                             <div class="position-relative">
-                                <input type="password" class="form-control pe-5 mb-2" name="repassword" id="repasswordInput"
-                                    placeholder="Nhập lại password">
+                                <input type="password" class="form-control pe-5 mb-2" name="repassword"
+                                       id="repasswordInput"
+                                       placeholder="Nhập lại password">
                                 <i class="ri-eye-off-line position-absolute end-0 top-50 translate-middle-y pe-3"
-                                    id="toggleRepassword" style="cursor: pointer; color: blue;"></i>
+                                   id="toggleRepassword" style="cursor: pointer; color: blue;"></i>
                             </div>
                             @error('repassword')
-                                <span class="text-danger mt-2">{{ $message }}</span>
+                            <span class="text-danger mt-2">{{ $message }}</span>
                             @enderror
                         </div>
                         <div class="col-md-12">
                             <label class="form-label">Avatar</label>
                             <input type="file" name="avatar" id="imageInput" accept="image/*" class="form-control">
                             <img class="mt-2" id="imagePreview"
-                                style="display: none; max-width: 100%; max-height: 300px;">
+                                 style="display: none; max-width: 100%; max-height: 300px;">
                             @error('avatar')
-                                <span class="text-danger mt-2">{{ $message }}</span>
+                            <span class="text-danger mt-2">{{ $message }}</span>
                             @enderror
                         </div>
                         <div class="col-md-12">
@@ -89,7 +93,7 @@
                                 <option @selected(old('status') == 'blocked') value="blocked">Blocked</option>
                             </select>
                             @error('status')
-                                <span class="text-danger mt-2">{{ $message }}</span>
+                            <span class="text-danger mt-2">{{ $message }}</span>
                             @enderror
                         </div>
                         <div class="col-md-12">
@@ -102,14 +106,15 @@
                                 @endforeach
                             </select>
                             @error('role')
-                                <span class="text-danger mt-2">{{ $message }}</span>
+                            <span class="text-danger mt-2">{{ $message }}</span>
                             @enderror
                         </div>
                         <div class="col-12">
-                            <div class="text-end">
-                                <a class="btn btn-success" href="{{ route('admin.' . (session('nameRouteUser')['role_name'] ?? 'clients') . '.index') }}">Quay lại</a>
-                                <button type="submit" class="btn btn-primary">Thêm</button>
-                            </div>
+                            <button type="submit" class="btn btn-primary">Thêm mới</button>
+                            <button type="reset" class="btn btn-secondary ">Nhập lại</button>
+                            <a class="btn btn-dark"
+                               href="{{ route('admin.' . (session('nameRouteUser')['role_name'] ?? 'clients') . '.index') }}">Quay
+                                lại</a>
                         </div>
                     </form>
                 </div>
@@ -132,7 +137,7 @@
                 reader.readAsDataURL(file);
             }
         });
-        document.getElementById('togglePassword').addEventListener('click', function() {
+        document.getElementById('togglePassword').addEventListener('click', function () {
             const passwordInput = document.getElementById('passwordInput');
             const icon = this;
 
@@ -148,7 +153,7 @@
         });
 
         // Toggle Repassword Visibility
-        document.getElementById('toggleRepassword').addEventListener('click', function() {
+        document.getElementById('toggleRepassword').addEventListener('click', function () {
             const repasswordInput = document.getElementById('repasswordInput');
             const icon = this;
 

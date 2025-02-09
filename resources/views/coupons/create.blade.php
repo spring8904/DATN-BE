@@ -10,13 +10,12 @@
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-            <h4 class="mb-sm-0 ps-2">Quản lí coupon</h4>
+            <h4 class="mb-sm-0 ps-2">{{ $title ?? '' }}</h4>
 
             <div class="page-title-right pe-3">
                 <ol class="breadcrumb m-0">
                     <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Dashboard</a></li>
-                    <li class="breadcrumb-item active"><a href="{{route('admin.coupons.index')}}">Danh sách coupon</a></li>
-                    <li class="breadcrumb-item active"><a href="{{route('admin.coupons.create')}}">Thêm mới coupon</a></li>
+                    <li class="breadcrumb-item active"><a href="{{route('admin.coupons.index')}}">{{ $title }}</a></li>
                 </ol>
             </div>
 
@@ -28,7 +27,7 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title mb-0">Thêm mới coupon</h4>
+                        <h4 class="card-title mb-0">{{ $subTitle ?? '' }}</h4>
                     </div>
                     <div class="card-body">
                         <div>

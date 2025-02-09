@@ -109,9 +109,10 @@ class CourseController extends Controller
 
             $course = Course::query()->create($data);
 
-            return $this->respondCreated('Tạo khoá học thành công', [
-                'course' => $course->load('category'),
-            ]);
+            return $this->respondCreated(
+                'Tạo khoá học thành công',
+                $course->load('category'),
+            );
         } catch (\Exception $e) {
             $this->logError($e, $request->all());
 
