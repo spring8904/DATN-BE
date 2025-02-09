@@ -138,13 +138,14 @@
                                     <thead class="table-light">
                                         <tr>
                                             <th>STT</th>
-                                            <th>Người mua</th>
                                             <th>Mã khóa học</th>
-                                            <th>Tên khóa học</th>
+                                            <th>Người mua</th>
+                                            <th>Khoá học</th>
+                                            <th>Người hướng dẫn</th>
                                             <th>Tổng thanh toán</th>
                                             <th>Trạng thái</th>
                                             <th>Ngày mua</th>
-                                            <th>Ngày xác nhận mua</th>
+                                            <th>Thao tác</th>
                                         </tr>
                                     </thead>
                                     <tbody class="list">
@@ -155,11 +156,13 @@
                                             <td><span class="text-danger fw-bold">{{ $invoice->user->name }}</span>
                                             </td>
                                             <td>
-                                                <img style="width: 100px; height: 100px"
+                                                <img style="width: 70px; "
                                                      src="{{ $invoice->course->thumbnail }}"
-                                                     class="object-fit-cover rounded" alt="">
+                                                     class="object-fit-cover rounded me-2" alt="">
+                                                <span>
+                                                    {{ Str::limit($invoice->course->name, 40) }}
+                                                </span>
                                             </td>
-                                            <td>{{ Str::limit($invoice->course->name, 40) }}</td>
                                             <td>
                                                 {{ $invoice->course->user->name ?? ''}}
                                             </td>

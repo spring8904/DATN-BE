@@ -206,7 +206,7 @@
             </a>
 
             <a class="nav-link menu-link" href="#sidebarComment">
-                <i class="las la-book-reader"></i> <span data-key="t-authentication">Quản lý khoá học</span>
+                <i class="las la-comment"></i> <span data-key="t-authentication">Quản lý khoá học</span>
             </a>
 
             <a class="nav-link menu-link" href="#sidebarSetting" data-bs-toggle="collapse" role="button"

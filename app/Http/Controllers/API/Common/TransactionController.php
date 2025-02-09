@@ -161,14 +161,13 @@ class TransactionController extends Controller
 
             if ($secureHash === $vnp_SecureHash) {
                 if ($inputData['vnp_ResponseCode'] == '00') {
-                    // Thanh toán thành công
                     Transaction::create([
                         'transaction_code' => $inputData['vnp_TxnRef'],
                         'amount' => $inputData['vnp_Amount'] / 100,
                         'transactionable_id' => Auth::id(),
                         'transactionable_type' => 'App\Models\User',
                         'status' => 'Giao dịch thành công',
-                        'type' => 'deposit',
+                        'type' => 'invoice',
                     ]);
 
                     return response()->json([

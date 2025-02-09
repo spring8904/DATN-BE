@@ -3,8 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Banners\StoreBannerRequest;
-use App\Http\Requests\Admin\StoreBannerRequest as AdminStoreBannerRequest;
+use App\Http\Requests\Admin\StoreBannerRequest;
 use App\Http\Requests\API\Banners\UpdateBannerRequest;
 use App\Models\Banner;
 use App\Traits\FilterTrait;
@@ -62,7 +61,7 @@ class BannerController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(AdminStoreBannerRequest $request)
+    public function store(StoreBannerRequest $request)
     {
         try {
             DB::beginTransaction();
