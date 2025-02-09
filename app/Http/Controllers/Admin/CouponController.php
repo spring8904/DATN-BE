@@ -7,12 +7,14 @@ use App\Http\Requests\Admin\Coupons\StoreCouponRequest;
 use App\Http\Requests\Admin\Coupons\UpdateCouponRequest;
 use App\Models\Coupon;
 use App\Traits\LoggableTrait;
+use F9Web\ApiResponseHelpers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class CouponController extends Controller
 {
-    use LoggableTrait;
+    use LoggableTrait, ApiResponseHelpers;
+
     /**
      * Display a listing of the resource.
      */
@@ -20,7 +22,6 @@ class CouponController extends Controller
     {
         $queryCoupons = Coupon::query();
 
-        // Kiểm tra nếu có từ khóa tìm kiếm
         if ($request->has('query') && $request->input('query')) {
             $search = $request->input('query');
             $queryCoupons->where('name', 'like', "%$search%")
@@ -29,37 +30,45 @@ class CouponController extends Controller
 
         if ($request->hasAny(['code', 'name', 'user_id', 'discount_type', 'status', 'used_count', 'start_date', 'expire_date'])) {
             $queryCoupons = $this->filter($request, $queryCoupons);
+        }
 
         $queryCouponCounts = Coupon::query()
-        ->selectRaw('
+            ->selectRaw('
             COUNT(id) as total_coupons,
             SUM(CASE WHEN status = 1 THEN 1 ELSE 0 END) as active_coupons,
             SUM(CASE WHEN expire_date < NOW() THEN 1 ELSE 0 END) as expire_coupons,
             SUM(CASE WHEN used_count > 0 THEN 1 ELSE 0 END) as used_coupons
-        ');    
-  
-        // Lấy dữ liệu và phân trang
+        ');
+
         $coupons = $queryCoupons->orderBy('id', 'desc')->paginate(10);
         $couponCounts = $queryCouponCounts->first();
+
         if ($request->ajax()) {
             $html = view('coupons.table', compact('coupons'))->render();
             return response()->json(['html' => $html]);
         }
-        return view('coupons.index', compact('coupons','couponCounts'));
+
+        return view('coupons.index', compact('coupons', 'couponCounts'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public
+    function create()
     {
-        return view('coupons.create');
+        $title = 'Quản lý mã giảm giá';
+        $subTitle = 'Thêm mới mã giảm giá';
+
+        return view('coupons.create', compact('title', 'subTitle'));
     }
+
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreCouponRequest $request)
+    public
+    function store(StoreCouponRequest $request)
     {
         try {
             DB::beginTransaction();
@@ -78,7 +87,8 @@ class CouponController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public
+    function show(string $id)
     {
         $coupon = Coupon::findOrFail($id);
         return view('coupons.show', compact('coupon'));
@@ -87,7 +97,8 @@ class CouponController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public
+    function edit(string $id)
     {
         $coupon = Coupon::findOrFail($id);
         return view('coupons.edit', compact('coupon'));
@@ -96,7 +107,8 @@ class CouponController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCouponRequest $request, string $id)
+    public
+    function update(UpdateCouponRequest $request, string $id)
     {
         try {
             DB::beginTransaction();
@@ -117,7 +129,8 @@ class CouponController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public
+    function destroy(string $id)
     {
         try {
             DB::beginTransaction();
@@ -135,7 +148,9 @@ class CouponController extends Controller
             return back()->with('success', false)->with('error', 'Lỗi');
         }
     }
-    public function listDeleted(Request $request)
+
+    public
+    function listDeleted(Request $request)
     {
         $queryCoupons = Coupon::onlyTrashed();
 
@@ -146,12 +161,13 @@ class CouponController extends Controller
         }
 
         $coupons = $queryCoupons->orderBy('id', 'desc')->paginate(10);
-        
+
         return view('coupons.deleted', compact('coupons'));
-        
+
     }
 
-    public function forceDelete(string $id)
+    public
+    function forceDelete(string $id)
     {
         try {
             DB::beginTransaction();
@@ -186,7 +202,8 @@ class CouponController extends Controller
         }
     }
 
-    public function restoreDelete(string $id)
+    public
+    function restoreDelete(string $id)
     {
         try {
             DB::beginTransaction();
@@ -222,8 +239,9 @@ class CouponController extends Controller
             ]);
         }
     }
-    
-    private function deleteCoupons(array $couponID)
+
+    private
+    function deleteCoupons(array $couponID)
     {
 
         $coupons = Coupon::query()->whereIn('id', $couponID)->withTrashed()->get();
@@ -238,7 +256,9 @@ class CouponController extends Controller
             }
         }
     }
-    private function restoreDeleteCoupons(array $couponID)
+
+    private
+    function restoreDeleteCoupons(array $couponID)
     {
 
         $coupons = Coupon::query()->whereIn('id', $couponID)->onlyTrashed()->get();
@@ -250,7 +270,9 @@ class CouponController extends Controller
             }
         }
     }
-    private function filter($request, $query)
+
+    private
+    function filter($request, $query)
     {
         $filters = [
             'start_date' => ['queryWhere' => '>='],
@@ -270,7 +292,7 @@ class CouponController extends Controller
                 if (is_array($value) && !empty($value['queryWhere'])) {
 
                     if ($value['queryWhere'] === 'BETWEEN') {
-                            $query->whereBetween($filter, [$filterValue, 10000]);
+                        $query->whereBetween($filter, [$filterValue, 10000]);
                     } else {
                         $filterValue = $value['queryWhere'] === 'LIKE' ? "%$filterValue%" : $filterValue;
                         $query->where($filter, $value['queryWhere'], $filterValue);
@@ -282,5 +304,6 @@ class CouponController extends Controller
         return $query;
     }
 
-    
+
 }
+
