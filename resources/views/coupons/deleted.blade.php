@@ -130,7 +130,6 @@
                                     <button class="btn btn-sm btn-success" type="reset">Reset</button>
                                     <button class="btn btn-sm btn-primary" id="applyAdvancedFilter">Áp dụng</button>
                                 </div>
-
                             </div>
                         </form>
                     </div>
@@ -207,7 +206,7 @@
                                                             InActive
                                                         </span></td>
                                                 @endif
-                                                <td class="date">{{ $coupon->used_count }}</td>9
+                                                <td class="date">{{ $coupon->used_count }}</td>
                                                 <td class="date">{{ $coupon->deleted_at }}</td>
                                             </tr>
                                         @endforeach
@@ -226,7 +225,7 @@
                                 </div>
                             </div>
 
-                            {{ $coupons->links() }}
+                            {{ $coupons->appends(request()->query())->links() }}
 
 
                         </div>
