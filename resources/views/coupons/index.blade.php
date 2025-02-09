@@ -214,7 +214,7 @@
                                             <th>Trạng Thái</th>
                                             <th>Ngày bắt đầu</th>
                                             <th>Ngày kết thúc</th>
-                                            <th>Số lượng sử dụng</th>
+                                            <th>Số lượng</th>
                                             <th>Hành động</th>
                                         </tr>
                                     </thead>

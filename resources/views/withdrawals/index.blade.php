@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', $title)
 @push('page-css')
-    <link href="{{ asset('assets/css/custom.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/css/custom.css') }}" rel="stylesheet" type="text/css"/>
 @endpush
 
 @section('content')
@@ -73,20 +73,22 @@
                                 <div class="d-flex justify-content-sm-end">
                                     <div class="search-box ms-2">
                                         <input type="text" name="search_full" class="form-control search h-75"
-                                            placeholder="Tìm kiếm..." data-search>
-                                        <button id="search-full" class="h-75 ri-search-line search-icon m-0 p-0 border-0"
-                                            style="background: none;"></button>
+                                               placeholder="Tìm kiếm..." data-search>
+                                        <button id="search-full"
+                                                class="h-75 ri-search-line search-icon m-0 p-0 border-0"
+                                                style="background: none;"></button>
                                     </div>
                                 </div>
                             </div>
-                            <a href="{{ route('admin.withdrawals.export') }}" class="btn btn-sm btn-success h-75">Export dữ
+                            <a href="{{ route('admin.withdrawals.export') }}" class="btn btn-sm btn-success h-75">Export
+                                dữ
                                 liệu</a>
                             <button class="btn btn-sm btn-primary h-75" id="toggleAdvancedSearch">
                                 Tìm kiếm nâng cao
                             </button>
                             <div class="dropdown">
                                 <button class="btn btn-sm btn-primary h-75" type="button" id="filterDropdown"
-                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                        data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="ri-filter-2-line"></i>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="filterDropdown"
@@ -103,13 +105,13 @@
 
                                                 <div class="d-flex justify-content-between">
                                                     <input type="range" class="form-range w-50" id="amountMinRange"
-                                                        name="amount_min" min="10000" max="49990000" step="10000"
-                                                        value="{{ request()->input('amount_min') ?? 10000 }}"
-                                                        oninput="updateRange()" data-filter>
+                                                           name="amount_min" min="10000" max="49990000" step="10000"
+                                                           value="{{ request()->input('amount_min') ?? 10000 }}"
+                                                           oninput="updateRange()" data-filter>
                                                     <input type="range" class="form-range w-50" id="amountMaxRange"
-                                                        name="amount_max" min="50000000" max="99990000" step="10000"
-                                                        value="{{ request()->input('amount_max') ?? 99990000 }}"
-                                                        oninput="updateRange()" data-filter>
+                                                           name="amount_max" min="50000000" max="99990000" step="10000"
+                                                           value="{{ request()->input('amount_max') ?? 99990000 }}"
+                                                           oninput="updateRange()" data-filter>
                                                 </div>
                                             </li>
                                             <div class="row">
@@ -117,24 +119,26 @@
                                                     <div class="mb-2">
                                                         <label for="startDate" class="form-label">Ngày yêu cầu</label>
                                                         <input type="date" class="form-control form-control-sm"
-                                                            name="request_date" id="dateRequest" data-filter
-                                                            value="{{ request()->input('request_date') ?? '' }}">
+                                                               name="request_date" id="dateRequest" data-filter
+                                                               value="{{ request()->input('request_date') ?? '' }}">
                                                     </div>
                                                 </li>
                                                 <li class="col-6">
                                                     <div class="mb-2">
                                                         <label for="endDate" class="form-label">Ngày xác nhận</label>
                                                         <input type="date" class="form-control form-control-sm"
-                                                            name="completed_date" id="dateComplete" data-filter
-                                                            value="{{ request()->input('completed_date') ?? '' }}">
+                                                               name="completed_date" id="dateComplete" data-filter
+                                                               value="{{ request()->input('completed_date') ?? '' }}">
                                                     </div>
                                                 </li>
                                             </div>
                                             <li class="mt-2 d-flex gap-1">
                                                 <button class="btn btn-sm btn-success flex-grow-1" type="reset"
-                                                    id="resetFilter">Reset</button>
+                                                        id="resetFilter">Reset
+                                                </button>
                                                 <button class="btn btn-sm btn-primary flex-grow-1" id="applyFilter">Áp
-                                                    dụng</button>
+                                                    dụng
+                                                </button>
                                             </li>
                                         </div>
                                     </form>
@@ -149,32 +153,39 @@
                                 <div class="col-md-3">
                                     <label class="form-label">Tên chủ tài khoản</label>
                                     <input class="form-control form-control-sm" name="account_holder" type="text"
-                                        placeholder="Nhập tên chủ tài khoản..."
-                                        value="{{ request()->input('account_holder') ?? '' }}" data-advanced-filter>
+                                           placeholder="Nhập tên chủ tài khoản..."
+                                           value="{{ request()->input('account_holder') ?? '' }}" data-advanced-filter>
                                 </div>
                                 <div class="col-md-3">
                                     <label class="form-label">Số tài khoản</label>
                                     <input class="form-control form-control-sm" name="account_number" type="text"
-                                        placeholder="Nhập tên số tài khoản..."
-                                        value="{{ request()->input('account_number') ?? '' }}" data-advanced-filter>
+                                           placeholder="Nhập tên số tài khoản..."
+                                           value="{{ request()->input('account_number') ?? '' }}" data-advanced-filter>
                                 </div>
                                 <div class="col-md-3">
                                     <label for="statusItem" class="form-label">Trạng thái</label>
                                     <select class="form-select form-select-sm" name="status" id="statusItem"
-                                        data-advanced-filter>
+                                            data-advanced-filter>
                                         <option value="">Chọn trạng thái</option>
-                                        <option value="completed" @selected(request()->input('status') === 'completed')>Hoàn thành</option>
-                                        <option value="pending" @selected(request()->input('status') === 'pending')>Đang xử lý</option>
-                                        <option value="failed" @selected(request()->input('status') === 'failed')>Thất bại</option>
+                                        <option value="completed" @selected(request()->input('status') === 'completed')>
+                                            Hoàn thành
+                                        </option>
+                                        <option value="pending" @selected(request()->input('status') === 'pending')>Đang
+                                            xử lý
+                                        </option>
+                                        <option value="failed" @selected(request()->input('status') === 'failed')>Thất
+                                            bại
+                                        </option>
                                     </select>
                                 </div>
                                 <div class="col-md-3">
                                     <label for="bankName" class="form-label">Ngân hàng</label>
                                     <select class="form-select form-select-sm" name="bank_name" id="bankName"
-                                        data-advanced-filter>
+                                            data-advanced-filter>
                                         <option value="">Chọn ngân hàng</option>
                                         @foreach ($supportedBank as $bank)
-                                            <option value="{{ $bank->name }}" @selected(request()->input('bank_name') === $bank->name)>
+                                            <option
+                                                value="{{ $bank->name }}" @selected(request()->input('bank_name') === $bank->name)>
                                                 {{ $bank->name . ' (' . $bank->short_name . ')' }}
                                             </option>
                                         @endforeach
@@ -193,51 +204,55 @@
                             <div class="table-responsive table-card mt-3 mb-1">
                                 <table class="table align-middle table-nowrap" id="customerTable">
                                     <thead class="table-light">
-                                        <tr>
-                                            <th>STT</th>
-                                            <th>Tên chủ tài khoản</th>
-                                            <th>Số tài khoản</th>
-                                            <th>Ngân hàng</th>
-                                            <th>Số tiền</th>
-                                            <th>Ghi chú</th>
-                                            <th>Trạng thái</th>
-                                            <th>Ngày yêu cầu</th>
-                                            <th>Ngày xác nhận</th>
-                                        </tr>
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>Tên chủ tài khoản</th>
+                                        <th>Số tài khoản</th>
+                                        <th>Ngân hàng</th>
+                                        <th>Số tiền</th>
+                                        <th>Trạng thái</th>
+                                        <th>Ngày yêu cầu</th>
+                                        <th>Ngày xác nhận</th>
+                                        <th>Thao tác</th>
+                                    </tr>
                                     </thead>
                                     <tbody class="list">
-                                        @foreach ($withdrawals as $withdrawal)
-                                            <tr>
-                                                <td>{{ $loop->index + 1 }}</td>
-                                                <td>{{ $withdrawal->account_holder }}</td>
-                                                <td><span class="text-danger">{{ $withdrawal->account_number }}</span>
-                                                </td>
-                                                <td>{{ \Illuminate\Support\Str::limit($withdrawal->bank_name,40) }}</td>
-                                                <td>{{ number_format($withdrawal->amount) }} VND</td>
-                                                <td>
-                                                    <textarea class="border-0 bg-white" disabled>{{ $withdrawal->note }}</textarea>
-                                                </td>
-                                                <td>
-                                                    @if ($withdrawal->status === 'completed')
-                                                        <span class="badge bg-success w-100">
+                                    @foreach ($withdrawals as $withdrawal)
+                                        <tr>
+                                            <td>{{ $loop->index + 1 }}</td>
+                                            <td>{{ $withdrawal->account_holder }}</td>
+                                            <td><span class="text-danger">{{ $withdrawal->account_number }}</span>
+                                            </td>
+                                            <td>{{ \Illuminate\Support\Str::limit($withdrawal->bank_name,40) }}</td>
+                                            <td>{{ number_format($withdrawal->amount) }} VND</td>
+                                            <td>
+                                                @if ($withdrawal->status === 'completed')
+                                                    <span class="badge bg-success w-100">
                                                             Hoàn thành
                                                         </span>
-                                                    @elseif($withdrawal->status === 'pending')
-                                                        <span class="badge bg-warning w-100">
+                                                @elseif($withdrawal->status === 'pending')
+                                                    <span class="badge bg-warning w-100">
                                                             Đang xử lý
                                                         </span>
-                                                    @else
-                                                        <span class="badge bg-danger w-100">
+                                                @else
+                                                    <span class="badge bg-danger w-100">
                                                             Thất bại
                                                         </span>
-                                                    @endif
-                                                </td>
-                                                <td>{{ $withdrawal->request_date ? \Carbon\Carbon::parse($withdrawal->request_date)->format('d/m/Y') : 'NULL' }}
-                                                </td>
-                                                <td>{!! $withdrawal->completed_date ? \Carbon\Carbon::parse($withdrawal->completed_date)->format('d/m/Y') : '<span class="btn btn-sm btn-soft-warning">Chưa xác nhận</span>' !!}
-                                                </td>
-                                            </tr>
-                                        @endforeach
+                                                @endif
+                                            </td>
+                                            <td>{{ $withdrawal->request_date ? \Carbon\Carbon::parse($withdrawal->request_date)->format('d/m/Y') : 'NULL' }}
+                                            </td>
+                                            <td>{!! $withdrawal->completed_date ? \Carbon\Carbon::parse($withdrawal->completed_date)->format('d/m/Y') : '<span class="btn btn-sm btn-soft-warning">Chưa xác nhận</span>' !!}
+                                            </td>
+                                            <td>
+                                                <a href="{{ route('admin.approvals.courses.show', $withdrawal->id) }}">
+                                                    <button class="btn btn-sm btn-info edit-item-btn">
+                                                        <span class="ri-eye-line"></span>
+                                                    </button>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -270,9 +285,10 @@
         function formatCurrency(value) {
             return value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
         }
+
         updateRange();
 
-        $(document).on('click', '#resetFilter', function() {
+        $(document).on('click', '#resetFilter', function () {
             window.location = routeUrlFilter;
         });
     </script>

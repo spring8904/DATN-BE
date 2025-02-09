@@ -8,6 +8,7 @@ use App\Models\Course;
 use App\Traits\FilterTrait;
 use App\Traits\LoggableTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ApprovalCourseController extends Controller
 {
@@ -75,7 +76,9 @@ class ApprovalCourseController extends Controller
                 ->with([
                     'approver',
                     'course.user',
-                ])->findOrFail($id);
+                ])
+                ->latest('created_at')
+                ->findOrFail($id);
 
             $title = 'Kiểm duyệt khoá học';
             $subTitle = 'Thông tin khoá học: ' . $approval->course->name;
@@ -91,6 +94,47 @@ class ApprovalCourseController extends Controller
             return redirect()->route('admin.approval.course.index')->with('error', 'Có lỗi xảy ra, vui lòng thử lại sau');
         }
     }
+
+
+    public function approve(Request $request, string $id)
+    {
+        return $this->updateApprovalStatus($id, 'approved', 'Khoá học đã được duyệt');
+    }
+
+    public function reject(Request $request, string $id)
+    {
+        $note = $request->note ?? 'Khoá học đã bị từ chối';
+        return $this->updateApprovalStatus($id, 'rejected', $note);
+    }
+
+    private function updateApprovalStatus(string $id, string $status, string $note)
+    {
+        try {
+            DB::beginTransaction();
+
+            $approval = Approvable::query()->findOrFail($id);
+
+            $approval->status = $status;
+            $approval->note = $note;
+            $approval->{$status . '_at'} = now();
+            $approval->approver_id = auth()->id();
+            $approval->save();
+
+            $approval->course->update(['status' => $status]);
+
+            DB::commit();
+
+            return redirect()->back()->with('success', "Khoá học đã được $status");
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            $this->logError($e);
+
+            return redirect()->route('admin.approvals.courses.index')
+                ->with('error', 'Có lỗi xảy ra, vui lòng thử lại sau');
+        }
+    }
+
 
     private function filter(Request $request, $query)
     {

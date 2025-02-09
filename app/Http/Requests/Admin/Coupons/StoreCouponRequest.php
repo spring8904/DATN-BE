@@ -29,13 +29,13 @@ class StoreCouponRequest extends FormRequest
             'discount_type' => 'required|in:percentage,fixed',
             'discount_value' => 'required|numeric',
             'start_date' => 'required|date',
-            'expire_date' => 'required|date',
+            'expire_date' => 'required|date|after:start_date',
             'used_count' => 'required|integer',
             'status' => 'boolean',
         ];
     }
-   
-     /**
+
+    /**
      * Get the custom error messages for the validator.
      *
      * @return array
@@ -50,12 +50,12 @@ class StoreCouponRequest extends FormRequest
             //Name
             'name.required' => 'Trường name là bắt buộc.',
             'name.string' => 'Trường name phải là chuỗi ký tự.',
-            'name.max'=>'Trường name vượt quá 255 kí tự',
+            'name.max' => 'Trường name vượt quá 255 kí tự',
 
             //Code
             'code.required' => 'Trường code là bắt buộc.',
             'code.string' => 'Trường code phải là chuỗi ký tự.',
-            'code.max'=>'Trường code vượt quá 255 kí tự',
+            'code.max' => 'Trường code vượt quá 255 kí tự',
             'code.unique' => 'Trường code đã tồn tại trong hệ thống.',
 
             //Discount_type
@@ -65,23 +65,25 @@ class StoreCouponRequest extends FormRequest
             //Discount_value
             'discount_value.required' => 'Trường discount_value là bắt buộc.',
             'discount_value.numeric' => 'Trường discount_value phải là số.',
-            
+
             //Description
             'description.string' => 'Trường description phải là chuỗi ký tự.',
-           
+
             //Start_date
-            'start_date.required'=>'Trường start_date là bắt buộc',
-            'start_date.date'=>'Sai kiểu dữ liệu date',
+            'start_date.required' => 'Trường start_date là bắt buộc',
+            'start_date.date' => 'Sai kiểu dữ liệu date',
 
-             //Expire_date
-             'expire_date.required'=>'Trường expire_date là bắt buộc',
-             'expire_date.date'=>'Sai kiểu dữ liệu date',
+            //Expire_date
+            'expire_date.required' => 'Trường expire_date là bắt buộc',
+            'expire_date.date' => 'Sai kiểu dữ liệu date',
+            'expire_date.after' => 'Trường expire_date phải lớn hơn start_date',
 
-             //Used_count
-             'used_count.required'=>'Trường used_count là bắt buộc',
-             'used_count.integer'=>'Sai kiểu dữ liệu interger',
+            //Used_count
+            'used_count.required' => 'Trường used_count là bắt buộc',
+            'used_count.integer' => 'Sai kiểu dữ liệu interger',
         ];
     }
+
     protected function prepareForValidation()
     {
         $this->merge([
