@@ -36,7 +36,10 @@ class ChapterController extends Controller
 
             $chapter = $course->chapters()->create($data);
 
-            return $this->respondCreated('Tạo chương học thành công', $chapter);
+            return $this->respondCreated([
+                'message' => 'Tạo chương học thành công', 
+                'data' => $chapter]
+            );
         } catch (\Exception $e) {
             $this->logError($e->$request->all());
 
