@@ -58,18 +58,18 @@
                                                 </li>
                                                 <li class="col-6">
                                                     <div class="mb-2">
-                                                        <label for="startDate" class="form-label">Ngày bắt đầu</label>
+                                                        <label for="start_deleted" class="form-label">Ngày bắt đầu</label>
                                                         <input type="date" class="form-control form-control-sm"
-                                                            name="start_date" id="startDate" data-filter
-                                                            value="{{ request()->input('start_date') ?? '' }}">
+                                                            name="start_deleted" id="start_deleted" data-filter
+                                                            value="{{ request()->input('start_deleted') ?? '' }}">
                                                     </div>
                                                 </li>
                                                 <li class="col-6">
                                                     <div class="mb-2">
-                                                        <label for="endDate" class="form-label">Ngày kết thúc</label>
+                                                        <label for="end_deleted" class="form-label">Ngày kết thúc</label>
                                                         <input type="date" class="form-control form-control-sm"
-                                                            name="expire_date" id="endDate" data-filter
-                                                            value="{{ request()->input('expire_date') ?? '' }}">
+                                                            name="end_deleted" id="end_deleted" data-filter
+                                                            value="{{ request()->input('end_deleted') ?? '' }}">
                                                     </div>
                                                 </li>
                                             </div>
@@ -134,10 +134,8 @@
                             </div>
                         </form>
                     </div>
-
                     <div class="card-body" id="item_List">
-                        <div class="listjs-table" id="customerList">
-
+                        <div class="listjs-table">
                             <div class="row g-4 mb-3">
                                 <div class="col-sm-auto">
                                     <div>
@@ -177,8 +175,6 @@
                                             <th>Mã giảm giá</th>
                                             <th>Giảm giá</th>
                                             <th>Trạng Thái</th>
-                                            <th>Ngày bắt đầu</th>
-                                            <th>Ngày kết thúc</th>
                                             <th>Số lượng sử dụng</th>
                                             <th>Thời gian xóa</th>
                                         </tr>
@@ -211,12 +207,8 @@
                                                             InActive
                                                         </span></td>
                                                 @endif
-
-                                                <td class="date">{{ $coupon->start_date }}</td>
-                                                <td class="date">{{ $coupon->expire_date }}</td>
                                                 <td class="date">{{ $coupon->used_count }}</td>9
                                                 <td class="date">{{ $coupon->deleted_at }}</td>
-
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -250,7 +242,7 @@
 
 @push('page-scripts')
     <script>
-        var routeUrlFilter = "{{ route('admin.coupons.index') }}";
+        var routeUrlFilter = "{{ route('admin.coupons.deleted') }}";
         var routeDeleteAll = "{{ route('admin.coupons.forceDelete', ':itemID') }}";
         var routeRestoreUrl = "{{ route('admin.coupons.restoreDelete', ':itemID') }}";
     </script>

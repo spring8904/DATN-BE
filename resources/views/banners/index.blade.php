@@ -124,9 +124,9 @@
                                 <div class="col-sm">
                                     <div class="d-flex justify-content-sm-end">
                                         <div class="search-box ms-2">
-                                            <input type="text" name="query" id="searchFull"
+                                            <input type="text" name="search_full" id="searchFull"
                                                 class="form-control search" placeholder="Tìm kiếm..." data-search
-                                                value="{{ request()->input('query') ?? '' }}">
+                                                value="{{ request()->input('search_full') ?? '' }}">
                                             <button id="search-full" class="ri-search-line search-icon m-0 p-0 border-0"
                                                 style="background: none;"></button>
                                         </div>
@@ -245,6 +245,7 @@
 @push('page-scripts')
     <script>
         var routeUrlFilter = "{{ route('admin.banners.index') }}";
+
         $(document).on('click', '#resetFilter', function() {
             window.location = routeUrlFilter;
         });

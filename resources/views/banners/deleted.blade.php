@@ -8,7 +8,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0">Quản lí coupons đã xóa</h4>
+                    <h4 class="mb-sm-0">Quản lí banner đã xóa</h4>
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
@@ -41,48 +41,67 @@
                                     <div class="container">
                                         <div class="container">
                                             <div class="row">
-                                                <li>
-                                                    <label for="amountRange" class="form-label">Số lượt sử dụng</label>
-
-                                                    <div class="d-flex justify-content-between">
-                                                        <span id="amountMin">0</span>
-                                                        <span id="amountMax">1000</span>
-                                                    </div>
-
-                                                    <div class="d-flex justify-content-between">
-                                                        <input type="range" class="form-range w-100" id="amountMinRange"
-                                                            name="used_count" min="0" max="1000" step="10"
-                                                            value="0" oninput="updateRange()" data-filter>
-
+                                                <li class="col-6">
+                                                    <div class="mb-2">
+                                                        <label for="startDate" class="form-label">Ngày bắt đầu xóa</label>
+                                                        <input type="date" class="form-control form-control-sm"
+                                                            name="start_deleted" id="startDate" data-filter
+                                                            value="{{ request()->input('start_deleted') ?? '' }}">
                                                     </div>
                                                 </li>
                                                 <li class="col-6">
                                                     <div class="mb-2">
-                                                        <label for="startDate" class="form-label">Ngày bắt đầu</label>
+                                                        <label for="endDate" class="form-label">Ngày kết thúc xóa</label>
                                                         <input type="date" class="form-control form-control-sm"
-                                                            name="start_date" id="startDate" data-filter
-                                                            value="{{ request()->input('start_date') ?? '' }}">
-                                                    </div>
-                                                </li>
-                                                <li class="col-6">
-                                                    <div class="mb-2">
-                                                        <label for="endDate" class="form-label">Ngày kết thúc</label>
-                                                        <input type="date" class="form-control form-control-sm"
-                                                            name="expire_date" id="endDate" data-filter
-                                                            value="{{ request()->input('expire_date') ?? '' }}">
+                                                            name="end_deleted" id="endDate" data-filter
+                                                            value="{{ request()->input('end_deleted') ?? '' }}">
                                                     </div>
                                                 </li>
                                             </div>
-                                            <li class="mt-2">
-                                                <button class="btn btn-sm btn-primary w-100" id="applyFilter">Áp
+                                            <li class="mt-2 d-flex gap-1">
+                                                <button class="btn btn-sm btn-success flex-grow-1" type="reset"
+                                                    id="resetFilter">Reset</button>
+                                                <button class="btn btn-sm btn-primary flex-grow-1" id="applyFilter">Áp
                                                     dụng</button>
                                             </li>
-
                                         </div>
                                     </div>
                                 </ul>
                             </div>
                         </div>
+                    </div>
+
+                    <!-- Tìm kiếm nâng cao -->
+                    <div id="advancedSearch" class="card-header" style="display:none;">
+                        <form>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="form-label">Mã banner</label>
+                                    <input class="form-control form-control-sm" name="id" type="text"
+                                        value="{{ request()->input('id') ?? '' }}" placeholder="Nhập mã banner..."
+                                        data-advanced-filter>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Tiêu đề</label>
+                                    <input class="form-control form-control-sm" name="title" type="text"
+                                        value="{{ request()->input('title') ?? '' }}" placeholder="Nhập tiêu đề..."
+                                        data-advanced-filter>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="statusItem" class="form-label">Trạng thái</label>
+                                    <select class="form-select form-select-sm" name="status" id="statusItem"
+                                        data-advanced-filter>
+                                        <option value="">Chọn trạng thái</option>
+                                        <option @selected(request()->input('status') === '1') value="1">Hoạt động</option>
+                                        <option @selected(request()->input('status') === '0') value="0">Không hoạt động</option>
+                                    </select>
+                                </div>
+                                <div class="mt-3 text-end">
+                                    <button class="btn btn-sm btn-success" type="reset" id="resetFilter">Reset</button>
+                                    <button class="btn btn-sm btn-primary" id="applyAdvancedFilter">Áp dụng</button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                     <!-- end card header -->
 
@@ -103,11 +122,11 @@
                                 <div class="col-sm">
                                     <div class="d-flex justify-content-sm-end">
                                         <div class="search-box ms-2">
-                                            <form action="{{ route('admin.coupons.deleted') }}" method="get">
-                                                <input type="text" name="query" class="form-control search"
-                                                    placeholder="Search..." value="{{ old('query') }}">
-                                                <i class="ri-search-line search-icon"></i>
-                                            </form>
+                                            <input type="text" name="search_full" id="searchFull"
+                                                class="form-control search" placeholder="Tìm kiếm..." data-search
+                                                value="{{ request()->input('search_full') ?? '' }}">
+                                            <button id="search-full" class="ri-search-line search-icon m-0 p-0 border-0"
+                                                style="background: none;"></button>
                                         </div>
                                     </div>
                                 </div>
@@ -129,7 +148,7 @@
                                             <th>Trạng thái</th>
                                             <th>Ngày tạo</th>
                                             <th>Ngày cập nhật</th>
-                                            <th>Thời gian đã xóa</th>
+                                            <th>Thời gian xóa</th>
                                         </tr>
                                     </thead>
                                     <tbody class="list form-check-all">
@@ -166,7 +185,7 @@
                                                 <td class="date">{{ $banner->created_at }}</td>
                                                 <td class="date">{{ $banner->updated_at }}</td>
                                                 <td class="date">{{ $banner->deleted_at }}</td>
-                                                
+
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -184,7 +203,7 @@
                                 </div>
                             </div>
 
-                            {{ $banners->links() }}
+                            {{ $banners->appends(request()->query())->links() }}
 
                         </div>
                     </div><!-- end card -->
@@ -201,9 +220,13 @@
 
 @push('page-scripts')
     <script>
-        var routeUrlFilter = "{{ route('admin.banners.index') }}";
-        var routeDeleteAll = "{{ route('admin.banners.forceDelete', ':itemID')}}";
+        var routeUrlFilter = "{{ route('admin.banners.deleted') }}";
+        var routeDeleteAll = "{{ route('admin.banners.forceDelete', ':itemID') }}";
         var routeRestoreUrl = "{{ route('admin.banners.restoreDelete', ':itemID') }}";
+
+        $(document).on('click', '#resetFilter', function() {
+            window.location = routeUrlFilter;
+        });
     </script>
     <script src="{{ asset('assets/js/custom/custom.js') }}"></script>
     <script src="{{ asset('assets/js/common/checkall-option.js') }}"></script>

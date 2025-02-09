@@ -45,7 +45,7 @@
                                             <div class="row">
                                                 <li class="col-6">
                                                     <div class="mb-2">
-                                                        <label for="startDate" class="form-label">Ngày bắt đầu xóa</label>
+                                                        <label for="startDate" class="form-label">Ngày bắt đầu</label>
                                                         <input type="date" class="form-control form-control-sm"
                                                             name="start_deleted" id="startDate" data-filter
                                                             value="{{ request()->input('start_deleted') ?? '' }}">
@@ -53,7 +53,7 @@
                                                 </li>
                                                 <li class="col-6">
                                                     <div class="mb-2">
-                                                        <label for="endDate" class="form-label">Ngày kết thúc xóa</label>
+                                                        <label for="endDate" class="form-label">Ngày kết thúc</label>
                                                         <input type="date" class="form-control form-control-sm"
                                                             name="end_deleted" id="endDate" data-filter
                                                             value="{{ request()->input('end_deleted') ?? '' }}">
@@ -123,11 +123,9 @@
                             <div class="row g-4 mb-3">
                                 <div class="col-sm-auto">
                                     <div>
-                                        <a href="{{ route('admin.posts.create') }}">
-                                            <button type="button" class="btn btn-primary add-btn">
-                                                <i class="ri-add-line align-bottom me-1"></i> Thêm mới
-                                            </button>
-                                        </a>
+                                        <button class="btn btn-danger" id="restoreSelected">
+                                            <i class=" ri-restart-line"> Khôi phục</i>
+                                        </button>
                                         <button class="btn btn-danger" id="deleteSelected">
                                             <i class="ri-delete-bin-2-line"> Xóa nhiều</i>
                                         </button>
@@ -158,9 +156,7 @@
                                             <th>Tác giả</th>
                                             <th>Danh mục</th>
                                             <th>Trạng thái</th>
-                                            <th>Ngày đăng tải</th>
                                             <th>Thời gian xóa</th>
-                                            <th>Hành Động</th>
                                         </tr>
                                     </thead>
                                     <tbody class="list">
@@ -200,31 +196,7 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    {!! $post->published_at
-                                                        ? \Carbon\Carbon::parse($post->published_at)->format('d/m/Y')
-                                                        : '<span class="btn btn-sm btn-soft-warning">Chưa đăng</span>' !!}
-                                                </td>
-                                                <td>
                                                     {{ optional(\Carbon\Carbon::parse($post->deleted_at))->format('d/m/Y') ?? 'NULL' }}
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex gap-2">
-                                                        <a href="{{ route('admin.posts.edit', $post->id) }}">
-                                                            <button class="btn btn-sm btn-warning edit-item-btn">
-                                                                <span class="ri-edit-box-line"></span>
-                                                            </button>
-                                                        </a>
-                                                        <a href="{{ route('admin.posts.show', $post->id) }}">
-                                                            <button class="btn btn-sm btn-info edit-item-btn">
-                                                                <span class="ri-folder-user-line"></span>
-                                                            </button>
-                                                        </a>
-                                                        <a href="{{ route('admin.posts.destroy', $post->id) }}"
-                                                            class="btn btn-sm btn-danger sweet-confirm">
-                                                            <span class="ri-delete-bin-7-line"></span>
-                                                        </a>
-                                                        </a>
-                                                    </div>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -236,7 +208,6 @@
                                 {{ $posts->appends(request()->query())->links() }}
                             </div>
                         </div>
-                        
                     </div>
                     <!-- end card -->
                 </div>
