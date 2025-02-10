@@ -5,6 +5,7 @@ use App\Http\Controllers\API\Auth\AuthController;
 use App\Http\Controllers\API\Auth\GoogleController;
 use App\Http\Controllers\API\Common\BannerController;
 use App\Http\Controllers\API\Common\PostController;
+use App\Http\Controllers\API\Common\RatingController;
 use App\Http\Controllers\API\Common\SearchController;
 use App\Http\Controllers\API\Common\TransactionController;
 use App\Http\Controllers\API\Common\UserController;
@@ -181,6 +182,8 @@ Route::middleware('auth:sanctum')->group(function () {
     #============================== ROUTE RATING =============================
     Route::prefix('ratings')
         ->group(function () {
+        Route::get('/{courseId}', [RatingController::class, 'index']);
+        Route::post('/', [RatingController::class, 'store']);
         });
 
     #============================== ROUTE LIVESTREAM =============================
@@ -188,17 +191,19 @@ Route::middleware('auth:sanctum')->group(function () {
         ->group(function () {
             Route::post('/', [LivestreamController::class, 'createLiveStream']);
         });
+
+    #============================== ROUTE POST =============================
+    Route::prefix('posts')->as('posts.')->group(function () {
+        Route::get('/', [PostController::class, 'index']);
+        Route::post('/', [PostController::class, 'store']);
+
+    });
 });
 
 #============================== ROUTE COURSE =============================
 Route::prefix('courses')
     ->group(function () {
     });
-
-#============================== ROUTE POST =============================
-Route::prefix('posts')->as('posts.')->group(function () {
-    Route::get('/', [PostController::class, '']);
-});
 
 #============================== ROUTE BANNER =============================
 Route::get('/banners', [BannerController::class, 'index']);

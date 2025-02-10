@@ -36,9 +36,11 @@ class CouponController extends Controller
                 SUM(CASE WHEN used_count > 0 THEN 1 ELSE 0 END) as used_coupons
             ')
             ->first();
-
+        if ($request->hasAny(['name','discount_type','used_count', 'code', 'status', 'start_date', 'expire_date'])) {
+            $queryCoupons = $this->filter($request, $queryCoupons);
+        }
         $coupons = $queryCoupons->orderBy('id', 'desc')->paginate(10);
-
+        
         if ($request->ajax()) {
             $html = view('coupons.table', compact('coupons'))->render();
             return response()->json(['html' => $html]);
@@ -126,5 +128,23 @@ class CouponController extends Controller
         }
 
         return view('coupons.deleted', compact('coupons'));
+    }
+    private function filter($request, $query)
+    {
+        $filters = [
+            'start_date' => ['queryWhere' => '>='],
+            'expire_date' => ['queryWhere' => '<='],
+            'user_id' => ['queryWhere' => 'LIKE'],
+            'name' => ['queryWhere' => 'LIKE'],
+            'code' => ['queryWhere' => 'LIKE'],
+            'status' => ['queryWhere' => '='],
+            'discount_type'=>['queryWhere' => '='],
+            'used_count'=>['queryWhere' => '>='],
+            'deleted_at' => ['attribute' => ['start_deleted' => '>=', 'end_deleted' => '<=',]],
+        ];
+
+        $query = $this->filterTrait($filters, $request,$query);
+
+        return $query;
     }
 }
