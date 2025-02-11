@@ -6,16 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\API\User\UpdateUserProfileRequest;
 use App\Models\Career;
 use App\Models\Profile;
+use App\Traits\ApiResponseTrait;
 use App\Traits\LoggableTrait;
 use App\Traits\UploadToCloudinaryTrait;
-use F9Web\ApiResponseHelpers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
-    use LoggableTrait, ApiResponseHelpers, UploadToCloudinaryTrait;
+    use LoggableTrait, ApiResponseTrait, UploadToCloudinaryTrait;
 
     const FOLDER_USER = 'users';
     const FOLDER_CERTIFICATE = 'certificates';

@@ -6,14 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\API\Ratings\StoreRatingRequest;
 use App\Models\CourseUser;
 use App\Models\Rating;
+use App\Traits\ApiResponseTrait;
 use App\Traits\LoggableTrait;
-use F9Web\ApiResponseHelpers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class RatingController extends Controller
 {
-    use LoggableTrait, ApiResponseHelpers;
+    use LoggableTrait, ApiResponseTrait;
 
     public function store(StoreRatingRequest $request)
     {
@@ -23,36 +23,37 @@ class RatingController extends Controller
                 'message' => 'Bạn cần đăng nhập để đánh giá khóa học.'
             ], 401);
         }
-    
+
         $userId = Auth::id();
-    
+
         $data = $request->except('user_id');
-    
+
         // Kiểm tra xem user đã hoàn thành khóa học chưa
         $completed = CourseUser::where([
-            'user_id' => $userId,
-            'course_id' => $data['course_id']
-        ])->value('progress_percent') === 100;
-    
+                'user_id' => $userId,
+                'course_id' => $data['course_id']
+            ])->value('progress_percent') === 100;
+
         if (!$completed) {
             return response()->json([
                 'status' => false,
                 'message' => 'Bạn phải hoàn thành khóa học trước khi đánh giá.'
             ], 403);
         }
-    
+
         // Cập nhật hoặc tạo mới đánh giá
         $rates = Rating::updateOrCreate(
             ['user_id' => $userId, 'course_id' => $data['course_id']],
             ['content' => $data['content'], 'rate' => $data['rate']]
         );
-    
+
         return response()->json([
             'status' => true,
             'message' => 'Đánh giá thành công.',
             'rates' => $rates
         ], 201);
     }
+
     public function index($courseId)
     {
         try {

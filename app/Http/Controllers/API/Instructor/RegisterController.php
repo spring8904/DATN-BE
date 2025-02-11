@@ -11,7 +11,6 @@ use App\Models\User;
 use App\Notifications\RegisterInstructorNotification;
 use App\Traits\LoggableTrait;
 use App\Traits\UploadToCloudinaryTrait;
-use F9Web\ApiResponseHelpers;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -19,7 +18,7 @@ use Illuminate\Support\Str;
 
 class RegisterController extends Controller
 {
-    use LoggableTrait, ApiResponseHelpers, UploadToCloudinaryTrait;
+    use LoggableTrait, UploadToCloudinaryTrait;
 
     const FOLDER_CERTIFICATES = 'certificates';
 

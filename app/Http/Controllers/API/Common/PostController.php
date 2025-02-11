@@ -7,9 +7,9 @@ use App\Http\Requests\Admin\Posts\StorePostRequest;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\Tag;
+use App\Traits\ApiResponseTrait;
 use App\Traits\LoggableTrait;
 use App\Traits\UploadToCloudinaryTrait;
-use F9Web\ApiResponseHelpers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
@@ -20,7 +20,8 @@ use Illuminate\Support\Str;
 
 class PostController extends Controller
 {
-    use LoggableTrait, ApiResponseHelpers, UploadToCloudinaryTrait;
+    use LoggableTrait, UploadToCloudinaryTrait, ApiResponseTrait;
+
     const FOLDER = 'blogs';
 
     public function index(Request $request)
@@ -42,8 +43,8 @@ class PostController extends Controller
             }
 
             return response()->json([
-                'status' =>true,
-                'posts'=>$posts
+                'status' => true,
+                'posts' => $posts
             ], 200);
         } catch (\Exception $e) {
             $this->logError($e);
@@ -51,6 +52,7 @@ class PostController extends Controller
             return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại');
         }
     }
+
     public function store(StorePostRequest $request)
     {
         // Log::info('User ID:', ['id' => Auth::id()]);
@@ -88,8 +90,8 @@ class PostController extends Controller
             }
             DB::commit();
             return response()->json([
-                'status' =>true,
-                'message'=>'Thêm mới bài viết thành công'
+                'status' => true,
+                'message' => 'Thêm mới bài viết thành công'
             ], Response::HTTP_CREATED);
         } catch (\Exception $e) {
 

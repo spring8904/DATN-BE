@@ -4,15 +4,15 @@ namespace App\Http\Controllers\API\Common;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\Search\SearchRequest;
+use App\Traits\ApiResponseTrait;
 use App\Traits\LoggableTrait;
-use F9Web\ApiResponseHelpers;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use function PHPUnit\Framework\isEmpty;
 
 class SearchController extends Controller
 {
-    use LoggableTrait, ApiResponseHelpers;
+    use LoggableTrait, ApiResponseTrait;
 
     public function search(SearchRequest $request)
     {

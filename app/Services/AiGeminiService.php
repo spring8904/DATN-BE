@@ -2,14 +2,14 @@
 
 namespace App\Services;
 
+use App\Traits\ApiResponseTrait;
 use App\Traits\LoggableTrait;
-use F9Web\ApiResponseHelpers;
 use Gemini;
 
 class AiGeminiService
 {
 
-    use LoggableTrait, ApiResponseHelpers;
+    use LoggableTrait, ApiResponseTrait;
 
     protected $gemini;
 

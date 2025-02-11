@@ -8,14 +8,14 @@ use App\Models\Approvable;
 use App\Models\Course;
 use App\Models\User;
 use App\Notifications\CourseSubmittedNotification;
+use App\Traits\ApiResponseTrait;
 use App\Traits\LoggableTrait;
-use F9Web\ApiResponseHelpers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
 class SendRequestController extends Controller
 {
-    use LoggableTrait, ApiResponseHelpers;
+    use LoggableTrait, ApiResponseTrait;
 
     public function submitCourse(Request $request, string $slug)
     {
