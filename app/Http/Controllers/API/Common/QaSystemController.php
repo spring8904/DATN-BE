@@ -17,7 +17,6 @@ class QaSystemController extends Controller
         try {
             $qaSystem = QaSystem::query()
                 ->where('status', 1)
-                ->latest('id')
                 ->get();
 
             if ($qaSystem->isEmpty()) {

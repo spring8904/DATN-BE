@@ -51,15 +51,14 @@ Route::prefix('search')
         Route::get('/', [SearchController::class, 'search']);
     });
 
-Route::prefix('instructor')->as('instructor.')->group(function () {
-    Route::post('register', [RegisterController::class, 'register']);
-});
-
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('auth')->as('auth.')->group(function () {
         Route::post('logout', [AuthController::class, 'logout']);
+    });
 
+    Route::prefix('instructor')->as('instructor.')->group(function () {
+        Route::post('register', [RegisterController::class, 'register']);
     });
 
     Route::get('user', function (Request $request) {
