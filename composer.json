@@ -12,7 +12,6 @@
         "barryvdh/laravel-dompdf": "^3.1",
         "cloudinary-labs/cloudinary-laravel": "^2.2",
         "cloudinary/cloudinary_php": "^2.14",
-        "f9webltd/laravel-api-response-helpers": "^2.0",
         "google-gemini-php/client": "1.0.4-beta",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^10.0",

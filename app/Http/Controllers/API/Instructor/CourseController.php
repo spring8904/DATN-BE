@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\API\Courses\StoreCourseRequest;
 use App\Http\Requests\API\Courses\UpdateContentCourse;
 use App\Models\Course;
+use App\Traits\ApiResponseTrait;
 use App\Traits\LoggableTrait;
 use App\Traits\UploadToCloudinaryTrait;
 use App\Traits\UploadToMuxTrait;
@@ -18,7 +19,7 @@ use Illuminate\Validation\ValidationException;
 
 class CourseController extends Controller
 {
-    use LoggableTrait, UploadToCloudinaryTrait, UploadToMuxTrait;
+    use LoggableTrait, UploadToCloudinaryTrait, UploadToMuxTrait, ApiResponseTrait;
 
     const FOLDER_COURSE_THUMBNAIL = 'courses/thumbnail';
     const FOLDER_COURSE_INTRO = 'courses/intro';
