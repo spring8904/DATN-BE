@@ -5,8 +5,11 @@ namespace App\Http\Controllers\API\Instructor;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\Lessons\StoreLessonRequest;
 use App\Http\Requests\API\Lessons\UpdateLessonRequest;
+use App\Http\Requests\API\Lessons\UpdateOrderLessonRequest;
 use App\Models\Answer;
+use App\Models\Chapter;
 use App\Models\Coding;
+use App\Models\Course;
 use App\Models\Document;
 use App\Models\Lesson;
 use App\Models\Question;
@@ -18,7 +21,9 @@ use App\Traits\UploadToCloudinaryTrait;
 use App\Traits\UploadToLocalTrait;
 use F9Web\ApiResponseHelpers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -44,13 +49,20 @@ class LessonController extends Controller
             $data = $request->validated();
             $data['slug'] = !empty($data['title']) ? Str::slug($data['title']) : Str::uuid();
 
+            $chapterID = Chapter::query()
+                ->with('lessons')
+                ->where('id', $data['chapter_id'])
+                ->first();
+
             $lessonable = $this->updateOrCreateLessonable($data);
+
+            $data['order'] = $chapterID->lessons()->max('order') + 1;
+
             $lesson = $this->createLesson($data, $lessonable);
 
-            return $this->respondCreated([
-                'message' => 'Tạo bài học thành công', 
-                'data' => $lesson->load('lessonable')
-            ]);
+            return $this->respondCreated('Tạo bài học thành công',
+                $lesson->load('lessonable')
+            );
         } catch (\Exception $e) {
             $this->logError($e, $request->all());
 
@@ -103,6 +115,46 @@ class LessonController extends Controller
             return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại');
         }
     }
+
+    public function updateOrderLesson(UpdateOrderLessonRequest $request, string $slug)
+    {
+        try {
+            $data = $request->validated();
+
+            $course = Course::query()
+                ->where('user_id', Auth::id())
+                ->with('chapters.lessons')
+                ->where('slug', $slug)
+                ->first();
+
+            if (!$course) {
+                return $this->respondNotFound('Không tìm thấy khoá học');
+            }
+
+            $lessons = $data['lessons'];
+
+            DB::beginTransaction();
+
+            foreach ($lessons as $lessonData) {
+                $lesson = Lesson::query()->find($lessonData['id']);
+                if ($lesson) {
+                    $lesson->order = $lessonData['order'];
+                    $lesson->save();
+                }
+            }
+
+            DB::commit();
+
+            return $this->respondOk('Cập nhật thứ tự bài học thành công', $lessons);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            $this->logError($e, $request->all());
+
+            return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại');
+        }
+    }
+
 
     public function deleteLesson(string $slug)
     {
@@ -197,6 +249,7 @@ class LessonController extends Controller
             'type' => $data['type'],
             'lessonable_type' => $lessonable->getMorphClass(),
             'lessonable_id' => $lessonable->id,
+            'order' => $data['order'],
         ]);
     }
 

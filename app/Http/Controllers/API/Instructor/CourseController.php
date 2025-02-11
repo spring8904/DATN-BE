@@ -36,6 +36,8 @@ class CourseController extends Controller
                 ])
                 ->with([
                     'category:id,name,slug,parent_id',
+                    'chapters:id,course_id,title,order',
+                    'chapters.lessons:id,chapter_id,title,slug,order'
                 ])
                 ->search($query)
                 ->orderBy('created_at')
@@ -44,7 +46,7 @@ class CourseController extends Controller
             if ($courses->isEmpty()) {
                 return $this->respondNotFound('Không tìm thấy khoá học');
             }
-
+//
             return $this->respondOk('Danh sách khoá học của: ' . Auth::user()->name,
                 $courses
             );
@@ -109,9 +111,8 @@ class CourseController extends Controller
 
             $course = Course::query()->create($data);
 
-            return $this->respondCreated(
-                'Tạo khoá học thành công',
-                $course->load('category'),
+            return $this->respondCreated('Tạo khoá học thành công',
+                $course->load('category')
             );
         } catch (\Exception $e) {
             $this->logError($e, $request->all());
