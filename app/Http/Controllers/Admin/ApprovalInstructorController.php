@@ -162,27 +162,30 @@ class ApprovalInstructorController extends Controller
 
     public function approve(Request $request, string $id)
     {
-        return $this->updateApprovalStatus($id, 'approved', 'Người hướng dẫn đã được kiểm duyệt');
+        return $this->updateApprovalStatus($id, 'approved', 'Người hướng dẫn đã được kiểm duyệt', 'instructor');
     }
 
     public function reject(Request $request, string $id)
     {
         $note = $request->note ?? 'Người hướng dẫn đã bị từ chối';
-        return $this->updateApprovalStatus($id, 'rejected', $note);
+        return $this->updateApprovalStatus($id, 'rejected', $note, 'member');
     }
 
-    private function updateApprovalStatus(string $id, string $status, string $note)
+    private function updateApprovalStatus(string $id, string $status, string $note, string $newRole)
     {
         try {
             DB::beginTransaction();
 
             $approval = Approvable::query()->findOrFail($id);
+            $user = $approval->user;
 
             $approval->status = $status;
             $approval->note = $note;
             $approval->{$status . '_at'} = now();
             $approval->approver_id = auth()->id();
             $approval->save();
+
+            $user->syncRoles([$newRole]);
 
             DB::commit();
 
@@ -195,6 +198,7 @@ class ApprovalInstructorController extends Controller
                 ->with('error', 'Có lỗi xảy ra, vui lòng thử lại sau');
         }
     }
+
     private function filter($request, $query)
     {
         $filters = [
@@ -206,7 +210,7 @@ class ApprovalInstructorController extends Controller
             'approval_date' => ['filed' => ['approved_at', 'rejected_at'], 'attribute' => ['approval_start_date' => '>=', 'approval_end_date' => '<=']],
         ];
 
-        $query = $this->filterTrait($filters, $request,$query);
+        $query = $this->filterTrait($filters, $request, $query);
 
         return $query;
     }

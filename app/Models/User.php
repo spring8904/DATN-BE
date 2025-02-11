@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Notifications\Notification;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -83,5 +84,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function approvables()
     {
         return $this->morphOne(Approvable::class, 'approvable');
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
     }
 }

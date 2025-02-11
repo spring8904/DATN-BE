@@ -185,10 +185,12 @@ class AuthController extends Controller
 
                 DB::commit();
 
+                $role = $user->roles->first()->name;
+
                 return response()->json([
-                    'status' => true,
                     'message' => 'Đăng nhập thành công',
                     'user' => $user,
+                    'role' =>  $role,
                     'token' => $token->plainTextToken,
                     'expires_at' => $expiresAt
                 ], Response::HTTP_OK);

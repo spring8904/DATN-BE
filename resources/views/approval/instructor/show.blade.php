@@ -216,19 +216,28 @@
                                                          "website" => "ri-global-fill"
                                                     ];
                                                 @endphp
-                                                @foreach($socials as $key => $url)
-                                                    @if(array_key_exists($key, $icon) && $url)
-                                                        <div>
-                                                            <a href="{{ $url }}" class="avatar-xs d-block"
-                                                               target="_blank">
+                                                @if(!empty($socials))
+                                                    @foreach($socials as $key => $url)
+                                                        @if(array_key_exists($key, $icon) && $url)
+                                                            <div>
+                                                                <a href="{{ $url }}" class="avatar-xs d-block"
+                                                                   target="_blank">
                                                                 <span
                                                                     class="avatar-title rounded-circle fs-16 bg-body text-body">
                                                                     <i class="{{ $icon[$key] }}"></i>
                                                                 </span>
-                                                            </a>
-                                                        </div>
-                                                    @endif
-                                                @endforeach
+                                                                </a>
+                                                            </div>
+                                                        @endif
+                                                    @endforeach
+
+                                                @else
+                                                    <div class="avatar-xs">
+                                                        <span class="avatar-title rounded-circle fs-16 bg-body text-body">
+                                                            <i class="ri-global-fill"></i>
+                                                        </span>
+                                                    </div>
+                                                @endif
                                             </div>
                                         </div><!-- end card body -->
                                     </div><!-- end card -->

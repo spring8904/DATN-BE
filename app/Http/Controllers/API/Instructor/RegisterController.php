@@ -9,6 +9,7 @@ use App\Models\Career;
 use App\Models\Profile;
 use App\Models\User;
 use App\Notifications\RegisterInstructorNotification;
+use App\Traits\ApiResponseTrait;
 use App\Traits\LoggableTrait;
 use App\Traits\UploadToCloudinaryTrait;
 use Illuminate\Http\Response;
@@ -18,7 +19,7 @@ use Illuminate\Support\Str;
 
 class RegisterController extends Controller
 {
-    use LoggableTrait, UploadToCloudinaryTrait;
+    use LoggableTrait, UploadToCloudinaryTrait, ApiResponseTrait;
 
     const FOLDER_CERTIFICATES = 'certificates';
 
@@ -27,18 +28,20 @@ class RegisterController extends Controller
 
     public function register(RegisterInstructorRequest $request)
     {
+        if (!Auth::check()) {
+            return $this->respondUnauthorized('Bạn cần đăng nhập để đăng ký làm giảng viên');
+        }
+
         try {
             DB::beginTransaction();
 
-            $user = Auth::check() ? Auth::user() : $this->createUser($request->validated());
+            $user = Auth::user();
 
             $uploadedCertificates = $this->uploadCertificates($request->file('certificates'));
 
             $qaSystemsData = $this->prepareQaSystemsData($request->qa_systems);
 
             $profile = $this->createProfile($user->id, $request->only(['phone', 'address', 'experience']), $uploadedCertificates, $qaSystemsData);
-
-            $user->assignRole("instructor");
 
             $approvable = Approvable::where('approvable_id', $user->id)
                 ->where('approvable_type', User::class)
@@ -65,7 +68,7 @@ class RegisterController extends Controller
 
             DB::commit();
 
-            return $this->respondCreated('Đăng ký giảng viên thành công', $user);
+            return $this->respondCreated('Gửi yêu cầu đăng ký thành công', $user);
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -73,17 +76,6 @@ class RegisterController extends Controller
 
             return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại');
         }
-    }
-
-    private function createUser(array $validated)
-    {
-        return User::create([
-            'name' => $validated['name'],
-            'code' => Str::uuid()->toString(),
-            'email' => $validated['email'],
-            'password' => $validated['password'],
-            'avatar' => self::URL_IMAGE_DEFAULT,
-        ]);
     }
 
     private function createProfile(int $userId, array $data, array $certificates, array $qaSystemsData)
