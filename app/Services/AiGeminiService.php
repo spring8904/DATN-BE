@@ -1,18 +1,20 @@
 <?php
 
-namespace  App\Services;
+namespace App\Services;
 
 use App\Traits\LoggableTrait;
 use F9Web\ApiResponseHelpers;
 use Gemini;
 
-class AiGeminiService {
+class AiGeminiService
+{
 
     use LoggableTrait, ApiResponseHelpers;
 
     protected $gemini;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->gemini = Gemini::client(env('GEMINI_API_KEY'));
     }
 
@@ -27,5 +29,10 @@ class AiGeminiService {
 
             return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lagi sau');
         }
+    }
+
+    public function __destruct()
+    {
+        $this->gemini = null;
     }
 }

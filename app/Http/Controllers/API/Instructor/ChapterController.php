@@ -36,9 +36,7 @@ class ChapterController extends Controller
 
             $chapter = $course->chapters()->create($data);
 
-            return $this->respondCreated([
-                'message' => 'Tạo chương học thành công', 
-                'data' => $chapter]
+            return $this->respondCreated('Tạo chương học thành công', $chapter
             );
         } catch (\Exception $e) {
             $this->logError($e->$request->all());
@@ -103,7 +101,8 @@ class ChapterController extends Controller
                 ->with([
                     'lessons'
                 ])
-                ->orderBy('order')->get();
+                ->orderBy('order')
+                ->get();
 
             return $this->respondOk('Cập nhật thứ tự chương học thành công',
                 $chapter
@@ -135,7 +134,7 @@ class ChapterController extends Controller
             }
 
             if ($chapter->lessons()->count() > 0) {
-               return $this->respondError('Chương học không có bài học, không thể xóa');
+                return $this->respondError('Chương học không có bài học, không thể xóa');
             }
 
             $chapter->delete();
