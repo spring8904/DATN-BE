@@ -8,14 +8,14 @@ use App\Http\Requests\API\Chapters\UpdateChapterRequest;
 use App\Http\Requests\API\Chapters\UpdateOrderChapterRequest;
 use App\Models\Chapter;
 use App\Models\Course;
+use App\Traits\ApiResponseTrait;
 use App\Traits\LoggableTrait;
-use F9Web\ApiResponseHelpers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ChapterController extends Controller
 {
-    use LoggableTrait, ApiResponseHelpers;
+    use LoggableTrait, ApiResponseTrait;
 
     public function storeChapter(StoreChapterRequest $request)
     {

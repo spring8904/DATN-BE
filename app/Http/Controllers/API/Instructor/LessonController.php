@@ -16,10 +16,10 @@ use App\Models\Question;
 use App\Models\Quiz;
 use App\Models\Video;
 use App\Services\VideoUploadService;
+use App\Traits\ApiResponseTrait;
 use App\Traits\LoggableTrait;
 use App\Traits\UploadToCloudinaryTrait;
 use App\Traits\UploadToLocalTrait;
-use F9Web\ApiResponseHelpers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -29,7 +29,7 @@ use Illuminate\Support\Str;
 
 class LessonController extends Controller
 {
-    use LoggableTrait, ApiResponseHelpers, UploadToCloudinaryTrait, UploadToLocalTrait;
+    use LoggableTrait, ApiResponseTrait, UploadToCloudinaryTrait, UploadToLocalTrait;
 
     const VIDEO_LESSON = 'videos/lessons';
     const DOCUMENT_LESSON = 'documents/lessons';

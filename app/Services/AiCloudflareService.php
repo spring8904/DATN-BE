@@ -2,14 +2,14 @@
 
 namespace App\Services;
 
+use App\Traits\ApiResponseTrait;
 use App\Traits\LoggableTrait;
-use F9Web\ApiResponseHelpers;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
 class AiCloudflareService
 {
-    use LoggableTrait, ApiResponseHelpers;
+    use LoggableTrait, ApiResponseTrait;
 
     protected $cloudflare;
 

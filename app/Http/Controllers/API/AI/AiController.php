@@ -5,13 +5,13 @@ namespace App\Http\Controllers\API\AI;
 use App\Http\Controllers\Controller;
 use App\Services\AiCloudflareService;
 use App\Services\AiGeminiService;
+use App\Traits\ApiResponseTrait;
 use App\Traits\LoggableTrait;
-use F9Web\ApiResponseHelpers;
 use Illuminate\Http\Request;
 
 class AiController extends Controller
 {
-    use LoggableTrait, ApiResponseHelpers;
+    use LoggableTrait, ApiResponseTrait;
 
     protected $aiService;
     protected $cloudflare;

@@ -55,7 +55,6 @@ class CourseController extends Controller
             $this->logError($e);
 
             return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại',
-                Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
     }
@@ -89,7 +88,6 @@ class CourseController extends Controller
 
             $this->logError($e);
             return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại',
-                Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
     }
@@ -118,9 +116,7 @@ class CourseController extends Controller
         } catch (\Exception $e) {
             $this->logError($e, $request->all());
 
-            return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại',
-                Response::HTTP_INTERNAL_SERVER_ERROR
-            );
+            return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại');
         }
     }
 
