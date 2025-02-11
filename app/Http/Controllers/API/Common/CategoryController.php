@@ -6,13 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Categories\StoreCategoryRequest;
 use App\Http\Requests\Admin\Categories\UpdateCategoryRequest;
 use App\Models\Category;
+use App\Traits\ApiResponseTrait;
 use App\Traits\LoggableTrait;
 use App\Traits\UploadToCloudinaryTrait;
 use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
-    use LoggableTrait, UploadToCloudinaryTrait;
+    use LoggableTrait, ApiResponseTrait;
 
     public function index()
     {

@@ -3,13 +3,12 @@
 namespace App\Traits;
 
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
-use F9Web\ApiResponseHelpers;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 
 trait UploadToCloudinaryTrait
 {
-    use LoggableTrait, ApiResponseHelpers;
+    use LoggableTrait;
 
     public function uploadImage($file, $folder = null)
     {
@@ -28,7 +27,9 @@ trait UploadToCloudinaryTrait
         } catch (\Exception $e) {
             $this->logError($e);
 
-            return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại sau', Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json([
+                'message' => 'Có lỗi xảy ra, vui lòng thử lại sau',
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -55,7 +56,9 @@ trait UploadToCloudinaryTrait
         } catch (\Exception $e) {
             $this->logError($e);
 
-            return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại sau', Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json([
+                'message' => 'Có lỗi xảy ra, vui lòng thử lại sau',
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -90,7 +93,9 @@ trait UploadToCloudinaryTrait
         } catch (\Exception $e) {
             $this->logError($e);
 
-            return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại sau', Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json([
+                'message' => 'Có lỗi xảy ra, vui lòng thử lại sau',
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -115,7 +120,9 @@ trait UploadToCloudinaryTrait
         } catch (\Exception $e) {
             $this->logError($e);
 
-            return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại sau', Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json([
+                'message' => 'Có lỗi xảy ra, vui lòng thử lại sau',
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -158,7 +165,9 @@ trait UploadToCloudinaryTrait
             return $deleteResults;
         } catch (\Exception $e) {
             $this->logError($e);
-            return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại sau', Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json([
+                'message' => 'Có lỗi xảy ra, vui lòng thử lại sau',
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -185,7 +194,9 @@ trait UploadToCloudinaryTrait
         } catch (\Exception $e) {
             $this->logError($e);
 
-            return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại sau', Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json([
+                'message' => 'Có lỗi xảy ra, vui lòng thử lại sau',
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

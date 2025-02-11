@@ -2,18 +2,20 @@
 
 namespace App\Traits;
 
-use F9Web\ApiResponseHelpers;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 
 trait UploadToLocalTrait
 {
-    use LoggableTrait, ApiResponseHelpers;
+    use LoggableTrait;
 
     public function uploadToLocal($file, $directory = 'uploads')
     {
         try {
             if (!$file->isValid()) {
-                return $this->respondBadRequest('Invalid file');
+                return response()->json([
+                    'message' => 'Invalid file',
+                ], Response::HTTP_BAD_REQUEST);
             }
 
             $file = Storage::put($directory, $file);
@@ -22,7 +24,9 @@ trait UploadToLocalTrait
         } catch (\Exception $e) {
             $this->logError($e);
 
-            return $this->respondServerError('Failed to upload file');
+            return response()->json([
+                'message' => 'Có lỗi xảy ra, vui lòng thử lại sau',
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -33,11 +37,15 @@ trait UploadToLocalTrait
                 return Storage::delete($filePath);
             }
 
-            return $this->respondNotFound('File not found');
+            return response()->json([
+                'message' => 'File not found',
+            ], Response::HTTP_NOT_FOUND);
         } catch (\Exception $e) {
             $this->logError($e);
 
-            return $this->respondServerError('Failed to delete file');
+            return response()->json([
+                'message' => 'Có lỗi xảy ra, vui lòng thử lại sau',
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }
