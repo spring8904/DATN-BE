@@ -47,7 +47,7 @@ class CourseController extends Controller
             if ($courses->isEmpty()) {
                 return $this->respondNotFound('Không tìm thấy khoá học');
             }
-//
+
             return $this->respondOk('Danh sách khoá học của: ' . Auth::user()->name,
                 $courses
             );
@@ -131,12 +131,12 @@ class CourseController extends Controller
                 ->where('slug', $slug)
                 ->first();
 
-            $thumbnailOld = $course->thumbnail;
-            $introOld = $course->intro;
-
             if (!$course) {
                 return $this->respondNotFound('Không tìm thấy khoá học');
             }
+
+            $thumbnailOld = $course->thumbnail;
+            $introOld = $course->intro;
 
             $data['slug'] = !empty($data['name'])
                 ? Str::slug($data['name']) . '-' . $course->code
@@ -186,9 +186,7 @@ class CourseController extends Controller
                 return $this->respondFailedValidation('Dữ liệu không hợp lệ', $e->errors());
             }
 
-            return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại',
-                Response::HTTP_INTERNAL_SERVER_ERROR
-            );
+            return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại');
         }
     }
 
@@ -249,9 +247,7 @@ class CourseController extends Controller
         } catch (\Exception $e) {
             $this->logError($e);
 
-            return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại',
-                Response::HTTP_INTERNAL_SERVER_ERROR
-            );
+            return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại');
         }
     }
 
@@ -279,9 +275,7 @@ class CourseController extends Controller
         } catch (\Exception $e) {
             $this->logError($e);
 
-            return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại',
-                Response::HTTP_INTERNAL_SERVER_ERROR
-            );
+            return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại');
         }
     }
 }

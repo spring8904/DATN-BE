@@ -15,15 +15,18 @@ class CourseSeeder extends Seeder
      */
     public function run(): void
     {
-        $users = User::query()->pluck('id')->all();
+        $users = User::query()->limit(10)->pluck('id')->toArray();
+        $idInstructor = User::query()->where('email', 'instructor@gmail.com')->pluck('id')->toArray();
+        
+        $arrayUser = array_merge($users, $idInstructor);
         $categories = Category::query()->pluck('id')->all();
 
         for ($i = 1; $i <= 100; $i++) {
-            $name = fake()->title() . Str::uuid();
+            $name = 'Khóa học số '. $i;
             $slug = Str::slug($name);
 
             Course::query()->create([
-                'user_id' => fake()->randomElement($users),
+                'user_id' => fake()->randomElement($arrayUser),
                 'category_id' => fake()->randomElement($categories),
                 'code' => substr(str_replace('-', '', (string) Str::uuid()), 0, 10),
                 'name' => $name,
@@ -34,6 +37,8 @@ class CourseSeeder extends Seeder
                 'total_student' => random_int(0, 100),
                 'status' => fake()->randomElement(['draft', 'pending', 'approved', 'rejected']),
                 'accepted' => fake()->dateTimeBetween('-1 year', 'now'),
+                'thumbnail' => fake()->imageUrl(),
+                'intro' => fake()->title(),
                 'requirements' => json_encode([fake()->sentence(), fake()->sentence(), fake()->sentence()]),
                 'benefits' => json_encode([fake()->sentence(), fake()->sentence(), fake()->sentence()]),
                 'qa' => json_encode([
