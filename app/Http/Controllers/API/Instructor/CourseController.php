@@ -135,8 +135,8 @@ class CourseController extends Controller
                 return $this->respondNotFound('Không tìm thấy khoá học');
             }
 
-            $thumbnailOld = $course->thumbnail;
-            $introOld = $course->intro;
+            $thumbnailOld = $course->thumbnail ?? null;
+            $introOld = $course->intro ?? null;
 
             $data['slug'] = !empty($data['name'])
                 ? Str::slug($data['name']) . '-' . $course->code
