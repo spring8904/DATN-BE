@@ -44,7 +44,7 @@ Route::prefix('auth')->as('auth.')->group(function () {
     Route::get('google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
 });
-
+Route::get('/transactions/vnpay-callback', [TransactionController::class, 'vnpayCallback']);
 #============================== ROUTE SEARCH =============================
 Route::prefix('search')
     ->group(function () {
