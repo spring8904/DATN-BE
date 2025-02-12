@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\WithDrawalsRequestController;
 use App\Http\Controllers\Admin\ApprovalCourseController;
 use App\Http\Controllers\Admin\CommissionController;
 use App\Http\Controllers\Admin\AnalyticController;
+use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\RevenueStatisticController;
 use App\Http\Controllers\Admin\TopCourseController;
 
@@ -238,6 +239,21 @@ Route::prefix('admin')->as('admin.')
                 ->can('commission.update');
             Route::delete('/{commission}', [CommissionController::class, 'destroy'])->name('destroy')
                 ->can('commission.delete');
+        });
+
+        #============================== ROUTE COURSES =============================
+        Route::prefix('courses')->as('courses.')->group(function () {
+            Route::get('/', [CourseController::class, 'index'])->name('index');
+            Route::get('/create', [CourseController::class, 'create'])->name('create')
+                ->can('category.create');
+            Route::post('/', [CategoryController::class, 'store'])->name('store')
+                ->can('category.create');
+            Route::get('/{id}', [CategoryController::class, 'show'])->name('show');
+            Route::get('/edit/{category}', [CategoryController::class, 'edit'])->name('edit');
+            Route::put('/{category}', [CategoryController::class, 'update'])->name('update')
+                ->can('category.update');
+            Route::delete('/{category}', [CategoryController::class, 'destroy'])->name('destroy')
+                ->can('category.delete');
         });
 
         #============================== ROUTE APPROVAL =============================

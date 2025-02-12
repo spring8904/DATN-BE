@@ -29,6 +29,7 @@ class CouponController extends Controller
 
         if ($request->hasAny(['code', 'name', 'user_id', 'discount_type', 'status', 'used_count', 'start_date', 'expire_date'])) {
             $queryCoupons = $this->filter($request, $queryCoupons);
+        }
 
         $queryCouponCounts = Coupon::query()
         ->selectRaw('

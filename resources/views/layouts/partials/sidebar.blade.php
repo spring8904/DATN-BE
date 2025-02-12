@@ -180,6 +180,21 @@
                 </ul>
             </div>
 
+            <a class="nav-link menu-link" href="#sidebarPost" data-bs-toggle="collapse" role="button"
+                aria-expanded="false" aria-controls="sidebarPost">
+                <i class="lab la-blogger"></i> <span data-key="t-authentication">Quản lý khóa học</span>
+            </a>
+            <div class="collapse menu-dropdown" id="sidebarPost">
+                <ul class="nav nav-sm flex-column">
+                    <li class="nav-item">
+                        <a href="{{ route('admin.courses.index') }}" class="nav-link" data-key="t-chat">
+                            Danh sách bài viết </a>
+                    </li>
+                    
+                    
+                </ul>
+            </div>
+
             <a class="nav-link menu-link" href="#sidebarCoupon" data-bs-toggle="collapse" role="button"
                 aria-expanded="false" aria-controls="sidebarCoupon">
                 <i class=" ri-coupon-line"></i> <span data-key="t-authentication">Quản lý mã giảm giá</span>
