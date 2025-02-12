@@ -40,7 +40,7 @@ class UserSeeder extends Seeder
 
         $permissions = ['member', 'instructor', 'admin', 'super_admin'];
         foreach ($permissions as $permission) {
-            $email = $permission == 'super_admin' ? 'superadmin': $permission;
+            $email = $permission == 'super_admin' ? 'superadmin' : $permission;
             $user = User::create([
                 'code' => str_replace('-', '', Str::uuid()),
                 'name' => Str::ucfirst($permission),
