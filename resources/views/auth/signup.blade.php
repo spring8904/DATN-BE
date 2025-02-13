@@ -17,7 +17,7 @@
                                             class="">
                                             <img src="{{ asset('assets/images/logo-container.png') }}" alt=""
                                                 width="50" height="50">
-                                            <span class="custom-text-logo">CourseHub</span>
+                                            <span class="custom-text-logo">CourseMely</span>
                                         </a>
                                     </div>
                                     <div class="mt-auto">
@@ -64,7 +64,7 @@
                                 </div>
 
                                 <div class="mt-4">
-                                    <form class="needs-validation" novalidate action="{{ route('admin.handleLogin') }}"
+                                    <form class="needs-validation" novalidate action="{{ route('admin.signUp') }}"
                                         method="POST">
                                         @csrf
                                         <div class="mb-3">

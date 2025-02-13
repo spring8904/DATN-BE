@@ -1,56 +1,92 @@
-@extends('layouts.auth')
-
-@section('title', 'Xác minh email')
-@section('content')
-<div class="row">
-    <div class="col-12">
-        <table class="body-wrap" style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; width: 100%; background-color: transparent; margin: 0;">
-            <tr style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
-                <td style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0;" valign="top"></td>
-                <td class="container" width="600" style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; display: block !important; max-width: 600px !important; clear: both !important; margin: 0 auto;" valign="top">
-                    <div class="content" style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; max-width: 600px; display: block; margin: 0 auto; padding: 20px;">
-                        <table class="main" width="100%" cellpadding="0" cellspacing="0" itemprop="action" itemscope itemtype="http://schema.org/ConfirmAction" style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; border-radius: 3px; margin: 0; border: none;">
-                            <tr style="font-family: 'Roboto', sans-serif; font-size: 14px; margin: 0;">
-                                <td class="content-wrap" style="font-family: 'Roboto', sans-serif; box-sizing: border-box; color: #495057; font-size: 14px; vertical-align: top; margin: 0;padding: 30px; box-shadow: 0 3px 15px rgba(30,32,37,.06); ;border-radius: 7px; background-color: #fff;" valign="top">
-                                    <meta itemprop="name" content="Confirm Email" style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;" />
-                                    <table width="100%" cellpadding="0" cellspacing="0" style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
-                                        <tr style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
-                                            <td class="content-block" style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
-                                                <div style="margin-left: 120px">
-                                                    <a style="display: flex;align-items: center; gap: 10px" href="index.html"
-                                                        class="">
-                                                        <img src="{{ asset('assets/images/logo-container.png') }}" alt=""
-                                                            width="50" height="50">
-                                                        <span class="custom-text-logo text-primary">CourseHub</span>
-                                                    </a>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
-                                            <td class="content-block" style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 24px; vertical-align: top; margin: 0; padding: 0 0 10px;  text-align: center;" valign="top">
-                                                <h4 style="font-family: 'Roboto', sans-serif; font-weight: 500;">Vui lòng xác minh email của bạn</h5>
-                                            </td>
-                                        </tr>
-                                        <tr style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
-                                            <td class="content-block" style="font-family: 'Roboto', sans-serif; color: #878a99; box-sizing: border-box; font-size: 15px; vertical-align: top; margin: 0; padding: 0 0 26px; text-align: center;" valign="top">
-                                                <p style="margin-bottom: 0;">Vui lòng xác thực địa chỉ email của bạn để truy cập trang quản trị.</p>
-                                            </td>
-                                        </tr>
-                                        <tr style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
-                                            <td class="content-block" itemprop="handler" itemscope itemtype="http://schema.org/HttpActionHandler" style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 22px; text-align: center;" valign="top">
-                                                <a href="#" itemprop="url" style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: .8125rem; color: #FFF; text-decoration: none; font-weight: 400; text-align: center; cursor: pointer; display: inline-block; border-radius: .25rem; text-transform: capitalize; background-color: #405189; margin: 0; border-color: #405189; border-style: solid; border-width: 1px; padding: .5rem .9rem;">Xác minh email của bạn</a>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                        </table>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xác Minh Email</title>
+    <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        .email-wrapper {
+            width: 100%;
+            background-color: #f9f9f9;
+            padding: 30px 0;
+        }
+        .email-container {
+            width: 600px;
+            background-color: #ffffff;
+            margin: 0 auto;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .email-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .email-header h1 {
+            color: #333;
+            font-size: 24px;
+        }
+        .email-body {
+            color: #555;
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        .email-footer {
+            text-align: center;
+            font-size: 14px;
+            color: #aaa;
+        }
+        .verify-btn {
+            display: inline-block;
+            background-color: #28a745;
+            color: #fff;
+            padding: 12px 24px;
+            font-size: 16px;
+            text-decoration: none;
+            border-radius: 5px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .verify-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-wrapper">
+        <div class="email-container">
+            <!-- Header -->
+            <div class="email-header">
+                <div class="position-relative h-100 d-flex flex-column">
+                    <div class="mb-4" style="margin-left: 150px">
+                            <img src="../assets/images/logo-container.png" alt=""
+                                width="50" height="50">
+                            <h1 class="custom-text-logo text-lg">CourseMely</h1>
                     </div>
-                </td>
-            </tr>
-        </table>
-        <!-- end table -->
+                </div>
+                <h1>Xin Chào!</h1>
+            </div>
+            
+            <!-- Body -->
+            <div class="email-body">
+                <p>Cảm ơn bạn đã đăng ký tài khoản tại CourseMeLy. Vui lòng xác minh địa chỉ email của bạn bằng cách nhấn vào nút dưới đây.</p>
+                <a href="{{$verificationUrl}}" class="verify-btn">Xác Minh Email</a>
+                <p>Nếu bạn không yêu cầu đăng ký tài khoản, vui lòng bỏ qua email này.</p>
+            </div>
+
+            <!-- Footer -->
+            <div class="email-footer">
+                <p>&copy; 2025 CourseMeLy. Mọi quyền được bảo lưu.</p>
+            </div>
+        </div>
     </div>
-    <!--end col-->
-</div><!-- end row -->
-@endsection
+</body>
+</html>

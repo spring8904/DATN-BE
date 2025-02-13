@@ -12,13 +12,13 @@ use Illuminate\Queue\SerializesModels;
 class VerifyEmail extends Mailable
 {
     use Queueable, SerializesModels;
-
+    public string $verificationUrl;
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct(string $verificationUrl)
     {
-        //
+        $this->verificationUrl = $verificationUrl;
     }
 
     /**
@@ -27,7 +27,7 @@ class VerifyEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Verify Email',
+            subject: 'Xác thực email của bạn',
         );
     }
 
@@ -37,7 +37,8 @@ class VerifyEmail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'emails.auth.verify',
+            with: ['verificationUrl' => $this->verificationUrl],
         );
     }
 
