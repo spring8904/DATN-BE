@@ -20,7 +20,7 @@ class BannerFactory extends Factory
             'title'=>fake()->title(),
             'redirect_url'=>fake()->url,
             'image'=>fake()->image,
-            'content'=>fake()->paragraph(3),
+            'content'=>fake()->paragraph(1),
             'order'=>rand(0,5),
             'status'=>rand(0,1),
             'created_at'=>now(),
