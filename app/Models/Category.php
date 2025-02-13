@@ -27,4 +27,14 @@ class Category extends Model
     {
         return $this->hasMany(Category::class, 'parent_id');
     }
+
+    public function courses()
+    {
+        return $this->hasMany(Course::class);
+    }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
 }

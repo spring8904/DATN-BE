@@ -30,6 +30,7 @@ class Course extends Model
         'intro',
         'price',
         'price_sale',
+        'is_free',
         'description',
         'duration',
         'level',
@@ -38,6 +39,8 @@ class Course extends Model
         'benefits',
         'qa',
         'status',
+        'visibility',
+        'modification_request',
         'accepted',
     ];
 
@@ -69,7 +72,9 @@ class Course extends Model
     {
         return $this->hasMany(Chapter::class)->orderBy('order');
     }
-    public function invoices(){
+
+    public function invoices()
+    {
         return $this->hasMany(Invoice::class);
     }
 
@@ -80,7 +85,7 @@ class Course extends Model
 
     public function coupons()
     {
-        return $this->belongsToMany(Coupon::class );
+        return $this->belongsToMany(Coupon::class);
     }
 
     public function scopeSearch($query, $searchQuery)
@@ -89,6 +94,4 @@ class Course extends Model
             $query->where('name', 'like', '%' . $searchQuery . '%');
         });
     }
-
-
 }
