@@ -27,6 +27,7 @@ class UpdateLessonRequest extends BaseFormRequest
         $type = $this->input('type');
 
         $rules = [
+            'title' => 'required|string|max:255',
             'content' => 'nullable|string',
             'is_free_preview' => 'nullable|boolean',
             'type' => [
@@ -81,6 +82,7 @@ class UpdateLessonRequest extends BaseFormRequest
     public function messages()
     {
         return [
+            'title.max' => 'Tiêu đề không được vượt quá 255 ký tự',
             'is_free_preview.boolean' => 'Trường này phải là boolean',
             'type.in' => 'Loại bài học không hợp lệ',
 
