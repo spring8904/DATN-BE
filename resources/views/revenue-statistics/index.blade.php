@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @push('page-css')
-    <link href="{{ asset('assets/libs/jsvectormap/css/jsvectormap.min.css') }}" rel="stylesheet" type="text/css"/>
+    <link href="{{ asset('assets/libs/jsvectormap/css/jsvectormap.min.css') }}" rel="stylesheet" type="text/css" />
 @endpush
 @section('content')
     <div class="container-fluid">
@@ -18,7 +18,7 @@
                         <div class="col-12">
                             <div class="d-flex align-items-lg-center flex-lg-row flex-column">
                                 <div class="flex-grow-1">
-                                    <h4 class="fs-16 mb-1" id="greeting">Xin chào, {{ Auth::user()->name ??'' }}!</h4>
+                                    <h4 class="fs-16 mb-1" id="greeting">Xin chào, {{ Auth::user()->name ?? '' }}!</h4>
                                     <p class="text-muted mb-0">
                                         Chúc bạn một ngày tốt lành!
                                     </p>
@@ -52,9 +52,8 @@
                                                 </span>
                                             </div>
                                             <h4 class="fs-22 fw-semibold ff-secondary">
-                                               <span class="counter-value"
-                                                     data-target="559.25">
-                                                   {{ number_format($totalRevenue) ?? '' }}
+                                                <span class="counter-value" data-target="559.25">
+                                                    {{ number_format($totalRevenue) ?? '' }}
                                                 </span>
                                             </h4>
                                         </div>
@@ -82,7 +81,7 @@
                                         <div class="d-flex gap-2 justify-content-between align-content-center">
                                             <div class="avatar-sm flex-shrink-0">
                                                 <span class="avatar-title bg-info-subtle rounded fs-3">
-                                                       <i class="bx bx-dollar-circle text-info"></i>
+                                                    <i class="bx bx-dollar-circle text-info"></i>
                                                 </span>
                                             </div>
                                             <h4 class="fs-22 fw-semibold ff-secondary">
@@ -185,35 +184,28 @@
 
                                 <div class="card-header p-0 border-0 bg-light-subtle">
                                     <div class="row g-0 text-center">
-                                        <div class="col-6 col-sm-3">
+                                        <div class="col-6 col-sm-4">
                                             <div class="p-3 border border-dashed border-start-0">
-                                                <h5 class="mb-1"><span class="counter-value" data-target="9851">0</span>
+                                                <h5 class="mb-1"><span class="counter-value"
+                                                        data-target="9851">0</span>
                                                 </h5>
-                                                <p class="text-muted mb-0">Number of Projects</p>
+                                                <p class="text-muted mb-0">Số khóa học đã bán</p>
                                             </div>
                                         </div>
                                         <!--end col-->
-                                        <div class="col-6 col-sm-3">
+                                        <div class="col-6 col-sm-4">
                                             <div class="p-3 border border-dashed border-start-0">
-                                                <h5 class="mb-1"><span class="counter-value" data-target="1026">0</span>
-                                                </h5>
-                                                <p class="text-muted mb-0">Active Projects</p>
+                                                <h5 class="mb-1"><span class="counter-value" data-target="228.89">
+                                                        {{ number_format($totalRevenue) ?? '' }}</span> VND</h5>
+                                                <p class="text-muted mb-0">Doanh thu</p>
                                             </div>
                                         </div>
                                         <!--end col-->
-                                        <div class="col-6 col-sm-3">
-                                            <div class="p-3 border border-dashed border-start-0">
-                                                <h5 class="mb-1">$<span class="counter-value"
-                                                                        data-target="228.89">0</span>k</h5>
-                                                <p class="text-muted mb-0">Revenue</p>
-                                            </div>
-                                        </div>
-                                        <!--end col-->
-                                        <div class="col-6 col-sm-3">
+                                        <div class="col-6 col-sm-4">
                                             <div class="p-3 border border-dashed border-start-0 border-end-0">
                                                 <h5 class="mb-1 text-success"><span class="counter-value"
-                                                                                    data-target="10589">0</span>h</h5>
-                                                <p class="text-muted mb-0">Working Hours</p>
+                                                        data-target="10589">0</span>VND</h5>
+                                                <p class="text-muted mb-0">Lợi nhuận</p>
                                             </div>
                                         </div>
                                         <!--end col-->
@@ -222,8 +214,8 @@
                                 <div class="card-body p-0 pb-2">
                                     <div>
                                         <div id="projects-overview-chart"
-                                             data-colors='["--vz-primary", "--vz-warning", "--vz-success"]' dir="ltr"
-                                             class="apex-charts"></div>
+                                            data-colors='["--vz-primary", "--vz-warning", "--vz-success"]' dir="ltr"
+                                            class="apex-charts"></div>
                                     </div>
                                 </div><!-- end card body -->
                             </div><!-- end card -->
@@ -239,55 +231,55 @@
                                 <div class="card-body">
                                     <div class="table-responsive table-card">
                                         <table id="table-instructors"
-                                               class="table table-centered table-hover align-middle table-nowrap mb-0">
+                                            class="table table-centered table-hover align-middle table-nowrap mb-0">
                                             <thead>
-                                            <tr>
-                                                <th scope="col">Người hướng dẫn</th>
-                                                <th scope="col">Khoá học</th>
-                                                <th scope="col">Học viên</th>
-                                                <th scope="col">Doanh thu</th>
-                                            </tr>
+                                                <tr>
+                                                    <th scope="col">Người hướng dẫn</th>
+                                                    <th scope="col">Khoá học</th>
+                                                    <th scope="col">Học viên</th>
+                                                    <th scope="col">Doanh thu</th>
+                                                </tr>
                                             </thead>
                                             <tbody>
-                                            @foreach($topInstructors as $topInstructor)
-                                                <tr>
-                                                    <td>
-                                                        <div class="d-flex align-items-center">
-                                                            <div class="flex-shrink-0 me-2">
-                                                                <img
-                                                                    src="{{ $topInstructor->avatar ?? 'https://res.cloudinary.com/dvrexlsgx/image/upload/v1732148083/Avatar-trang-den_apceuv_pgbce6.png' }}"
-                                                                    alt=""
-                                                                    class="avatar-sm p-2 rounded-circle object-fit-cover"/>
+                                                @foreach ($topInstructors as $topInstructor)
+                                                    <tr>
+                                                        <td>
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="flex-shrink-0 me-2">
+                                                                    <img src="{{ $topInstructor->avatar ?? 'https://res.cloudinary.com/dvrexlsgx/image/upload/v1732148083/Avatar-trang-den_apceuv_pgbce6.png' }}"
+                                                                        alt=""
+                                                                        class="avatar-sm p-2 rounded-circle object-fit-cover" />
+                                                                </div>
+                                                                <div>
+                                                                    <h5 class="fs-14 my-1 fw-medium">
+                                                                        <a href="" class="text-reset">
+                                                                            {{ $topInstructor->name ?? '' }}
+                                                                        </a>
+                                                                    </h5>
+                                                                    <span class="text-muted">
+                                                                        Tham gia
+                                                                        {{ $topInstructor->created_at->format('d/m/Y') ?? '' }}
+                                                                    </span>
+                                                                </div>
                                                             </div>
-                                                            <div>
-                                                                <h5 class="fs-14 my-1 fw-medium">
-                                                                    <a href=""
-                                                                       class="text-reset">
-                                                                        {{ $topInstructor->name ?? '' }}
-                                                                    </a>
-                                                                </h5>
-                                                                <span class="text-muted">
-                                                                    Tham gia {{ $topInstructor->created_at->format('d/m/Y') ?? '' }}
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td class="text-center">
-                                                        <p class="mb-0">{{ $topInstructor->total_courses ?? '' }}</p>
-                                                        <span class="text-muted">Đã bán</span>
-                                                    </td>
-                                                    <td>
-                                                        <h5 class="fs-14 mb-0">
-                                                            {{ $topInstructor->total_enrolled_students }}
-                                                        </h5>
-                                                    </td>
-                                                    <td>
-                                                        <span class="text-muted">
-                                                            {{ number_format($topInstructor->total_revenue) ?? '' }}
-                                                        </span>
-                                                    </td>
-                                                </tr><!-- end -->
-                                            @endforeach
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <p class="mb-0">{{ $topInstructor->total_courses ?? '' }}
+                                                            </p>
+                                                            <span class="text-muted">Đã bán</span>
+                                                        </td>
+                                                        <td>
+                                                            <h5 class="fs-14 mb-0">
+                                                                {{ $topInstructor->total_enrolled_students }}
+                                                            </h5>
+                                                        </td>
+                                                        <td>
+                                                            <span class="text-muted">
+                                                                {{ number_format($topInstructor->total_revenue) ?? '' }}
+                                                            </span>
+                                                        </td>
+                                                    </tr><!-- end -->
+                                                @endforeach
                                             </tbody>
                                         </table><!-- end table -->
                                     </div>
@@ -309,9 +301,9 @@
                                     <div class="flex-shrink-0">
                                         <div class="dropdown card-header-dropdown">
                                             <a class="text-reset dropdown-btn" href="#" data-bs-toggle="dropdown"
-                                               aria-haspopup="true" aria-expanded="false">
-                                            <span class="fw-semibold text-uppercase fs-12">Sort by:
-                                            </span><span class="text-muted">Today<i
+                                                aria-haspopup="true" aria-expanded="false">
+                                                <span class="fw-semibold text-uppercase fs-12">Sort by:
+                                                </span><span class="text-muted">Today<i
                                                         class="mdi mdi-chevron-down ms-1"></i></span>
                                             </a>
                                             <div class="dropdown-menu dropdown-menu-end">
@@ -329,45 +321,46 @@
                                 <div class="card-body">
                                     <div class="table-responsive table-card">
                                         <table id="table-courses"
-                                               class="table table-hover table-centered align-middle table-nowrap mb-0">
+                                            class="table table-hover table-centered align-middle table-nowrap mb-0">
                                             <thead>
-                                            <tr>
-                                                <th scope="col">Khoá học</th>
-                                                <th scope="col">Đã bán</th>
-                                                <th scope="col">Người học</th>
-                                                <th scope="col">Doanh thu</th>
-                                            </tr>
+                                                <tr>
+                                                    <th scope="col">Khoá học</th>
+                                                    <th scope="col">Đã bán</th>
+                                                    <th scope="col">Người học</th>
+                                                    <th scope="col">Doanh thu</th>
+                                                </tr>
                                             </thead>
                                             <tbody>
-                                            @foreach($topCourses as $topCourse)
-                                                <tr>
-                                                    <td>
-                                                        <div class="d-flex align-items-center gap-2 ju">
-                                                            <img style="width:70px" src="{{ $topCourse->thumbnail }}"
-                                                                 alt=""
-                                                                 class="img-fluid d-block "/>
-                                                            <div>
-                                                                <h5 class="fs-14 my-1"><a
-                                                                        href="#"
-                                                                        class="text-reset">{{ \Illuminate\Support\Str::limit($topCourse->name, 20) }}</a>
-                                                                </h5>
-                                                                <span class="text-muted">
-                                                                    {{ $topCourse->created_at->format('d/m/Y') }}
-                                                                </span>
+                                                @foreach ($topCourses as $topCourse)
+                                                    <tr>
+                                                        <td>
+                                                            <div class="d-flex align-items-center gap-2 ju">
+                                                                <img style="width:70px" src="{{ $topCourse->thumbnail }}"
+                                                                    alt="" class="img-fluid d-block " />
+                                                                <div>
+                                                                    <h5 class="fs-14 my-1"><a href="#"
+                                                                            class="text-reset">{{ \Illuminate\Support\Str::limit($topCourse->name, 20) }}</a>
+                                                                    </h5>
+                                                                    <span class="text-muted">
+                                                                        {{ $topCourse->created_at->format('d/m/Y') }}
+                                                                    </span>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    </td>
-                                                    <td class="text-center">
-                                                        <h5 class="fs-14 my-1 fw-normal">{{ $topCourse->total_sales }}</h5>
-                                                    </td>
-                                                    <td class="text-center">
-                                                        <h5 class="fs-14 my-1 fw-normal">{{ $topCourse->total_enrolled_students }}</h5>
-                                                    </td>
-                                                    <td>
-                                                        <h5 class="fs-14 my-1 fw-normal">{{ number_format($topCourse->total_revenue) }}</h5>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <h5 class="fs-14 my-1 fw-normal">{{ $topCourse->total_sales }}
+                                                            </h5>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <h5 class="fs-14 my-1 fw-normal">
+                                                                {{ $topCourse->total_enrolled_students }}</h5>
+                                                        </td>
+                                                        <td>
+                                                            <h5 class="fs-14 my-1 fw-normal">
+                                                                {{ number_format($topCourse->total_revenue) }}</h5>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
                                             </tbody>
                                         </table>
                                     </div>
@@ -394,8 +387,9 @@
                                     <div class="flex-shrink-0">
                                         <div class="dropdown card-header-dropdown">
                                             <a class="text-reset dropdown-btn" href="#" data-bs-toggle="dropdown"
-                                               aria-haspopup="true" aria-expanded="false">
-                                                <span class="text-muted">Report<i class="mdi mdi-chevron-down ms-1"></i></span>
+                                                aria-haspopup="true" aria-expanded="false">
+                                                <span class="text-muted">Report<i
+                                                        class="mdi mdi-chevron-down ms-1"></i></span>
                                             </a>
                                             <div class="dropdown-menu dropdown-menu-end">
                                                 <a class="dropdown-item" href="#">Download Report</a>
@@ -408,8 +402,8 @@
 
                                 <div class="card-body">
                                     <div id="store-visits-source"
-                                         data-colors='["--vz-primary", "--vz-success", "--vz-warning", "--vz-danger", "--vz-info"]'
-                                         class="apex-charts" dir="ltr"></div>
+                                        data-colors='["--vz-primary", "--vz-success", "--vz-warning", "--vz-danger", "--vz-info"]'
+                                        class="apex-charts" dir="ltr"></div>
                                 </div>
                             </div> <!-- .card-->
                         </div> <!-- .col-->
@@ -422,45 +416,42 @@
 
                                 <div class="card-body">
                                     <div class="table-responsive table-card">
-                                        <table
-                                            id="table-users"
+                                        <table id="table-users"
                                             class="table table-borderless table-centered align-middle table-nowrap mb-0">
                                             <thead class="text-muted table-light">
-                                            <tr>
-                                                <th scope="col">STT</th>
-                                                <th scope="col">Học viên</th>
-                                                <th scope="col">Khoá học đã mua</th>
-                                                <th scope="col">Tổng tiền đã chi</th>
-                                                <th>Lần mua gần nhất</th>
-                                            </tr>
+                                                <tr>
+                                                    <th scope="col">STT</th>
+                                                    <th scope="col">Học viên</th>
+                                                    <th scope="col">Khoá học đã mua</th>
+                                                    <th scope="col">Tổng tiền đã chi</th>
+                                                    <th>Lần mua gần nhất</th>
+                                                </tr>
                                             </thead>
                                             <tbody>
-                                            @foreach($topUsers as $topUser)
-                                                <tr>
-                                                    <td>
-                                                        <a href="#"
-                                                           class="fw-medium link-primary">
-                                                            {{ $loop->iteration }}
-                                                        </a>
-                                                    </td>
-                                                    <td>
-                                                        <div class="d-flex align-items-center">
-                                                            <div class="flex-shrink-0 me-2">
-                                                                <img
-                                                                    src="{{ $topUser->avatar ?? 'https://res.cloudinary.com/dvrexlsgx/image/upload/v1732148083/Avatar-trang-den_apceuv_pgbce6.png' }}"
-                                                                    alt=""
-                                                                    class="avatar-xs rounded-circle object-fit-cover"/>
+                                                @foreach ($topUsers as $topUser)
+                                                    <tr>
+                                                        <td>
+                                                            <a href="#" class="fw-medium link-primary">
+                                                                {{ $loop->iteration }}
+                                                            </a>
+                                                        </td>
+                                                        <td>
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="flex-shrink-0 me-2">
+                                                                    <img src="{{ $topUser->avatar ?? 'https://res.cloudinary.com/dvrexlsgx/image/upload/v1732148083/Avatar-trang-den_apceuv_pgbce6.png' }}"
+                                                                        alt=""
+                                                                        class="avatar-xs rounded-circle object-fit-cover" />
+                                                                </div>
+                                                                <div class="flex-grow-1">
+                                                                    {{ $topUser->name ?? '' }}
+                                                                </div>
                                                             </div>
-                                                            <div class="flex-grow-1">
-                                                                {{ $topUser->name ?? '' }}
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td>{{ $topUser->total_courses_purchased }}</td>
-                                                    <td>{{ number_format($topUser->total_spent) }}</td>
-                                                    <td>{{ $topUser->last_purchase_date  }}</td>
-                                                </tr>
-                                            @endforeach
+                                                        </td>
+                                                        <td>{{ $topUser->total_courses_purchased }}</td>
+                                                        <td>{{ number_format($topUser->total_spent) }}</td>
+                                                        <td>{{ $topUser->last_purchase_date }}</td>
+                                                    </tr>
+                                                @endforeach
                                         </table>
                                     </div>
                                     <div
@@ -507,24 +498,25 @@
                                             </div>
                                         </div>
                                         <div class="flex-grow-1 ms-3">
-                                            <h6 class="mb-1 lh-base">Added new <span class="fw-semibold">style collection</span>
+                                            <h6 class="mb-1 lh-base">Added new <span class="fw-semibold">style
+                                                    collection</span>
                                             </h6>
                                             <p class="text-muted mb-1">By Nesta Technologies</p>
                                             <div class="d-inline-flex gap-2 border border-dashed p-2 mb-2">
                                                 <a href="apps-ecommerce-product-details.html"
-                                                   class="bg-light rounded p-1">
+                                                    class="bg-light rounded p-1">
                                                     <img src="../assets/images/products/img-8.png" alt=""
-                                                         class="img-fluid d-block"/>
+                                                        class="img-fluid d-block" />
                                                 </a>
                                                 <a href="apps-ecommerce-product-details.html"
-                                                   class="bg-light rounded p-1">
+                                                    class="bg-light rounded p-1">
                                                     <img src="../assets/images/products/img-2.png" alt=""
-                                                         class="img-fluid d-block"/>
+                                                        class="img-fluid d-block" />
                                                 </a>
                                                 <a href="apps-ecommerce-product-details.html"
-                                                   class="bg-light rounded p-1">
+                                                    class="bg-light rounded p-1">
                                                     <img src="../assets/images/products/img-10.png" alt=""
-                                                         class="img-fluid d-block"/>
+                                                        class="img-fluid d-block" />
                                                 </a>
                                             </div>
                                             <p class="mb-0 text-muted"><small>9:47 PM Yesterday</small></p>
@@ -533,7 +525,7 @@
                                     <div class="acitivity-item py-3 d-flex">
                                         <div class="flex-shrink-0">
                                             <img src="../assets/images/users/avatar-2.jpg" alt=""
-                                                 class="avatar-xs rounded-circle acitivity-avatar">
+                                                class="avatar-xs rounded-circle acitivity-avatar">
                                         </div>
                                         <div class="flex-grow-1 ms-3">
                                             <h6 class="mb-1 lh-base">Natasha Carey have liked the products</h6>
@@ -583,10 +575,11 @@
                                             </div>
                                         </div>
                                         <div class="flex-grow-1 ms-3">
-                                            <h6 class="mb-1 lh-base">Flash sale starting <span class="text-primary">Tomorrow.</span>
+                                            <h6 class="mb-1 lh-base">Flash sale starting <span
+                                                    class="text-primary">Tomorrow.</span>
                                             </h6>
                                             <p class="text-muted mb-0">Flash sale by <a href="javascript:void(0);"
-                                                                                        class="link-secondary fw-medium">Zoetic
+                                                    class="link-secondary fw-medium">Zoetic
                                                     Fashion</a></p>
                                             <small class="mb-0 text-muted">22 Oct, 2021</small>
                                         </div>
@@ -613,7 +606,7 @@
                                     <div class="acitivity-item d-flex">
                                         <div class="flex-shrink-0">
                                             <img src="../assets/images/users/avatar-3.jpg" alt=""
-                                                 class="avatar-xs rounded-circle acitivity-avatar"/>
+                                                class="avatar-xs rounded-circle acitivity-avatar" />
                                         </div>
                                         <div class="flex-grow-1 ms-3">
                                             <h6 class="mb-1 lh-base">Frank Hook Commented</h6>
@@ -631,7 +624,8 @@
 
                                 <ol class="ps-3 text-muted">
                                     <li class="py-1">
-                                        <a href="#" class="text-muted">Mobile & Accessories <span class="float-end">(10,294)</span></a>
+                                        <a href="#" class="text-muted">Mobile & Accessories <span
+                                                class="float-end">(10,294)</span></a>
                                     </li>
                                     <li class="py-1">
                                         <a href="#" class="text-muted">Desktop <span
@@ -654,7 +648,8 @@
                                                 class="float-end">(1,582)</span></a>
                                     </li>
                                     <li class="py-1">
-                                        <a href="#" class="text-muted">Appliances <span class="float-end">(1,037)</span></a>
+                                        <a href="#" class="text-muted">Appliances <span
+                                                class="float-end">(1,037)</span></a>
                                     </li>
                                     <li class="py-1">
                                         <a href="#" class="text-muted">Beauty, Toys & More <span
@@ -665,7 +660,8 @@
                                                 class="float-end">(701)</span></a>
                                     </li>
                                     <li class="py-1">
-                                        <a href="#" class="text-muted">Toys & Games <span class="float-end">(239)</span></a>
+                                        <a href="#" class="text-muted">Toys & Games <span
+                                                class="float-end">(239)</span></a>
                                     </li>
                                 </ol>
                                 <div class="mt-3 text-center">
@@ -684,17 +680,17 @@
                                                     <div class="d-flex">
                                                         <div class="flex-shrink-0 avatar-sm">
                                                             <div class="avatar-title bg-light rounded">
-                                                                <img src="../assets/images/companies/img-1.png" alt=""
-                                                                     height="30">
+                                                                <img src="../assets/images/companies/img-1.png"
+                                                                    alt="" height="30">
                                                             </div>
                                                         </div>
                                                         <div class="flex-grow-1 ms-3">
                                                             <div>
-                                                                <p class="text-muted mb-1 fst-italic text-truncate-two-lines">
+                                                                <p
+                                                                    class="text-muted mb-1 fst-italic text-truncate-two-lines">
                                                                     " Great product and looks great, lots of features.
                                                                     "</p>
-                                                                <div
-                                                                    class="fs-11 align-middle text-warning">
+                                                                <div class="fs-11 align-middle text-warning">
                                                                     <i class="ri-star-fill"></i>
                                                                     <i class="ri-star-fill"></i>
                                                                     <i class="ri-star-fill"></i>
@@ -716,11 +712,12 @@
                                                     <div class="d-flex">
                                                         <div class="flex-shrink-0">
                                                             <img src="../assets/images/users/avatar-3.jpg" alt=""
-                                                                 class="avatar-sm rounded">
+                                                                class="avatar-sm rounded">
                                                         </div>
                                                         <div class="flex-grow-1 ms-3">
                                                             <div>
-                                                                <p class="text-muted mb-1 fst-italic text-truncate-two-lines">
+                                                                <p
+                                                                    class="text-muted mb-1 fst-italic text-truncate-two-lines">
                                                                     " Amazing template, very easy to understand and
                                                                     manipulate. "</p>
                                                                 <div class="fs-11 align-middle text-warning">
@@ -745,13 +742,14 @@
                                                     <div class="d-flex">
                                                         <div class="flex-shrink-0 avatar-sm">
                                                             <div class="avatar-title bg-light rounded">
-                                                                <img src="../assets/images/companies/img-8.png" alt=""
-                                                                     height="30">
+                                                                <img src="../assets/images/companies/img-8.png"
+                                                                    alt="" height="30">
                                                             </div>
                                                         </div>
                                                         <div class="flex-grow-1 ms-3">
                                                             <div>
-                                                                <p class="text-muted mb-1 fst-italic text-truncate-two-lines">
+                                                                <p
+                                                                    class="text-muted mb-1 fst-italic text-truncate-two-lines">
                                                                     "Very beautiful product and Very helpful customer
                                                                     service."</p>
                                                                 <div class="fs-11 align-middle text-warning">
@@ -776,11 +774,12 @@
                                                     <div class="d-flex">
                                                         <div class="flex-shrink-0">
                                                             <img src="../assets/images/users/avatar-2.jpg" alt=""
-                                                                 class="avatar-sm rounded">
+                                                                class="avatar-sm rounded">
                                                         </div>
                                                         <div class="flex-grow-1 ms-3">
                                                             <div>
-                                                                <p class="text-muted mb-1 fst-italic text-truncate-two-lines">
+                                                                <p
+                                                                    class="text-muted mb-1 fst-italic text-truncate-two-lines">
                                                                     " The product is very beautiful. I like it. "</p>
                                                                 <div class="fs-11 align-middle text-warning">
                                                                     <i class="ri-star-fill"></i>
@@ -835,8 +834,8 @@
                                             <div class="p-1">
                                                 <div class="progress animated-progress progress-sm">
                                                     <div class="progress-bar bg-success" role="progressbar"
-                                                         style="width: 50.16%" aria-valuenow="50.16" aria-valuemin="0"
-                                                         aria-valuemax="100"></div>
+                                                        style="width: 50.16%" aria-valuenow="50.16" aria-valuemin="0"
+                                                        aria-valuemax="100"></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -858,8 +857,8 @@
                                             <div class="p-1">
                                                 <div class="progress animated-progress progress-sm">
                                                     <div class="progress-bar bg-success" role="progressbar"
-                                                         style="width: 29.32%" aria-valuenow="29.32" aria-valuemin="0"
-                                                         aria-valuemax="100"></div>
+                                                        style="width: 29.32%" aria-valuenow="29.32" aria-valuemin="0"
+                                                        aria-valuemax="100"></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -881,8 +880,8 @@
                                             <div class="p-1">
                                                 <div class="progress animated-progress progress-sm">
                                                     <div class="progress-bar bg-warning" role="progressbar"
-                                                         style="width: 18.12%" aria-valuenow="18.12" aria-valuemin="0"
-                                                         aria-valuemax="100"></div>
+                                                        style="width: 18.12%" aria-valuenow="18.12" aria-valuemin="0"
+                                                        aria-valuemax="100"></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -904,8 +903,8 @@
                                             <div class="p-1">
                                                 <div class="progress animated-progress progress-sm">
                                                     <div class="progress-bar bg-success" role="progressbar"
-                                                         style="width: 4.98%" aria-valuenow="4.98" aria-valuemin="0"
-                                                         aria-valuemax="100"></div>
+                                                        style="width: 4.98%" aria-valuenow="4.98" aria-valuemin="0"
+                                                        aria-valuemax="100"></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -928,8 +927,8 @@
                                             <div class="p-1">
                                                 <div class="progress animated-progress progress-sm">
                                                     <div class="progress-bar bg-danger" role="progressbar"
-                                                         style="width: 7.42%" aria-valuenow="7.42" aria-valuemin="0"
-                                                         aria-valuemax="100"></div>
+                                                        style="width: 7.42%" aria-valuenow="7.42" aria-valuemin="0"
+                                                        aria-valuemax="100"></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -970,17 +969,16 @@
     <!-- Vector map-->
     <script src="{{ asset('assets/libs/jsvectormap/js/jsvectormap.min.js') }}"></script>
     <script src="{{ asset('assets/libs/jsvectormap/maps/world-merc.js') }}"></script>
-    <script src="{{ asset('assets/libs/swiper/swiper-bundle.min.js')}}"></script>
+    <script src="{{ asset('assets/libs/swiper/swiper-bundle.min.js') }}"></script>
 
     <!-- apexcharts -->
     <script src="{{ asset('assets/libs/apexcharts/apexcharts.min.js') }}"></script>
 
     <!-- Dashboard init -->
-    <script src="{{ asset('assets/js/pages/dashboard-ecommerce.init.js')}}"></script>
-    <script src="{{ asset('assets/js/pages/dashboard-projects.init.js')}}"></script>
+    <script src="{{ asset('assets/js/pages/dashboard-ecommerce.init.js') }}"></script>
 
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             var currentHour = new Date().getHours();
             var greetingText = "Xin chào, {{ Auth::user()->name ?? 'Quản trị viên' }}!";
 
@@ -996,19 +994,19 @@
 
             $("#greeting").text(greetingText);
 
-            $(document).on('click', '#pagination-links-courses a', function (e) {
+            $(document).on('click', '#pagination-links-courses a', function(e) {
                 e.preventDefault();
                 var page = $(this).attr('href').split('page=')[1];
                 loadCoursesContent(page);
             });
 
-            $(document).on('click', '#pagination-links-instructors a', function (e) {
+            $(document).on('click', '#pagination-links-instructors a', function(e) {
                 e.preventDefault();
                 var page = $(this).attr('href').split('page=')[1];
                 loadInstructorsContent(page);
             });
 
-            $(document).on('click', '#pagination-links-users a', function (e) {
+            $(document).on('click', '#pagination-links-users a', function(e) {
                 e.preventDefault();
                 var page = $(this).attr('href').split('page=')[1];
                 loadUsersContent(page);
@@ -1019,7 +1017,7 @@
                     url: "{{ route('admin.revenue-statistics.index') }}?page=" + page + "&type=courses",
                     type: "GET",
                     dataType: "json",
-                    success: function (data) {
+                    success: function(data) {
                         $('#table-courses tbody').html(data.top_courses_table);
                         $('#pagination-links-courses').html(data.pagination_links_courses);
                     }
@@ -1028,10 +1026,11 @@
 
             function loadInstructorsContent(page) {
                 $.ajax({
-                    url: "{{ route('admin.revenue-statistics.index') }}?page=" + page + "&type=instructors",
+                    url: "{{ route('admin.revenue-statistics.index') }}?page=" + page +
+                        "&type=instructors",
                     type: "GET",
                     dataType: "json",
-                    success: function (data) {
+                    success: function(data) {
                         $('#table-instructors tbody').html(data.top_instructors_table);
                         $('#pagination-links-instructors').html(data.pagination_links_instructors);
                     }
@@ -1043,13 +1042,116 @@
                     url: "{{ route('admin.revenue-statistics.index') }}?page=" + page + "&type=users",
                     type: "GET",
                     dataType: "json",
-                    success: function (data) {
+                    success: function(data) {
                         $('#table-users tbody').html(data.top_users_table);
                         $('#pagination-links-users').html(data.pagination_links_users);
                     }
                 });
             }
         });
-    </script>
 
+        var options = {
+            series: [{
+                    name: "Number of Projects",
+                    type: "column",
+                    data: [30, 65, 50, 70, 85, 90, 60, 55, 95, 40, 80, 75]
+                },
+                {
+                    name: "Active Projects",
+                    type: "column",
+                    data: [5, 10, 8, 12, 15, 18, 10, 8, 20, 12, 17, 22]
+                },
+                {
+                    name: "Revenue",
+                    type: "line",
+                    data: [90, 100, 85, 108, 92, 105, 80, 95, 110, 75, 98, 85]
+                }
+            ],
+            chart: {
+                type: "line",
+                height: 350,
+                stacked: false
+            },
+            stroke: {
+                width: [0, 0, 3],
+                curve: "smooth"
+            },
+            plotOptions: {
+                bar: {
+                    columnWidth: "50%",
+                    borderRadius: 4
+                }
+            },
+            fill: {
+                opacity: [1, 1, 0.3]
+            },
+            colors: ["#1f3c88", "#198754", "#f4a261"],
+            xaxis: {
+                categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+            },
+            yaxis: {
+                title: {
+                    text: "Values"
+                }
+            },
+            tooltip: {
+                shared: true,
+                y: {
+                    formatter: function(val) {
+                        return "$" + val + "k";
+                    }
+                }
+            }
+        };
+
+        // Khởi tạo biểu đồ ngay lập tức
+        var chart = new ApexCharts(document.querySelector("#projects-overview-chart"), options);
+        chart.render();
+
+
+        function updateChartData(newData) {
+            let categories = [];
+            let revenueData = [];
+            let fakeData1 = [];
+            let fakeData2 = [];
+
+            newData.forEach(item => {
+                categories.push("Tháng " + item.month);
+                revenueData.push(parseFloat(item.total_revenue));
+
+                fakeData1.push(Math.floor(Math.random() * 100) + 10);
+                fakeData2.push(Math.floor(Math.random() * 50) + 5);
+            });
+
+            chart.updateOptions({
+                xaxis: {
+                    categories: categories
+                }
+            });
+
+            chart.updateSeries([{
+                    name: "Doanh thu",
+                    type: "column",
+                    data: revenueData
+                },
+                {
+                    name: "Số dự án hoàn thành",
+                    type: "column",
+                    data: fakeData1
+                },
+                {
+                    name: "Số dự án đang chạy",
+                    type: "line",
+                    data: fakeData2
+                }
+            ]);
+        }
+
+        var newData = @json($monthlyRevenue);
+        updateChartData(newData);
+
+
+        var newData = @json($monthlyRevenue);
+        updateChartData(newData);
+    </script>
 @endpush
