@@ -10,13 +10,15 @@ trait FilterTrait
     {
 
         // Mẫu filter $filters = [
-        //     'status' => ['queryWhere' => '='],
-        //     'course_name_approved' => null,
+        //     'status' => ['queryWhere' => '='], // dùng cho bảng của chính nó 
+        //     'course_name_approved' => null, // dùng cho bảng quan hệ của nó dùng để tìm bằng LIKE
         //     'user_name_approved' => null,
         //     'approver_name_approved' => null,
-        //     'course_price_approved' => ['attribute' => ['amount_min' => '>=', 'amount_max' => '<=']],
+        //     'course_price_approved' => ['attribute' => ['amount_min' => '>=', 'amount_max' => '<=']], dùng cho bảng quán hệ của nó nhưng nó phải so sánh với những điều kiện khác nhau.
         //     'request_date' => ['attribute' => ['request_start_date' => '>=', 'request_end_date' => '<=']],
+        //dùng cho bảng của nó khi phải so sánh với nhiều trường khác nhau
         //     'approval_date' => ['filed' => ['approved_at', 'rejected_at'], 'attribute' => ['approval_start_date' => '>=', 'approval_end_date' => '<=']],
+        //dùng cho bảng của nó sử dụng chung attribute
         // ];
 
         foreach ($filters as $filter => $value) {
