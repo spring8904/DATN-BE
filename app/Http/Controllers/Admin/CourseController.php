@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Course;
+use App\Traits\FilterTrait;
 use Illuminate\Http\Request;
 
 class CourseController extends Controller
@@ -10,9 +12,33 @@ class CourseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    use FilterTrait;
+    public function index(Request $request)
     {
         //
+        $queryCourses = Course::query();
+
+        // Kiểm tra nếu có từ khóa tìm kiếm
+        if ($request->has('query') && $request->input('query')) {
+            $search = $request->input(key: 'query');
+            $queryCourses->where('name', 'like', "%$search%")
+                ->orWhere('code', 'like', "%$search%");
+        }
+
+
+
+        if ($request->hasAny(['code', 'name', 'user_name', 'level', 'price', 'created_at', 'updated_at'])) {
+            $queryCourses = $this->filter($request, $queryCourses);
+        }
+
+        $courses = $queryCourses->orderBy('created_at', 'desc')->paginate(10);
+
+        if ($request->ajax()) {
+
+            $html = view('courses.table', compact('courses'))->render();
+            return response()->json(['html' => $html]);
+        }
+        return view('courses.index', compact('courses'));
     }
 
     /**
@@ -36,7 +62,8 @@ class CourseController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $course = Course::findOrFail($id);
+        return view('courses.show', compact('course'));
     }
 
     /**
@@ -61,5 +88,23 @@ class CourseController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+    private function filter($request, $query)
+    {
+        $filters = [
+            'code' => ['queryWhere' => 'LIKE'],
+            'name' => ['queryWhere' => 'LIKE'],
+            // 'user_name' => null,
+            'level' => ['queryWhere' => '='],
+            'price' => ['queryWhere' => '='],
+            'start_date' => ['queryWhere' => '>='],
+            'expire_date' => ['queryWhere' => '<='],
+            'status' => ['queryWhere' => '='],
+            'created_at' => ['attribute' => 'LIKE'],
+        ];
+
+        $query = $this->filterTrait($filters, $request, $query);
+
+        return $query;
     }
 }
