@@ -184,27 +184,18 @@
 
                                 <div class="card-header p-0 border-0 bg-light-subtle">
                                     <div class="row g-0 text-center">
-                                        <div class="col-6 col-sm-4">
-                                            <div class="p-3 border border-dashed border-start-0">
-                                                <h5 class="mb-1"><span class="counter-value"
-                                                        data-target="9851">0</span>
-                                                </h5>
-                                                <p class="text-muted mb-0">Số khóa học đã bán</p>
-                                            </div>
-                                        </div>
-                                        <!--end col-->
-                                        <div class="col-6 col-sm-4">
+                                        <div class="col-6 col-sm-6">
                                             <div class="p-3 border border-dashed border-start-0">
                                                 <h5 class="mb-1"><span class="counter-value" data-target="228.89">
-                                                        {{ number_format($totalRevenue) ?? '' }}</span> VND</h5>
+                                                        {{ number_format($totalRevenue ?? 0) }}</span> VND</h5>
                                                 <p class="text-muted mb-0">Doanh thu</p>
                                             </div>
                                         </div>
                                         <!--end col-->
-                                        <div class="col-6 col-sm-4">
+                                        <div class="col-6 col-sm-6">
                                             <div class="p-3 border border-dashed border-start-0 border-end-0">
                                                 <h5 class="mb-1 text-success"><span class="counter-value"
-                                                        data-target="10589">0</span>VND</h5>
+                                                        data-target="10589">{{ number_format($totalProfit ?? 0) }}</span> VND</h5>
                                                 <p class="text-muted mb-0">Lợi nhuận</p>
                                             </div>
                                         </div>
@@ -976,6 +967,7 @@
 
     <!-- Dashboard init -->
     <script src="{{ asset('assets/js/pages/dashboard-ecommerce.init.js') }}"></script>
+    <script src="{{ asset('assets/js/pages/dashboard-projects.init.js') }}"></script>
 
     <script>
         $(document).ready(function() {
@@ -1049,109 +1041,36 @@
                 });
             }
         });
+        var newData = @json($system_Funds);
 
-        var options = {
-            series: [{
-                    name: "Number of Projects",
-                    type: "column",
-                    data: [30, 65, 50, 70, 85, 90, 60, 55, 95, 40, 80, 75]
-                },
-                {
-                    name: "Active Projects",
-                    type: "column",
-                    data: [5, 10, 8, 12, 15, 18, 10, 8, 20, 12, 17, 22]
-                },
-                {
-                    name: "Revenue",
-                    type: "line",
-                    data: [90, 100, 85, 108, 92, 105, 80, 95, 110, 75, 98, 85]
-                }
-            ],
-            chart: {
-                type: "line",
-                height: 350,
-                stacked: false
-            },
-            stroke: {
-                width: [0, 0, 3],
-                curve: "smooth"
-            },
-            plotOptions: {
-                bar: {
-                    columnWidth: "50%",
-                    borderRadius: 4
-                }
-            },
-            fill: {
-                opacity: [1, 1, 0.3]
-            },
-            colors: ["#1f3c88", "#198754", "#f4a261"],
+        let categories = [];
+        let revenueData = [];
+        let profitData = [];
+
+        newData.forEach(item => {
+            categories.push("Tháng " + item.month);
+            revenueData.push(parseFloat(item.total_revenue));
+            profitData.push(parseFloat(item.total_profit));
+        });
+
+        console.log(categories, revenueData, profitData);
+        
+        chart.updateOptions({
             xaxis: {
-                categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-            },
-            yaxis: {
-                title: {
-                    text: "Values"
-                }
-            },
-            tooltip: {
-                shared: true,
-                y: {
-                    formatter: function(val) {
-                        return "$" + val + "k";
-                    }
-                }
+                categories: categories
             }
-        };
+        });
 
-        // Khởi tạo biểu đồ ngay lập tức
-        var chart = new ApexCharts(document.querySelector("#projects-overview-chart"), options);
-        chart.render();
-
-
-        function updateChartData(newData) {
-            let categories = [];
-            let revenueData = [];
-            let fakeData1 = [];
-            let fakeData2 = [];
-
-            newData.forEach(item => {
-                categories.push("Tháng " + item.month);
-                revenueData.push(parseFloat(item.total_revenue));
-
-                fakeData1.push(Math.floor(Math.random() * 100) + 10);
-                fakeData2.push(Math.floor(Math.random() * 50) + 5);
-            });
-
-            chart.updateOptions({
-                xaxis: {
-                    categories: categories
-                }
-            });
-
-            chart.updateSeries([{
-                    name: "Doanh thu",
-                    type: "column",
-                    data: revenueData
-                },
-                {
-                    name: "Số dự án hoàn thành",
-                    type: "column",
-                    data: fakeData1
-                },
-                {
-                    name: "Số dự án đang chạy",
-                    type: "line",
-                    data: fakeData2
-                }
-            ]);
-        }
-
-        var newData = @json($monthlyRevenue);
-        updateChartData(newData);
-
-
-        var newData = @json($monthlyRevenue);
-        updateChartData(newData);
+        chart.updateSeries([{
+                name: "Doanh thu",
+                type: "bar",
+                data: revenueData
+            },
+            {
+                name: "Lợi nhuận",
+                type: "area",
+                data: profitData
+            }
+        ]);
     </script>
 @endpush

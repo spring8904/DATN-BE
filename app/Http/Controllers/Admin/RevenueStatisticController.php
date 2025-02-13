@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Invoice;
+use App\Models\SystemFund;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -16,7 +17,8 @@ class RevenueStatisticController extends Controller
     {
         $title = 'Thống kê doanh thu';
 
-        $totalRevenue = Invoice::query()->sum('final_total');
+        $totalRevenue = SystemFund::query()->sum('total_amount');
+        $totalProfit = SystemFund::query()->sum('retained_amount');
         $totalCourse = Course::query()
             ->where('status', 'approved')
             ->count();
@@ -86,18 +88,18 @@ class RevenueStatisticController extends Controller
             ->orderByDesc('total_revenue')
             ->limit(10)
             ->paginate(5);
-            $lastYear = Carbon::now()->subYear()->year;
-        $monthlyRevenue = DB::table('invoices')
+
+        $system_Funds = DB::table('system_funds')
             ->select(
-                DB::raw('MONTH(invoices.created_at) as month'),
-                DB::raw('SUM(invoices.final_total) as total_revenue')
+                DB::raw('MONTH(created_at) as month'),
+                DB::raw('SUM(total_amount) as total_revenue'),
+                DB::raw('SUM(retained_amount) as total_profit')
             )
-            ->whereYear('invoices.created_at', '=', $lastYear)
-            ->where('status','completed')
-            ->groupBy(DB::raw('MONTH(invoices.created_at)'))
+            ->whereYear('created_at', '=', 2025)
+            ->groupBy(DB::raw('MONTH(created_at)'))
             ->orderBy('month')
             ->get();
-            
+
         if ($request->ajax()) {
             return response()->json([
                 'top_courses_table' => view('revenue-statistics.includes.top_courses', compact('topCourses'))->render(),
@@ -112,12 +114,13 @@ class RevenueStatisticController extends Controller
         return view('revenue-statistics.index', compact([
             'title',
             'totalRevenue',
+            'totalProfit',
             'totalCourse',
             'totalInstructor',
             'topInstructors',
             'topCourses',
             'topUsers',
-            'monthlyRevenue'
+            'system_Funds',
         ]));
     }
 }

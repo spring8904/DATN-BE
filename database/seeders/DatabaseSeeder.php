@@ -32,6 +32,7 @@ class DatabaseSeeder extends Seeder
             InvoiceSeeder::class,
             WithdrawalsRequestSeeder::class,
             TransactionSeeder::class,
+            SystemFundSeeder::class,
         ]);
 
         $endTime = microtime(true);
