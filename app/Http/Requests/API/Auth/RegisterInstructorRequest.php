@@ -29,15 +29,15 @@ class RegisterInstructorRequest extends BaseFormRequest
         $rules = [];
 
         if (!Auth::check()) {
-            $rules['name'] = 'required|string|max:255';
-            $rules['email'] = 'required|email|unique:users,email';
-            $rules['password'] = 'required|string|min:6';
-            $rules['confirm_password'] = 'required|same:password';
+            $rules['name'] = 'nullable|string|max:255';
+            $rules['email'] = 'nullable|email|unique:users,email';
+            $rules['password'] = 'nullable|string|min:6';
+            $rules['confirm_password'] = 'nullable|same:password';
         }
 
         $rules += [
-            'phone' => 'required|unique:profiles,phone|regex:/^0[0-9]{9}$/',
-            'address' => 'required|string|max:255|min:10',
+            'phone' => 'nullable|unique:profiles,phone|regex:/^0[0-9]{9}$/',
+            'address' => 'nullable|string|max:255|min:10',
             'institution_name' => 'nullable|string|max:255',
             'degree' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
             'major' => 'nullable|string|max:255',

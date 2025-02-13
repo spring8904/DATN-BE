@@ -4,14 +4,13 @@ namespace App\Http\Middleware;
 
 use App\Traits\LoggableTrait;
 use Closure;
-use F9Web\ApiResponseHelpers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class RoleHasInstructor
 {
-    use LoggableTrait, ApiResponseHelpers;
+    use LoggableTrait;
 
     /**
      * Handle an incoming request.
@@ -31,13 +30,15 @@ class RoleHasInstructor
                 return $next($request);
             }
 
-            return $this->respondForbidden('Bạn không có quyền truy câp vào hệ thống');
+            return response()->json([
+                'message' => 'Bạn không có quyền truy cập vào hệ thống',
+            ], Response::HTTP_FORBIDDEN);
         } catch (\Exception $e) {
             $this->logError($e);
 
-            return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại',
-                Response::HTTP_INTERNAL_SERVER_ERROR
-            );
+            return response()->json([
+                'message' => 'Có lỗi xảy ra, vui lòng thử lại',
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

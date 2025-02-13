@@ -8,14 +8,14 @@ use App\Http\Requests\API\Chapters\UpdateChapterRequest;
 use App\Http\Requests\API\Chapters\UpdateOrderChapterRequest;
 use App\Models\Chapter;
 use App\Models\Course;
+use App\Traits\ApiResponseTrait;
 use App\Traits\LoggableTrait;
-use F9Web\ApiResponseHelpers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ChapterController extends Controller
 {
-    use LoggableTrait, ApiResponseHelpers;
+    use LoggableTrait, ApiResponseTrait;
 
     public function storeChapter(StoreChapterRequest $request)
     {
@@ -36,7 +36,8 @@ class ChapterController extends Controller
 
             $chapter = $course->chapters()->create($data);
 
-            return $this->respondCreated('Tạo chương học thành công', $chapter);
+            return $this->respondCreated('Tạo chương học thành công', $chapter
+            );
         } catch (\Exception $e) {
             $this->logError($e->$request->all());
 
@@ -100,7 +101,8 @@ class ChapterController extends Controller
                 ->with([
                     'lessons'
                 ])
-                ->orderBy('order')->get();
+                ->orderBy('order')
+                ->get();
 
             return $this->respondOk('Cập nhật thứ tự chương học thành công',
                 $chapter
@@ -132,7 +134,7 @@ class ChapterController extends Controller
             }
 
             if ($chapter->lessons()->count() > 0) {
-               return $this->respondError('Chương học không có bài học, không thể xóa');
+                return $this->respondError('Chương học không có bài học, không thể xóa');
             }
 
             $chapter->delete();

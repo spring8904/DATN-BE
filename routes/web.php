@@ -244,16 +244,9 @@ Route::prefix('admin')->as('admin.')
         #============================== ROUTE COURSES =============================
         Route::prefix('courses')->as('courses.')->group(function () {
             Route::get('/', [CourseController::class, 'index'])->name('index');
-            Route::get('/create', [CourseController::class, 'create'])->name('create')
-                ->can('category.create');
-            Route::post('/', [CategoryController::class, 'store'])->name('store')
-                ->can('category.create');
-            Route::get('/{id}', [CategoryController::class, 'show'])->name('show');
-            Route::get('/edit/{category}', [CategoryController::class, 'edit'])->name('edit');
-            Route::put('/{category}', [CategoryController::class, 'update'])->name('update')
-                ->can('category.update');
-            Route::delete('/{category}', [CategoryController::class, 'destroy'])->name('destroy')
-                ->can('category.delete');
+            
+            Route::get('/{id}', [CourseController::class, 'show'])->name('show');
+            
         });
 
         #============================== ROUTE APPROVAL =============================
@@ -265,6 +258,8 @@ Route::prefix('admin')->as('admin.')
                     ->group(function () {
                         Route::get('/', [ApprovalCourseController::class, 'index'])->name('index');
                         Route::get('/{course}', [ApprovalCourseController::class, 'show'])->name('show');
+                        Route::put('/{course}', [ApprovalCourseController::class, 'approve'])->name('approve');
+                        Route::put('/{course}/reject', [ApprovalCourseController::class, 'reject'])->name('reject');
                     });
 
                 Route::prefix('instructors')

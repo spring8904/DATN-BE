@@ -24,4 +24,8 @@ Route::prefix('v1')
             ->group(function () {
                 Route::post('generate-text', [\App\Http\Controllers\API\AI\AiController::class, 'generateText']);
             });
+        Route::prefix('cloudflare')
+            ->group(function () {
+                Route::post('generate-text', [\App\Http\Controllers\API\AI\AiController::class, 'generateTextCloudflare']);
+            });
     });

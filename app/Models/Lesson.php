@@ -35,4 +35,10 @@ class Lesson extends Model
     {
         return $this->morphTo();
     }
+
+    public function lessons()
+    {
+        return $this->hasMany(Lesson::class);
+    }
+
 }

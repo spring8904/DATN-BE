@@ -6,13 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Coupons\StoreCouponRequest;
 use App\Http\Requests\Admin\Coupons\UpdateCouponRequest;
 use App\Models\Coupon;
+use App\Traits\FilterTrait;
 use App\Traits\LoggableTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class CouponController extends Controller
 {
-    use LoggableTrait;
+    use LoggableTrait, FilterTrait;
+
     /**
      * Display a listing of the resource.
      */
@@ -20,14 +22,21 @@ class CouponController extends Controller
     {
         $queryCoupons = Coupon::query();
 
-        // Kiểm tra nếu có từ khóa tìm kiếm
         if ($request->has('query') && $request->input('query')) {
             $search = $request->input('query');
             $queryCoupons->where('name', 'like', "%$search%")
                 ->orWhere('code', 'like', "%$search%");
         }
 
-        if ($request->hasAny(['code', 'name', 'user_id', 'discount_type', 'status', 'used_count', 'start_date', 'expire_date'])) {
+        $couponCounts = Coupon::query()
+            ->selectRaw('
+                COUNT(id) as total_coupons,
+                SUM(CASE WHEN status = 1 THEN 1 ELSE 0 END) as active_coupons,
+                SUM(CASE WHEN expire_date < NOW() THEN 1 ELSE 0 END) as expire_coupons,
+                SUM(CASE WHEN used_count > 0 THEN 1 ELSE 0 END) as used_coupons
+            ')
+            ->first();
+        if ($request->hasAny(['name','discount_type','used_count', 'code', 'status', 'start_date', 'expire_date'])) {
             $queryCoupons = $this->filter($request, $queryCoupons);
         }
 
@@ -41,32 +50,26 @@ class CouponController extends Controller
   
         // Lấy dữ liệu và phân trang
         $coupons = $queryCoupons->orderBy('id', 'desc')->paginate(10);
-        $couponCounts = $queryCouponCounts->first();
+        
         if ($request->ajax()) {
             $html = view('coupons.table', compact('coupons'))->render();
             return response()->json(['html' => $html]);
         }
-        return view('coupons.index', compact('coupons','couponCounts'));
+
+        return view('coupons.index', compact('coupons', 'couponCounts'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('coupons.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreCouponRequest $request)
     {
         try {
             DB::beginTransaction();
-            $data = $request->all();
-            // $data['user_id'] = auth()->id();
-            Coupon::query()->create($data);
+            $data = $request->validated();
+            Coupon::create($data);
             DB::commit();
             return redirect()->route('admin.coupons.index')->with('success', 'Thêm mới thành công');
         } catch (\Exception $e) {
@@ -76,36 +79,24 @@ class CouponController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         $coupon = Coupon::findOrFail($id);
         return view('coupons.show', compact('coupon'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         $coupon = Coupon::findOrFail($id);
         return view('coupons.edit', compact('coupon'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateCouponRequest $request, string $id)
     {
         try {
             DB::beginTransaction();
             $coupon = Coupon::findOrFail($id);
-            $data = $request->validated();
-
-
-            $coupon->update($data);
+            $coupon->update($request->validated());
             DB::commit();
             return redirect()->route('admin.coupons.edit', $coupon->id)->with('success', 'Cập nhật thành công');
         } catch (\Exception $e) {
@@ -115,173 +106,55 @@ class CouponController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         try {
             DB::beginTransaction();
-            $coupon = Coupon::query()->findOrFail($id);
-
-            $coupon->delete();
+            Coupon::findOrFail($id)->delete();
             DB::commit();
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Xóa dữ liệu thành công'
-            ]);
+            return response()->json(['status' => 'success', 'message' => 'Xóa dữ liệu thành công']);
         } catch (\Exception $e) {
             DB::rollBack();
             $this->logError($e);
-            return back()->with('success', false)->with('error', 'Lỗi');
+            return back()->with('error', 'Lỗi khi xóa');
         }
     }
+
     public function listDeleted(Request $request)
     {
         $queryCoupons = Coupon::onlyTrashed();
 
-        if ($request->has('query') && $request->input('query')) {
+        if ($request->has('query')) {
             $search = $request->input('query');
             $queryCoupons->where('name', 'like', "%$search%")
                 ->orWhere('code', 'like', "%$search%");
         }
 
         $coupons = $queryCoupons->orderBy('id', 'desc')->paginate(10);
-        
+
+        if ($request->ajax()) {
+            $html = view('coupons.table', compact('coupons'))->render();
+            return response()->json(['html' => $html]);
+        }
+
         return view('coupons.deleted', compact('coupons'));
-        
-    }
-
-    public function forceDelete(string $id)
-    {
-        try {
-            DB::beginTransaction();
-
-            if (str_contains($id, ',')) {
-
-                $couponID = explode(',', $id);
-
-                $this->deleteCoupons($couponID);
-            } else {
-                $coupon = Coupon::query()->onlyTrashed()->findOrFail($id);
-
-                $coupon->forceDelete();
-            }
-
-            DB::commit();
-
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Xóa thành công'
-            ]);
-        } catch (\Exception $e) {
-
-            DB::rollBack();
-
-            $this->logError($e);
-
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Xóa thất bại'
-            ]);
-        }
-    }
-
-    public function restoreDelete(string $id)
-    {
-        try {
-            DB::beginTransaction();
-
-            if (str_contains($id, ',')) {
-
-                $couponID = explode(',', $id);
-
-                $this->restoreDeleteCoupons($couponID);
-            } else {
-                $coupon = Coupon::query()->onlyTrashed()->findOrFail($id);
-
-                if ($coupon->trashed()) {
-                    $coupon->restore();
-                }
-            }
-
-            DB::commit();
-
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Khôi phục thành công'
-            ]);
-        } catch (\Exception $e) {
-
-            DB::rollBack();
-
-            $this->logError($e);
-
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Khôi phục thất bại'
-            ]);
-        }
-    }
-    
-    private function deleteCoupons(array $couponID)
-    {
-
-        $coupons = Coupon::query()->whereIn('id', $couponID)->withTrashed()->get();
-
-        foreach ($coupons as $coupon) {
-
-            if ($coupon->trashed()) {
-                $coupon->forceDelete();
-            } else {
-                $coupon->delete();
-
-            }
-        }
-    }
-    private function restoreDeleteCoupons(array $couponID)
-    {
-
-        $coupons = Coupon::query()->whereIn('id', $couponID)->onlyTrashed()->get();
-
-        foreach ($coupons as $coupon) {
-
-            if ($coupon->trashed()) {
-                $coupon->restore();
-            }
-        }
     }
     private function filter($request, $query)
     {
         $filters = [
             'start_date' => ['queryWhere' => '>='],
             'expire_date' => ['queryWhere' => '<='],
-            'code' => ['queryWhere' => 'LIKE'],
-            'name' => ['queryWhere' => 'LIKE'],
             'user_id' => ['queryWhere' => 'LIKE'],
+            'name' => ['queryWhere' => 'LIKE'],
+            'code' => ['queryWhere' => 'LIKE'],
             'status' => ['queryWhere' => '='],
-            'discount_type' => ['queryWhere' => '='],
-            'used_count' => ['queryWhere' => '<=']
+            'discount_type'=>['queryWhere' => '='],
+            'used_count'=>['queryWhere' => '>='],
+            'deleted_at' => ['attribute' => ['start_deleted' => '>=', 'end_deleted' => '<=',]],
         ];
 
-        foreach ($filters as $filter => $value) {
-            $filterValue = $request->input($filter);
-
-            if ($filterValue !== null) {
-                if (is_array($value) && !empty($value['queryWhere'])) {
-
-                    if ($value['queryWhere'] === 'BETWEEN') {
-                            $query->whereBetween($filter, [$filterValue, 10000]);
-                    } else {
-                        $filterValue = $value['queryWhere'] === 'LIKE' ? "%$filterValue%" : $filterValue;
-                        $query->where($filter, $value['queryWhere'], $filterValue);
-                    }
-                }
-            }
-        }
+        $query = $this->filterTrait($filters, $request,$query);
 
         return $query;
     }
-
-    
 }

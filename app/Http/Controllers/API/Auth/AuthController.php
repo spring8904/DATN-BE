@@ -12,9 +12,9 @@ use App\Http\Requests\API\Auth\VerifyEmailRequest;
 use App\Models\Education;
 use App\Models\Profile;
 use App\Models\User;
+use App\Traits\ApiResponseTrait;
 use App\Traits\LoggableTrait;
 use Carbon\Carbon;
-use F9Web\ApiResponseHelpers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -26,7 +26,7 @@ use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
-    use LoggableTrait, ApiResponseHelpers;
+    use LoggableTrait, ApiResponseTrait;
 
     public function forgotPassword(ForgotPassWordRequest $forgotPassWordRequest)
     {
@@ -185,10 +185,12 @@ class AuthController extends Controller
 
                 DB::commit();
 
+                $role = $user->roles->first()->name;
+
                 return response()->json([
-                    'status' => true,
                     'message' => 'Đăng nhập thành công',
                     'user' => $user,
+                    'role' =>  $role,
                     'token' => $token->plainTextToken,
                     'expires_at' => $expiresAt
                 ], Response::HTTP_OK);

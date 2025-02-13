@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
+use App\Traits\ApiResponseTrait;
 use App\Traits\LoggableTrait;
 use App\Traits\UploadToCloudinaryTrait;
-use F9Web\ApiResponseHelpers;
 use GuzzleHttp\Client;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
@@ -12,7 +12,7 @@ use MuxPhp;
 
 class VideoUploadService
 {
-    use UploadToCloudinaryTrait, LoggableTrait, ApiResponseHelpers;
+    use UploadToCloudinaryTrait, LoggableTrait, ApiResponseTrait;
 
     protected $muxTokenId;
     protected $muxTokenSecret;

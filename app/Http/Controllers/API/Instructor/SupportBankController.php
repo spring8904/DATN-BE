@@ -5,13 +5,13 @@ namespace App\Http\Controllers\API\Instructor;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\SupportBank\StoreGenerateQrRequest;
 use App\Models\SupportedBank;
+use App\Traits\ApiResponseTrait;
 use App\Traits\LoggableTrait;
-use F9Web\ApiResponseHelpers;
 use Illuminate\Http\Request;
 
 class SupportBankController extends Controller
 {
-    use LoggableTrait, ApiResponseHelpers;
+    use LoggableTrait, ApiResponseTrait;
 
     public function index()
     {

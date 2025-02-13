@@ -45,21 +45,7 @@
                                     <div class="container">
                                         <div class="container">
                                             <div class="row">
-                                                <li>
-                                                    <label for="amountRange" class="form-label">Số lượt sử dụng</label>
-
-                                                    <div class="d-flex justify-content-between">
-                                                        <span id="amountMin">0</span>
-                                                        <span id="amountMax">1000</span>
-                                                    </div>
-
-                                                    <div class="d-flex justify-content-between">
-                                                        <input type="range" class="form-range w-100" id="amountMinRange"
-                                                            name="used_count" min="0" max="1000" step="10"
-                                                            value="0" oninput="updateRange()" data-filter>
-
-                                                    </div>
-                                                </li>
+                                                
                                                 <li class="col-6">
                                                     <div class="mb-2">
                                                         <label for="startDate" class="form-label">Ngày bắt đầu</label>
@@ -121,6 +107,7 @@
                                         <option @selected(request()->input('level') === 'advanced') value="advanced">Nâng cao</option>
                                     </select>
                                 </div>
+                                
                                 <div class="col-md-3 mt-2">
                                     <label for="statusItem" class="form-label">Trạng thái</label>
                                     <select class="form-select form-select-sm" name="status" id="statusItem"
@@ -144,16 +131,7 @@
 
                     <div class="card-body" id="item_List">
                         <div class="listjs-table">
-                            <div class="row g-4 mb-3">
-                                <div class="col-sm-auto">
-                                    <div>
-                                        <a href="{{ route('admin.coupons.create') }}" class="btn btn-primary add-btn"><i
-                                                class="ri-add-line align-bottom me-1"></i> Thêm mới</a>
-                                        <button class="btn btn-danger" id="deleteSelected">
-                                            <i class="ri-delete-bin-2-line"> Xóa nhiều</i>
-                                        </button>
-                                    </div>
-                                </div>
+                            
                                 <div class="col-sm">
                                     <div class="d-flex justify-content-sm-end">
                                         <div class="search-box ms-2">
@@ -184,9 +162,9 @@
                                             <th>Giảng viên</th>
                                             <th>Giá</th>
                                             <th>Giảm giá</th>
-                                            <th>Tổng số học viên</th>
                                             <th>Mức độ</th>
                                             <th>Trạng thái</th>
+                                            <th>Hành động</th>
                                             
                                         </tr>
                                     </thead>
@@ -209,7 +187,6 @@
                                                     @else
                                                         <p>Không có ảnh</p>
                                                     @endif
-
                                                 </td>
                                                 <td class="id">{{ $course->category->name }}</td>
                                                 <td class="id">{{ $course->user->name }}</td>
@@ -217,7 +194,7 @@
                                                 <td class="date">{{ $course->price }}</td>
                                                 <td class="date">{{ $course->price_sale }}</td>
                                                 <td class="date">{{ $course->level }}</td>
-                                                <td class="date">{{ $course->total_student }}</td>
+
 
                                                 @if ($course->status == 'approved')
                                                     <td class="status"><span class="badge bg-success-subtle text-success">
@@ -237,8 +214,16 @@
                                                         </span></td>
                                                 @endif
                                         
-
-                                        <td class="date">{{ $course->created_at }}</td>
+                                                <td>
+                                                    <div class="edit">
+                                                        <a href="{{ route('admin.courses.show', $course->id) }}">
+                                                            <button class="btn btn-sm btn-info edit-item-btn">
+                                                                <span class="ri-folder-user-line"></span>
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                        
                                         
                                         
                                         </tr>

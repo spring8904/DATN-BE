@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\Post;
 use App\Models\Tag;
 use App\Notifications\CrudNotification;
+use App\Traits\FilterTrait;
 use App\Traits\LoggableTrait;
 use App\Traits\UploadToCloudinaryTrait;
 use Illuminate\Http\Request;
@@ -20,7 +21,7 @@ use function PHPUnit\Framework\isEmpty;
 
 class PostController extends Controller
 {
-    use LoggableTrait, UploadToCloudinaryTrait;
+    use LoggableTrait, UploadToCloudinaryTrait, FilterTrait;
 
     const FOLDER = 'blogs';
 
@@ -34,7 +35,7 @@ class PostController extends Controller
             $subTitle = 'Danh sách bài viết';
 
             $categories = Category::query()->get();
-            $queryPost = $posts = Post::with(['user:id,name', 'category:id,name']);
+            $queryPost = Post::with(['user:id,name', 'category:id,name']);
 
             if ($request->hasAny(['title', 'user_name_post', 'category_id', 'status', 'startDate', 'endDate']))
                 $queryPost = $this->filter($request, $queryPost);
@@ -45,7 +46,7 @@ class PostController extends Controller
             $posts = $queryPost->paginate(10);
 
             if ($request->ajax()) {
-                $html = view('posts.table', compact('posts'))->render();
+                $html = view('posts.table', compact(['posts']))->render();
                 return response()->json(['html' => $html]);
             }
 
@@ -283,46 +284,18 @@ class PostController extends Controller
             return response()->json($data = ['status' => 'error', 'message' => 'Lỗi thao tác.']);
         }
     }
-    private function filter($request, $query)
+    private function filter(Request $request, $query)
     {
         $filters = [
             'title' => ['queryWhere' => 'LIKE'],
             'category_id' => ['queryWhere' => '='],
             'status' => ['queryWhere' => '='],
             'user_name_post' => null,
+            'deleted_at' => ['attribute' => ['start_deleted' => '>=', 'end_deleted' => '<=',]],
+            'published_at' => ['attribute' => ['startDate' => '>=', 'endDate' => '<=',]]
         ];
 
-        foreach ($filters as $filter => $value) {
-            $filterValue = $request->input($filter);
-
-            if (!empty($filterValue)) {
-
-                if (is_array($value) && !empty($value['queryWhere'])) {
-                    $filterValue = $value['queryWhere'] === 'LIKE' ? "%$filterValue%" : $filterValue;
-                    $query->where($filter, $value['queryWhere'], $filterValue);
-                } else {
-                    if (str_contains($filter, '_')) {
-                        $elementFilter = explode('_', $filter);
-                        $relation = $elementFilter[0];
-                        $field = $elementFilter[1];
-
-                        if (method_exists($query->getModel(), $relation)) {
-
-                            $query->whereHas($relation, function ($query) use ($field, $filterValue) {
-                                $query->where($field, 'LIKE', "%$filterValue%");
-                            });
-                        }
-                    }
-                }
-            }
-        }
-
-        if (!empty($request->input('startDate'))) {
-            $query->where('published_at', '>=', $request->input('startDate'));
-        }
-        if (!empty($request->input('endDate'))) {
-            $query->where('published_at', '<=', $request->input('endDate'));
-        }
+        $query = $this->filterTrait($filters, $request, $query);
 
         return $query;
     }
@@ -332,8 +305,6 @@ class PostController extends Controller
         if (!empty($searchTerm)) {
             $query->where(function ($query) use ($searchTerm) {
                 $query->where('title', 'LIKE', "%$searchTerm%")
-                    ->orWhere('description', 'LIKE', "%$searchTerm%")
-                    ->orWhere('content', 'LIKE', "%$searchTerm%")
                     ->orWhereHas('user', function ($q) use ($searchTerm) {
                         $q->where('name', 'LIKE', "%$searchTerm%");
                     });
@@ -440,17 +411,23 @@ class PostController extends Controller
         try {
             $title = 'Quản lý bài viết';
             $subTitle = 'Danh sách bài viết đã xóa';
+            $post_deleted_at = true;
 
             $categories = Category::query()->get();
-            $searchPost = $request->input('searchPost');
 
-            // kiểm tra xem có từ khóa không
-            if (!empty($searchPost)) {
-                $posts = Post::with('user')
-                    ->where('title', 'LIKE', '%' . $searchPost . '%')
-                    ->paginate(10);
-            } else {
-                $posts = Post::with('user')->onlyTrashed()->paginate(10);
+            $queryPost = Post::with(['user:id,name', 'category:id,name'])->onlyTrashed();
+
+            if ($request->hasAny(['title', 'user_name_post', 'category_id', 'status', 'start_deleted', 'end_deleted']))
+                $queryPost = $this->filter($request, $queryPost);
+
+            if ($request->has('search_full'))
+                $queryPost = $this->search($request->search_full, $queryPost);
+
+            $posts = $queryPost->paginate(10);
+
+            if ($request->ajax()) {
+                $html = view('posts.table', compact(['posts', 'post_deleted_at']))->render();
+                return response()->json(['html' => $html]);
             }
             return view('posts.list-post-delete', compact([
                 'title',

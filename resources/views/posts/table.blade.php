@@ -2,11 +2,17 @@
     <div class="row g-4 mb-3">
         <div class="col-sm-auto">
             <div>
-                <a href="{{ route('admin.posts.create') }}">
-                    <button type="button" class="btn btn-primary add-btn">
-                        <i class="ri-add-line align-bottom me-1"></i> Thêm mới
+                @if (!empty($post_deleted_at))
+                    <button class="btn btn-danger" id="restoreSelected">
+                        <i class=" ri-restart-line"> Khôi phục</i>
                     </button>
-                </a>
+                @else
+                    <a href="{{ route('admin.posts.create') }}">
+                        <button type="button" class="btn btn-primary add-btn">
+                            <i class="ri-add-line align-bottom me-1"></i> Thêm mới
+                        </button>
+                    </a>
+                @endif
                 <button class="btn btn-danger" id="deleteSelected">
                     <i class="ri-delete-bin-2-line"> Xóa nhiều</i>
                 </button>
@@ -15,12 +21,10 @@
         <div class="col-sm">
             <div class="d-flex justify-content-sm-end">
                 <div class="search-box ms-2">
-                    <form action="{{ route('admin.posts.index') }}" method="GET">
-                        <input type="text" name="searchPost" class="form-control search" id="search-options"
-                            placeholder="Tìm kiếm..." value="{{ request('searchUser') }}">
-                        <button type="submit" class="ri-search-line search-icon m-0 p-0 border-0"
-                            style="background: none;"></button>
-                    </form>
+                    <input type="text" name="search_full" id="searchFull" class="form-control search"
+                        placeholder="Tìm kiếm..." data-search value="{{ request()->input('search_full') ?? '' }}">
+                    <button id="search-full" class="ri-search-line search-icon m-0 p-0 border-0"
+                        style="background: none;"></button>
                 </div>
             </div>
         </div>
@@ -39,8 +43,12 @@
                     <th>Tác giả</th>
                     <th>Danh mục</th>
                     <th>Trạng thái</th>
-                    <th>Ngày đăng tải</th>
-                    <th>Hành Động</th>
+                    @if (!empty($post_deleted_at))
+                        <th>Thời gian xóa</th>
+                    @else
+                        <th>Ngày đăng tải</th>
+                        <th>Hành Động</th>
+                    @endif
                 </tr>
             </thead>
             <tbody class="list">
@@ -79,31 +87,36 @@
                                 </span>
                             @endif
                         </td>
-
-                        <td>
-                            {!! $post->published_at ?\Carbon\Carbon::parse($post->published_at)->format('d/m/Y') : '<span class="btn btn-sm btn-soft-warning">Chưa đăng</span>' !!}
-                        </td>
-
-
-                        <td>
-                            <div class="d-flex gap-2">
-                                <a href="{{ route('admin.posts.edit', $post->id) }}">
-                                    <button class="btn btn-sm btn-warning edit-item-btn">
-                                        <span class="ri-edit-box-line"></span>
-                                    </button>
-                                </a>
-                                <a href="{{ route('admin.posts.show', $post->id) }}">
-                                    <button class="btn btn-sm btn-info edit-item-btn">
-                                        <span class="ri-folder-user-line"></span>
-                                    </button>
-                                </a>
-                                <a href="{{ route('admin.posts.destroy', $post->id) }}"
-                                    class="btn btn-sm btn-danger sweet-confirm">
-                                    <span class="ri-delete-bin-7-line"></span>
-                                </a>
-                                </a>
-                            </div>
-                        </td>
+                        @if (!empty($post_deleted_at))
+                            <td>
+                                {{ optional(\Carbon\Carbon::parse($post->deleted_at))->format('d/m/Y') ?? 'NULL' }}
+                            </td>
+                        @else
+                            <td>
+                                {!! $post->published_at
+                                    ? \Carbon\Carbon::parse($post->published_at)->format('d/m/Y')
+                                    : '<span class="btn btn-sm btn-soft-warning">Chưa đăng</span>' !!}
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <a href="{{ route('admin.posts.edit', $post->id) }}">
+                                        <button class="btn btn-sm btn-warning edit-item-btn">
+                                            <span class="ri-edit-box-line"></span>
+                                        </button>
+                                    </a>
+                                    <a href="{{ route('admin.posts.show', $post->id) }}">
+                                        <button class="btn btn-sm btn-info edit-item-btn">
+                                            <span class="ri-folder-user-line"></span>
+                                        </button>
+                                    </a>
+                                    <a href="{{ route('admin.posts.destroy', $post->id) }}"
+                                        class="btn btn-sm btn-danger sweet-confirm">
+                                        <span class="ri-delete-bin-7-line"></span>
+                                    </a>
+                                    </a>
+                                </div>
+                            </td>
+                        @endif
                     </tr>
                 @endforeach
             </tbody>

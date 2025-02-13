@@ -9,9 +9,10 @@
         </div>
         <div class="pt-4 mb-4 mb-lg-3 pb-lg-4 profile-wrapper">
             <div class="row g-4">
-                <div class="col-auto">
-                    <div class="avatar-lg">
-                        <img src="{{ $approval->user->avatar }}" alt="user-img" class="img-thumbnail rounded-circle"/>
+                <div class="col-md-auto">
+                    <div style="width: 100px; height: 100px;" class="avatar-lg rounded-circle ">
+                        <img src="{{ $approval->user->avatar }}" alt=""
+                             class="h-100 object-fit-cover rounded">
                     </div>
                 </div>
                 <!--end col-->
@@ -108,7 +109,8 @@
                                                         <div class="mb-3">
                                                             <label for="rejectReason" class="form-label">Lý do từ
                                                                 chối</label>
-                                                            <textarea class="form-control" id="rejectNote" name="note"
+                                                            <textarea placeholder="Nhập lý do từ chối..."
+                                                                      class="form-control" id="rejectNote" name="note"
                                                                       rows="3"></textarea>
                                                         </div>
                                                     </div>
@@ -147,7 +149,8 @@
                                             <h5 class="card-title mb-5">Mức độ hoàn thiện hồ sơ</h5>
                                             <div class="progress animated-progress custom-progress progress-label">
                                                 <div class="progress-bar bg-danger" role="progressbar"
-                                                     style="width: {{ $score }}%" aria-valuenow="{{ $score }}" aria-valuemin="0"
+                                                     style="width: {{ $score }}%" aria-valuenow="{{ $score }}"
+                                                     aria-valuemin="0"
                                                      aria-valuemax="100">
                                                     <div class="label">{{ $score }}%</div>
                                                 </div>
@@ -213,18 +216,28 @@
                                                          "website" => "ri-global-fill"
                                                     ];
                                                 @endphp
-                                                @foreach($socials as $key => $url)
-                                                    @if(array_key_exists($key, $icon) && $url)
-                                                        <div>
-                                                            <a href="{{ $url }}" class="avatar-xs d-block"
-                                                               target="_blank">
-                                                                <span class="avatar-title rounded-circle fs-16 bg-body text-body">
+                                                @if(!empty($socials))
+                                                    @foreach($socials as $key => $url)
+                                                        @if(array_key_exists($key, $icon) && $url)
+                                                            <div>
+                                                                <a href="{{ $url }}" class="avatar-xs d-block"
+                                                                   target="_blank">
+                                                                <span
+                                                                    class="avatar-title rounded-circle fs-16 bg-body text-body">
                                                                     <i class="{{ $icon[$key] }}"></i>
                                                                 </span>
-                                                            </a>
-                                                        </div>
-                                                    @endif
-                                                @endforeach
+                                                                </a>
+                                                            </div>
+                                                        @endif
+                                                    @endforeach
+
+                                                @else
+                                                    <div class="avatar-xs">
+                                                        <span class="avatar-title rounded-circle fs-16 bg-body text-body">
+                                                            <i class="ri-global-fill"></i>
+                                                        </span>
+                                                    </div>
+                                                @endif
                                             </div>
                                         </div><!-- end card body -->
                                     </div><!-- end card -->

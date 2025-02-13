@@ -15,7 +15,7 @@
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
                             <li class="breadcrumb-item active">Danh sách coupon</li>
                         </ol>
                     </div>
@@ -80,17 +80,17 @@
                                             <div class="row">
                                                 <li>
                                                     <label for="amountRange" class="form-label">Số lượt sử dụng</label>
-                    
+
                                                     <div class="d-flex justify-content-between">
                                                         <span id="amountMin">0</span>
                                                         <span id="amountMax">1000</span>
                                                     </div>
-                    
+
                                                     <div class="d-flex justify-content-between">
                                                         <input type="range" class="form-range w-100" id="amountMinRange"
                                                             name="used_count" min="0" max="1000" step="10"
                                                             value="0" oninput="updateRange()" data-filter>
-                                                        
+
                                                     </div>
                                                 </li>
                                                 <li class="col-6">
@@ -114,7 +114,7 @@
                                                 <button class="btn btn-sm btn-primary w-100" id="applyFilter">Áp
                                                     dụng</button>
                                             </li>
-                                            
+
                                         </div>
                                     </div>
                                 </ul>
@@ -178,9 +178,9 @@
                                     <div>
                                         <a href="{{ route('admin.coupons.create') }}" class="btn btn-primary add-btn"><i
                                                 class="ri-add-line align-bottom me-1"></i> Thêm mới</a>
-                                                <button class="btn btn-danger" id="deleteSelected">
-                                                    <i class="ri-delete-bin-2-line"> Xóa nhiều</i>
-                                                </button>
+                                        <button class="btn btn-danger" id="deleteSelected">
+                                            <i class="ri-delete-bin-2-line"> Xóa nhiều</i>
+                                        </button>
                                     </div>
                                 </div>
                                 <div class="col-sm">
@@ -214,7 +214,7 @@
                                             <th>Trạng Thái</th>
                                             <th>Ngày bắt đầu</th>
                                             <th>Ngày kết thúc</th>
-                                            <th>Số lượng sử dụng</th>
+                                            <th>Số lượng</th>
                                             <th>Hành động</th>
                                         </tr>
                                     </thead>
@@ -308,10 +308,15 @@
     <script>
         var routeUrlFilter = "{{ route('admin.coupons.index') }}";
         var routeDeleteAll = "{{ route('admin.coupons.destroy', ':itemID') }}";
+
         function updateRange() {
-        let rangeValue = document.getElementById("amountMinRange").value;
-        document.getElementById("amountMin").textContent = rangeValue;
-    }
+            let rangeValue = document.getElementById("amountMinRange").value;
+            document.getElementById("amountMin").textContent = rangeValue;
+        }
+
+        $(document).on('click', '#resetFilter', function() {
+            window.location = routeUrlFilter;
+        });
     </script>
     <script src="{{ asset('assets/js/custom/custom.js') }}"></script>
     <script src="{{ asset('assets/js/common/checkall-option.js') }}"></script>

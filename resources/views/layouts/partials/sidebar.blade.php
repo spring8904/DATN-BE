@@ -5,17 +5,17 @@
     <ul class="navbar-nav" id="navbar-nav">
         <li class="menu-title"><span data-key="t-menu">Bảng điều khiển</span></li>
         <li class="nav-item cusor-pointer">
-            <a class="nav-link menu-link" href="{{route('admin.revenue-statistics.index')}}">
+            <a class="nav-link menu-link" href="{{ route('admin.revenue-statistics.index') }}">
                 <i class="ri-dashboard-2-line"></i> <span data-key="t-dashboards">Thống kê doanh thu</span>
             </a>
         </li>
         <li class="nav-item cusor-pointer">
-            <a class="nav-link menu-link" href="{{route('admin.top-courses.index')}}">
+            <a class="nav-link menu-link" href="{{ route('admin.top-courses.index') }}">
                 <i class=" ri-bar-chart-fill"></i> <span data-key="t-dashboards">Top khoá học bán chạy</span>
             </a>
         </li>
         <li class="nav-item cusor-pointer">
-            <a class="nav-link menu-link" href="{{route('admin.analytics.index')}}">
+            <a class="nav-link menu-link" href="{{ route('admin.analytics.index') }}">
                 <i class=" ri-bar-chart-fill"></i> <span data-key="t-dashboards">Thống kê truy cập</span>
             </a>
         </li>
@@ -180,21 +180,6 @@
                 </ul>
             </div>
 
-            <a class="nav-link menu-link" href="#sidebarPost" data-bs-toggle="collapse" role="button"
-                aria-expanded="false" aria-controls="sidebarPost">
-                <i class="lab la-blogger"></i> <span data-key="t-authentication">Quản lý khóa học</span>
-            </a>
-            <div class="collapse menu-dropdown" id="sidebarPost">
-                <ul class="nav nav-sm flex-column">
-                    <li class="nav-item">
-                        <a href="{{ route('admin.courses.index') }}" class="nav-link" data-key="t-chat">
-                            Danh sách bài viết </a>
-                    </li>
-                    
-                    
-                </ul>
-            </div>
-
             <a class="nav-link menu-link" href="#sidebarCoupon" data-bs-toggle="collapse" role="button"
                 aria-expanded="false" aria-controls="sidebarCoupon">
                 <i class=" ri-coupon-line"></i> <span data-key="t-authentication">Quản lý mã giảm giá</span>
@@ -219,6 +204,21 @@
             <a class="nav-link menu-link" href="#sidebarComment">
                 <i class="las la-comment"></i> <span data-key="t-authentication">Quản lý bình luận</span>
             </a>
+
+            <a class="nav-link menu-link" href="#sidebarCourse" data-bs-toggle="collapse" role="button"
+                aria-expanded="false" aria-controls="sidebarCourse">
+                <i class="lab la-blogger"></i> <span data-key="t-authentication">Quản lý khóa học</span>
+            </a>
+            <div class="collapse menu-dropdown" id="sidebarCourse">
+                <ul class="nav nav-sm flex-column">
+                    <li class="nav-item">
+                        <a href="{{ route('admin.courses.index') }}" class="nav-link" data-key="t-chat">
+                            Danh sách bài viết </a>
+                    </li>
+
+
+                </ul>
+            </div>
 
             <a class="nav-link menu-link" href="#sidebarSetting" data-bs-toggle="collapse" role="button"
                 aria-expanded="false" aria-controls="sidebarSetting">

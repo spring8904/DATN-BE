@@ -11,8 +11,8 @@ use App\Models\Invoice;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Notifications\UserBuyCourseNotification;
+use App\Traits\ApiResponseTrait;
 use App\Traits\LoggableTrait;
-use F9Web\ApiResponseHelpers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -21,24 +21,18 @@ use Illuminate\Support\Str;
 
 class TransactionController extends Controller
 {
-    use LoggableTrait, ApiResponseHelpers;
+    use LoggableTrait, ApiResponseTrait;
 
     public function index()
     {
         try {
             $transactions = Transaction::query()->where('transactionable_id', Auth::id())->latest('id')->get();
 
-            return response()->json([
-                'message' => 'Danh sách giao dịch của: ' . Auth::user()->name,
-                'transactions' => $transactions,
-            ], Response::HTTP_OK);
+            return $this->respondOk('Danh sách giao dịch của: ' . Auth::user()->name, $transactions);
         } catch (\Exception $e) {
             $this->logError($e);
 
-            return response()->json([
-                'status' => false,
-                'message' => 'Có lỗi xảy ra, vui lòng thử lại',
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại');
         }
     }
 
@@ -47,17 +41,11 @@ class TransactionController extends Controller
         try {
             $transaction = Transaction::query()->findOrFail($id);
 
-            return response()->json([
-                'message' => 'Chi tiết giao dịch của: ' . Auth::user()->name,
-                'transactions' => $transaction,
-            ], Response::HTTP_OK);
+            return $this->respondOk('Chi tiết giao dịch của: ' . Auth::user()->name, $transaction);
         } catch (\Exception $e) {
             $this->logError($e);
 
-            return response()->json([
-                'status' => false,
-                'message' => 'Không tìm thấy giao dịch',
-            ], Response::HTTP_NOT_FOUND);
+            return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại');
         }
     }
 
@@ -147,7 +135,7 @@ class TransactionController extends Controller
                 'message' => 'Tạo URL thanh toán thành công',
                 'payment_url' => $vnp_Url,
             ], Response::HTTP_OK);
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->logError($e, $request->all());
 
             return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại');
@@ -173,14 +161,13 @@ class TransactionController extends Controller
 
             if ($secureHash === $vnp_SecureHash) {
                 if ($inputData['vnp_ResponseCode'] == '00') {
-                    // Thanh toán thành công
                     Transaction::create([
                         'transaction_code' => $inputData['vnp_TxnRef'],
                         'amount' => $inputData['vnp_Amount'] / 100,
                         'transactionable_id' => Auth::id(),
                         'transactionable_type' => 'App\Models\User',
                         'status' => 'Giao dịch thành công',
-                        'type' => 'deposit',
+                        'type' => 'invoice',
                     ]);
 
                     return response()->json([
