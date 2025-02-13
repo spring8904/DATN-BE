@@ -30,9 +30,9 @@ class ChapterController extends Controller
                 throw new \Exception('Không tìm thấy khoá học');
             }
 
-            $lastChapter = $course->chapters()->orderBy('order', 'desc')->first();
+            $lastOrder = $course->chapters()->max('order') ?? 0;
 
-            $data['order'] = $lastChapter ? $lastChapter->order + 1 : 1;
+            $data['order'] = $lastOrder + 1;
 
             $chapter = $course->chapters()->create($data);
 
@@ -51,6 +51,7 @@ class ChapterController extends Controller
             $data = $request->validated();
 
             $course = Course::query()
+                ->with('user')
                 ->where('slug', $slug)
                 ->first();
 
@@ -66,7 +67,7 @@ class ChapterController extends Controller
 
             $chapter->update($data);
 
-            return $this->respondOk('Cập nhật thông tin chương học thành công', $chapter);
+            return $this->respondOk('Thao tác thành công', $chapter);
         } catch (\Exception $e) {
             $this->logError($e, $request->all());
 
@@ -134,7 +135,7 @@ class ChapterController extends Controller
             }
 
             if ($chapter->lessons()->count() > 0) {
-                return $this->respondError('Chương học không có bài học, không thể xóa');
+                return $this->respondError('Chương học đang có bài học, không thể xóa');
             }
 
             $chapter->delete();

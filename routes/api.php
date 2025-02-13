@@ -44,7 +44,7 @@ Route::prefix('auth')->as('auth.')->group(function () {
     Route::get('google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
 });
-
+Route::get('/transactions/vnpay-callback', [TransactionController::class, 'vnpayCallback']);
 #============================== ROUTE SEARCH =============================
 Route::prefix('search')
     ->group(function () {
@@ -119,8 +119,8 @@ Route::middleware('auth:sanctum')->group(function () {
                         ->group(function () {
                             Route::post('/', [ChapterController::class, 'storeChapter']);
                             Route::put('/{chapter}/update-order', [ChapterController::class, 'updateOrderChapter']);
-                            Route::put('/{chapter}', [ChapterController::class, 'updateContentChapter']);
-                            Route::delete('/{chapter}', [ChapterController::class, 'deleteChapter']);
+                            Route::put('/{slug}/{chapter}', [ChapterController::class, 'updateContentChapter']);
+                            Route::delete('/{slug}/{chapter}', [ChapterController::class, 'deleteChapter']);
                             Route::get('/{chapter}/lessons', [ChapterController::class, 'getLessons']);
                         });
 
@@ -130,8 +130,9 @@ Route::middleware('auth:sanctum')->group(function () {
                         ->group(function () {
                             Route::post('/', [LessonController::class, 'storeLesson']);
                             Route::put('/{lesson}/update-order', [LessonController::class, 'updateOrderLesson']);
-                            Route::put('/{lesson}', [LessonController::class, 'updateContentLesson']);
-                            Route::delete('/{lesson}', [LessonController::class, 'deleteLesson']);
+                            Route::put('/{chapterId}/{lesson}', [LessonController::class, 'updateTitleLesson']);
+                            Route::put('/{chapterId}/{lesson}/content', [LessonController::class, 'updateContentLesson']);
+                            Route::delete('/{chapterId}/{lesson}', [LessonController::class, 'deleteLesson']);
                         });
                 });
 
@@ -181,8 +182,8 @@ Route::middleware('auth:sanctum')->group(function () {
     #============================== ROUTE RATING =============================
     Route::prefix('ratings')
         ->group(function () {
-        Route::get('/{courseId}', [RatingController::class, 'index']);
-        Route::post('/', [RatingController::class, 'store']);
+            Route::get('/{courseId}', [RatingController::class, 'index']);
+            Route::post('/', [RatingController::class, 'store']);
         });
 
     #============================== ROUTE LIVESTREAM =============================
@@ -218,5 +219,9 @@ Route::prefix('support-banks')->group(function () {
 
 #============================== ROUTE QA SYSTEM =================================
 Route::prefix('qa-systems')->group(function () {
-    Route::get('/', [\App\Http\Controllers\API\Common\QaSystemController::class,'index']);
+    Route::get('/', [\App\Http\Controllers\API\Common\QaSystemController::class, 'index']);
+});
+
+Route::prefix('mux-upload')->group(function () {
+    Route::post('video', [\App\Http\Controllers\Api\Instructor\HandleVideoController::class, 'handleUpload']);
 });

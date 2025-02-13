@@ -70,20 +70,61 @@ class LessonController extends Controller
         }
     }
 
-    public function updateContentLesson(UpdateLessonRequest $request, string $slug)
+    public function updateTitleLesson(Request $request, string $chapterId, string $id)
+    {
+        try {
+            $data = $request->validate([
+                'title' => 'required|string|max:255',
+            ]);
+
+            $chapters = Chapter::query()
+                ->where('id', $chapterId)
+                ->first();
+
+            if (!$chapters) {
+                return $this->respondNotFound('Không tìm thấy chương học');
+            }
+
+            $lesson = $chapters->lessons()->find($id);
+
+            if (!$lesson) {
+                return $this->respondNotFound('Không tìm thấy bài học');
+            }
+
+            $lesson->update([
+                'title' => $data['title'] ?? $lesson->title,
+                'slug' => !empty($data['title']) ? Str::slug($data['title']) : $lesson->slug,
+            ]);
+
+            return $this->respondOk('Cập nhật tiêu đề bài học thành công',
+                $lesson->load('lessonable')
+            );
+        } catch (\Exception $e) {
+            $this->logError($e, $request->all());
+            return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại');
+        }
+    }
+
+    public function updateContentLesson(UpdateLessonRequest $request, string $chapterId, string $id)
     {
         try {
             DB::beginTransaction();
 
             $data = $request->validated();
 
-            $lesson = $this->getLessonBySlug($slug);
+            $chapters = Chapter::query()
+                ->where('id', $chapterId)
+                ->first();
+
+            if (!$chapters) {
+                return $this->respondNotFound('Không tìm thấy chương học');
+            }
+
+            $lesson = $chapters->lessons()->find($id);
 
             if (!$lesson) {
                 return $this->respondNotFound('Không tìm thấy bài học');
             }
-
-            $data['slug'] = !empty($data['title']) ? Str::slug($data['title']) : $lesson->slug;
 
             $lessonable = $this->handleLessonTypeUpdate($request, $lesson, $data);
 
@@ -100,7 +141,7 @@ class LessonController extends Controller
 
             DB::commit();
 
-            return $this->respondOk('Cập nhật bài học thành công',
+            return $this->respondOk('Thao tác thành công',
                 $lesson->load('lessonable')
             );
         } catch (\Exception $e) {
@@ -156,10 +197,18 @@ class LessonController extends Controller
     }
 
 
-    public function deleteLesson(string $slug)
+    public function deleteLesson(string $chapterId, string $id)
     {
         try {
-            $lesson = $this->getLessonBySlug($slug);
+            $chapter = Chapter::query()
+                ->where('id', $chapterId)
+                ->first();
+
+            if (!$chapter) {
+                return $this->respondNotFound('Không tìm thấy chương học');
+            }
+
+            $lesson = $chapter->lessons()->find($id);
 
             if (!$lesson) {
                 return $this->respondNotFound('Không tìm thấy bài học');
@@ -169,7 +218,13 @@ class LessonController extends Controller
             $this->deleteLessonable($lessonable);
             $lesson->delete();
 
-            return $this->respondNoContent();
+            $lessons = $chapter->lessons()->orderBy('order')->get();
+
+            foreach ($lessons as $index => $lesson) {
+                $lesson->update(['order' => $index + 1]);
+            }
+
+            return $this->respondOk('Xóa bài học thành công');
         } catch (\Exception $e) {
             $this->logError($e);
 

@@ -8,8 +8,10 @@ use App\Models\Coupon;
 use App\Models\Course;
 use App\Models\CourseUser;
 use App\Models\Invoice;
+use App\Models\SystemFund;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Models\Wallet;
 use App\Notifications\UserBuyCourseNotification;
 use App\Traits\ApiResponseTrait;
 use App\Traits\LoggableTrait;
@@ -17,11 +19,17 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use PhpParser\Node\Stmt\Return_;
 
 class TransactionController extends Controller
 {
     use LoggableTrait, ApiResponseTrait;
+
+    const adminRate = 0.4;
+    const instructorRate = 1 - self::adminRate;
+    const walletMail = 'superadmin@gmail.com';
 
     public function index()
     {
@@ -74,7 +82,6 @@ class TransactionController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-
     public function createVNPayPayment(Request $request)
     {
         try {
@@ -147,6 +154,8 @@ class TransactionController extends Controller
         try {
             $vnp_HashSecret = config('vnpay.vnp_HashSecret');
             $inputData = $request->all();
+            $parts = explode('-', json_encode($inputData['vnp_OrderInfo']));
+            $invoiceId = trim(end($parts), '"');
 
             $vnp_SecureHash = $inputData['vnp_SecureHash'];
             unset($inputData['vnp_SecureHash']);
@@ -158,17 +167,46 @@ class TransactionController extends Controller
 
             $hashData = rtrim($hashData, '&');
             $secureHash = hash_hmac('sha512', $hashData, $vnp_HashSecret);
+            $hashData = rtrim($hashData, '&');
 
             if ($secureHash === $vnp_SecureHash) {
                 if ($inputData['vnp_ResponseCode'] == '00') {
-                    Transaction::create([
+                    DB::beginTransaction();
+
+                    $invoice = Invoice::where('id', $invoiceId)->first();
+
+                    $invoice->update(['status' => 'Đã thanh toán']);
+
+                    $course = Course::find($invoice->course_id);
+
+                    $discount = null;
+
+                    if (!empty($invoice->coupon_code)) {
+                        $discount = Coupon::query()->where([
+                            'code' => $invoice->coupon_code,
+                            'status' => '1'
+                        ])->first();
+                    }
+
+                    CourseUser::create([
+                        'user_id' => $invoice->user_id,
+                        'course_id' => $course->id,
+                        'enrolled_at' => now(),
+                    ]);
+
+                    $transaction = Transaction::create([
                         'transaction_code' => $inputData['vnp_TxnRef'],
+                        'user_id' => $invoice->user_id,
                         'amount' => $inputData['vnp_Amount'] / 100,
-                        'transactionable_id' => Auth::id(),
-                        'transactionable_type' => 'App\Models\User',
+                        'transactionable_id' => $invoice->id,
+                        'transactionable_type' => Invoice::class,
                         'status' => 'Giao dịch thành công',
                         'type' => 'invoice',
                     ]);
+
+                    $this->finalBuyCourse($invoice->user_id, $course, $transaction, $discount, $inputData['vnp_Amount'] / 100);
+
+                    DB::commit();
 
                     return response()->json([
                         'status' => true,
@@ -181,6 +219,7 @@ class TransactionController extends Controller
                     ], Response::HTTP_BAD_REQUEST);
                 }
             } else {
+                Log::info('khong hơp le');
                 return response()->json([
                     'status' => false,
                     'message' => 'Chữ ký không hợp lệ',
@@ -213,7 +252,10 @@ class TransactionController extends Controller
                 return $this->respondUnAuthenticated('Vui lòng đăng nhập để mua khóa học');
             }
 
-            $course = Course::query()->where('slug', $request->slug)->first();
+            $course = Course::query()->where([
+                'slug' => $request->slug,
+                'status' => 'approved'
+            ])->first();
 
             if (!$course) {
                 return $this->respondError('Không tìm thấy khóa học');
@@ -228,27 +270,25 @@ class TransactionController extends Controller
 
             $discountAmount = 0;
             $discount = null;
-            if (!empty($validated['discount_code'])) {
-                $discount = Coupon::query()->where('code', $validated['discount_code'])->first();
 
-                if ($discount) {
-                    $discountAmount = ($discount->type === 'percentage')
-                        ? ($course->price * $discount->discount_value) / 100
+            if (!empty($validated['discount_code'])) {
+                $discount = Coupon::query()->where([
+                    'code' => $validated['discount_code'],
+                    'status' => '1'
+                ])->first();
+
+                if (!empty($discount)) {
+                    $discountAmount = ($discount->discount_type === 'percentage')
+                        ? (($course->price_sale ?? $course->price) * $discount->discount_value) / 100
                         : $discount->discount_value;
 
-                    $discountAmount = min($discountAmount, $course->price);
+                    $discountAmount = min($discountAmount, $course->price_sale ?? $course->price);
                 } else {
                     return $this->respondError('Mã giảm giá không hợp lệ hoặc đã hết hạn');
                 }
             }
 
-            $finalAmount = max($validated['amount'] - $discountAmount, 0);
-
-            CourseUser::create([
-                'user_id' => $userID,
-                'course_id' => $course->id,
-                'enrolled_at' => now(),
-            ]);
+            $finalAmount = round(max($validated['amount'] - $discountAmount, 0), 2);
 
             $invoice = Invoice::create([
                 'user_id' => $userID,
@@ -258,33 +298,45 @@ class TransactionController extends Controller
                 'coupon_discount' => $discountAmount > 0 ? $discountAmount : null,
                 'total' => $validated['amount'],
                 'final_total' => $finalAmount,
-                'status' => 'Đã thanh toán',
+                'status' => $finalAmount === 0 ? 'Đã thanh toán' : 'Chờ thanh toán',
             ]);
 
-            Transaction::create([
-                'transaction_code' => 'GD' . strtoupper(Str::random(8)),
-                'amount' => $validated['amount'],
-                'transactionable_id' => $invoice->id,
-                'transactionable_type' => Invoice::class,
-                'status' => 'Giao dịch thành công',
-                'type' => 'invoice',
-            ]);
+            if ($finalAmount === 0) {
+                $transaction = Transaction::create([
+                    'transaction_code' => 'GD' . strtoupper(Str::random(8)),
+                    'user_id' => $userID,
+                    'amount' => $validated['amount'],
+                    'transactionable_id' => $invoice->id,
+                    'transactionable_type' => Invoice::class,
+                    'status' => 'Giao dịch thành công',
+                    'type' => 'invoice',
+                ]);
 
-            if ($discount) {
-                $course->coupons()->attach($discount->id);
+                CourseUser::create([
+                    'user_id' => $userID,
+                    'course_id' => $course->id,
+                    'enrolled_at' => now(),
+                ]);
 
-                $discount->decrement('used_count');
+                $this->finalBuyCourse($userID, $course, $transaction, $discount);
+
+                DB::commit();
+
+                return $this->respondOk('Mua khóa học thành công');
+            } else {
+                DB::commit();
+                $payment_method = !empty($request->payment_method) ? $request->payment_method : 'vnpay';
+
+                if ($payment_method === 'bank') {
+                    return $this->respondOk('Chưa có bank');
+                } else {
+                    $modifiedRequest = $request->merge([
+                        'order_info' => 'thanh-toan-kho-hoc-' . $course->slug . '-' . $invoice->id
+                    ]);
+
+                    return $this->createVNPayPayment($modifiedRequest);
+                }
             }
-
-            $course->increment('total_student');
-
-            User::role('admin')->each(function ($manager) use ($course) {
-                $manager->notify(new UserBuyCourseNotification(Auth::user(), $course->load('invoices.transaction')));
-            });
-
-            DB::commit();
-
-            return $this->respondOk('Mua khóa học thành công');
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -294,4 +346,39 @@ class TransactionController extends Controller
         }
     }
 
+    private function finalBuyCourse($userID, $course, $transaction, $discount = null, $finalAmount = null)
+    {
+        if ($discount) {
+            $course->coupons()->attach($discount->id);
+            $discount->decrement('used_count');
+        }
+
+        $course->increment('total_student');
+
+        $walletInstructor = Wallet::query()->firstOrCreate(['user_id' => $course->user_id]);
+
+        $walletInstructor->balance += $finalAmount * self::instructorRate;
+
+        $walletInstructor->save();
+
+        $walletWeb = Wallet::query()->firstOrCreate([
+            'user_id' => User::where('email', self::walletMail)->value('id'),
+        ]);
+
+        $walletWeb->balance += $finalAmount * self::adminRate;
+
+        $walletWeb->save();
+
+        SystemFund::query()->create([
+            'transaction_id' => $transaction->id,
+            'course_id' => $course->id,
+            'user_id' => $userID,
+            'total_amount' => $finalAmount,
+            'retained_amount' => $finalAmount * self::adminRate,
+        ]);
+
+        User::role('admin')->each(function ($manager) use ($course, $userID) {
+            $manager->notify(new UserBuyCourseNotification(User::find($userID), $course->load('invoices.transaction')));
+        });
+    }
 }
