@@ -22,7 +22,7 @@ class ApprovalCourseController extends Controller
         $queryApprovals = Approvable::query()
             ->with([
                 'approver',
-                'course',
+                'course.user',
                 'user'
             ])
             ->where('approvable_type', Course::class);
@@ -60,7 +60,6 @@ class ApprovalCourseController extends Controller
             return response()->json(['html' => $html]);
         }
 
-
         return view('approval.course.index', compact([
             'title',
             'subTitle',
@@ -91,7 +90,7 @@ class ApprovalCourseController extends Controller
         } catch (\Exception $e) {
             $this->logError($e);
 
-            return redirect()->route('admin.approval.course.index')->with('error', 'Có lỗi xảy ra, vui lòng thử lại sau');
+            return redirect()->route('admin.approvals.courses.index')->with('error', 'Có lỗi xảy ra, vui lòng thử lại sau');
         }
     }
 
@@ -120,7 +119,16 @@ class ApprovalCourseController extends Controller
             $approval->approver_id = auth()->id();
             $approval->save();
 
-            $approval->course->update(['status' => $status]);
+            if ($status === 'approved') {
+                $approval->course->update([
+                    'status' => $status,
+                    'accepted' => now()
+                ]);
+            } else {
+                $approval->course->update([
+                    'status' => $status,
+                ]);
+            }
 
             DB::commit();
 
@@ -148,7 +156,7 @@ class ApprovalCourseController extends Controller
             'approval_date' => ['filed' => ['approved_at', 'rejected_at'], 'attribute' => ['approval_start_date' => '>=', 'approval_end_date' => '<=']],
         ];
 
-        $query = $this->filterTrait($filters,$request,$query);
+        $query = $this->filterTrait($filters, $request, $query);
 
         return $query;
     }
