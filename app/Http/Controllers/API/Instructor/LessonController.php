@@ -54,6 +54,10 @@ class LessonController extends Controller
                 ->where('id', $data['chapter_id'])
                 ->first();
 
+            if ($chapterID && $chapterID->course->user_id !== auth()->id()) {
+                return $this->respondForbidden('Bạn không có quyền tạo bài học cho khóa học này');
+            }
+
             $lessonable = $this->updateOrCreateLessonable($data);
 
             $data['order'] = $chapterID->lessons()->max('order') + 1;
@@ -80,6 +84,10 @@ class LessonController extends Controller
             $chapters = Chapter::query()
                 ->where('id', $chapterId)
                 ->first();
+
+            if ($chapters->course->user_id !== auth()->id()) {
+                return $this->respondForbidden(' được có quyền tạo bài học cho khóa học này');
+            }
 
             if (!$chapters) {
                 return $this->respondNotFound('Không tìm thấy chương học');
@@ -115,6 +123,10 @@ class LessonController extends Controller
             $chapters = Chapter::query()
                 ->where('id', $chapterId)
                 ->first();
+
+            if ($chapters->course->user_id !== auth()->id()) {
+                return $this->respondForbidden(' được có quyền tạo bài học cho khóa học này');
+            }
 
             if (!$chapters) {
                 return $this->respondNotFound('Không tìm thấy chương học');
@@ -203,6 +215,10 @@ class LessonController extends Controller
             $chapter = Chapter::query()
                 ->where('id', $chapterId)
                 ->first();
+
+            if ($chapter->course->user_id !== auth()->id()) {
+                return $this->respondForbidden(' được có quyền xóa bài học cho khóa học này');
+            }
 
             if (!$chapter) {
                 return $this->respondNotFound('Không tìm thấy chương học');

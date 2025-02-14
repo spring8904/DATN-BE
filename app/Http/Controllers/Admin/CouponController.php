@@ -39,6 +39,16 @@ class CouponController extends Controller
         if ($request->hasAny(['name','discount_type','used_count', 'code', 'status', 'start_date', 'expire_date'])) {
             $queryCoupons = $this->filter($request, $queryCoupons);
         }
+
+        $queryCouponCounts = Coupon::query()
+        ->selectRaw('
+            COUNT(id) as total_coupons,
+            SUM(CASE WHEN status = 1 THEN 1 ELSE 0 END) as active_coupons,
+            SUM(CASE WHEN expire_date < NOW() THEN 1 ELSE 0 END) as expire_coupons,
+            SUM(CASE WHEN used_count > 0 THEN 1 ELSE 0 END) as used_coupons
+        ');    
+  
+        // Lấy dữ liệu và phân trang
         $coupons = $queryCoupons->orderBy('id', 'desc')->paginate(10);
         
         if ($request->ajax()) {

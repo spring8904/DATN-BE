@@ -20,6 +20,7 @@ use App\Http\Controllers\API\Instructor\SupportBankController;
 use App\Http\Controllers\API\Instructor\SendRequestController;
 use App\Http\Controllers\API\Note\NoteController;
 use App\Http\Controllers\API\Verify\VerificationController;
+use App\Http\Controllers\API\Common\CourseController as CommonCourseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -213,6 +214,11 @@ Route::middleware('auth:sanctum')->group(function () {
 #============================== ROUTE COURSE =============================
 Route::prefix('courses')
     ->group(function () {
+        Route::get('/discounted', [CommonCourseController::class, 'getDiscountedCourses']);
+        Route::get('/free', [CommonCourseController::class, 'getFreeCourses']);
+        Route::get('/popular', [CommonCourseController::class, 'getPopularCourses']);
+        Route::get('/top-categories-with-most-courses', [CommonCourseController::class, 'getTopCategoriesWithMostCourses']);
+        Route::get('/{slug}', [CommonCourseController::class, 'getCourseDetail']);
     });
 
 #============================== ROUTE BANNER =============================

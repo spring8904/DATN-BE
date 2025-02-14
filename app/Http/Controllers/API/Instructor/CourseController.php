@@ -67,7 +67,8 @@ class CourseController extends Controller
                 ->select([
                     'id', 'user_id', 'category_id', 'name', 'slug', 'thumbnail',
                     'intro', 'price', 'price_sale', 'description',
-                    'level', 'total_student', 'requirements', 'benefits', 'qa'
+                    'level', 'total_student', 'requirements', 'benefits', 'qa',
+                    'visibility', 'is_free'
                 ])
                 ->with([
                     'user:id,name,email,avatar,created_at',
@@ -76,6 +77,10 @@ class CourseController extends Controller
                     'chapters.lessons'
                 ])
                 ->first();
+
+            if ($course->user_id !== Auth::id()) {
+                return $this->respondForbidden('Không có quyền thực hiện thao tác');
+            }
 
             if (!$course) {
                 return $this->respondNotFound('Không tìm thấy khoá học');
@@ -98,6 +103,10 @@ class CourseController extends Controller
             $data = $request->validated();
 
             $data['user_id'] = Auth::id();
+
+            if ($data['user_id'] !== Auth::id()) {
+                return $this->respondForbidden('Không có quyền thực hiện thao tác');
+            }
 
             do {
                 $data['code'] = (string)Str::uuid();
@@ -130,6 +139,10 @@ class CourseController extends Controller
             $course = Course::query()
                 ->where('slug', $slug)
                 ->first();
+
+            if ($course->user_id !== auth()->id()) {
+                return $this->respondForbidden('Không có quyền thực hiện thao tác');
+            }
 
             if (!$course) {
                 return $this->respondNotFound('Không tìm thấy khoá học');
