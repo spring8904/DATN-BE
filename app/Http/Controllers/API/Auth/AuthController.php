@@ -9,6 +9,7 @@ use App\Http\Requests\API\Auth\SigninInstructorRequest;
 use App\Http\Requests\API\Auth\SinginUserRequest;
 use App\Http\Requests\API\Auth\SingupUserRequest;
 use App\Http\Requests\API\Auth\VerifyEmailRequest;
+use App\Mail\Auth\VerifyEmail;
 use App\Models\Education;
 use App\Models\Profile;
 use App\Models\User;
@@ -20,6 +21,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 
@@ -123,7 +125,9 @@ class AuthController extends Controller
             $user = User::query()->create($data);
 
             $user->assignRole("member");
+            $verificationUrl = route('verification.verify', ['id' => $user->id, 'hash' => sha1($user->email)]);
 
+            Mail::to($user->email)->send(new VerifyEmail($verificationUrl));
             DB::commit();
 
             return response()->json([

@@ -21,6 +21,8 @@ use App\Http\Controllers\Admin\AnalyticController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\RevenueStatisticController;
 use App\Http\Controllers\Admin\TopCourseController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,24 +38,28 @@ use App\Http\Controllers\Admin\TopCourseController;
 #============================== ROUTE GOOGLE AUTH =============================
 Route::prefix('admin')->as('admin.')->group(function () {
     Route::get('login', [AuthController::class, 'login'])->name('login');
+    Route::get('signup', [AuthController::class, 'signup'])->name('signup');
+    Route::get('forgot-password', [AuthController::class, 'forgotPassword'])->name('forgot-password');
     Route::post('login', [AuthController::class, 'handleLogin'])->name('handleLogin');
     Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 });
 
 Route::get('email', function () {
-    //    \Illuminate\Support\Facades\Mail::to('quaixe121811@gmail.com')
+    //    \Illuminate\Support\Facades\Mail::to('thanhlongdevbe@gmail.com')
     //        ->send(new \App\Mail\Auth\VerifyEmail());
 
     return view('emails.auth.verify');
 });
-
+Route::get('forgot-password', function () { 
+    return view('emails.auth.forgot-password');
+});
 Route::prefix('admin')->as('admin.')
     ->middleware(['roleHasAdmins', 'check_permission:view.dashboard'])
     ->group(function () {
         #============================== ROUTE AUTH =============================
         Route::get('dashboard', function () {
             return view('dashboard');
-        })->name('dashboard');
+        })->name('dashboard')->middleware('verified');
 
         #============================== ROUTE USER =============================
         Route::prefix('users')->group(function () {
