@@ -26,6 +26,10 @@ class ChapterController extends Controller
                 ->where('slug', $data['slug'])
                 ->first();
 
+            if ($course->user_id !== auth()->id()) {
+                return $this->respondForbidden('Không có quyền thực hiện thao tác');
+            }
+
             if (!$course) {
                 throw new \Exception('Không tìm thấy khoá học');
             }
@@ -54,6 +58,10 @@ class ChapterController extends Controller
                 ->with('user')
                 ->where('slug', $slug)
                 ->first();
+
+            if ($course->user_id !== auth()->id()) {
+                return $this->respondForbidden('Không có quyền thực hiện thao tác');
+            }
 
             if (!$course) {
                 throw new \Exception('Không tìm thấy khoá học');
@@ -123,6 +131,10 @@ class ChapterController extends Controller
             $course = Course::query()
                 ->where('slug', $slug)
                 ->first();
+
+            if ($course->user_id !== auth()->id()) {
+                return $this->respondForbidden('Không có quyền thực hiện thao tác');
+            }
 
             if (!$course) {
                 throw new \Exception('Không tìm thấy khoá học');

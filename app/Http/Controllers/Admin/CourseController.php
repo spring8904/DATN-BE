@@ -9,23 +9,20 @@ use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     use FilterTrait;
+
     public function index(Request $request)
     {
-        //
+        $title = 'Quản lý khoá học';
+        $subTitle = 'Danh sách khoá học trên hệ thống';
+
         $queryCourses = Course::query();
 
-        // Kiểm tra nếu có từ khóa tìm kiếm
         if ($request->has('query') && $request->input('query')) {
             $search = $request->input(key: 'query');
             $queryCourses->where('name', 'like', "%$search%")
                 ->orWhere('code', 'like', "%$search%");
         }
-
-
 
         if ($request->hasAny(['code', 'name', 'user_name', 'level', 'price', 'created_at', 'updated_at'])) {
             $queryCourses = $this->filter($request, $queryCourses);
@@ -38,57 +35,22 @@ class CourseController extends Controller
             $html = view('courses.table', compact('courses'))->render();
             return response()->json(['html' => $html]);
         }
-        return view('courses.index', compact('courses'));
+
+        return view('courses.index', compact('title', 'subTitle', 'courses'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-        $course = Course::findOrFail($id);
-        return view('courses.show', compact('course'));
+        $course = Course::query()
+            ->with('user')
+            ->findOrFail($id);
+
+        $title = 'Quản lý khoá học';
+        $subTitle = 'Thông tin khoá học: ' . $course->name;
+
+        return view('courses.show', compact('title', 'subTitle', 'course'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
     private function filter($request, $query)
     {
         $filters = [

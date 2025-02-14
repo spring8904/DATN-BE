@@ -1,71 +1,92 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generate QR Code</title>
+    <title>Xác Minh Email</title>
+    <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        .email-wrapper {
+            width: 100%;
+            background-color: #f9f9f9;
+            padding: 30px 0;
+        }
+        .email-container {
+            width: 600px;
+            background-color: #ffffff;
+            margin: 0 auto;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .email-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .email-header h1 {
+            color: #333;
+            font-size: 24px;
+        }
+        .email-body {
+            color: #555;
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        .email-footer {
+            text-align: center;
+            font-size: 14px;
+            color: #aaa;
+        }
+        .verify-btn {
+            display: inline-block;
+            background-color: #28a745;
+            color: #fff;
+            padding: 12px 24px;
+            font-size: 16px;
+            text-decoration: none;
+            border-radius: 5px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .verify-btn:hover {
+            background-color: #218838;
+        }
+    </style>
 </head>
 <body>
-<h1>Generate QR Code</h1>
+    <div class="email-wrapper">
+        <div class="email-container">
+            <!-- Header -->
+            <div class="email-header">
+                <div class="position-relative h-100 d-flex flex-column">
+                    <div class="mb-4" style="margin-left: 150px">
+                            <img src="../assets/images/logo-container.png" alt=""
+                                width="50" height="50">
+                            <h1 class="custom-text-logo text-lg">CourseMely</h1>
+                    </div>
+                </div>
+                <h1>Xin Chào!</h1>
+            </div>
+            
+            <!-- Body -->
+            <div class="email-body">
+                <p>Cảm ơn bạn đã đăng ký tài khoản tại CourseMeLy. Vui lòng xác minh địa chỉ email của bạn bằng cách nhấn vào nút dưới đây.</p>
+                <a href="{{$verificationUrl}}" class="verify-btn">Xác Minh Email</a>
+                <p>Nếu bạn không yêu cầu đăng ký tài khoản, vui lòng bỏ qua email này.</p>
+            </div>
 
-<!-- Form for submitting QR code data -->
-<form action="{{ route('qr.generate') }}" method="POST">
-    @csrf
-    <div>
-        <label for="accountNo">Account No:</label>
-        <input type="text" name="accountNo" id="accountNo" required value="{{ old('accountNo') }}">
-        @error('accountNo') <span>{{ $message }}</span> @enderror
+            <!-- Footer -->
+            <div class="email-footer">
+                <p>&copy; 2025 CourseMeLy. Mọi quyền được bảo lưu.</p>
+            </div>
+        </div>
     </div>
-
-    <div>
-        <label for="accountName">Account Name:</label>
-        <input type="text" name="accountName" id="accountName" required value="{{ old('accountName') }}">
-        @error('accountName') <span>{{ $message }}</span> @enderror
-    </div>
-
-    <div>
-        <label for="acqId">Acquirer ID:</label>
-        <input type="text" name="acqId" id="acqId" required value="{{ old('acqId') }}">
-        @error('acqId') <span>{{ $message }}</span> @enderror
-    </div>
-
-    <div>
-        <label for="amount">Amount:</label>
-        <input type="text" name="amount" id="amount" required value="{{ old('amount') }}">
-        @error('amount') <span>{{ $message }}</span> @enderror
-    </div>
-
-    <div>
-        <label for="addInfo">Additional Info:</label>
-        <input type="text" name="addInfo" id="addInfo" value="{{ old('addInfo') }}">
-    </div>
-
-    <div>
-        <label for="format">Format:</label>
-        <select name="format" id="format" required>
-            <option value="text" {{ old('format') == 'text' ? 'selected' : '' }}>Text</option>
-            <option value="html" {{ old('format') == 'html' ? 'selected' : '' }}>HTML</option>
-        </select>
-    </div>
-
-    <div>
-        <label for="template">Template:</label>
-        <select name="template" id="template" required>
-            <option value="compact" {{ old('template') == 'compact' ? 'selected' : '' }}>Compact</option>
-            <option value="compact2" {{ old('template') == 'compact' ? 'selected' : '' }}>Compact2</option>
-            <option value="detailed" {{ old('template') == 'detailed' ? 'selected' : '' }}>Detailed</option>
-        </select>
-    </div>
-
-    <button type="submit">Generate QR Code</button>
-</form>
-
-@if(isset($qrDataURL))
-    <h2>Your QR Code:</h2>
-    <div>
-        <!-- Display generated QR code as image -->
-        <img src="{{$qrDataURL }}" alt="QR Code">
-    </div>
-@endif
 </body>
 </html>

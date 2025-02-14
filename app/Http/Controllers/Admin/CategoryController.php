@@ -106,7 +106,7 @@ class CategoryController extends Controller
         $title = 'Quản lý danh mục';
         $subTitle = 'Chi tiết danh mục';
         $category = Category::findOrFail($id);
-        return view('categories.show', compact('category','title','subTitle'));
+        return view('categories.show', compact('category', 'title', 'subTitle'));
     }
 
     /**
@@ -130,7 +130,7 @@ class CategoryController extends Controller
     public function update(UpdateCategoryRequest $request, string $id)
     {
         try {
-            
+
             $category = Category::findOrFail($id);
 
             $data = $request->validated();
@@ -141,7 +141,7 @@ class CategoryController extends Controller
 
             $category->update($data);
 
-            // kiem tra truong icon co tin tai hay khong , url co hop le hay khong va url cu co hay khong 
+            // kiem tra truong icon co tin tai hay khong , url co hop le hay khong va url cu co hay khong
 
             if (
                 !empty($data['icon'])
@@ -156,7 +156,7 @@ class CategoryController extends Controller
 
             //throw $th;
             if (
-                !empty($data['icon']) 
+                !empty($data['icon'])
                 && filter_var($data['icon'], FILTER_VALIDATE_URL)
             ) {
                 $this->deleteImage($data['icon'], 'categories');
@@ -181,16 +181,24 @@ class CategoryController extends Controller
                 return response()->json($data = ['status' => 'error', 'message' => 'Danh mục đang có cấp con.']);
             }
 
+            if ($category->courses()->count() > 0 || $category->posts()->count() > 0) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Danh mục đang chứa khoá học hoặc bài viết, không thể xóa.'
+                ]);
+            }
+
             $category->delete();
 
             return response()->json($data = ['status' => 'success', 'message' => 'Mục đã được xóa.']);
-            
+
         } catch (\Exception $e) {
             $this->logError($e);
 
             return response()->json($data = ['status' => 'error', 'message' => 'Lỗi thao tác.']);
         }
     }
+
     private function filter(Request $request, $query)
     {
         $filters = [

@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\API\Auth\AuthController;
 use App\Http\Controllers\API\Auth\GoogleController;
 use App\Http\Controllers\API\Common\BannerController;
+use App\Http\Controllers\API\Common\CommentController;
 use App\Http\Controllers\API\Common\PostController;
 use App\Http\Controllers\API\Common\RatingController;
 use App\Http\Controllers\API\Common\SearchController;
@@ -15,9 +16,11 @@ use App\Http\Controllers\API\Instructor\DocumentController;
 use App\Http\Controllers\API\Instructor\LessonController;
 use App\Http\Controllers\API\Instructor\LivestreamController;
 use App\Http\Controllers\API\Instructor\RegisterController;
-use App\Http\Controllers\API\Instructor\SupportBankController;
 use App\Http\Controllers\API\Instructor\SendRequestController;
-use App\Http\Controllers\API\Note\NoteController;
+use App\Http\Controllers\API\Verify\VerificationController;
+use App\Http\Controllers\API\Common\CourseController as CommonCourseController;
+use App\Http\Controllers\API\Instructor\SupportBankController;
+use App\Http\Controllers\API\Student\NoteController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -141,11 +144,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     #============================== ROUTE NOTE =============================
     Route::prefix('notes')->as('notes.')->group(function () {
-        Route::get('/', [NoteController::class, 'index']);
-        Route::get('/{NoteID}', [NoteController::class, 'show']);
+        Route::get('/{courseId}', [NoteController::class, 'index']);
         Route::post('/', [NoteController::class, 'store']);
-        Route::put('/{NoteID}', [NoteController::class, 'update']);
-        Route::delete('/{NoteID}', [NoteController::class, 'destroy']);
+        Route::put('/{note}', [NoteController::class, 'update']);
+        Route::delete('/{note}', [NoteController::class, 'destroy']);
     });
 
     #============================== ROUTE DOCUMENT =============================
@@ -177,6 +179,10 @@ Route::middleware('auth:sanctum')->group(function () {
     #============================== ROUTE COMMENT =============================
     Route::prefix('comments')
         ->group(function () {
+            Route::post('/', [CommentController::class, 'store']);
+            Route::put('/{id}', [CommentController::class, 'update']);
+            Route::delete('/{id}', [CommentController::class, 'destroy']);
+            Route::get('/{commentableId}/{commentableType}', [CommentController::class, 'index']);
         });
 
     #============================== ROUTE RATING =============================
@@ -203,6 +209,11 @@ Route::middleware('auth:sanctum')->group(function () {
 #============================== ROUTE COURSE =============================
 Route::prefix('courses')
     ->group(function () {
+        Route::get('/discounted', [CommonCourseController::class, 'getDiscountedCourses']);
+        Route::get('/free', [CommonCourseController::class, 'getFreeCourses']);
+        Route::get('/popular', [CommonCourseController::class, 'getPopularCourses']);
+        Route::get('/top-categories-with-most-courses', [CommonCourseController::class, 'getTopCategoriesWithMostCourses']);
+        Route::get('/{slug}', [CommonCourseController::class, 'getCourseDetail']);
     });
 
 #============================== ROUTE BANNER =============================
