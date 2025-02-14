@@ -25,7 +25,6 @@ class SearchController extends Controller
                 ->select('id', 'name', 'slug', 'thumbnail')
                 ->where('status', 'approved')
                 ->whereRaw("MATCH(name, description) AGAINST(? IN BOOLEAN MODE)", [$query])
-                ->limit(5)
                 ->get();
 
             if ($courses->isNotEmpty()) {
@@ -36,7 +35,6 @@ class SearchController extends Controller
                 ->select('id', 'title', 'slug', 'thumbnail')
                 ->where('status', 'published')
                 ->whereRaw("MATCH(title, content, description) AGAINST(? IN BOOLEAN MODE)", [$query])
-                ->limit(5)
                 ->get();
 
             if ($posts->isNotEmpty()) {
@@ -46,7 +44,6 @@ class SearchController extends Controller
             $instructors = DB::table('users')
                 ->select('id', 'name', 'email', 'avatar')
                 ->whereRaw("MATCH(name, email) AGAINST(? IN BOOLEAN MODE)", [$query])
-                ->limit(5)
                 ->get();
 
             if ($instructors->isNotEmpty()) {

@@ -164,13 +164,6 @@ class AuthController extends Controller
                 ], Response::HTTP_FORBIDDEN);
             }
 
-            if (is_null($user->email_verified_at)) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Tài khoản chưa xác thực, vui lòng kiểm tra email của bạn.',
-                ], Response::HTTP_FORBIDDEN);
-            }
-
             if (Auth::attempt($data)) {
 
                 DB::beginTransaction();
