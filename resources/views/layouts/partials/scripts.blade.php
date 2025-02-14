@@ -122,6 +122,7 @@
                 break;
         }
     }
+    @isset($errors)
     @if (session('success'))
         showToast('success', "{{ session('success') }}");
     @elseif (session('error'))
@@ -131,4 +132,5 @@
             showToast('warning', "{{ $warning }}");
         @endforeach
     @endif
+    @endisset
 </script>

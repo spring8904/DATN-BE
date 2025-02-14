@@ -1,9 +1,10 @@
 <?php
 
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\API\Auth\AuthController;
 use App\Http\Controllers\API\Auth\GoogleController;
 use App\Http\Controllers\API\Common\BannerController;
-use App\Http\Controllers\API\Common\CourseController as CommonCourseController;
+use App\Http\Controllers\API\Common\CommentController;
 use App\Http\Controllers\API\Common\PostController;
 use App\Http\Controllers\API\Common\RatingController;
 use App\Http\Controllers\API\Common\SearchController;
@@ -16,6 +17,8 @@ use App\Http\Controllers\API\Instructor\LessonController;
 use App\Http\Controllers\API\Instructor\LivestreamController;
 use App\Http\Controllers\API\Instructor\RegisterController;
 use App\Http\Controllers\API\Instructor\SendRequestController;
+use App\Http\Controllers\API\Verify\VerificationController;
+use App\Http\Controllers\API\Common\CourseController as CommonCourseController;
 use App\Http\Controllers\API\Instructor\SupportBankController;
 use App\Http\Controllers\API\Student\NoteController;
 use Illuminate\Http\Request;
@@ -176,6 +179,10 @@ Route::middleware('auth:sanctum')->group(function () {
     #============================== ROUTE COMMENT =============================
     Route::prefix('comments')
         ->group(function () {
+            Route::post('/', [CommentController::class, 'store']);
+            Route::put('/{id}', [CommentController::class, 'update']);
+            Route::delete('/{id}', [CommentController::class, 'destroy']);
+            Route::get('/{commentableId}/{commentableType}', [CommentController::class, 'index']);
         });
 
     #============================== ROUTE RATING =============================
