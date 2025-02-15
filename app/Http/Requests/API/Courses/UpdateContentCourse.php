@@ -34,11 +34,7 @@ class UpdateContentCourse extends BaseFormRequest
                 'numeric',
                 'min:0',
                 'max:10000000',
-                function ($attribute, $value, $fail) {
-                    if ($this->input('is_free') == true && $value > 0) {
-                        $fail('Khoá học miễn phí thì giá phải bằng 0.');
-                    }
-                }
+                Rule::when($this->input('is_free') == 1, fn($rule) => ['in:0'])
             ],
             'price_sale' => [
                 'nullable',
@@ -73,9 +69,9 @@ class UpdateContentCourse extends BaseFormRequest
                     'advanced',
                 ])
             ],
-            'requirements' => 'nullable|array',
-            'benefits' => 'nullable|array',
-            'qa' => 'nullable|array',
+            'requirements' => 'nullable',
+            'benefits' => 'nullable',
+            'qa' => 'nullable',
             'qa.*.question' => 'required|string|max:255',
             'qa.*.answer' => 'nullable|string|max:255',
             'is_free' => 'nullable|in:0,1',
