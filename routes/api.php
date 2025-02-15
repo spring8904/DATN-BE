@@ -236,3 +236,12 @@ Route::prefix('qa-systems')->group(function () {
 Route::prefix('mux-upload')->group(function () {
     Route::post('video', [\App\Http\Controllers\Api\Instructor\HandleVideoController::class, 'handleUpload']);
 });
+
+#============================== ROUTE VERIFY MAIL =================================
+Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
+    ->middleware(['signed', 'throttle:6,1'])
+    ->name('verification.verify');
+
+Route::post('/email/resend', [VerificationController::class, 'resend'])
+    ->middleware(['auth', 'throttle:6,1'])
+    ->name('verification.resend');
