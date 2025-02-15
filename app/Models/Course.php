@@ -90,5 +90,9 @@ class Course extends Model
         });
     }
 
+    public function wishLists()
+    {
+        return $this->hasMany(WishList::class, 'course_id');
+    }
 
 }
