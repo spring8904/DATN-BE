@@ -19,6 +19,7 @@ use App\Http\Controllers\API\Instructor\RegisterController;
 use App\Http\Controllers\API\Instructor\SendRequestController;
 use App\Http\Controllers\API\Verify\VerificationController;
 use App\Http\Controllers\API\Common\CourseController as CommonCourseController;
+use App\Http\Controllers\API\Instructor\PostController;
 use App\Http\Controllers\API\Instructor\SupportBankController;
 use App\Http\Controllers\API\Student\NoteController;
 use Illuminate\Http\Request;
