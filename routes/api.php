@@ -5,7 +5,6 @@ use App\Http\Controllers\API\Auth\AuthController;
 use App\Http\Controllers\API\Auth\GoogleController;
 use App\Http\Controllers\API\Common\BannerController;
 use App\Http\Controllers\API\Common\CommentController;
-use App\Http\Controllers\API\Common\PostController;
 use App\Http\Controllers\API\Common\RatingController;
 use App\Http\Controllers\API\Common\SearchController;
 use App\Http\Controllers\API\Common\TransactionController;
@@ -140,6 +139,14 @@ Route::middleware('auth:sanctum')->group(function () {
                 });
 
             Route::post('{slug}/submit-course', [SendRequestController::class, 'submitCourse']);
+
+            #============================== ROUTE POST =============================
+            Route::prefix('posts')->as('posts.')->group(function () {
+                Route::get('/', [\App\Http\Controllers\API\Instructor\PostController::class, 'index']);
+                Route::get('/{post}', [\App\Http\Controllers\API\Instructor\PostController::class, 'getPostBySlug']);
+                Route::post('/', [\App\Http\Controllers\API\Instructor\PostController::class, 'store']);
+                Route::put('/{post}', [\App\Http\Controllers\API\Instructor\PostController::class, 'update']);
+            });
         });
 
     #============================== ROUTE NOTE =============================
@@ -197,13 +204,6 @@ Route::middleware('auth:sanctum')->group(function () {
         ->group(function () {
             Route::post('/', [LivestreamController::class, 'createLiveStream']);
         });
-
-    #============================== ROUTE POST =============================
-    Route::prefix('posts')->as('posts.')->group(function () {
-        Route::get('/', [PostController::class, 'index']);
-        Route::post('/', [PostController::class, 'store']);
-
-    });
 });
 
 #============================== ROUTE COURSE =============================
@@ -221,6 +221,13 @@ Route::get('/banners', [BannerController::class, 'index']);
 
 #============================== ROUTE CATEGORY =============================
 Route::get('/categories', [\App\Http\Controllers\API\Common\CategoryController::class, 'index']);
+
+#============================== ROUTE POST =============================
+Route::prefix('blogs')
+    ->group(function () {
+        Route::get('/', [\App\Http\Controllers\API\Common\BlogController::class, 'index']);
+        Route::get('/{blog}', [\App\Http\Controllers\API\Common\BlogController::class, 'getBlogBySlug']);
+    });
 
 #============================== ROUTE SUPPORT BANK =================================
 Route::prefix('support-banks')->group(function () {
