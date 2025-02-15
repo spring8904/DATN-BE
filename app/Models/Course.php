@@ -44,18 +44,12 @@ class Course extends Model
         'accepted',
     ];
 
-    protected $casts = [
-        'requirements' => 'array',
-        'benefits' => 'array',
-        'qa' => 'array',
-    ];
-
     public $attributes = [
         'status' => self::STATUS_DRAFT,
         'total_student' => 0,
-        'requirements' => '[]',
-        'benefits' => '[]',
-        'qa' => '[]',
+        'requirements' => null,
+        'benefits' => null,
+        'qa' => null,
     ];
 
     public function category()
@@ -99,4 +93,10 @@ class Course extends Model
             $query->where('name', 'like', '%' . $searchQuery . '%');
         });
     }
+
+    public function wishLists()
+    {
+        return $this->hasMany(WishList::class, 'course_id');
+    }
+
 }

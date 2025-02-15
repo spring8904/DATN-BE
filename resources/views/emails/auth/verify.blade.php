@@ -4,89 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Xác Minh Email</title>
-    <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 0;
-        }
-        .email-wrapper {
-            width: 100%;
-            background-color: #f9f9f9;
-            padding: 30px 0;
-        }
-        .email-container {
-            width: 600px;
-            background-color: #ffffff;
-            margin: 0 auto;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .email-header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .email-header h1 {
-            color: #333;
-            font-size: 24px;
-        }
-        .email-body {
-            color: #555;
-            font-size: 16px;
-            line-height: 1.5;
-            margin-bottom: 20px;
-        }
-        .email-footer {
-            text-align: center;
-            font-size: 14px;
-            color: #aaa;
-        }
-        .verify-btn {
-            display: inline-block;
-            background-color: #28a745;
-            color: #fff;
-            padding: 12px 24px;
-            font-size: 16px;
-            text-decoration: none;
-            border-radius: 5px;
-            text-align: center;
-            margin: 20px 0;
-        }
-        .verify-btn:hover {
-            background-color: #218838;
-        }
-    </style>
 </head>
-<body>
-    <div class="email-wrapper">
-        <div class="email-container">
-            <!-- Header -->
-            <div class="email-header">
-                <div class="position-relative h-100 d-flex flex-column">
-                    <div class="mb-4" style="margin-left: 150px">
-                            <img src="../assets/images/logo-container.png" alt=""
-                                width="50" height="50">
-                            <h1 class="custom-text-logo text-lg">CourseMely</h1>
-                    </div>
-                </div>
-                <h1>Xin Chào!</h1>
-            </div>
-            
-            <!-- Body -->
-            <div class="email-body">
-                <p>Cảm ơn bạn đã đăng ký tài khoản tại CourseMeLy. Vui lòng xác minh địa chỉ email của bạn bằng cách nhấn vào nút dưới đây.</p>
-                <a href="{{$verificationUrl}}" class="verify-btn">Xác Minh Email</a>
-                <p>Nếu bạn không yêu cầu đăng ký tài khoản, vui lòng bỏ qua email này.</p>
-            </div>
+<body style="margin:0; padding:0; background-color:#f9f9f9; font-family:Arial, sans-serif;">
 
-            <!-- Footer -->
-            <div class="email-footer">
-                <p>&copy; 2025 CourseMeLy. Mọi quyền được bảo lưu.</p>
-            </div>
-        </div>
-    </div>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f9f9f9; padding:20px 0;">
+        <tr>
+            <td align="center">
+                <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff; padding:30px; border-radius:10px; box-shadow:0 4px 8px rgba(0,0,0,0.1); text-align:center;">
+                    
+                    <!-- Header -->
+                    <tr>
+                        <td align="center">
+                            <img src="https://res.cloudinary.com/dtu4rvfye/image/upload/v1739627467/logo-container_ld46la.png" alt="CourseMeLy Logo" width="50" height="50">
+                            <h1 style="color:#333; margin-top:10px;">CourseMeLy</h1>
+                        </td>
+                    </tr>
+
+                    <!-- Body -->
+                    <tr>
+                        <td align="center" style="padding:20px;">
+                            <h2 style="color:#000;">Xin chào {{$user->name ?? 'Bạn'}},</h2>
+                            <p style="color:#555; font-size:16px;">
+                                Bạn chỉ còn một bước nữa để truy cập vào hàng ngàn khóa học trên CourseMeLy.
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td align="left" style="padding: 10px 30px;">
+                            <strong style="font-size:16px;">✨ Lợi ích sau khi xác minh email:</strong>
+                            <ul style="color:#555; font-size:16px; padding-left:20px;">
+                                <li>✅ Truy cập đầy đủ các khóa học miễn phí & trả phí</li>
+                                <li>✅ Nhận chứng chỉ hoàn thành khóa học</li>
+                                <li>✅ Nhận thông tin cập nhật về các chương trình khuyến mãi & sự kiện</li>
+                            </ul>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td align="center" style="padding:20px;">
+                            <p style="font-size:16px; color:#555;">Hãy nhấp vào nút bên dưới để hoàn tất đăng ký:</p>
+                            <a href="{{$verificationUrl ?? '#'}}" style="display:inline-block; background-color:#28a745; color:#fff; padding:12px 24px; font-size:16px; text-decoration:none; border-radius:5px; font-weight:bold;">
+                                🔥 Xác Minh Email Ngay
+                            </a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td align="center" style="padding-top:20px;">
+                            <p style="font-size:14px; color:#777;">
+                                Nếu bạn không tạo tài khoản này, hãy bỏ qua email này.
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td align="center" style="padding-top:20px;">
+                            <p style="font-size:14px; color:#777;">&copy; 2025 CourseMeLy. Mọi quyền được bảo lưu.</p>
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
+
 </body>
 </html>

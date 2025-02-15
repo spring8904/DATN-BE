@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests\Admin\Posts;
 
+use App\Http\Requests\API\Bases\BaseFormRequest;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdatePostRequest extends FormRequest
+class UpdatePostRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,45 +23,38 @@ class UpdatePostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'categories' => ['required', 'exists:categories,id'],
+            'category_id' => ['required', 'exists:categories,id'],
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'content' => ['nullable', 'string'],
-            'thumbnail' => ['nullable', 'image'],
-            'status' => ['required', 'in:draft,pending,published,private'],
-            'view' => ['nullable', 'integer', 'min:0'],
-            'is_hot' => ['nullable', 'boolean'],
+            'thumbnail' => [
+                'nullable',
+
+            ],
+            'status' => ['in:draft,pending,published,private'],
             'published_at' => ['nullable', 'date'],
             'tags' => ['nullable', 'array'],
             'tags.*' => ['nullable'],
         ];
     }
+
     public function messages()
     {
         return [
-            'categories.required' => 'Danh mục là bắt buộc.',
-            'categories.exists' => 'Danh mục không tồn tại.',
-
-            'title.required' => 'Tiêu đề là bắt buộc.',
-            'title.string' => 'Tiêu đề phải là một chuỗi.',
-            'title.max' => 'Tiêu đề không được vượt quá 255 ký tự.',
-
+            'category_id.required' => 'Danh mục không được để trống.',
+            'category_id.exists' => 'Danh mục không tồn tại.',
+            'title.required' => 'Tên tiêu đề không được để trống.',
+            'title.string' => 'Tên tiêu đề phải là một chuỗi.',
+            'title.max' => 'Tên tiêu đề không được quá 255 kí tự.',
             'description.string' => 'Mô tả phải là một chuỗi.',
-
             'content.string' => 'Nội dung phải là một chuỗi.',
-
-            'thumbnail.string' => 'Đường dẫn ảnh phải là một chuỗi.',
-            'thumbnail.max' => 'Đường dẫn ảnh không được vượt quá 255 ký tự.',
-
-            'status.required' => 'Trạng thái là bắt buộc.',
+            'thumbnail.image' => 'Ảnh đại diện phải là một tập tin hình ảnh.',
+            'thumbnail.mimes' => 'Ảnh đại diện phải có định dạng jpeg, png, jpg, gif, webp.',
+            'thumbnail.max' => 'Ảnh đại diện không được vượt quá 2MB.',
             'status.in' => 'Trạng thái không hợp lệ.',
-
-            'view.integer' => 'Lượt xem phải là số nguyên.',
-            'view.min' => 'Lượt xem không được nhỏ hơn 0.',
-
-            'is_hot.boolean' => 'Trường hot phải là giá trị boolean.',
-
-            'published_at.date' => 'Ngày xuất bản phải là định dạng ngày hợp lệ.',
+            'published_at.date' => 'Ngày xuất bản phải là một ngày hợp lệ.',
+            'tags.array' => 'Thẻ phải là một mảng.',
+            'tags.*.nullable' => 'Thẻ không hợp lệ.',
         ];
     }
 }

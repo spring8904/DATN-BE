@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\WithDrawalsRequestController;
 use App\Http\Controllers\Admin\ApprovalCourseController;
 use App\Http\Controllers\Admin\CommissionController;
 use App\Http\Controllers\Admin\AnalyticController;
+use App\Http\Controllers\Admin\ChatController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\RevenueStatisticController;
 use App\Http\Controllers\Admin\TopCourseController;
@@ -343,4 +344,10 @@ Route::prefix('admin')->as('admin.')
                 Route::get('/', [WalletController::class, 'index'])->name('index');
                 Route::get('/{wallet}', [WalletController::class, 'show'])->name('show');
             });
+        #============================== ROUTE CHAT-REALTIME =============================
+        Route::prefix('chats')
+            ->as('chats.')
+            ->group(function () {
+                Route::get('/chat-realtime', [ChatController::class, 'index'])->name('index');
+            });    
     });
