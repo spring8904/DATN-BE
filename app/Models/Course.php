@@ -93,4 +93,10 @@ class Course extends Model
             $query->where('name', 'like', '%' . $searchQuery . '%');
         });
     }
+
+    public function wishLists()
+    {
+        return $this->hasMany(WishList::class, 'course_id');
+    }
+
 }
