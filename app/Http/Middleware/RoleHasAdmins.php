@@ -25,6 +25,14 @@ class RoleHasAdmins
         ) {
             return $next($request);
         }
+        elseif (
+            Auth::check() && (
+                Auth::user()->hasRole('admin') || Auth::user()->hasRole('super_admin')
+            ) &&
+            Auth::user()->email_verified_at == null
+        ) {
+            return redirect('email');
+        }
         return abort(403, 'Bạn không có quyền truy cập vào hệ thống.');
     }
 }

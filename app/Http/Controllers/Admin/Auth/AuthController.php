@@ -29,7 +29,30 @@ class AuthController extends Controller
             return redirect()->back()->with('error', 'Error: ' . $e->getMessage());
         }
     }
+    public function signup(){
+        try {
+            $title = 'Đăng kí tài khoản quản trị';
+            return view('auth.signup', compact([
+                'title'
+            ]));
+        } catch (\Exception $e) {
+            $this->logError($e);
 
+            return redirect()->back()->with('error', 'Error: ' . $e->getMessage());
+        }
+    }
+    public function forgotPassword(){
+        try {
+            $title = 'Quên mật khẩu';
+            return view('emails.auth.forgot-password', compact([
+                'title'
+            ]));
+        } catch (\Exception $e) {
+            $this->logError($e);
+
+            return redirect()->back()->with('error', 'Error: ' . $e->getMessage());
+        }
+    }
     public function handleLogin(Request $request)
     {
         try {

@@ -67,7 +67,8 @@ class CourseController extends Controller
                 ->select([
                     'id', 'user_id', 'category_id', 'name', 'slug', 'thumbnail',
                     'intro', 'price', 'price_sale', 'description',
-                    'level', 'total_student', 'requirements', 'benefits', 'qa'
+                    'level', 'total_student', 'requirements', 'benefits', 'qa',
+                    'visibility', 'is_free'
                 ])
                 ->with([
                     'user:id,name,email,avatar,created_at',
@@ -76,6 +77,14 @@ class CourseController extends Controller
                     'chapters.lessons'
                 ])
                 ->first();
+
+            $course->requirements = json_decode($course->requirements, true);
+            $course->benefits = json_decode($course->benefits, true);
+            $course->qa = json_decode($course->qa, true);
+
+            if ($course->user_id !== Auth::id()) {
+                return $this->respondForbidden('Không có quyền thực hiện thao tác');
+            }
 
             if (!$course) {
                 return $this->respondNotFound('Không tìm thấy khoá học');
@@ -98,6 +107,10 @@ class CourseController extends Controller
             $data = $request->validated();
 
             $data['user_id'] = Auth::id();
+
+            if ($data['user_id'] !== Auth::id()) {
+                return $this->respondForbidden('Không có quyền thực hiện thao tác');
+            }
 
             do {
                 $data['code'] = (string)Str::uuid();
@@ -135,6 +148,10 @@ class CourseController extends Controller
                 return $this->respondNotFound('Không tìm thấy khoá học');
             }
 
+            if ($course->user_id !== auth()->id()) {
+                return $this->respondForbidden('Không có quyền thực hiện thao tác');
+            }
+
             $thumbnailOld = $course->thumbnail ?? null;
             $introOld = $course->intro ?? null;
 
@@ -158,14 +175,16 @@ class CourseController extends Controller
                     'video')
                 : $introOld;
 
-            $data['requirements'] = !empty($request->input('requirements'))
-                ? json_encode($request->input('requirements'))
+            $data['requirements'] = array_key_exists('requirements', $data)
+                ? (is_string($data['requirements']) ? json_decode($data['requirements'], true) : $data['requirements'])
                 : $course->requirements;
-            $data['benefits'] = !empty($request->input('benefits'))
-                ? json_encode($request->input('benefits'))
+
+            $data['benefits'] = array_key_exists('benefits', $data)
+                ? (is_string($data['benefits']) ? json_decode($data['benefits'], true) : $data['benefits'])
                 : $course->benefits;
-            $data['qa'] = !empty($request->input('qa'))
-                ? json_encode($request->input('qa'))
+
+            $data['qa'] = array_key_exists('qa', $data)
+                ? (is_string($data['qa']) ? json_decode($data['qa'], true) : $data['qa'])
                 : $course->qa;
 
             $course->update($data);

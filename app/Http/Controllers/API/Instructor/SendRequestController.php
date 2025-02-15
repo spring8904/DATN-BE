@@ -24,6 +24,10 @@ class SendRequestController extends Controller
                 ->where('slug', $slug)
                 ->first();
 
+            if ($course->user_id !== auth()->id()) {
+                return $this->respondNotFound('Bạn không có quyền truy cập');
+            }
+
             if (!$course) {
                 return $this->respondNotFound('Khóa học không tồn tại');
             }
@@ -41,7 +45,7 @@ class SendRequestController extends Controller
                 $approvable->status = 'pending';
                 $approvable->request_date = now();
                 $approvable->save();
-            }else {
+            } else {
                 return $this->respondOk('Yêu cầu kiểm duyệt khoá học đã được gửi');
             }
 

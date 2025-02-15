@@ -4,7 +4,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\API\Auth\AuthController;
 use App\Http\Controllers\API\Auth\GoogleController;
 use App\Http\Controllers\API\Common\BannerController;
-use App\Http\Controllers\API\Common\PostController;
+use App\Http\Controllers\API\Common\CommentController;
 use App\Http\Controllers\API\Common\RatingController;
 use App\Http\Controllers\API\Common\SearchController;
 use App\Http\Controllers\API\Common\TransactionController;
@@ -16,9 +16,11 @@ use App\Http\Controllers\API\Instructor\DocumentController;
 use App\Http\Controllers\API\Instructor\LessonController;
 use App\Http\Controllers\API\Instructor\LivestreamController;
 use App\Http\Controllers\API\Instructor\RegisterController;
-use App\Http\Controllers\API\Instructor\SupportBankController;
 use App\Http\Controllers\API\Instructor\SendRequestController;
-use App\Http\Controllers\API\Note\NoteController;
+use App\Http\Controllers\API\Verify\VerificationController;
+use App\Http\Controllers\API\Common\CourseController as CommonCourseController;
+use App\Http\Controllers\API\Instructor\SupportBankController;
+use App\Http\Controllers\API\Student\NoteController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -143,15 +145,22 @@ Route::middleware('auth:sanctum')->group(function () {
                 });
 
             Route::post('{slug}/submit-course', [SendRequestController::class, 'submitCourse']);
+
+            #============================== ROUTE POST =============================
+            Route::prefix('posts')->as('posts.')->group(function () {
+                Route::get('/', [\App\Http\Controllers\API\Instructor\PostController::class, 'index']);
+                Route::get('/{post}', [\App\Http\Controllers\API\Instructor\PostController::class, 'getPostBySlug']);
+                Route::post('/', [\App\Http\Controllers\API\Instructor\PostController::class, 'store']);
+                Route::put('/{post}', [\App\Http\Controllers\API\Instructor\PostController::class, 'update']);
+            });
         });
 
     #============================== ROUTE NOTE =============================
     Route::prefix('notes')->as('notes.')->group(function () {
-        Route::get('/', [NoteController::class, 'index']);
-        Route::get('/{NoteID}', [NoteController::class, 'show']);
+        Route::get('/{courseId}', [NoteController::class, 'index']);
         Route::post('/', [NoteController::class, 'store']);
-        Route::put('/{NoteID}', [NoteController::class, 'update']);
-        Route::delete('/{NoteID}', [NoteController::class, 'destroy']);
+        Route::put('/{note}', [NoteController::class, 'update']);
+        Route::delete('/{note}', [NoteController::class, 'destroy']);
     });
 
     #============================== ROUTE DOCUMENT =============================
@@ -180,7 +189,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     #============================== ROUTE COMMENT =============================
     Route::prefix('comments')
-        ->group(function () {});
+        ->group(function () {
+        });
 
     #============================== ROUTE RATING =============================
     Route::prefix('ratings')
@@ -199,18 +209,27 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('posts')->as('posts.')->group(function () {
         Route::get('/', [PostController::class, 'index']);
         Route::post('/', [PostController::class, 'store']);
+
     });
 });
 
 #============================== ROUTE COURSE =============================
 Route::prefix('courses')
-    ->group(function () {});
+    ->group(function () {
+    });
 
 #============================== ROUTE BANNER =============================
 Route::get('/banners', [BannerController::class, 'index']);
 
 #============================== ROUTE CATEGORY =============================
 Route::get('/categories', [\App\Http\Controllers\API\Common\CategoryController::class, 'index']);
+
+#============================== ROUTE POST =============================
+Route::prefix('blogs')
+    ->group(function () {
+        Route::get('/', [\App\Http\Controllers\API\Common\BlogController::class, 'index']);
+        Route::get('/{blog}', [\App\Http\Controllers\API\Common\BlogController::class, 'getBlogBySlug']);
+    });
 
 #============================== ROUTE SUPPORT BANK =================================
 Route::prefix('support-banks')->group(function () {

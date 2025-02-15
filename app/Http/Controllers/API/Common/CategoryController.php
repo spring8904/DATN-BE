@@ -19,8 +19,10 @@ class CategoryController extends Controller
     {
         try {
             $categories = Category::query()
-                ->with('parent')
-                ->where('status', 1)
+                ->where([
+                    'parent_id' => null,
+                    'status' => 1
+                ])
                 ->get();
 
             if ($categories->isEmpty()) {

@@ -30,6 +30,7 @@ class Course extends Model
         'intro',
         'price',
         'price_sale',
+        'is_free',
         'description',
         'duration',
         'level',
@@ -38,21 +39,17 @@ class Course extends Model
         'benefits',
         'qa',
         'status',
+        'visibility',
+        'modification_request',
         'accepted',
-    ];
-
-    protected $casts = [
-        'requirements' => 'array',
-        'benefits' => 'array',
-        'qa' => 'array',
     ];
 
     public $attributes = [
         'status' => self::STATUS_DRAFT,
         'total_student' => 0,
-        'requirements' => '[]',
-        'benefits' => '[]',
-        'qa' => '[]',
+        'requirements' => null,
+        'benefits' => null,
+        'qa' => null,
     ];
 
     public function category()
@@ -69,7 +66,14 @@ class Course extends Model
     {
         return $this->hasMany(Chapter::class)->orderBy('order');
     }
-    public function invoices(){
+
+    public function lessons()
+    {
+        return $this->hasManyThrough(Lesson::class, Chapter::class);
+    }
+
+    public function invoices()
+    {
         return $this->hasMany(Invoice::class);
     }
 
@@ -80,7 +84,7 @@ class Course extends Model
 
     public function coupons()
     {
-        return $this->belongsToMany(Coupon::class );
+        return $this->belongsToMany(Coupon::class);
     }
 
     public function scopeSearch($query, $searchQuery)
@@ -90,9 +94,5 @@ class Course extends Model
         });
     }
 
-    public function wishLists()
-    {
-        return $this->hasMany(WishList::class, 'course_id');
-    }
 
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Invoice;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -85,7 +86,18 @@ class RevenueStatisticController extends Controller
             ->orderByDesc('total_revenue')
             ->limit(10)
             ->paginate(5);
-
+            $lastYear = Carbon::now()->subYear()->year;
+        $monthlyRevenue = DB::table('invoices')
+            ->select(
+                DB::raw('MONTH(invoices.created_at) as month'),
+                DB::raw('SUM(invoices.final_total) as total_revenue')
+            )
+            ->whereYear('invoices.created_at', '=', $lastYear)
+            ->where('status','completed')
+            ->groupBy(DB::raw('MONTH(invoices.created_at)'))
+            ->orderBy('month')
+            ->get();
+            
         if ($request->ajax()) {
             return response()->json([
                 'top_courses_table' => view('revenue-statistics.includes.top_courses', compact('topCourses'))->render(),
@@ -105,6 +117,7 @@ class RevenueStatisticController extends Controller
             'topInstructors',
             'topCourses',
             'topUsers',
+            'monthlyRevenue'
         ]));
     }
 }
