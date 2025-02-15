@@ -47,7 +47,9 @@ Route::prefix('auth')->as('auth.')->group(function () {
     Route::get('google', [GoogleController::class, 'redirectToGoogle']);
     Route::get('google/callback', [GoogleController::class, 'handleGoogleCallback']);
 });
+
 Route::get('/transactions/vnpay-callback', [TransactionController::class, 'vnpayCallback']);
+
 #============================== ROUTE SEARCH =============================
 Route::prefix('search')
     ->group(function () {
@@ -77,16 +79,17 @@ Route::middleware('auth:sanctum')->group(function () {
 
         #============================== ROUTE NOTIFICATION =============================
         Route::prefix('notifications')
-            ->group(function () {});
+            ->group(function () {
+            });
 
         #============================== ROUTE WISH LIST =============================
         Route::prefix('wish-lists')->as('wish-lists.')->group(function () {
             Route::get('/', [WishListController::class, 'index']);
             Route::post('/', [WishListController::class, 'store']);
             Route::delete('/{wishListID}', [WishListController::class, 'destroy']);
-            
+
         });
-        
+
     });
 
     #============================== ROUTE TRANSACTION =============================
@@ -99,7 +102,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     #============================== ROUTE LEARNING =============================
     Route::prefix('learning-path')
-        ->group(function () {});
+        ->group(function () {
+        });
 
     #============================== ROUTE INSTRUCTOR MANAGE =============================
     Route::prefix('instructor')
@@ -107,7 +111,8 @@ Route::middleware('auth:sanctum')->group(function () {
         ->as('instructor.')
         ->group(function () {
             Route::prefix('statistics')
-                ->group(function () {});
+                ->group(function () {
+                });
 
             Route::prefix('manage')
                 ->group(function () {
@@ -174,7 +179,8 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     #============================== ROUTE COUPON =============================
-    Route::prefix('coupons')->as('coupons.')->group(function () {});
+    Route::prefix('coupons')->as('coupons.')->group(function () {
+    });
 
     #============================== ROUTE TRANSACTION =============================
     Route::prefix('transactions')->as('transactions.')->group(function () {
@@ -186,11 +192,16 @@ Route::middleware('auth:sanctum')->group(function () {
 
     #============================== ROUTE CHAT =============================
     Route::prefix('chats')
-        ->group(function () {});
+        ->group(function () {
+        });
 
     #============================== ROUTE COMMENT =============================
     Route::prefix('comments')
         ->group(function () {
+            Route::post('/', [CommentController::class, 'store']);
+            Route::put('/{id}', [CommentController::class, 'update']);
+            Route::delete('/{id}', [CommentController::class, 'destroy']);
+            Route::get('/{commentableId}/{commentableType}', [CommentController::class, 'index']);
         });
 
     #============================== ROUTE RATING =============================
@@ -217,6 +228,11 @@ Route::middleware('auth:sanctum')->group(function () {
 #============================== ROUTE COURSE =============================
 Route::prefix('courses')
     ->group(function () {
+        Route::get('/discounted', [CommonCourseController::class, 'getDiscountedCourses']);
+        Route::get('/free', [CommonCourseController::class, 'getFreeCourses']);
+        Route::get('/popular', [CommonCourseController::class, 'getPopularCourses']);
+        Route::get('/top-categories-with-most-courses', [CommonCourseController::class, 'getTopCategoriesWithMostCourses']);
+        Route::get('/{slug}', [CommonCourseController::class, 'getCourseDetail']);
     });
 
 #============================== ROUTE BANNER =============================
