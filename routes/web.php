@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\AnalyticController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\RevenueStatisticController;
 use App\Http\Controllers\Admin\TopCourseController;
+use App\Http\Controllers\Admin\WalletController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 
@@ -50,7 +51,7 @@ Route::get('email', function () {
 
     return view('emails.auth.verify');
 });
-Route::get('forgot-password', function () { 
+Route::get('forgot-password', function () {
     return view('emails.auth.forgot-password');
 });
 Route::prefix('admin')->as('admin.')
@@ -250,9 +251,8 @@ Route::prefix('admin')->as('admin.')
         #============================== ROUTE COURSES =============================
         Route::prefix('courses')->as('courses.')->group(function () {
             Route::get('/', [CourseController::class, 'index'])->name('index');
-            
+
             Route::get('/{id}', [CourseController::class, 'show'])->name('show');
-            
         });
 
         #============================== ROUTE APPROVAL =============================
@@ -334,5 +334,13 @@ Route::prefix('admin')->as('admin.')
                 Route::get('/edit/{qaSystem}', [\App\Http\Controllers\Admin\QaSystemController::class, 'edit'])->name('edit');
                 Route::put('/{qaSystem}', [\App\Http\Controllers\Admin\QaSystemController::class, 'update'])->name('update');
                 Route::delete('/{qaSystem}', [\App\Http\Controllers\Admin\QaSystemController::class, 'destroy'])->name('destroy');
+            });
+
+        #============================== ROUTE QA SYSTEM =============================
+        Route::prefix('wallets')
+            ->as('wallets.')
+            ->group(function () {
+                Route::get('/', [WalletController::class, 'index'])->name('index');
+                Route::get('/{wallet}', [WalletController::class, 'show'])->name('show');
             });
     });

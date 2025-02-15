@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\Users\StoreUserRequest;
 use App\Http\Requests\Admin\Users\UpdateUserRequest;
 use App\Imports\UsersImport;
 use App\Models\User;
+use App\Notifications\RegisterInstructorNotification;
 use App\Traits\FilterTrait;
 use App\Traits\LoggableTrait;
 use App\Traits\UploadToCloudinaryTrait;
@@ -139,6 +140,8 @@ class UserController extends Controller
 
             $user->assignRole($request->role);
 
+            $user->notify(new RegisterInstructorNotification($user));
+
             DB::commit();
 
             $routeUserByRole = $request->role === 'admin' ? 'admins'
@@ -151,7 +154,6 @@ class UserController extends Controller
             if (isset($urlAvatar) && filter_var($urlAvatar, FILTER_VALIDATE_URL)) {
                 $this->deleteImage($urlAvatar, self::FOLDER);
             }
-
 
             $this->logError($e);
 
@@ -461,7 +463,7 @@ class UserController extends Controller
 
             if ($user->trashed()) {
                 $user->forceDelete();
-                
+
                 if (
                     isset($avatar) && !empty($avatar)
                     && filter_var($avatar, FILTER_VALIDATE_URL)
@@ -518,7 +520,7 @@ class UserController extends Controller
             'profile_phone_user' => null,
         ];
 
-        $query = $this->filterTrait($filters, $request,$query);
+        $query = $this->filterTrait($filters, $request, $query);
 
         return $query;
     }

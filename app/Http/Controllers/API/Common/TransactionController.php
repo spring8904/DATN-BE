@@ -375,6 +375,8 @@ class TransactionController extends Controller
             'user_id' => $userID,
             'total_amount' => $finalAmount,
             'retained_amount' => $finalAmount * self::adminRate,
+            'type' => 'commission_received',
+            'description' => 'Tiền hoa hồng nhận được từ việc bán khóa học: '. $course->name,
         ]);
 
         User::role('admin')->each(function ($manager) use ($course, $userID) {
