@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\API\Search\SearchRequest;
 use App\Traits\ApiResponseTrait;
 use App\Traits\LoggableTrait;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use function PHPUnit\Framework\isEmpty;
 
 class SearchController extends Controller
