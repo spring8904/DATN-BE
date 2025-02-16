@@ -346,8 +346,8 @@
                             updateUnreadCount(unread_notifications_count);
 
                             if (response.data && response.data.notifications.length > 0) {
-                                
-                                if (response.data.notifications.length >= countNotification ) {
+
+                                if (response.data.notifications.length >= countNotification) {
                                     $('#messages-notifications-container').append(`
                                         <div class="col-12 col-md-12">
                                             <div class="d-flex mt-4 justify-content-center">
@@ -466,6 +466,10 @@
                     type: 'PUT',
                     data: data,
                     success: function(response) {
+                        const {
+                            unread_notifications_count
+                        } = response.data
+                        ;
                         console.log('Thông báo đã được đánh dấu là đã đọc:', response);
 
                         if (isChecked) {
@@ -476,6 +480,8 @@
                             $(`#notification-check-${notificationId}`).prop('checked', false);
                             $(`#notification-${notificationId}`).css('background-color', '');
                         }
+                        
+                        updateUnreadCount(unread_notifications_count);
                     },
                     error: function(error) {
                         console.error('Có lỗi xảy ra khi cập nhật trạng thái đọc:', error);
