@@ -1,8 +1,8 @@
 function filterData(attribute) {
     var filterData = {};
     $(attribute).each(function () {
-        var key = $(this).attr('name');
-        var value = $(this).val();
+        var key = $(this).attr("name");
+        var value = $(this).data("value") || $(this).val();
         filterData[key] = value;
     });
     

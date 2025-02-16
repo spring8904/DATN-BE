@@ -19,9 +19,9 @@ class RoleSeeder extends Seeder
                 'description' => 'Người dùng của hệ thống (học viên)',
             ],
             [
-                'name' => 'admin',
+                'name' => 'employee',
                 'guard_name' => 'web',
-                'description' => 'Quản trị viên hệ thống',
+                'description' => 'Nhân viên hệ thống',
             ],
             [
                 'name' => 'instructor',

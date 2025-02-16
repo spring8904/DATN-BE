@@ -21,9 +21,9 @@ return new class extends Migration {
             $table->foreignIdFor(Course::class)->constrained()->onDelete('cascade');
             $table->foreignIdFor(User::class)->constrained()->onDelete('cascade');
             $table->decimal('total_amount', 10, 2);
-            $table->decimal('retained_amount', 10, 2);
-            $table->timestamp('release_date')->nullable();
-            $table->enum('status', ['pending', 'released'])->default('pending');
+            $table->decimal('retained_amount', 10, 2)->nullable();
+            $table->enum('type', ['commission_received', 'withdrawal'])->default('commission_received');
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }

@@ -1,14 +1,14 @@
 @vite('resources/js/app.js')
 
 @push('page-css')
-    <link href="{{ asset('assets/css/custom.css') }}" rel="stylesheet" type="text/css"/>
+    <link href="{{ asset('assets/css/custom.css') }}" rel="stylesheet" type="text/css" />
 @endpush
 
 <div class="layout-width">
     <div class="navbar-header">
         <div class="d-flex">
             <button type="button" class="btn btn-sm px-3 fs-16 header-item vertical-menu-btn topnav-hamburger"
-                    id="topnav-hamburger-icon">
+                id="topnav-hamburger-icon">
                 <span class="hamburger-icon">
                     <span></span>
                     <span></span>
@@ -20,10 +20,10 @@
             <form class="app-search d-none d-md-block">
                 <div class="position-relative">
                     <input type="text" class="form-control" placeholder="Search..." autocomplete="off"
-                           id="search-options" value="">
+                        id="search-options" value="">
                     <span class="mdi mdi-magnify search-widget-icon"></span>
                     <span class="mdi mdi-close-circle search-widget-icon search-widget-icon-close d-none"
-                          id="search-close-options"></span>
+                        id="search-close-options"></span>
                 </div>
                 <div class="dropdown-menu dropdown-menu-lg" id="search-dropdown">
                     <div data-simplebar style="max-height: 320px;">
@@ -71,8 +71,7 @@
                             <a href="javascript:void(0);" class="dropdown-item notify-item py-2">
                                 <div class="d-flex">
                                     <img src="{{ asset('assets/images/users/avatar-2.jpg') }}"
-                                         class="me-3 rounded-circle avatar-xs"
-                                         alt="user-pic">
+                                        class="me-3 rounded-circle avatar-xs" alt="user-pic">
                                     <div class="flex-grow-1">
                                         <h6 class="m-0">Angela Bernier</h6>
                                         <span class="fs-11 mb-0 text-muted">Manager</span>
@@ -83,8 +82,7 @@
                             <a href="javascript:void(0);" class="dropdown-item notify-item py-2">
                                 <div class="d-flex">
                                     <img src="{{ asset('assets/images/users/avatar-3.jpg') }}"
-                                         class="me-3 rounded-circle avatar-xs"
-                                         alt="user-pic">
+                                        class="me-3 rounded-circle avatar-xs" alt="user-pic">
                                     <div class="flex-grow-1">
                                         <h6 class="m-0">David Grasso</h6>
                                         <span class="fs-11 mb-0 text-muted">Web Designer</span>
@@ -95,8 +93,7 @@
                             <a href="javascript:void(0);" class="dropdown-item notify-item py-2">
                                 <div class="d-flex">
                                     <img src="{{ asset('assets/images/users/avatar-5.jpg') }}"
-                                         class="me-3 rounded-circle avatar-xs"
-                                         alt="user-pic">
+                                        class="me-3 rounded-circle avatar-xs" alt="user-pic">
                                     <div class="flex-grow-1">
                                         <h6 class="m-0">Mike Bunch</h6>
                                         <span class="fs-11 mb-0 text-muted">React Developer</span>
@@ -118,17 +115,17 @@
 
             <div class="dropdown d-md-none topbar-head-dropdown header-item">
                 <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle"
-                        id="page-header-search-dropdown" data-bs-toggle="dropdown" aria-haspopup="true"
-                        aria-expanded="false">
+                    id="page-header-search-dropdown" data-bs-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
                     <i class="bx bx-search fs-22"></i>
                 </button>
                 <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
-                     aria-labelledby="page-header-search-dropdown">
+                    aria-labelledby="page-header-search-dropdown">
                     <form class="p-3">
                         <div class="form-group m-0">
                             <div class="input-group">
                                 <input type="text" class="form-control" placeholder="Search ..."
-                                       aria-label="Recipient's username">
+                                    aria-label="Recipient's username">
                                 <button class="btn btn-primary" type="submit"><i class="mdi mdi-magnify"></i></button>
                             </div>
                         </div>
@@ -138,29 +135,28 @@
 
             <div class="ms-1 header-item d-none d-sm-flex">
                 <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle"
-                        data-toggle="fullscreen">
+                    data-toggle="fullscreen">
                     <i class='bx bx-fullscreen fs-22'></i>
                 </button>
             </div>
 
             <div class="ms-1 header-item d-none d-sm-flex">
                 <button type="button"
-                        class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle light-dark-mode">
+                    class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle light-dark-mode">
                     <i class='bx bx-moon fs-22'></i>
                 </button>
             </div>
 
             <div class="dropdown topbar-head-dropdown ms-1 header-item" id="notificationDropdown">
                 <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle"
-                        id="page-header-notifications-dropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside"
-                        aria-haspopup="true" aria-expanded="false">
+                    id="page-header-notifications-dropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside"
+                    aria-haspopup="true" aria-expanded="false">
                     <i class='bx bx-bell fs-22'></i>
-                    <span
-                        class="position-absolute topbar-badge fs-10 translate-middle badge rounded-pill bg-danger"
+                    <span class="position-absolute topbar-badge fs-10 translate-middle badge rounded-pill bg-danger"
                         id="unread-notification-count"></span>
                 </button>
                 <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
-                     aria-labelledby="page-header-notifications-dropdown">
+                    aria-labelledby="page-header-notifications-dropdown">
 
                     <div class="dropdown-head bg-primary bg-pattern rounded-top">
                         <div class="p-3">
@@ -170,7 +166,7 @@
                                 </div>
                                 <div class="col-auto dropdown-tabs">
                                     <span id="unread-notification-count"
-                                          class="badge bg-light-subtle text-body fs-13"></span>
+                                        class="badge bg-light-subtle text-body fs-13"></span>
                                 </div>
                             </div>
                         </div>
@@ -180,19 +176,19 @@
                                 id="notificationItemsTab" role="tablist">
                                 <li class="nav-item waves-effect waves-light">
                                     <a class="nav-link active" data-bs-toggle="tab" href="#all-noti-tab"
-                                       role="tab" aria-selected="true">
+                                        role="tab" aria-selected="true">
                                         Thông báo
                                     </a>
                                 </li>
                                 <li class="nav-item waves-effect waves-light">
                                     <a class="nav-link" data-bs-toggle="tab" href="#messages-tab" role="tab"
-                                       aria-selected="false">
+                                        aria-selected="false">
                                         Kiểm duyệt
                                     </a>
                                 </li>
                                 <li class="nav-item waves-effect waves-light">
                                     <a class="nav-link" data-bs-toggle="tab" href="#alerts-tab" role="tab"
-                                       aria-selected="false">
+                                        aria-selected="false">
                                         Tin nhắn
                                     </a>
                                 </li>
@@ -215,13 +211,13 @@
 
 
                         <div class="tab-pane fade py-2 ps-2" id="messages-tab" role="tabpanel"
-                             aria-labelledby="messages-tab">
+                            aria-labelledby="messages-tab">
                             <div data-simplebar style="max-height: 300px;" class="pe-2"
-                                 id="messages-notifications-container">
+                                id="messages-notifications-container">
 
                                 <div class="my-3 text-center view-all">
                                     <button type="button" class="btn btn-soft-success waves-effect waves-light">
-                                       Xem tất cả <i class="ri-arrow-right-line align-middle"></i>
+                                        Xem tất cả <i class="ri-arrow-right-line align-middle"></i>
                                     </button>
                                 </div>
                             </div>
@@ -237,7 +233,7 @@
                                 <div id="select-content" class="text-body fw-semibold px-1">0</div>
                                 Result
                                 <button type="button" class="btn btn-link link-danger p-0 ms-3"
-                                        data-bs-toggle="modal" data-bs-target="#removeNotificationModal">Remove
+                                    data-bs-toggle="modal" data-bs-target="#removeNotificationModal">Remove
                                 </button>
                             </div>
                         </div>
@@ -247,10 +243,10 @@
 
             <div class="dropdown ms-sm-3 header-item topbar-user">
                 <button type="button" class="btn" id="page-header-user-dropdown" data-bs-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">
+                    aria-haspopup="true" aria-expanded="false">
                     <span class="d-flex align-items-center">
                         <img class="rounded-circle header-profile-user" src="{{ Auth::user()->avatar ?? '' }}"
-                             alt="Header Avatar" crossorigin="anonymous">
+                            alt="Header Avatar" crossorigin="anonymous">
                         <span class="text-start ms-xl-2">
                             <span
                                 class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ Auth::user()->name ?? '' }}</span>
@@ -262,8 +258,8 @@
                 </button>
                 <div class="dropdown-menu dropdown-menu-end">
                     <!-- item-->
-                    <h6 class="dropdown-header">Welcome Anna!</h6>
-                    <a class="dropdown-item" href="{{route('admin.roles.show',Auth::user()->id ?? '')}}"><i
+                    <h6 class="dropdown-header">Welcome {{ Auth::user()->name ?? '' }}!</h6>
+                    <a class="dropdown-item" href="{{ route('admin.roles.show', Auth::user()->id ?? '') }}"><i
                             class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i> <span
                             class="align-middle">Profile</span></a>
                     <a class="dropdown-item" href="apps-chat.html"><i
@@ -276,9 +272,10 @@
                             class="mdi mdi-lifebuoy text-muted fs-16 align-middle me-1"></i> <span
                             class="align-middle">Help</span></a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="pages-profile.html"><i
+                    <a class="dropdown-item" href="{{ route('admin.wallets.index') }}"><i
                             class="mdi mdi-wallet text-muted fs-16 align-middle me-1"></i> <span
-                            class="align-middle">Balance : <b>$5971.67</b></span></a>
+                            class="align-middle">Balance :
+                            <b>{{ number_format(Auth::user()->wallet->balance ?? 0) }} VND</b></span></a>
                     <a class="dropdown-item" href="pages-profile-settings.html"><span
                             class="badge bg-success-subtle text-success mt-1 float-end">New</span><i
                             class="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i> <span
@@ -288,7 +285,7 @@
                             class="align-middle">Lock screen</span></a>
                     <a class="dropdown-item" href="{{ route('admin.logout') }}"><i
                             class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle"
-                                                                                                 data-key="t-logout">Logout</span></a>
+                            data-key="t-logout">Logout</span></a>
                 </div>
             </div>
         </div>
@@ -299,10 +296,11 @@
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/locale/vi.js"></script>
     <script>
+        let countNotification = 10;
         moment.locale('vi');
 
-        $(document).ready(function () {
-            Echo.connector.pusher.connection.bind('connected', function () {
+        $(document).ready(function() {
+            Echo.connector.pusher.connection.bind('connected', function() {
                 console.log('Pusher đã kết nối thành công');
             });
 
@@ -322,24 +320,55 @@
                 return;
             }
 
-            function fetchNotifications() {
+            function fetchNotifications(data) {
+
                 $.ajax({
                     url: '/admin/notifications',
                     type: 'GET',
-                    success: function (response) {
+                    ...(data && Object.keys(data).length > 0 ? {
+                        data: data
+                    } : {}),
+                    success: function(response) {
                         if (response?.data) {
-                            const {notifications, unread_notifications_count} = response.data;
+                            const {
+                                notifications,
+                                unread_notifications_count
+                            } = response.data;
+
+                            console.log(response);
 
                             $('#messages-notifications-container').empty();
 
-                            $.each(notifications, function (_, notification) {
+                            $.each(notifications, function(_, notification) {
                                 renderNotification(notification, false);
                             });
 
                             updateUnreadCount(unread_notifications_count);
+
+                            if (response.data && response.data.notifications.length > 0) {
+
+                                if (response.data.notifications.length >= countNotification) {
+                                    $('#messages-notifications-container').append(`
+                                        <div class="col-12 col-md-12">
+                                            <div class="d-flex mt-4 justify-content-center">
+                                                <span class="text-primary text-decoration-underline" id="load-more">Xem thêm</span>
+                                            </div>
+                                        </div>
+                                    `);
+                                }
+                            } else {
+                                $('#messages-notifications-container').append(`
+                                    <div class="col-12 col-md-12">
+                                        <div class="d-flex mt-4 justify-content-center">
+                                            <span class="text-info">Không có thông báo</span>
+                                        </div>
+                                    </div>
+                                `);
+                            }
+
                         }
                     },
-                    error: function (error) {
+                    error: function(error) {
                         console.error('Có lỗi xảy ra khi tải thông báo:', error);
                     }
                 });
@@ -356,24 +385,31 @@
 
             function renderNotification(notification, isRealTime) {
                 if (!notification?.data) return;
-                const {type, message, url} = notification.data;
+                const {
+                    type,
+                    message,
+                    url
+                } = notification.data;
                 let title = 'Thông báo mới';
                 let thumbnail = '';
 
                 if (type === 'user_buy_course') {
                     title = 'Mua khoá học';
-                    thumbnail = notification.data.user_avatar || 'https://res.cloudinary.com/dvrexlsgx/image/upload/v1732148083/Avatar-trang-den_apceuv_pgbce6.png';
+                    thumbnail = notification.data.user_avatar ||
+                        'https://res.cloudinary.com/dvrexlsgx/image/upload/v1732148083/Avatar-trang-den_apceuv_pgbce6.png';
                 }
                 if (type === 'register_course') {
                     title = notification.data.course_name || 'Khóa học';
                     thumbnail = notification.data.course_thumbnail;
                 } else if (type === 'register_instructor') {
                     title = notification.data.user_name || 'Giảng viên';
-                    thumbnail = 'https://res.cloudinary.com/dvrexlsgx/image/upload/v1732148083/Avatar-trang-den_apceuv_pgbce6.png';
+                    thumbnail =
+                        'https://res.cloudinary.com/dvrexlsgx/image/upload/v1732148083/Avatar-trang-den_apceuv_pgbce6.png';
                 }
 
                 const isChecked = notification.read_at ? 'checked' : '';
-                const timeFormatted = notification?.created_at ? moment(notification?.created_at).fromNow() : 'Không xác định';
+                const timeFormatted = notification?.created_at ? moment(notification?.created_at).fromNow() :
+                    'Không xác định';
 
                 const notificationItem = `
         <div id="notification-${notification.id}" class="text-reset notification-item d-block dropdown-item">
@@ -406,8 +442,8 @@
                     } else {
                         $('#messages-notifications-container').append(notificationItem);
                     }
-                }else if (type === 'user_buy_course') {
-                    if(isRealTime) {
+                } else if (type === 'user_buy_course') {
+                    if (isRealTime) {
                         $('#notification-data').prepend(notificationItem);
                     } else {
                         $('#notification-data').append(notificationItem);
@@ -415,34 +451,49 @@
                 }
             }
 
-            $(document).on('change', '.notification-check input', function () {
+            $(document).on('change', '.notification-check input', function() {
                 const notificationId = $(this).data('notification-id');
                 if (!notificationId) return;
 
                 const isChecked = $(this).prop('checked');
                 const url = `/admin/notifications/${notificationId}`;
-                const data = {read_at: isChecked};
+                const data = {
+                    read_at: isChecked
+                };
 
                 $.ajax({
                     url: url,
                     type: 'PUT',
                     data: data,
-                    success: function (response) {
+                    success: function(response) {
+                        const {
+                            unread_notifications_count
+                        } = response.data
+                        ;
                         console.log('Thông báo đã được đánh dấu là đã đọc:', response);
 
                         if (isChecked) {
                             $(`#notification-check-${notificationId}`).prop('checked', true);
-                            $(`#notification-${notificationId}`).css('background-color', '#f5f5f5');
+                            $(`#notification-${notificationId}`).css('background-color',
+                                '#f5f5f5');
                         } else {
                             $(`#notification-check-${notificationId}`).prop('checked', false);
                             $(`#notification-${notificationId}`).css('background-color', '');
                         }
-
-                        fetchNotifications();
+                        
+                        updateUnreadCount(unread_notifications_count);
                     },
-                    error: function (error) {
+                    error: function(error) {
                         console.error('Có lỗi xảy ra khi cập nhật trạng thái đọc:', error);
                     }
+                });
+            });
+
+            $(document).on('click', '#load-more', function() {
+                countNotification += 5;
+
+                fetchNotifications({
+                    count: countNotification
                 });
             });
 

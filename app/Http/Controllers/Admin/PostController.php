@@ -230,7 +230,7 @@ class PostController extends Controller
             $data['published_at'] = $request->input('published_at') ?? now();
 
             do {
-                $data['slug'] = Str::slug($request->title) . '?' . Str::uuid();
+                $data['slug'] = Str::slug($request->title) . '-' . substr(Str::uuid(), 0, 10);
             } while (Post::query()->where('slug', $data['slug'])->exists());
 
             $post->update($data);

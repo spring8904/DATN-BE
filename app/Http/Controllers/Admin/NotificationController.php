@@ -19,7 +19,9 @@ class NotificationController extends Controller
 
             $count = $request->query('count', 10);
 
-            $notifications = $user->notifications()->latest()->take($count)->get();
+            $notifications = $user->notifications()->latest()->take($count)
+                ->orderByRaw('read_at IS NULL DESC, created_at DESC')->get();
+
             $unreadNotificationsCount = $user->unreadNotifications()->count();
 
             return $this->respondOk('Danh sách thông báo', [
@@ -63,8 +65,11 @@ class NotificationController extends Controller
                     $notification->update(['read_at' => null]);
                 }
 
+                $unreadNotificationsCount = $user->unreadNotifications()->count();
+                
                 return $this->respondOk(
                     $notification->read_at ? 'Đánh dấu đã đọc thành công' : 'Đánh dấu chưa đọc thành công',
+                    ['unread_notifications_count' => $unreadNotificationsCount]
                 );
             }
 

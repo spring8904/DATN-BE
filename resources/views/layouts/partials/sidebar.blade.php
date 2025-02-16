@@ -70,8 +70,8 @@
                     </li>
                     @can('super_admin.view')
                         <li class="nav-item">
-                            <a href="{{ route('admin.admins.index') }}" class="nav-link">
-                                Danh sách quản trị viên </a>
+                            <a href="{{ route('admin.employees.index') }}" class="nav-link">
+                                Danh sách nhân viên </a>
                         </li>
                     @endcan
                     @can('user.create')
