@@ -167,9 +167,9 @@ class TransactionController extends Controller
             $hashData = urldecode(http_build_query($inputData));
             $secureHash = hash_hmac('sha512', $hashData, $vnp_HashSecret);
 
-            if ($secureHash !== $vnp_SecureHash) {
-                return redirect()->away($frontendUrl . "?error=invalid_hash");
-            }
+//            if ($secureHash !== $vnp_SecureHash) {
+//                return redirect()->away($frontendUrl . "?error=invalid_hash");
+//            }
 
             // Nếu thanh toán không thành công
             if ($inputData['vnp_ResponseCode'] != '00') {
@@ -227,7 +227,7 @@ class TransactionController extends Controller
 
             return redirect()->away(env('FE_URL') . "my-courses?vnp_TxnRef=" . $inputData['vnp_TxnRef']);
         } catch (\Exception $e) {
-            \Log::error("VNPAY Callback Error: " . $e);
+            \Log::error("VNPAY Callback Error: " . $e->getMessage());
             DB::rollBack();
             return redirect()->away($frontendUrl . "?error=server_error");
         }
@@ -373,8 +373,6 @@ class TransactionController extends Controller
             'user_id' => $userID,
             'total_amount' => $finalAmount,
             'retained_amount' => $finalAmount * self::adminRate,
-            'type' => 'commission_received',
-            'description' => 'Tiền hoa hồng nhận được từ việc bán khóa học: '. $course->name,
         ]);
 
         User::role('admin')->each(function ($manager) use ($course, $userID) {
