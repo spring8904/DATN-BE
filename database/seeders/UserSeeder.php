@@ -24,7 +24,7 @@ class UserSeeder extends Seeder
                 'avatar' => 'https://res.cloudinary.com/dvrexlsgx/image/upload/v1732148083/Avatar-trang-den_apceuv_pgbce6.png',
                 'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
             ]);
-            $role = fake()->randomElement(['member', 'instructor', 'admin']);
+            $role = fake()->randomElement(['member', 'instructor', 'employee']);
             $user->assignRole($role);
             $user->profile()->create([
                 'phone' => fake()->unique()->phoneNumber(),
@@ -38,7 +38,7 @@ class UserSeeder extends Seeder
             }
         }
 
-        $permissions = ['member', 'instructor', 'admin', 'super_admin'];
+        $permissions = ['member', 'instructor', 'employee', 'super_admin'];
         foreach ($permissions as $permission) {
             $email = $permission == 'super_admin' ? 'superadmin' : $permission;
             $user = User::create([

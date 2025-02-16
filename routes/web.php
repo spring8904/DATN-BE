@@ -67,7 +67,7 @@ Route::prefix('admin')->as('admin.')
         Route::prefix('users')->group(function () {
             Route::get('user-clients', [UserController::class, 'index'])->name('clients.index');
             Route::get('user-instructors', [UserController::class, 'index'])->name('instructors.index');
-            Route::get('user-admins', [UserController::class, 'index'])->name('admins.index');
+            Route::get('user-employees', [UserController::class, 'index'])->name('employees.index');
             Route::get('user-deleted', [UserController::class, 'index'])->name('users.deleted.index');
 
             Route::as('users.')->group(function () {

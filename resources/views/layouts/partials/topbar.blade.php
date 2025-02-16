@@ -325,7 +325,9 @@
                 $.ajax({
                     url: '/admin/notifications',
                     type: 'GET',
-                    ...(data && Object.keys(data).length > 0 ? { data: data } : {}),
+                    ...(data && Object.keys(data).length > 0 ? {
+                        data: data
+                    } : {}),
                     success: function(response) {
                         if (response?.data) {
                             const {
@@ -343,12 +345,27 @@
 
                             updateUnreadCount(unread_notifications_count);
 
-                            $('#messages-notifications-container').append(`                                        <div class="col-12 col-md-12">
+                            if (response.data && response.data.notifications.length > 0) {
+                                
+                                if (response.data.notifications.length >= countNotification ) {
+                                    $('#messages-notifications-container').append(`
+                                        <div class="col-12 col-md-12">
                                             <div class="d-flex mt-4 justify-content-center">
-                                                <span class="text-primary text-decoration-underline" id="load-more">Xem
-                                                    thêm</span>
+                                                <span class="text-primary text-decoration-underline" id="load-more">Xem thêm</span>
                                             </div>
-                                        </div>`);
+                                        </div>
+                                    `);
+                                }
+                            } else {
+                                $('#messages-notifications-container').append(`
+                                    <div class="col-12 col-md-12">
+                                        <div class="d-flex mt-4 justify-content-center">
+                                            <span class="text-info">Không có thông báo</span>
+                                        </div>
+                                    </div>
+                                `);
+                            }
+
                         }
                     },
                     error: function(error) {

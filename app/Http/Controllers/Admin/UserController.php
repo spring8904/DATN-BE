@@ -142,7 +142,7 @@ class UserController extends Controller
 
             DB::commit();
 
-            $routeUserByRole = $request->role === 'admin' ? 'admins'
+            $routeUserByRole = $request->role === 'employee' ? 'employees'
                 : ($request->role === 'instructor' ? 'instructors' : 'clients');
 
             return redirect()->route('admin.' . $routeUserByRole . '.index')->with('success', 'Thêm mới thành công');
@@ -498,7 +498,7 @@ class UserController extends Controller
         $roles = [
             'clients' => ['name' => 'member', 'actor' => 'khách hàng', 'role_name' => 'clients'],
             'instructors' => ['name' => 'instructor', 'actor' => 'người hướng dẫn', 'role_name' => 'instructors'],
-            'admins' => ['name' => 'admin', 'actor' => 'quản trị viên', 'role_name' => 'admins'],
+            'employees' => ['name' => 'employee', 'actor' => 'nhân viên', 'role_name' => 'employees'],
             'deleted' => ['name' => 'deleted', 'actor' => 'thành viên đã xóa', 'role_name' => 'users.deleted']
         ];
 
