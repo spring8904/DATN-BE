@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests\API\WishList;
 
+use App\Http\Requests\API\Bases\BaseFormRequest;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreWishListRequest extends FormRequest
+class StoreWishListRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +23,7 @@ class StoreWishListRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
-            'courses_id' => 'required|integer|exists:courses,id'
+            'course_id' => 'required|integer|exists:courses,id'
         ];
     }
 
@@ -31,7 +31,6 @@ class StoreWishListRequest extends FormRequest
     public function messages()
     {
         return [
-            //
             'course_id.required' => 'Khóa học là bắt buộc',
             'course_id.exists' => 'Khóa học khôn tồn tại',
         ];

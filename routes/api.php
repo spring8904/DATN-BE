@@ -48,7 +48,7 @@ Route::prefix('auth')->as('auth.')->group(function () {
     Route::get('google/callback', [GoogleController::class, 'handleGoogleCallback']);
 });
 
-Route::get('/transactions/vnpay-callback', [TransactionController::class, 'vnpayCallback']);
+Route::get('/vnpay-callback', [TransactionController::class, 'vnpayCallback']);
 
 #============================== ROUTE SEARCH =============================
 Route::prefix('search')
@@ -57,6 +57,7 @@ Route::prefix('search')
     });
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/vnpay-payment', [TransactionController::class, 'createVNPayPayment']);
 
     Route::prefix('auth')->as('auth.')->group(function () {
         Route::post('logout', [AuthController::class, 'logout']);
@@ -81,15 +82,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::prefix('notifications')
             ->group(function () {
             });
+    });
 
-        #============================== ROUTE WISH LIST =============================
-        Route::prefix('wish-lists')->as('wish-lists.')->group(function () {
-            Route::get('/', [WishListController::class, 'index']);
-            Route::post('/', [WishListController::class, 'store']);
-            Route::delete('/{wishListID}', [WishListController::class, 'destroy']);
-
-        });
-
+    #============================== ROUTE WISH LIST =============================
+    Route::prefix('wish-lists')->as('wish-lists.')->group(function () {
+        Route::get('/', [WishListController::class, 'index']);
+        Route::post('/', [WishListController::class, 'store']);
+        Route::delete('/{wishListID}', [WishListController::class, 'destroy']);
     });
 
     #============================== ROUTE TRANSACTION =============================
@@ -262,3 +261,12 @@ Route::prefix('qa-systems')->group(function () {
 Route::prefix('mux-upload')->group(function () {
     Route::post('video', [\App\Http\Controllers\Api\Instructor\HandleVideoController::class, 'handleUpload']);
 });
+
+#============================== ROUTE VERIFY MAIL =================================
+Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
+    ->middleware(['signed', 'throttle:6,1'])
+    ->name('verification.verify');
+
+Route::post('/email/resend', [VerificationController::class, 'resend'])
+    ->middleware(['auth', 'throttle:6,1'])
+    ->name('verification.resend');
