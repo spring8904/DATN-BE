@@ -5,7 +5,9 @@ namespace App\Http\Controllers\API\Instructor;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\Courses\StoreCourseRequest;
 use App\Http\Requests\API\Courses\UpdateContentCourse;
+use App\Http\Requests\API\Courses\UpdateCourseObjectives;
 use App\Models\Course;
+use App\Services\CourseValidatorService;
 use App\Traits\ApiResponseTrait;
 use App\Traits\LoggableTrait;
 use App\Traits\UploadToCloudinaryTrait;
@@ -64,12 +66,6 @@ class CourseController extends Controller
         try {
             $course = Course::query()
                 ->where('slug', $slug)
-                ->select([
-                    'id', 'user_id', 'category_id', 'name', 'slug', 'thumbnail',
-                    'intro', 'price', 'price_sale', 'description',
-                    'level', 'total_student', 'requirements', 'benefits', 'qa',
-                    'visibility', 'is_free'
-                ])
                 ->with([
                     'user:id,name,email,avatar,created_at',
                     'category:id,name,slug,parent_id',
@@ -78,17 +74,17 @@ class CourseController extends Controller
                 ])
                 ->first();
 
-            $course->requirements = json_decode($course->requirements, true);
-            $course->benefits = json_decode($course->benefits, true);
-            $course->qa = json_decode($course->qa, true);
+            if (!$course) {
+                return $this->respondNotFound('Không tìm thấy khoá học');
+            }
 
             if ($course->user_id !== Auth::id()) {
                 return $this->respondForbidden('Không có quyền thực hiện thao tác');
             }
 
-            if (!$course) {
-                return $this->respondNotFound('Không tìm thấy khoá học');
-            }
+            $course->benefits = is_string($course->benefits) ? json_decode($course->benefits, true) : $course->benefits;
+            $course->requirements = is_string($course->requirements) ? json_decode($course->requirements, true) : $course->requirements;
+            $course->qa = is_string($course->qa) ? json_decode($course->qa, true) : $course->qa;
 
             return $this->respondOk('Thông tin khoá học: ' . $course->name,
                 $course
@@ -121,7 +117,16 @@ class CourseController extends Controller
                 ? Str::slug($data['name']) . '-' . $data['code']
                 : $data['code'];
 
-            $course = Course::query()->create($data);
+            $course = Course::query()->create([
+                'user_id' => $data['user_id'],
+                'category_id' => $data['category_id'],
+                'code' => $data['code'],
+                'name' => $data['name'],
+                'slug' => $data['slug'],
+                'benefits' => json_encode([]),
+                'requirements' => json_encode([]),
+                'qa' => json_encode([]),
+            ]);
 
             return $this->respondCreated('Tạo khoá học thành công',
                 $course->load('category')
@@ -133,7 +138,7 @@ class CourseController extends Controller
         }
     }
 
-    public function updateContentCourse(UpdateContentCourse $request, string $slug)
+    public function updateCourseOverView(UpdateContentCourse $request, string $slug)
     {
         try {
             DB::beginTransaction();
@@ -175,18 +180,6 @@ class CourseController extends Controller
                     'video')
                 : $introOld;
 
-            $data['requirements'] = array_key_exists('requirements', $data)
-                ? (is_string($data['requirements']) ? json_decode($data['requirements'], true) : $data['requirements'])
-                : $course->requirements;
-
-            $data['benefits'] = array_key_exists('benefits', $data)
-                ? (is_string($data['benefits']) ? json_decode($data['benefits'], true) : $data['benefits'])
-                : $course->benefits;
-
-            $data['qa'] = array_key_exists('qa', $data)
-                ? (is_string($data['qa']) ? json_decode($data['qa'], true) : $data['qa'])
-                : $course->qa;
-
             $course->update($data);
 
             DB::commit();
@@ -204,6 +197,47 @@ class CourseController extends Controller
             if ($e instanceof ValidationException) {
                 return $this->respondFailedValidation('Dữ liệu không hợp lệ', $e->errors());
             }
+
+            return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại');
+        }
+    }
+
+    public function updateCourseObjectives(UpdateCourseObjectives $request, string $slug)
+    {
+        try {
+            $data = $request->validated();
+
+            $course = Course::query()
+                ->where('slug', $slug)
+                ->first();
+
+            if (!$course) {
+                return $this->respondNotFound('Không tìm thấy khoá học');
+            }
+
+            if ($course->user_id !== Auth::id()) {
+                return $this->respondForbidden('Không có quyền thực hiện thao tác');
+            }
+
+            $data['requirements'] = array_key_exists('requirements', $data)
+                ? (is_string($data['requirements']) ? json_decode($data['requirements'], true) : $data['requirements'])
+                : $course->requirements;
+
+            $data['benefits'] = array_key_exists('benefits', $data)
+                ? (is_string($data['benefits']) ? json_decode($data['benefits'], true) : $data['benefits'])
+                : $course->benefits;
+
+            $data['qa'] = array_key_exists('qa', $data)
+                ? (is_string($data['qa']) ? json_decode($data['qa'], true) : $data['qa'])
+                : $course->qa;
+
+            $course->update($data);
+
+            return $this->respondOk('Cập nhật mục tiêu khoá học thành công',
+                $course->load('category')
+            );
+        } catch (\Exception $e) {
+            $this->logError($e, $request->all());
 
             return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại');
         }
@@ -296,5 +330,100 @@ class CourseController extends Controller
 
             return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại');
         }
+    }
+
+    public function validateCourse(string $slug)
+    {
+        try {
+            $course = Course::query()->where('slug', $slug)->first();
+
+            if (!$course) {
+                return $this->respondNotFound('Không tìm thấy khoá học');
+            }
+
+            $errors = CourseValidatorService::validateCourse($course);
+
+            if (!empty($errors)) {
+                return $this->respondOk('Tiêu chí để có thể duyệt khoá học', $errors);
+            }
+
+            return $this->respondOk('Khoá học đã đạt yêu cầu kiểm duyệt');
+        } catch (\Exception $e) {
+            $this->logError($e);
+
+            return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại');
+        }
+    }
+
+    public function checkCourseComplete(string $slug)
+    {
+        try {
+            $course = Course::query()->where('slug', $slug)->first();
+
+            if (!$course) {
+                return $this->respondNotFound('Không tìm thấy khoá học');
+            }
+
+            if ($course->user_id !== Auth::id()) {
+                return $this->respondForbidden('Không có quyền thực hiện thao tác');
+            }
+
+            $courseObjectives = $this->checkCourseObjectives($course);
+            $courseOverView = $this->checkCourseOverView($course);
+            $courseCurriculum = $this->checkCurriculum($course);
+
+            return $this->respondOk('Kiểm tra hoàn thiện khoá học', [
+                'course_overview' => $courseOverView,
+                'course_objectives' => $courseObjectives,
+                'course_curriculum' => $courseCurriculum,
+                'course_status' => $course->status,
+            ]);
+        } catch (\Exception $e) {
+            $this->logError($e);
+
+            return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại');
+        }
+    }
+
+    private function checkCourseOverView(Course $course)
+    {
+        $data = [
+            'name' => $course->name,
+            'description' => $course->description,
+            'thumbnail' => $course->thumbnail,
+            'level' => $course->level,
+            'category_id' => $course->category_id,
+            'price' => $course->price,
+        ];
+
+        foreach ($data as $key => $value) {
+            if (empty($value)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private function checkCourseObjectives(Course $course)
+    {
+        $benefits = is_string($course->benefits) ? json_decode($course->benefits, true) : $course->benefits;
+        $requirements = is_string($course->requirements) ? json_decode($course->requirements, true) : $course->requirements;
+        $qa = is_string($course->qa) ? json_decode($course->qa, true) : $course->qa;
+
+        $benefits = is_array($benefits) ? $benefits : [];
+        $requirements = is_array($requirements) ? $requirements : [];
+        $qa = is_array($qa) ? $qa : [];
+
+        return count($benefits) >= 4 && count($benefits) <= 10
+            && count($requirements) >= 4 && count($requirements) <= 10
+            && count($qa) >= 1 && count($qa) <= 5;
+    }
+
+    private function checkCurriculum(Course $course)
+    {
+        $chapters = $course->chapters()->get();
+
+        return $chapters->count() >= 5;
     }
 }
