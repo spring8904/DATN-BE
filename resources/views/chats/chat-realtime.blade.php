@@ -4,6 +4,39 @@
     <link href="{{ asset('assets/libs/jsvectormap/css/jsvectormap.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- glightbox css -->
     <link rel="stylesheet" href="{{ asset('assets/libs/glightbox/css/glightbox.min.css') }}">
+    <style>
+        #chat-box {
+            width: 300px;
+            height: 400px;
+            border: 1px solid #ccc;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        #message-input {
+            width: 80%;
+            padding: 5px;
+        }
+
+        #send-btn {
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .emoji-picker {
+            max-height: 150px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            display: none;
+            padding: 5px;
+        }
+
+        .emoji {
+            font-size: 20px;
+            cursor: pointer;
+            padding: 3px;
+        }
+    </style>
 @endpush
 @php
     $title = 'Chat';
@@ -140,7 +173,8 @@
                                                                     aria-controls="userProfileCanvasExample">Lisa
                                                                     Parker</a></h5>
                                                             <p class="text-truncate text-muted fs-14 mb-0 userStatus">
-                                                                <small>Online</small></p>
+                                                                <small>Online</small>
+                                                            </p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -248,7 +282,8 @@
                                                                     aria-controls="userProfileCanvasExample">Lisa
                                                                     Parker</a></h5>
                                                             <p class="text-truncate text-muted fs-14 mb-0 userStatus">
-                                                                <small>24 Members</small></p>
+                                                                <small>24 Members</small>
+                                                            </p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -410,77 +445,5 @@
     <!-- fgEmojiPicker js -->
     <script src="{{ asset('assets/libs/fg-emoji-picker/fgEmojiPicker.js') }}"></script>
 
-    <script>
-        $(document).ready(function() {
-            var defaultAvatar = "assets/images/users/user-dummy-img.jpg";
-            var multiUserAvatar = "assets/images/users/multi-user.jpg";
-
-            // Hiển thị cửa sổ chat khi nhấp vào người dùng
-            $(".chat-user-list li a").on("click", function() {
-                $(".user-chat").addClass("user-chat-show");
-                $(".chat-user-list li.active").removeClass("active");
-                $(this).parent().addClass("active");
-            });
-
-            // Đóng cửa sổ chat
-            $(".user-chat-remove").on("click", function() {
-                $(".user-chat").removeClass("user-chat-show");
-            });
-
-            // Toggle yêu thích
-            $(".favourite-btn").on("click", function() {
-                $(this).toggleClass("active");
-            });
-
-            // Tìm kiếm tin nhắn
-            $("#searchMessage").on("keyup", function() {
-                var value = $(this).val().toUpperCase();
-                $("#users-conversation li").each(function() {
-                    var text = $(this).find("p").text().toUpperCase();
-                    $(this).toggle(text.indexOf(value) > -1);
-                });
-            });
-
-            // Gửi tin nhắn
-            $("#chatinput-form").on("submit", function(e) {
-                e.preventDefault();
-                var message = $("#chat-input").val().trim();
-                if (message.length === 0) return;
-
-                var chatList = $(".chat-conversation-list");
-                var messageHtml = `<li class='chat-list right'>
-            <div class='conversation-list'>
-                <div class='user-chat-content'>
-                    <div class='ctext-wrap'>
-                        <div class='ctext-wrap-content'>
-                            <p class='mb-0 ctext-content'>${message}</p>
-                        </div>
-                    </div>
-                    <div class='conversation-name'>
-                        <small class='text-muted time'>${getCurrentTime()}</small>
-                        <span class='text-success check-message-icon'><i class='bx bx-check'></i></span>
-                    </div>
-                </div>
-            </div>
-        </li>`;
-
-                chatList.append(messageHtml);
-                $("#chat-input").val("");
-                scrollToBottom(chatList);
-            });
-
-            function getCurrentTime() {
-                var now = new Date();
-                var hours = now.getHours();
-                var minutes = now.getMinutes().toString().padStart(2, "0");
-                var ampm = hours >= 12 ? "PM" : "AM";
-                hours = hours % 12 || 12;
-                return `${hours}:${minutes} ${ampm}`;
-            }
-
-            function scrollToBottom(element) {
-                element.scrollTop(element.prop("scrollHeight"));
-            }
-        });
-    </script>
+    <script src="{{ asset('assets/js/pages/chat.init.js') }}"></script>
 @endpush
