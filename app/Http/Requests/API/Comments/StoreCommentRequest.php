@@ -22,16 +22,15 @@ class StoreCommentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => 'required',
             'content' => 'required|max:2000',
             'commentable_id' => 'required',
-            'commentable_type' => 'required'
+            'commentable_type' => 'required',
+            'parent_id' => 'nullable|string',
         ];
     }
     public function messages()
     {
         return [
-            'user_id.required' => 'Người dùng là bắt buộc',
             'content.required' => 'Nội dung là bắt buộc',
             'content.max' => 'Nội dung không được quá 2000 kí tự',
             'commentable_id.required' => 'commentable_id là bắt buộc',
