@@ -7,8 +7,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -28,9 +27,9 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->enum('level', [Course::LEVEL_BEGINNER, Course::LEVEL_INTERMEDIATE, Course::LEVEL_ADVANCED])->default(Course::LEVEL_BEGINNER);
             $table->integer('total_student')->default(0);
-            $table->json('requirements')->nullable();
-            $table->json('benefits')->nullable();
-            $table->json('qa')->nullable();
+            $table->json('requirements')->default(json_encode([]));
+            $table->json('benefits')->default(json_encode([]));
+            $table->json('qa')->default(json_encode([]));
             $table->boolean('is_popular')->default(false);
             $table->boolean('is_sequential')->default(false);
             $table->enum('status', [Course::STATUS_DRAFT, Course::STATUS_PENDING, Course::STATUS_APPROVED, Course::STATUS_REJECTED])->default(Course::STATUS_DRAFT);
