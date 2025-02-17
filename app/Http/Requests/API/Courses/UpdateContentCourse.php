@@ -26,7 +26,15 @@ class UpdateContentCourse extends BaseFormRequest
         return [
             'category_id' => 'nullable|integer|exists:categories,id',
             'name' => 'nullable|string|max:255',
-            'description' => 'nullable|string|max:500',
+            'description' => [
+                'nullable',
+                'string',
+                function ($attribute, $value, $fail) {
+                    if ($value && str_word_count($value) < 150) {
+                        $fail('Mô tả phải có ít nhất 150 từ.');
+                    }
+                },
+            ],
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'intro' => 'nullable|file|mimes:mp4,mov,avi,wmv,flv,3gp|max:204800',
             'price' => [
@@ -69,11 +77,6 @@ class UpdateContentCourse extends BaseFormRequest
                     'advanced',
                 ])
             ],
-            'requirements' => 'nullable',
-            'benefits' => 'nullable',
-            'qa' => 'nullable',
-            'qa.*.question' => 'required|string|max:255',
-            'qa.*.answer' => 'nullable|string|max:255',
             'is_free' => 'nullable|in:0,1',
             'visibility' => [
                 'nullable',
@@ -94,7 +97,6 @@ class UpdateContentCourse extends BaseFormRequest
             'name.string' => 'Tên khoá học phải là chuỗi ký tự.',
             'name.max' => 'Tên khoá học không được vượt quá 500 ký tự.',
             'description.string' => 'Mô tả khoá học phải là chuỗi ký tự.',
-            'description.max' => 'Mô tả khoá học không được vượt quá 255 ký tự.',
             'thumbnail.image' => 'Thumbnail phải là ảnh.',
             'thumbnail.mimes' => 'Thumbnail phải có định dạng jpeg, png, jpg, gif, webp.',
             'thumbnail.max' => 'Thumbnail không được vượt quá 2MB.',
@@ -105,9 +107,6 @@ class UpdateContentCourse extends BaseFormRequest
             'price_sale.function' => 'Số tiền giảm không được nhỏ hơn 30% so với giá gốc.',
             'level.string' => 'Level phải là chuỗi ký tự.',
             'level.in' => 'Level không hợp lệ.',
-            'requirements.array' => 'Yêu cầu phải là mảng.',
-            'benefits.array' => 'Lợi ích phải là mảng.',
-            'qa.array' => 'Câu hỏi và trả lời phải là mảng.',
             'visibility.string' => 'Quyền riêng tư phải là chuỗi ký tự.',
             'visibility.in' => 'Quyền riêng tư không hợp lệ.',
             'is_free.in' => 'Trường này phải là 0 hoặc 1.',

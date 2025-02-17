@@ -47,7 +47,7 @@ class LessonController extends Controller
     {
         try {
             $data = $request->validated();
-            $data['slug'] = !empty($data['title']) ? Str::slug($data['title']) : Str::uuid();
+            $data['slug'] = !empty($data['title']) ? Str::slug($data['title']) . '-' : Str::uuid();
 
             $chapterID = Chapter::query()
                 ->with('lessons')

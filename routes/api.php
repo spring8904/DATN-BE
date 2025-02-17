@@ -121,9 +121,12 @@ Route::middleware('auth:sanctum')->group(function () {
                             Route::get('/', [CourseController::class, 'index']);
                             Route::get('/{course}', [CourseController::class, 'getCourseOverView']);
                             Route::post('/', [CourseController::class, 'store']);
-                            Route::put('/{course}/contentCourse', [CourseController::class, 'updateContentCourse']);
+                            Route::put('/{course}/courseOverView', [CourseController::class, 'updateCourseOverView']);
+                            Route::put('/{course}/courseObjective', [CourseController::class, 'updateCourseObjectives']);
                             Route::delete('/{course}', [CourseController::class, 'deleteCourse']);
                             Route::get('/{slug}/chapters', [CourseController::class, 'getChapters']);
+                            Route::get('/{slug}/validate-course', [CourseController::class, 'validateCourse']);
+                            Route::get('/{slug}/check-course-complete', [CourseController::class, 'checkCourseComplete']);
                         });
 
                     #============================== ROUTE CHAPTER =============================
