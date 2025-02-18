@@ -4,49 +4,92 @@ namespace App\Http\Controllers\API\Common;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\Comments\StoreCommentRequest;
+use App\Http\Requests\API\Comments\UpdateCommentRequest;
+use App\Repositories\CommentRepository;
 use App\Models\Comment;
+use App\Traits\ApiResponseTrait;
 use App\Traits\LoggableTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
-    use LoggableTrait;
-    public function store(StoreCommentRequest $request)
+    use LoggableTrait, ApiResponseTrait;
+    protected $commentRepository;
+
+    public function __construct(CommentRepository $commentRepository)
     {
-        $request->validated();
-
-        Comment::create($request->all());
-
-        return response()->json(['message' => 'Comment created successfully']);
+        $this->commentRepository = $commentRepository;
     }
 
-    public function update(StoreCommentRequest $request, $id)
+    public function store(StoreCommentRequest $request)
     {
-        $comment = Comment::findOrFail($id);
-        $this->authorize('update', $comment);
+        try {
+            if (!Auth::check()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Bạn cần đăng nhập để bình luận khóa học hoặc bài viết.'
+                ], 401);
+            }
+            $comment = $this->commentRepository->create($request->validated());
 
-        $comment->update($request->only('content'));
+            return response()->json([
+                'message' => 'Bình luận đã được tạo thành công',
+                'comment' => $comment
+            ], 201);
+        } catch (\Exception $e) {
+            $this->logError($e);
+            return $this->respondServerError();
+        }
+    }
 
-        return response()->json(['message' => 'Comment updated successfully']);
+    public function update(UpdateCommentRequest $request, $id)
+    {
+        try {
+            $comment = Comment::findOrFail($id);
+            $this->authorize('update', $comment);
+
+            $updatedComment = $this->commentRepository->update($comment, $request->validated());
+
+            return response()->json([
+                'message' => 'Bình luận đã được cập nhật thành công',
+                'comment' => $updatedComment
+            ]);
+        } catch (\Exception $e) {
+            $this->logError($e);
+            return $this->respondServerError();
+        }
     }
 
     public function destroy($id)
     {
-        $comment = Comment::findOrFail($id);
-        $this->authorize('delete', $comment);
+        try {
+            $comment = Comment::findOrFail($id);
+            $this->authorize('delete', $comment);
 
-        $comment->delete();
+            $this->commentRepository->delete($comment);
 
-        return response()->json(['message' => 'Comment deleted successfully']);
+            return response()->json(['message' => 'Bình luận đã được xóa thành công']);
+        } catch (\Exception $e) {
+            $this->logError($e);
+            return $this->respondServerError();
+        }
     }
 
     public function index($commentableId, $commentableType)
     {
-        $comments = Comment::where('commentable_id', $commentableId)
-            ->where('commentable_type', $commentableType)
-            ->with('replies')
-            ->get();
+        try {
+            $comments = $this->commentRepository->getByCommentable($commentableId, $commentableType);
+            if ($comments ->isEmpty()) {
+                $this->respondNotFound('Không có dữ liệu');
+            }
+            return response()->json([
+                'comments' => $comments
+            ],200);
+        } catch (\Exception $e) {
+            $this->logError($e);
 
-        return response()->json($comments);
+            return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại');
+        }
     }
 }

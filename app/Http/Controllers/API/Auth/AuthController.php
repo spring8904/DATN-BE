@@ -9,6 +9,7 @@ use App\Http\Requests\API\Auth\SigninInstructorRequest;
 use App\Http\Requests\API\Auth\SinginUserRequest;
 use App\Http\Requests\API\Auth\SingupUserRequest;
 use App\Http\Requests\API\Auth\VerifyEmailRequest;
+use App\Mail\Auth\ForgotPasswordEmail;
 use App\Mail\Auth\VerifyEmail;
 use App\Models\Education;
 use App\Models\Profile;
@@ -30,26 +31,30 @@ class AuthController extends Controller
 {
     use LoggableTrait, ApiResponseTrait;
 
-    public function forgotPassword(ForgotPassWordRequest $forgotPassWordRequest)
+    public function forgotPassword(ForgotPassWordRequest $request)
     {
-        try {
-            //code...
-            $status = Password::sendResetLink($forgotPassWordRequest->only('email'));
+         // Kiểm tra email hợp lệ
+    $request->validated();
 
-            if ($status === Password::RESET_LINK_SENT) {
-                return response()->json([
-                    'success' => true,
-                    'message' => __($status)
-                ], 200);
-            }
+    $user = User::where('email', $request->email)->first();
 
-        } catch (\Exception $e) {
-            $this->logError($e);
+    if (!$user) {
+        return response()->json(['message' => 'Email không tồn tại'], 404);
+    }
 
-            return response()->json([
-                'message' => 'Không thể gửi liên kết đặt lại mật khẩu. Vui lòng thử lại.',
-            ], 400);
-        }
+    // Tạo token reset ngẫu nhiên
+    $token = Str::random(60);
+    
+    // Tạo URL đặt lại mật khẩu (không dùng bảng password_resets)
+    $verificationUrl = url('/reset-password?token=' . $token . '&email=' . urlencode($user->email));
+
+    // Gửi email
+    Mail::to($user->email)->send(new ForgotPasswordEmail($verificationUrl));
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Email đặt lại mật khẩu đã được gửi!',
+    ]);
     }
 
     public function resetPassword(ResetPasswordRequest $resetPasswordRequest)
