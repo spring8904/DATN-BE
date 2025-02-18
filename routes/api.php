@@ -61,6 +61,8 @@ Route::prefix('search')
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/vnpay-payment', [TransactionController::class, 'createVNPayPayment']);
 
+    Route::get('download-quiz-form', [\App\Http\Controllers\API\Instructor\QuizController::class, 'downloadQuizForm']);
+
     Route::prefix('auth')->as('auth.')->group(function () {
         Route::post('logout', [AuthController::class, 'logout']);
     });
@@ -151,6 +153,11 @@ Route::middleware('auth:sanctum')->group(function () {
                             Route::put('/{chapterId}/{lesson}', [LessonController::class, 'updateTitleLesson']);
                             Route::put('/{chapterId}/{lesson}/content', [LessonController::class, 'updateContentLesson']);
                             Route::delete('/{chapterId}/{lesson}', [LessonController::class, 'deleteLesson']);
+
+                            Route::post('/{chapterId}/store-lesson-video', [\App\Http\Controllers\API\Instructor\LessonVideoController::class, 'storeLessonVideo']);
+                            Route::post('/{chapterId}/store-lesson-quiz', [\App\Http\Controllers\API\Instructor\QuizController::class, 'storeLessonQuiz']);
+                            Route::post('/{chapterId}/store-lesson-document', [DocumentController::class, 'storeLessonDocument']);
+                            Route::put('/{documentID}', [DocumentController::class, 'update']);
                         });
                 });
 
@@ -171,15 +178,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [NoteController::class, 'store']);
         Route::put('/{note}', [NoteController::class, 'update']);
         Route::delete('/{note}', [NoteController::class, 'destroy']);
-    });
-
-    #============================== ROUTE DOCUMENT =============================
-    Route::prefix('documents')->as('documents.')->group(function () {
-        Route::get('/{lessonID}/document-lesson', [DocumentController::class, 'index']);
-        Route::get('/{documentID}', [DocumentController::class, 'show']);
-        Route::post('/', [DocumentController::class, 'store']);
-        Route::put('/{documentID}', [DocumentController::class, 'update']);
-        Route::delete('/{documentID}', [DocumentController::class, 'destroy']);
     });
 
     #============================== ROUTE COUPON =============================
