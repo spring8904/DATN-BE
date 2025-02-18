@@ -231,7 +231,7 @@
                                 </div>
                             </div>
 
-                            <div class="position-relative" id="channel-chat">
+                            {{-- <div class="position-relative" id="channel-chat">
                                 <div class="p-3 user-chat-topbar">
                                     <div class="row align-items-center">
                                         <div class="col-sm-4 col-8">
@@ -333,7 +333,7 @@
                                     id="copyClipBoardChannel" role="alert">
                                     Message copied
                                 </div>
-                            </div>
+                            </div> --}}
 
                             <!-- end chat-conversation -->
 
@@ -345,10 +345,15 @@
                                             <div class="chat-input-links me-2">
                                                 <div class="links-list-item">
                                                     <button type="button"
-                                                        class="btn btn-link text-decoration-none emoji-btn"
-                                                        id="emoji-btn">
+                                                        class="btn btn-link text-decoration-none emoji-btn">
                                                         <i class="bx bx-smile align-middle"></i>
                                                     </button>
+                                                    <button type="button" class="btn btn-link text-decoration-none"
+                                                        id="upload-btn">
+                                                        <i class="bx bx-paperclip align-middle"></i>
+                                                    </button>
+
+                                                    <input type="file" id="file-input" style="display: none;">
                                                 </div>
                                             </div>
                                         </div>
@@ -405,9 +410,50 @@
 
 @push('page-scripts')
     <script>
-        var APP_URL = "{{env('APP_URL').'/'}}";
+        var APP_URL = "{{ env('APP_URL') . '/' }}";
     </script>
     <script src="{{ asset('assets/libs/glightbox/js/glightbox.min.js') }}"></script>
     <script src="{{ asset('assets/libs/fg-emoji-picker/fgEmojiPicker.js') }}"></script>
-    <script src="{{ asset('assets/js/pages/chat.init.js') }}"></script>
+    <script>
+        function initIcons() {
+            document.addEventListener("DOMContentLoaded", function() {
+                let emojiButton = document.getElementById("emoji-btn");
+                if (!emojiButton) {
+                    console.error("Không tìm thấy nút emoji-btn!");
+                    return;
+                }
+
+                let emojiPicker = new FgEmojiPicker({
+                    trigger: [".emoji-btn"],
+                    removeOnSelection: false,
+                    closeButton: true,
+                    position: ["top", "right"],
+                    preFetch: true,
+                    dir: "assets/js/pages/plugins/json",
+                    insertInto: document.querySelector(".chat-input"),
+                });
+
+                emojiButton.addEventListener("click", function() {
+                    setTimeout(function() {
+                        let pickerEl = document.querySelector(".fg-emoji-picker");
+                        if (pickerEl) {
+                            let leftPos = parseInt(window.getComputedStyle(pickerEl).left) || 0;
+                            pickerEl.style.left = `${leftPos - 40}px`;
+                        } else {
+                            console.error("Không tìm thấy phần tử fg-emoji-picker!");
+                        }
+                    }, 100);
+                });
+
+                console.log("Hàm initIcons đã chạy thành công!");
+            });
+        }
+        initIcons();
+        
+        $(document).ready(function() {
+            $("#upload-btn").click(function() {
+                $("#file-input").click();
+            });
+        });
+    </script>
 @endpush
