@@ -49,7 +49,9 @@ Route::prefix('auth')->as('auth.')->group(function () {
 });
 
 Route::get('/vnpay-callback', [TransactionController::class, 'vnpayCallback']);
-
+Route::get('/reset-password/{token}', function ($token) {
+    return view('emails.auth.reset-password', ['token' => $token]);
+})->middleware('guest')->name('password.reset');
 #============================== ROUTE SEARCH =============================
 Route::prefix('search')
     ->group(function () {

@@ -9,16 +9,16 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class ForgotPassworEmail extends Mailable
+class ForgotPasswordEmail extends Mailable
 {
     use Queueable, SerializesModels;
-
+    public string $verificationUrl;
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct(string $verificationUrl)
     {
-        //
+        $this->verificationUrl = $verificationUrl;
     }
 
     /**
@@ -27,7 +27,7 @@ class ForgotPassworEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Forgot Passwor Email',
+            subject: 'Yêu cầu đặt lại mật khẩu',
         );
     }
 
@@ -37,7 +37,8 @@ class ForgotPassworEmail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'emails.auth.forgot-password',
+            with: ['verificationUrl' => $this->verificationUrl],
         );
     }
 
