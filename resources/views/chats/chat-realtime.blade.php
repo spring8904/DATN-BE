@@ -1,46 +1,18 @@
 @extends('layouts.app')
 @push('page-css')
-    <!-- plugin css -->
-    <link href="{{ asset('assets/libs/jsvectormap/css/jsvectormap.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- glightbox css -->
     <link rel="stylesheet" href="{{ asset('assets/libs/glightbox/css/glightbox.min.css') }}">
     <style>
-        #chat-box {
-            width: 300px;
-            height: 400px;
-            border: 1px solid #ccc;
-            overflow-y: auto;
-            padding: 10px;
-        }
-
-        #message-input {
-            width: 80%;
-            padding: 5px;
-        }
-
-        #send-btn {
-            padding: 5px 10px;
-            cursor: pointer;
-        }
-
-        .emoji-picker {
-            max-height: 150px;
-            overflow-y: auto;
-            border: 1px solid #ddd;
+        .file-input {
             display: none;
-            padding: 5px;
-        }
-
-        .emoji {
-            font-size: 20px;
-            cursor: pointer;
-            padding: 3px;
         }
     </style>
 @endpush
+
 @php
     $title = 'Chat';
 @endphp
+
 @section('content')
     <div class="container-fluid">
         <div class="chat-wrapper d-lg-flex gap-1 mx-n4 mt-n4 p-1">
@@ -162,7 +134,7 @@
                                                     <div class="d-flex align-items-center">
                                                         <div
                                                             class="flex-shrink-0 chat-user-img online user-own-img align-self-center me-3 ms-0">
-                                                            <img src="../assets/images/users/avatar-2.jpg"
+                                                            <img src="{{ asset('assets/images/users/avatar-2.jpg') }}"
                                                                 class="rounded-circle avatar-xs" alt="">
                                                             <span class="user-status"></span>
                                                         </div>
@@ -170,11 +142,10 @@
                                                             <h5 class="text-truncate mb-0 fs-16"><a
                                                                     class="text-reset username" data-bs-toggle="offcanvas"
                                                                     href="#userProfileCanvasExample"
-                                                                    aria-controls="userProfileCanvasExample">Lisa
-                                                                    Parker</a></h5>
+                                                                    aria-controls="userProfileCanvasExample">Lisa Parker</a>
+                                                            </h5>
                                                             <p class="text-truncate text-muted fs-14 mb-0 userStatus">
-                                                                <small>Online</small>
-                                                            </p>
+                                                                <small>Online</small></p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -272,7 +243,7 @@
                                                     <div class="d-flex align-items-center">
                                                         <div
                                                             class="flex-shrink-0 chat-user-img online user-own-img align-self-center me-3 ms-0">
-                                                            <img src="../assets/images/users/avatar-2.jpg"
+                                                            <img src="{{ asset('assets/images/users/avatar-2.jpg') }}"
                                                                 class="rounded-circle avatar-xs" alt="">
                                                         </div>
                                                         <div class="flex-grow-1 overflow-hidden">
@@ -282,8 +253,7 @@
                                                                     aria-controls="userProfileCanvasExample">Lisa
                                                                     Parker</a></h5>
                                                             <p class="text-truncate text-muted fs-14 mb-0 userStatus">
-                                                                <small>24 Members</small>
-                                                            </p>
+                                                                <small>24 Members</small></p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -430,20 +400,9 @@
 
     </div>
 @endsection
+
 @push('page-scripts')
-    <!-- JAVASCRIPT -->
-    <script src="{{ asset('assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/simplebar/simplebar.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/node-waves/waves.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/feather-icons/feather.min.js') }}"></script>
-    <script src="{{ asset('assets/js/pages/plugins/lord-icon-2.1.0.js') }}"></script>
-    <script src="{{ asset('assets/js/plugins.js') }}"></script>
-
-    <!-- glightbox js -->
     <script src="{{ asset('assets/libs/glightbox/js/glightbox.min.js') }}"></script>
-
-    <!-- fgEmojiPicker js -->
     <script src="{{ asset('assets/libs/fg-emoji-picker/fgEmojiPicker.js') }}"></script>
-
     <script src="{{ asset('assets/js/pages/chat.init.js') }}"></script>
 @endpush

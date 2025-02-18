@@ -113,8 +113,6 @@ class AuthController extends Controller
         try {
             DB::beginTransaction();
 
-            $validated = $request->validated();
-
             $data = $request->only(['name', 'email', 'password', 'repassword']);
             $data['avatar'] = 'https://res.cloudinary.com/dvrexlsgx/image/upload/v1732148083/Avatar-trang-den_apceuv_pgbce6.png';
 
