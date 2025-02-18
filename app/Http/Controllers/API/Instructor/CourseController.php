@@ -7,6 +7,9 @@ use App\Http\Requests\API\Courses\StoreCourseRequest;
 use App\Http\Requests\API\Courses\UpdateContentCourse;
 use App\Http\Requests\API\Courses\UpdateCourseObjectives;
 use App\Models\Course;
+use App\Models\Question;
+use App\Models\Quiz;
+use App\Models\Video;
 use App\Services\CourseValidatorService;
 use App\Traits\ApiResponseTrait;
 use App\Traits\LoggableTrait;
@@ -335,19 +338,22 @@ class CourseController extends Controller
     public function validateCourse(string $slug)
     {
         try {
-            $course = Course::query()->where('slug', $slug)->first();
+            $course = $this->findCourseBySlug($slug);
 
             if (!$course) {
                 return $this->respondNotFound('Không tìm thấy khoá học');
             }
 
-            $errors = CourseValidatorService::validateCourse($course);
+            $authError = $this->authorizeCourseAccess($course);
+            if ($authError) return $authError;
 
-            if (!empty($errors)) {
-                return $this->respondOk('Tiêu chí để có thể duyệt khoá học', $errors);
-            }
+            $completionStatus = $this->getCourseCompletionStatus($course);
+            $progress = $this->calculateProgress($completionStatus);
 
-            return $this->respondOk('Khoá học đã đạt yêu cầu kiểm duyệt');
+            return $this->respondOk('Kiểm tra hoàn thiện khoá học', [
+                'progress' => $progress,
+                'completion_status' => $completionStatus,
+            ]);
         } catch (\Exception $e) {
             $this->logError($e);
 
@@ -358,26 +364,16 @@ class CourseController extends Controller
     public function checkCourseComplete(string $slug)
     {
         try {
-            $course = Course::query()->where('slug', $slug)->first();
+            $course = $this->findCourseBySlug($slug);
 
             if (!$course) {
                 return $this->respondNotFound('Không tìm thấy khoá học');
             }
 
-            if ($course->user_id !== Auth::id()) {
-                return $this->respondForbidden('Không có quyền thực hiện thao tác');
-            }
+            $authError = $this->authorizeCourseAccess($course);
+            if ($authError) return $authError;
 
-            $courseObjectives = $this->checkCourseObjectives($course);
-            $courseOverView = $this->checkCourseOverView($course);
-            $courseCurriculum = $this->checkCurriculum($course);
-
-            return $this->respondOk('Kiểm tra hoàn thiện khoá học', [
-                'course_overview' => $courseOverView,
-                'course_objectives' => $courseObjectives,
-                'course_curriculum' => $courseCurriculum,
-                'course_status' => $course->status,
-            ]);
+            return $this->respondOk('Kiểm tra hoàn thiện khoá học', $this->getCourseCompletionStatus($course));
         } catch (\Exception $e) {
             $this->logError($e);
 
@@ -385,45 +381,147 @@ class CourseController extends Controller
         }
     }
 
-    private function checkCourseOverView(Course $course)
+    private function calculateProgress(array $completionStatus): float
     {
-        $data = [
-            'name' => $course->name,
-            'description' => $course->description,
-            'thumbnail' => $course->thumbnail,
-            'level' => $course->level,
-            'category_id' => $course->category_id,
-            'price' => $course->price,
-        ];
+        $totalSteps = count($completionStatus);
+        $completedSteps = 0;
 
-        foreach ($data as $key => $value) {
-            if (empty($value)) {
-                return false;
+        foreach ($completionStatus as $step) {
+            if ($step['status']) {
+                $completedSteps++;
             }
         }
 
-        return true;
+        return $totalSteps > 0 ? ($completedSteps / $totalSteps) * 100 : 0;
+    }
+
+    private function findCourseBySlug(string $slug)
+    {
+        return Course::query()->where('slug', $slug)->first();
+    }
+
+    private function authorizeCourseAccess(Course $course)
+    {
+        if ($course->user_id !== Auth::id()) {
+            return $this->respondForbidden('Không có quyền thực hiện thao tác');
+        }
+        return null;
+    }
+
+    private function getCourseCompletionStatus(Course $course): array
+    {
+        return [
+            'course_overview' => $this->checkCourseOverView($course),
+            'course_objectives' => $this->checkCourseObjectives($course),
+            'course_curriculum' => $this->checkCurriculum($course),
+        ];
+    }
+
+    private function checkCourseOverView(Course $course)
+    {
+        $errors = [];
+
+        if (empty($course->name)) {
+            $errors[] = 'Khóa học phải có tên.';
+        }
+        if (empty($course->description)) {
+            $errors[] = 'Khóa học phải có mô tả.';
+        }
+        if (empty($course->thumbnail)) {
+            $errors[] = 'Khóa học phải có hình ảnh.';
+        }
+        if (empty($course->level)) {
+            $errors[] = 'Khóa học phải có cấp độ.';
+        }
+        if (empty($course->category_id)) {
+            $errors[] = 'Khóa học phải có danh mục.';
+        }
+        if (!$course->is_free && (!$course->price || $course->price <= 0)) {
+            $errors[] = "Khóa học có phí phải có giá hợp lệ.";
+        }
+
+        return [
+            'status' => empty($errors),
+            'errors' => $errors
+        ];
     }
 
     private function checkCourseObjectives(Course $course)
     {
-        $benefits = is_string($course->benefits) ? json_decode($course->benefits, true) : $course->benefits;
-        $requirements = is_string($course->requirements) ? json_decode($course->requirements, true) : $course->requirements;
-        $qa = is_string($course->qa) ? json_decode($course->qa, true) : $course->qa;
+        $errors = [];
 
-        $benefits = is_array($benefits) ? $benefits : [];
-        $requirements = is_array($requirements) ? $requirements : [];
-        $qa = is_array($qa) ? $qa : [];
+        $benefits = $this->decodeJson($course->benefits);
+        $requirements = $this->decodeJson($course->requirements);
+        $qa = $this->decodeJson($course->qa);
 
-        return count($benefits) >= 4 && count($benefits) <= 10
-            && count($requirements) >= 4 && count($requirements) <= 10
-            && count($qa) >= 1 && count($qa) <= 5;
+        if (count($benefits) < 4 || count($benefits) > 10) {
+            $errors[] = 'Lợi ích khóa học phải có từ 4 đến 10 mục.';
+        }
+        if (count($requirements) < 4 || count($requirements) > 10) {
+            $errors[] = 'Yêu cầu khóa học phải có từ 4 đến 10 mục.';
+        }
+        if (count($qa) < 1 || count($qa) > 5) {
+            $errors[] = 'Câu hỏi và trả lời phải có từ 1 đến 5 mục.';
+        }
+
+        return [
+            'status' => empty($errors),
+            'errors' => $errors
+        ];
     }
 
     private function checkCurriculum(Course $course)
     {
-        $chapters = $course->chapters()->get();
+        $errors = [];
 
-        return $chapters->count() >= 5;
+        $chapters = $course->chapters()->get();
+        if ($chapters->count() < 5) {
+            $errors[] = 'Khóa học phải có ít nhất 5 chương học.';
+        }
+
+        foreach ($chapters as $chapter) {
+            if (empty($chapter->title)) {
+                $errors[] = "Chương học ID {$chapter->id} không có tiêu đề.";
+            }
+
+            $lessons = $chapter->lessons()->get();
+
+            foreach ($lessons as $lesson) {
+                if(empty($lesson->title) || empty($lesson->content)) {
+                    $errors[] = "Bài học giảng {$lesson->title} trong chương
+                     '{$chapter->title}' thiếu tiêu đề hoặc nội dung";
+
+                    if ($lesson->lessonable_type === Video::class) {
+                        $video = Video::query()->find($lesson->lessonable_id);
+
+                        if ($video && $video->duration < 1200) {
+                            $errors[] = "Bài giảng '{$lesson->title}' (ID {$lesson->id}) trong chương
+                             '{$chapter->title}' có video dưới 20 phút.";
+                        }
+
+                        if ($lesson->lessonable_type === Quiz::class) {
+                            $quiz = Quiz::query()->find($lesson->lessonable_id);
+                            if ($quiz) {
+                                $questions = Question::query()->where('quiz_id', $quiz->id)->get();
+                                if ($questions->count() < 3 || $questions->count() > 5) {
+                                    $errors[] = "Bài kiểm tra '{$lesson->title}' (ID {$lesson->id}) trong chương
+                                     '{$chapter->title}' phải có từ 3 đến 5 câu hỏi. Hiện tại có {$questions->count()} câu.";
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return [
+            'status' => empty($errors),
+            'errors' => $errors
+        ];
+    }
+
+    private function decodeJson($value)
+    {
+        return is_string($value) ? json_decode($value, true) : (array)$value;
     }
 }

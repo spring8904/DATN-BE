@@ -22,4 +22,8 @@ class Coding extends Model
     {
         return $this->morphOne(Lesson::class, 'lessonable');
     }
+
+    protected $casts = [
+        'hints' => 'array',
+    ];
 }

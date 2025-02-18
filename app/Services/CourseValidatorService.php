@@ -15,12 +15,18 @@ class CourseValidatorService
     {
         $errors = [];
 
-        if (!$course->name
-            || !$course->description
-            || !$course->thumbnail
-            || !$course->level
-            || !$course->category_id
-        ) {
+        $errors = array_merge($errors, self::validateBasicInfo($course));
+
+        $errors = array_merge($errors, self::validateChapters($course));
+
+        return $errors;
+    }
+
+    private static function validateBasicInfo(Course $course): array
+    {
+        $errors = [];
+
+        if (!$course->name || !$course->description || !$course->thumbnail || !$course->level || !$course->category_id) {
             $errors[] = 'Khoá học phải có đầy đủ thông tin cơ bản.';
         }
 
@@ -42,7 +48,13 @@ class CourseValidatorService
             $errors[] = "Khóa học phải có từ 1 đến 5 câu hỏi thường gặp.";
         }
 
-        $chapters = Chapter::query()->where('course_id', $course->id)->get();
+        return $errors;
+    }
+
+    private static function validateChapters(Course $course): array
+    {
+        $errors = [];
+        $chapters = Chapter::where('course_id', $course->id)->get();
 
         if ($chapters->count() < 5) {
             $errors[] = "Khóa học phải có ít nhất 5 chương học. Hiện tại có {$chapters->count()} chương.";
@@ -53,34 +65,59 @@ class CourseValidatorService
                 $errors[] = "Chương học ID {$chapter->id} không có tiêu đề.";
             }
 
-            $lessons = Lesson::query()->where('chapter_id', $chapter->id)->get();
+            $errors = array_merge($errors, self::validateLessons($chapter->id, $chapter->title));
+        }
 
-            if ($lessons->count() < 5) {
-                $errors[] = "Chương '{$chapter->title}' cần ít nhất 5 bài giảng. Hiện tại có {$lessons->count()} bài.";
+        return $errors;
+    }
+
+    private static function validateLessons(int $chapterId, string $chapterTitle): array
+    {
+        $errors = [];
+        $lessons = Lesson::where('chapter_id', $chapterId)->get();
+
+        if ($lessons->count() < 5) {
+            $errors[] = "Chương '{$chapterTitle}' cần ít nhất 5 bài giảng. Hiện tại có {$lessons->count()} bài.";
+        }
+
+        foreach ($lessons as $lesson) {
+            if (!$lesson->title || !$lesson->content) {
+                $errors[] = "Bài giảng '{$lesson->title}' (ID {$lesson->id}) trong chương '{$chapterTitle}' thiếu tiêu đề hoặc nội dung.";
             }
 
-            foreach ($lessons as $lesson) {
-                if (!$lesson->title || !$lesson->content) {
-                    $errors[] = "Bài giảng '{$lesson->title}' (ID {$lesson->id}) trong chương '{$chapter->title}' thiếu tiêu đề hoặc nội dung.";
-                }
+            if ($lesson->lessonable_type === Video::class) {
+                $errors = array_merge($errors, self::validateVideo($lesson->lessonable_id, $lesson->title, $chapterTitle));
+            }
 
-                if ($lesson->lessonable_type === Video::class) {
-                    $video = Video::query()->find($lesson->lessonable_id);
+            if ($lesson->lessonable_type === Quiz::class) {
+                $errors = array_merge($errors, self::validateQuiz($lesson->lessonable_id, $lesson->title, $chapterTitle));
+            }
+        }
 
-                    if ($video && $video->duration < 1200) {
-                        $errors[] = "Bài giảng '{$lesson->title}' (ID {$lesson->id}) trong chương '{$chapter->title}' có video dưới 20 phút.";
-                    }
+        return $errors;
+    }
 
-                    if ($lesson->lessonable_type === Quiz::class) {
-                        $quiz = Quiz::query()->find($lesson->lessonable_id);
-                        if ($quiz) {
-                            $questions = Question::query()->where('quiz_id', $quiz->id)->get();
-                            if ($questions->count() < 3 || $questions->count() > 5) {
-                                $errors[] = "Bài kiểm tra '{$lesson->title}' (ID {$lesson->id}) trong chương '{$chapter->title}' phải có từ 3 đến 5 câu hỏi. Hiện tại có {$questions->count()} câu.";
-                            }
-                        }
-                    }
-                }
+    private static function validateVideo(int $videoId, string $lessonTitle, string $chapterTitle): array
+    {
+        $errors = [];
+        $video = Video::find($videoId);
+
+        if ($video && $video->duration < 1200) {
+            $errors[] = "Bài giảng '{$lessonTitle}' trong chương '{$chapterTitle}' có video dưới 20 phút.";
+        }
+
+        return $errors;
+    }
+
+    private static function validateQuiz(int $quizId, string $lessonTitle, string $chapterTitle): array
+    {
+        $errors = [];
+        $quiz = Quiz::find($quizId);
+
+        if ($quiz) {
+            $questions = Question::where('quiz_id', $quiz->id)->get();
+            if ($questions->count() < 3 || $questions->count() > 5) {
+                $errors[] = "Bài kiểm tra '{$lessonTitle}' trong chương '{$chapterTitle}' phải có từ 3 đến 5 câu hỏi. Hiện tại có {$questions->count()} câu.";
             }
         }
 
