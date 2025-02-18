@@ -412,7 +412,7 @@
                     'Không xác định';
 
                 const notificationItem = `
-        <div id="notification-${notification.id}" class="text-reset notification-item d-block dropdown-item">
+        <div id="notification-${notification.id}" data-notification-id=${notification.id} class="text-reset notification-item d-block dropdown-item notification-check">
             <div class="d-flex">
                 <img src="${thumbnail}" class="me-3 rounded-circle avatar-xs" alt="user-pic">
                 <div class="flex-grow-1">
@@ -425,12 +425,6 @@
                     <p class="mb-0 fs-11 fw-medium text-uppercase text-muted">
                         <span><i class="mdi mdi-clock-outline"></i> ${timeFormatted}</span>
                     </p>
-                </div>
-                <div class="px-2 fs-15">
-                    <div class="form-check notification-check">
-                        <input class="form-check-input" type="checkbox" data-notification-id="${notification.id}" id="notification-check-${notification.id}" ${isChecked}>
-                        <label class="form-check-label" for="notification-check-${notification.id}"></label>
-                    </div>
                 </div>
             </div>
         </div>
@@ -449,14 +443,31 @@
                         $('#notification-data').append(notificationItem);
                     }
                 }
+
+                if (isChecked) {
+                    $(`#notification-${notification.id}`).css('background-color',
+                        '#f5f5f5');
+                } else {
+                    $(`#notification-${notification.id}`).css('background-color', '');
+                }
             }
 
-            $(document).on('change', '.notification-check input', function() {
+            $(document).on('click', '.notification-check', function(e) {
+                e.preventDefault();
                 const notificationId = $(this).data('notification-id');
-                if (!notificationId) return;
 
                 const isChecked = $(this).prop('checked');
+                const urlRedirect = $('.stretched-link').attr('href');
+
+                if (!notificationId) {
+                    window.location.href = urlRedirect;
+                    return;
+                }
                 const url = `/admin/notifications/${notificationId}`;
+
+                console.log(urlRedirect, url, notificationId);
+
+
                 const data = {
                     read_at: isChecked
                 };
@@ -466,22 +477,7 @@
                     type: 'PUT',
                     data: data,
                     success: function(response) {
-                        const {
-                            unread_notifications_count
-                        } = response.data
-                        ;
-                        console.log('Thông báo đã được đánh dấu là đã đọc:', response);
-
-                        if (isChecked) {
-                            $(`#notification-check-${notificationId}`).prop('checked', true);
-                            $(`#notification-${notificationId}`).css('background-color',
-                                '#f5f5f5');
-                        } else {
-                            $(`#notification-check-${notificationId}`).prop('checked', false);
-                            $(`#notification-${notificationId}`).css('background-color', '');
-                        }
-                        
-                        updateUnreadCount(unread_notifications_count);
+                        window.location.href = urlRedirect;
                     },
                     error: function(error) {
                         console.error('Có lỗi xảy ra khi cập nhật trạng thái đọc:', error);

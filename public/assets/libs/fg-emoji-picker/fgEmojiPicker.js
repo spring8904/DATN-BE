@@ -190,7 +190,7 @@ const FgEmojiPicker = function (options) {
 
 
         fetchEmojiData: () => {
-            fetch(`${this.variable.dir}full-emoji-list.json`)
+            fetch(`${APP_URL}${this.variable.dir}full-emoji-list.json`)
                 .then(response => response.json())
                 .then(object => { this.emojiJson = object });
         },
@@ -622,7 +622,7 @@ const FgEmojiPicker = function (options) {
                     resolve(data);
                 });
             } else {
-                fetchData = fetch(`${this.variable.dir}full-emoji-list.json`)
+                fetchData = fetch(`${APP_URL}${this.variable.dir}full-emoji-list.json`)
                     .then(response => response.json())
                     .then(object => {
 

@@ -1,13 +1,18 @@
 @extends('layouts.app')
 @push('page-css')
-    <!-- plugin css -->
-    <link href="{{ asset('assets/libs/jsvectormap/css/jsvectormap.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- glightbox css -->
     <link rel="stylesheet" href="{{ asset('assets/libs/glightbox/css/glightbox.min.css') }}">
+    <style>
+        .file-input {
+            display: none;
+        }
+    </style>
 @endpush
+
 @php
     $title = 'Chat';
 @endphp
+
 @section('content')
     <div class="container-fluid">
         <div class="chat-wrapper d-lg-flex gap-1 mx-n4 mt-n4 p-1">
@@ -129,7 +134,7 @@
                                                     <div class="d-flex align-items-center">
                                                         <div
                                                             class="flex-shrink-0 chat-user-img online user-own-img align-self-center me-3 ms-0">
-                                                            <img src="../assets/images/users/avatar-2.jpg"
+                                                            <img src="{{ asset('assets/images/users/avatar-2.jpg') }}"
                                                                 class="rounded-circle avatar-xs" alt="">
                                                             <span class="user-status"></span>
                                                         </div>
@@ -137,10 +142,11 @@
                                                             <h5 class="text-truncate mb-0 fs-16"><a
                                                                     class="text-reset username" data-bs-toggle="offcanvas"
                                                                     href="#userProfileCanvasExample"
-                                                                    aria-controls="userProfileCanvasExample">Lisa
-                                                                    Parker</a></h5>
+                                                                    aria-controls="userProfileCanvasExample">Lisa Parker</a>
+                                                            </h5>
                                                             <p class="text-truncate text-muted fs-14 mb-0 userStatus">
-                                                                <small>Online</small></p>
+                                                                <small>Online</small>
+                                                            </p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -225,7 +231,7 @@
                                 </div>
                             </div>
 
-                            <div class="position-relative" id="channel-chat">
+                            {{-- <div class="position-relative" id="channel-chat">
                                 <div class="p-3 user-chat-topbar">
                                     <div class="row align-items-center">
                                         <div class="col-sm-4 col-8">
@@ -238,7 +244,7 @@
                                                     <div class="d-flex align-items-center">
                                                         <div
                                                             class="flex-shrink-0 chat-user-img online user-own-img align-self-center me-3 ms-0">
-                                                            <img src="../assets/images/users/avatar-2.jpg"
+                                                            <img src="{{ asset('assets/images/users/avatar-2.jpg') }}"
                                                                 class="rounded-circle avatar-xs" alt="">
                                                         </div>
                                                         <div class="flex-grow-1 overflow-hidden">
@@ -248,7 +254,8 @@
                                                                     aria-controls="userProfileCanvasExample">Lisa
                                                                     Parker</a></h5>
                                                             <p class="text-truncate text-muted fs-14 mb-0 userStatus">
-                                                                <small>24 Members</small></p>
+                                                                <small>24 Members</small>
+                                                            </p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -326,7 +333,7 @@
                                     id="copyClipBoardChannel" role="alert">
                                     Message copied
                                 </div>
-                            </div>
+                            </div> --}}
 
                             <!-- end chat-conversation -->
 
@@ -338,10 +345,15 @@
                                             <div class="chat-input-links me-2">
                                                 <div class="links-list-item">
                                                     <button type="button"
-                                                        class="btn btn-link text-decoration-none emoji-btn"
-                                                        id="emoji-btn">
+                                                        class="btn btn-link text-decoration-none emoji-btn" id="emoji-btn">
                                                         <i class="bx bx-smile align-middle"></i>
                                                     </button>
+                                                    <button type="button" class="btn btn-link text-decoration-none"
+                                                        id="upload-btn">
+                                                        <i class="bx bx-paperclip align-middle"></i>
+                                                    </button>
+
+                                                    <input type="file" id="file-input" style="display: none;">
                                                 </div>
                                             </div>
                                         </div>
@@ -395,92 +407,53 @@
 
     </div>
 @endsection
+
 @push('page-scripts')
-    <!-- JAVASCRIPT -->
-    <script src="{{ asset('assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/simplebar/simplebar.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/node-waves/waves.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/feather-icons/feather.min.js') }}"></script>
-    <script src="{{ asset('assets/js/pages/plugins/lord-icon-2.1.0.js') }}"></script>
-    <script src="{{ asset('assets/js/plugins.js') }}"></script>
-
-    <!-- glightbox js -->
-    <script src="{{ asset('assets/libs/glightbox/js/glightbox.min.js') }}"></script>
-
-    <!-- fgEmojiPicker js -->
-    <script src="{{ asset('assets/libs/fg-emoji-picker/fgEmojiPicker.js') }}"></script>
-
     <script>
-        $(document).ready(function() {
-            var defaultAvatar = "assets/images/users/user-dummy-img.jpg";
-            var multiUserAvatar = "assets/images/users/multi-user.jpg";
+        var APP_URL = "{{ env('APP_URL') . '/' }}";
+    </script>
+    <script src="{{ asset('assets/libs/glightbox/js/glightbox.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/fg-emoji-picker/fgEmojiPicker.js') }}"></script>
+    <script>
+        function initIcons() {
+            document.addEventListener("DOMContentLoaded", function() {
+                let emojiButton = document.getElementById("emoji-btn");
+                if (!emojiButton) {
+                    console.error("Không tìm thấy nút emoji-btn!");
+                    return;
+                }
 
-            // Hiển thị cửa sổ chat khi nhấp vào người dùng
-            $(".chat-user-list li a").on("click", function() {
-                $(".user-chat").addClass("user-chat-show");
-                $(".chat-user-list li.active").removeClass("active");
-                $(this).parent().addClass("active");
-            });
-
-            // Đóng cửa sổ chat
-            $(".user-chat-remove").on("click", function() {
-                $(".user-chat").removeClass("user-chat-show");
-            });
-
-            // Toggle yêu thích
-            $(".favourite-btn").on("click", function() {
-                $(this).toggleClass("active");
-            });
-
-            // Tìm kiếm tin nhắn
-            $("#searchMessage").on("keyup", function() {
-                var value = $(this).val().toUpperCase();
-                $("#users-conversation li").each(function() {
-                    var text = $(this).find("p").text().toUpperCase();
-                    $(this).toggle(text.indexOf(value) > -1);
+                let emojiPicker = new FgEmojiPicker({
+                    trigger: [".emoji-btn"],
+                    removeOnSelection: false,
+                    closeButton: true,
+                    position: ["top", "right"],
+                    preFetch: true,
+                    dir: "assets/js/pages/plugins/json",
+                    insertInto: document.querySelector(".chat-input"),
                 });
+
+                emojiButton.addEventListener("click", function() {
+                    setTimeout(function() {
+                        let pickerEl = document.querySelector(".fg-emoji-picker");
+                        if (pickerEl) {
+                            let leftPos = parseInt(window.getComputedStyle(pickerEl).left) || 0;
+                            pickerEl.style.left = `${leftPos - 40}px`;
+                        } else {
+                            console.error("Không tìm thấy phần tử fg-emoji-picker!");
+                        }
+                    }, 100);
+                });
+
+                console.log("Hàm initIcons đã chạy thành công!");
             });
-
-            // Gửi tin nhắn
-            $("#chatinput-form").on("submit", function(e) {
-                e.preventDefault();
-                var message = $("#chat-input").val().trim();
-                if (message.length === 0) return;
-
-                var chatList = $(".chat-conversation-list");
-                var messageHtml = `<li class='chat-list right'>
-            <div class='conversation-list'>
-                <div class='user-chat-content'>
-                    <div class='ctext-wrap'>
-                        <div class='ctext-wrap-content'>
-                            <p class='mb-0 ctext-content'>${message}</p>
-                        </div>
-                    </div>
-                    <div class='conversation-name'>
-                        <small class='text-muted time'>${getCurrentTime()}</small>
-                        <span class='text-success check-message-icon'><i class='bx bx-check'></i></span>
-                    </div>
-                </div>
-            </div>
-        </li>`;
-
-                chatList.append(messageHtml);
-                $("#chat-input").val("");
-                scrollToBottom(chatList);
+        }
+        initIcons();
+        
+        $(document).ready(function() {
+            $("#upload-btn").click(function() {
+                $("#file-input").click();
             });
-
-            function getCurrentTime() {
-                var now = new Date();
-                var hours = now.getHours();
-                var minutes = now.getMinutes().toString().padStart(2, "0");
-                var ampm = hours >= 12 ? "PM" : "AM";
-                hours = hours % 12 || 12;
-                return `${hours}:${minutes} ${ampm}`;
-            }
-
-            function scrollToBottom(element) {
-                element.scrollTop(element.prop("scrollHeight"));
-            }
         });
     </script>
 @endpush

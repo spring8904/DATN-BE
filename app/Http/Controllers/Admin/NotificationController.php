@@ -59,17 +59,12 @@ class NotificationController extends Controller
             $notification = $user->notifications()->where('id', $notificationId)->first();
 
             if ($notification) {
-                if ($request->read_at === 'true') {
+                if (!$notification->read_at) {
                     $notification->markAsRead();
-                } else {
-                    $notification->update(['read_at' => null]);
                 }
-
-                $unreadNotificationsCount = $user->unreadNotifications()->count();
                 
                 return $this->respondOk(
                     $notification->read_at ? 'Đánh dấu đã đọc thành công' : 'Đánh dấu chưa đọc thành công',
-                    ['unread_notifications_count' => $unreadNotificationsCount]
                 );
             }
 

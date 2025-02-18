@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\Common;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\API\User\ChangePasswordRequest;
 use App\Http\Requests\API\User\UpdateUserProfileRequest;
 use App\Models\Career;
 use App\Models\Profile;
@@ -12,6 +13,7 @@ use App\Traits\UploadToCloudinaryTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -23,7 +25,11 @@ class UserController extends Controller
     public function showProfile()
     {
         try {
+            $user = Auth::user();
 
+            return $this->respondOk('Thông tin người dùng ' . $user->name, [
+                'user' => $user->load('profile.careers'),
+            ]);
         } catch (\Exception $e) {
             $this->logError($e);
 
@@ -47,7 +53,8 @@ class UserController extends Controller
                 $user->avatar = $avatarUrl;
             }
 
-            $user->update($request->only(['name']));
+            $user->name = $request->name ?? $user->name;
+            $user->save();
 
             $profile = Profile::query()->where('user_id', $user->id)->first();
 
@@ -153,10 +160,23 @@ class UserController extends Controller
     }
 
 
-    public function changePassword(Request $request)
+    public function changePassword(ChangePasswordRequest $request)
     {
         try {
+            $user = Auth::user();
 
+            if (!Hash::check($request->old_password, $user->password)) {
+                return $this->respondError('Mật khẩu hiện tại không đúng');
+            }
+
+            $user->password = Hash::make($request->new_password);
+            $user->save();
+
+            $user->tokens->each(function ($token) {
+                $token->delete();
+            });
+
+            return $this->respondOk('Mật khẩu của ' . $user->name . ' đã được thay đổi thành công. Vui lòng đăng nhập lại!');
         } catch (\Exception $e) {
             $this->logError($e, $request->all());
 
@@ -167,7 +187,6 @@ class UserController extends Controller
     public function getMyCourseBought(Request $request)
     {
         try {
-
         } catch (\Exception $e) {
             $this->logError($e, $request->all());
 
