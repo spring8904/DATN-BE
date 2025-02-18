@@ -145,7 +145,8 @@
                                                                     aria-controls="userProfileCanvasExample">Lisa Parker</a>
                                                             </h5>
                                                             <p class="text-truncate text-muted fs-14 mb-0 userStatus">
-                                                                <small>Online</small></p>
+                                                                <small>Online</small>
+                                                            </p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -253,7 +254,8 @@
                                                                     aria-controls="userProfileCanvasExample">Lisa
                                                                     Parker</a></h5>
                                                             <p class="text-truncate text-muted fs-14 mb-0 userStatus">
-                                                                <small>24 Members</small></p>
+                                                                <small>24 Members</small>
+                                                            </p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -402,6 +404,9 @@
 @endsection
 
 @push('page-scripts')
+    <script>
+        var APP_URL = "{{env('APP_URL').'/'}}";
+    </script>
     <script src="{{ asset('assets/libs/glightbox/js/glightbox.min.js') }}"></script>
     <script src="{{ asset('assets/libs/fg-emoji-picker/fgEmojiPicker.js') }}"></script>
     <script src="{{ asset('assets/js/pages/chat.init.js') }}"></script>
