@@ -99,10 +99,7 @@ class QuizController extends Controller
 
                     if (isset($question['options']) && is_array($question['options'])) {
                         foreach ($question['options'] as $option) {
-                            $questionModel->answers()->create([
-                                'answer' => $option['answer'],
-                                'is_correct' => $option['is_correct'] ?? false,
-                            ]);
+                            $questionModel->answers()->create($optionData);
                         }
                     }
                 }

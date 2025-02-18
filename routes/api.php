@@ -61,8 +61,6 @@ Route::prefix('search')
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/vnpay-payment', [TransactionController::class, 'createVNPayPayment']);
 
-    Route::get('download-quiz-form', [\App\Http\Controllers\API\Instructor\QuizController::class, 'downloadQuizForm']);
-
     Route::prefix('auth')->as('auth.')->group(function () {
         Route::post('logout', [AuthController::class, 'logout']);
     });
@@ -156,8 +154,19 @@ Route::middleware('auth:sanctum')->group(function () {
 
                             Route::post('/{chapterId}/store-lesson-video', [\App\Http\Controllers\API\Instructor\LessonVideoController::class, 'storeLessonVideo']);
                             Route::post('/{chapterId}/store-lesson-quiz', [\App\Http\Controllers\API\Instructor\QuizController::class, 'storeLessonQuiz']);
+
+                            Route::prefix('quiz')
+                                ->group(function () {
+                                    Route::get('download-quiz-form', [\App\Http\Controllers\API\Instructor\QuizController::class, 'downloadQuizForm']);
+                                    Route::post('{quiz}/store-quiz-question', [\App\Http\Controllers\API\Instructor\QuizController::class, 'storeQuestion']);
+                                });
+
                             Route::post('/{chapterId}/store-lesson-document', [DocumentController::class, 'storeLessonDocument']);
                             Route::put('/{documentID}', [DocumentController::class, 'update']);
+
+                            Route::post('/{chapterId}/store-lesson-coding', [\App\Http\Controllers\API\Instructor\LessonCodingController::class, 'storeLessonCoding']);
+                            Route::get('/{lesson}/{coding}/coding-exercise', [\App\Http\Controllers\API\Instructor\LessonCodingController::class, 'getCodingExercise']);
+                            Route::put('/{lesson}/{coding}/coding-exercise', [\App\Http\Controllers\API\Instructor\LessonCodingController::class, 'updateCodingExercise']);
                         });
                 });
 
