@@ -348,7 +348,7 @@ class TransactionController extends Controller
     {
         if ($discount) {
             $course->coupons()->attach($discount->id);
-            $discount->decrement('used_count');
+            if($discount->used_count > 0) $discount->decrement('used_count');
         }
 
         $course->increment('total_student');

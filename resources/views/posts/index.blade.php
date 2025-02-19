@@ -7,12 +7,12 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0">{{ $title }}</h4>
+                    <h4 class="mb-sm-0">{{ $title ?? '' }}</h4>
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
                             <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                            <li class="breadcrumb-item active"><a href="">{{ $subTitle }}</a></li>
+                            <li class="breadcrumb-item active"><a href="">{{ $subTitle ?? ''}}</a></li>
                         </ol>
                     </div>
 
@@ -26,7 +26,7 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h4 class="card-title mb-0">{{ $subTitle }}</h4>
+                        <h4 class="card-title mb-0">{{ $subTitle ?? ''}}</h4>
                         <div class="d-flex gap-2">
                             <a class="btn btn-sm btn-success" href="">Export dữ liệu</a>
                             <button class="btn btn-sm btn-primary" id="toggleAdvancedSearch">
@@ -177,8 +177,8 @@
                                                     <img class="img-thumbnail" src="{{ $post->thumbnail }}"
                                                         alt="Hình đại diện" width="100">
                                                 </td>
-                                                <td class="text-danger fw-bold">{{ $post->user->name }}</td>
-                                                <td>{{ $post->category->name }}</td>
+                                                <td class="text-danger fw-bold">{{ $post->user->name ?? '' }}</td>
+                                                <td>{{ $post->category->name ?? '' }}</td>
                                                 <td class="status col-1">
                                                     @if ($post->status === 'published')
                                                         <span class="badge bg-success w-75">

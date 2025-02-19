@@ -7,13 +7,13 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0">{{ $title }}</h4>
+                    <h4 class="mb-sm-0">{{ $title ?? '' }}</h4>
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
                             <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
                             <li class="breadcrumb-item active"><a
-                                    href="">{{ $subTitle }}</a></li>
+                                    href="">{{ $subTitle ?? '' }}</a></li>
                         </ol>
                     </div>
 
@@ -27,7 +27,7 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h4 class="card-title mb-0">{{ $subTitle }}</h4>
+                        <h4 class="card-title mb-0">{{ $subTitle ?? '' }}</h4>
                         <div class="dropdown">
                             <button class="btn btn-sm btn-primary" type="button" id="filterDropdown"
                                     data-bs-toggle="dropdown" aria-expanded="false">
@@ -119,7 +119,7 @@
                                                 </div>
                                             </th>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $qaSystem->title }}</td>
+                                            <td>{{ $qaSystem->title ?? ''}}</td>
                                             <td>
                                                 @if ($qaSystem->answer_type === 'multiple')
                                                     <span class="badge bg-primary">
@@ -142,7 +142,7 @@
                                                         </span>
                                                 @endif
                                             </td>
-                                            <td>{{ $qaSystem->created_at->format('d/m/Y') }}</td>
+                                            <td>{{ $qaSystem->created_at->format('d/m/Y') ?? '' }}</td>
                                             <td>
                                                 <div class="d-flex gap-2">
                                                     <a href="{{ route('admin.qa-systems.edit', $qaSystem->id) }}">

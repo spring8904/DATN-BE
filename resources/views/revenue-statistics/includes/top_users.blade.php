@@ -17,7 +17,7 @@
                 </div>
             </div>
         </td>
-        <td>{{ $topUser->total_courses_purchased }}</td>
-        <td>{{ number_format($topUser->total_spent) }}</td>
+        <td>{{ $topUser->total_courses_purchased ?? '' }}</td>
+        <td>{{ number_format($topUser->total_spent) ?? '' }}</td>
     </tr>
 @endforeach

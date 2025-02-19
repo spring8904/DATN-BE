@@ -8,12 +8,12 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0">{{ $title }}</h4>
+                    <h4 class="mb-sm-0">{{ $title ?? '' }}</h4>
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
                             <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                            <li class="breadcrumb-item active"><a href="">{{ $subTitle }}</a></li>
+                            <li class="breadcrumb-item active"><a href="">{{ $subTitle ?? '' }}</a></li>
                         </ol>
                     </div>
                 </div>
@@ -25,11 +25,11 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header align-items-center d-flex">
-                        <h4 class="card-title mb-0 flex-grow-1">{{ $subTitle }}</h4>
+                        <h4 class="card-title mb-0 flex-grow-1">{{ $subTitle ?? '' }}</h4>
                     </div>
 
                     <form action="{{ route('admin.commissions.update', $commission->id) }}" method="post"
-                          enctype="multipart/form-data">
+                        enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <div class="card-body">
@@ -39,20 +39,20 @@
                                         <label for="difficulty_level" class="form-label">Cấp độ</label>
                                         <select class="form-select mb-3" name="difficulty_level">
                                             <option value="">Chọn cấp độ</option>
-                                            <option
-                                                    value="easy" {{ old('difficulty_level', $commission->difficulty_level) == 'easy' ? 'selected' : '' }}>
+                                            <option value="easy"
+                                                {{ old('difficulty_level', $commission->difficulty_level) == 'easy' ? 'selected' : '' }}>
                                                 Dễ
                                             </option>
-                                            <option
-                                                    value="medium" {{ old('difficulty_level', $commission->difficulty_level) == 'medium' ? 'selected' : '' }}>
+                                            <option value="medium"
+                                                {{ old('difficulty_level', $commission->difficulty_level) == 'medium' ? 'selected' : '' }}>
                                                 Trung bình
                                             </option>
-                                            <option value="difficult" {{ old('difficulty_level', $commission->
-
-difficulty_level) == 'difficult' ? 'selected' : '' }}>Khó
+                                            <option value="difficult"
+                                                {{ old('difficulty_level', $commission->difficulty_level) == 'difficult' ? 'selected' : '' }}>
+                                                Khó
                                             </option>
-                                            <option
-                                                    value="very_difficult" {{ old('difficulty_level', $commission->difficulty_level) == 'very_difficult' ? 'selected' : '' }}>
+                                            <option value="very_difficult"
+                                                {{ old('difficulty_level', $commission->difficulty_level) == 'very_difficult' ? 'selected' : '' }}>
                                                 Rất khó
                                             </option>
                                         </select>
@@ -66,12 +66,11 @@ difficulty_level) == 'difficult' ? 'selected' : '' }}>Khó
                                     <!-- Phần trăm của hệ thống -->
                                     <div class="col-md-6">
                                         <label for="system_percentage" class="form-label">Phần trăm của hệ thống</label>
-                                        <select id="system_percentage" class="form-select mb-3"
-                                                name="system_percentage">
+                                        <select id="system_percentage" class="form-select mb-3" name="system_percentage">
                                             <option value="">Chọn phần trăm</option>
-                                            @foreach([10, 20, 30, 40, 50, 60, 70, 80, 90] as $percent)
-                                                <option
-                                                        value="{{ $percent }}" {{ old('system_percentage', $commission->system_percentage) == $percent ? 'selected' : '' }}>
+                                            @foreach ([10, 20, 30, 40, 50, 60, 70, 80, 90] as $percent)
+                                                <option value="{{ $percent }}"
+                                                    {{ old('system_percentage', $commission->system_percentage) == $percent ? 'selected' : '' }}>
                                                     {{ $percent }}%
                                                 </option>
                                             @endforeach
@@ -86,18 +85,17 @@ difficulty_level) == 'difficult' ? 'selected' : '' }}>Khó
                                         <label for="instructor_percentage" class="form-label">Phần trăm của người hướng
                                             dẫn</label>
                                         <select id="instructor_percentage" class="form-select mb-3"
-                                                name="instructor_percentage">
+                                            name="instructor_percentage">
                                             <option value="">Chọn phần trăm</option>
-                                            @foreach([10, 20, 30, 40, 50, 60, 70, 80, 90] as $percent)
-                                                <option
-                                                        value="{{ $percent }}" {{ old('instructor_percentage', $commission->instructor_percentage) == $percent ? 'selected' : '' }}>
+                                            @foreach ([10, 20, 30, 40, 50, 60, 70, 80, 90] as $percent)
+                                                <option value="{{ $percent }}"
+                                                    {{ old('instructor_percentage', $commission->instructor_percentage) == $percent ? 'selected' : '' }}>
                                                     {{ $percent }}%
                                                 </option>
                                             @endforeach
                                         </select>
                                         @if ($errors->has('instructor_percentage'))
-                                            <span
-                                                    class="text-danger">{{ $errors->first('instructor_percentage') }}</span>
+                                            <span class="text-danger">{{ $errors->first('instructor_percentage') }}</span>
                                         @endif
                                     </div>
                                 </div>
@@ -107,7 +105,7 @@ difficulty_level) == 'difficult' ? 'selected' : '' }}>Khó
                                     </button>
                                     <button type="reset" class="btn btn-info">Nhập lại</button>
                                     <a href="{{ route('admin.commissions.index') }}"
-                                       class="btn btn-dark waves-effect waves-light">Quay lại</a>
+                                        class="btn btn-dark waves-effect waves-light">Quay lại</a>
                                 </div>
                             </div>
                         </div>
@@ -120,7 +118,7 @@ difficulty_level) == 'difficult' ? 'selected' : '' }}>Khó
 
 @push('page-scripts')
     <script>
-        $('#system_percentage').on('change', function () {
+        $('#system_percentage').on('change', function() {
             var systemPercentage = parseInt($(this).val());
             if (systemPercentage) {
                 var instructorPercentage = 100 - systemPercentage;
@@ -128,7 +126,7 @@ difficulty_level) == 'difficult' ? 'selected' : '' }}>Khó
             }
         });
 
-        $('#instructor_percentage').on('change', function () {
+        $('#instructor_percentage').on('change', function() {
             var instructorPercentage = parseInt($(this).val());
             if (instructorPercentage) {
                 var systemPercentage = 100 - instructorPercentage;

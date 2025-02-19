@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @push('page-css')
     <!-- plugin css -->
-    <link href="{{ asset('assets/libs/jsvectormap/css/jsvectormap.min.css') }}" rel="stylesheet" type="text/css"/>
+    <link href="{{ asset('assets/libs/jsvectormap/css/jsvectormap.min.css') }}" rel="stylesheet" type="text/css" />
 @endpush
 
 @section('content')
@@ -14,7 +14,7 @@
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
                             <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                            <li class="breadcrumb-item active">{{ $title ??'' }}</li>
+                            <li class="breadcrumb-item active">{{ $title ?? '' }}</li>
                         </ol>
                     </div>
 
@@ -35,7 +35,7 @@
                             </button>
                             <div class="dropdown">
                                 <button class="btn btn-sm btn-primary" type="button" id="filterDropdown"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                    data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="ri-filter-2-line"></i>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="filterDropdown"
@@ -48,16 +48,16 @@
                                                     <div class="mb-2">
                                                         <label for="startDate" class="form-label">Ngày bắt đầu</label>
                                                         <input type="date" class="form-control form-control-sm"
-                                                               name="start_date" id="startDate" data-filter
-                                                               value="{{ request()->input('start_date') ?? '' }}">
+                                                            name="start_date" id="startDate" data-filter
+                                                            value="{{ request()->input('start_date') ?? '' }}">
                                                     </div>
                                                 </li>
                                                 <li class="col-6">
                                                     <div class="mb-2">
                                                         <label for="endDate" class="form-label">Ngày kết thúc</label>
                                                         <input type="date" class="form-control form-control-sm"
-                                                               name="expire_date" id="endDate" data-filter
-                                                               value="{{ request()->input('expire_date') ?? '' }}">
+                                                            name="expire_date" id="endDate" data-filter
+                                                            value="{{ request()->input('expire_date') ?? '' }}">
                                                     </div>
                                                 </li>
                                             </div>
@@ -81,34 +81,30 @@
                                 <div class="col-md-3">
                                     <label class="form-label">Mã khóa học</label>
                                     <input class="form-control form-control-sm" name="code" type="text"
-                                           value="{{ request()->input('code') ?? '' }}"
-                                           placeholder="Nhập mã khóa học..."
-                                           data-advanced-filter>
+                                        value="{{ request()->input('code') ?? '' }}" placeholder="Nhập mã khóa học..."
+                                        data-advanced-filter>
                                 </div>
                                 <div class="col-md-3">
                                     <label class="form-label">Tên khóa học</label>
                                     <input class="form-control form-control-sm" name="name" type="text"
-                                           value="{{ request()->input('name') ?? '' }}"
-                                           placeholder="Nhập tên khóa học..."
-                                           data-advanced-filter>
+                                        value="{{ request()->input('name') ?? '' }}" placeholder="Nhập tên khóa học..."
+                                        data-advanced-filter>
                                 </div>
                                 <div class="col-md-3">
                                     <label class="form-label">Giảng viên</label>
                                     <input class="form-control form-control-sm" name="user_name" type="text"
-                                           value="{{ request()->input('user_name') ?? '' }}"
-                                           placeholder="Nhập giảng viên..."
-                                           data-advanced-filter>
+                                        value="{{ request()->input('user_name') ?? '' }}" placeholder="Nhập giảng viên..."
+                                        data-advanced-filter>
                                 </div>
                                 <div class="col-md-3">
                                     <label for="statusItem" class="form-label">Mức độ</label>
                                     <select class="form-select form-select-sm" name="level" id="statusItem"
-                                            data-advanced-filter>
+                                        data-advanced-filter>
                                         <option value="">Chọn mức độ</option>
                                         <option @selected(request()->input('level') === 'beginner') value="beginner">Cơ
                                             bản
                                         </option>
-                                        <option
-                                            @selected(request()->input('level') === 'intermediate') value="intermediate">
+                                        <option @selected(request()->input('level') === 'intermediate') value="intermediate">
                                             Trung cấp
                                         </option>
                                         <option @selected(request()->input('level') === 'advanced') value="advanced">
@@ -120,7 +116,7 @@
                                 <div class="col-md-3 mt-2">
                                     <label for="statusItem" class="form-label">Trạng thái</label>
                                     <select class="form-select form-select-sm" name="status" id="statusItem"
-                                            data-advanced-filter>
+                                        data-advanced-filter>
                                         <option value="">Chọn trạng thái</option>
                                         <option @selected(request()->input('status') === 'draft') value="draft">Bản
                                             nháp
@@ -147,82 +143,72 @@
                     </div>
 
                     <div class="card-body" id="item_List">
-                        <div class="table-responsive table-card mt-3 mb-1">
-                            <table class="table align-middle table-nowrap">
-                                <thead class="table-light">
-                                <tr>
-                                    <th>STT</th>
-                                    <th>Ảnh bìa</th>
-                                    <th>Tên khóa học</th>
-                                    <th>Danh mục</th>
-                                    <th>Giảng viên</th>
-                                    <th>Trạng thái</th>
-                                    <th>Hành động</th>
-                                </tr>
-                                </thead>
-                                <tbody class="list form-check-all">
-                                @foreach ($courses as $course)
-                                    <tr>
-                                        <td class="id">{{ $loop->index + 1 }}</td>
-                                        <td class="phone">
-                                            @if ($course->thumbnail)
-                                                <img src="{{ $course->thumbnail }}" alt=""
-                                                     width="100px">
-                                            @else
-                                                <p>Không có ảnh</p>
-                                            @endif
-                                        </td>
-                                        <td class="id">{{ $course->name }}</td>
-                                        <td class="id">{{ $course->category->name }}</td>
-                                        <td class="id">{{ $course->user->name }}</td>
+                        <div class="listjs-table" id="customerList">
+                            <div class="table-responsive table-card mt-3 mb-1">
+                                <table class="table align-middle table-nowrap">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>STT</th>
+                                            <th>Ảnh bìa</th>
+                                            <th>Tên khóa học</th>
+                                            <th>Danh mục</th>
+                                            <th>Giảng viên</th>
+                                            <th>Trạng thái</th>
+                                            <th>Hành động</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="list form-check-all">
+                                        @foreach ($courses as $course)
+                                            <tr>
+                                                <td class="id">{{ $loop->index + 1 }}</td>
+                                                <td class="phone">
+                                                    @if ($course->thumbnail)
+                                                        <img src="{{ $course->thumbnail }}" alt=""
+                                                            width="100px">
+                                                    @else
+                                                        <p>Không có ảnh</p>
+                                                    @endif
+                                                </td>
+                                                <td class="id">{{ $course->name }}</td>
+                                                <td class="id">{{ $course->category->name ?? '' }}</td>
+                                                <td class="id">{{ $course->user->name ?? '' }}</td>
 
-                                        @if ($course->status == 'approved')
-                                            <td class="status"><span class="badge bg-success-subtle text-success">
+                                                @if ($course->status == 'approved')
+                                                    <td class="status"><span class="badge bg-success-subtle text-success">
                                                             Được phê duyệt
                                                         </span></td>
-                                        @elseif ($course->status == 'rejected')
-                                            <td class="status"><span class="badge bg-danger-subtle text-danger">
+                                                @elseif ($course->status == 'rejected')
+                                                    <td class="status"><span class="badge bg-danger-subtle text-danger">
                                                             Bị từ chối
                                                         </span></td>
-                                        @elseif ($course->status == 'pending')
-                                            <td class="status"><span class="badge bg-warning-subtle text-warning">
+                                                @elseif ($course->status == 'pending')
+                                                    <td class="status"><span class="badge bg-warning-subtle text-warning">
                                                             Đang chờ duyệt
                                                         </span></td>
-                                        @else
-                                            <td class="status"><span class="badge bg-danger-subtle text-danger">
+                                                @else
+                                                    <td class="status"><span class="badge bg-danger-subtle text-danger">
                                                             Bản nháp
                                                         </span></td>
-                                        @endif
+                                                @endif
 
-                                        <td>
-                                            <div class="edit">
-                                                <a href="{{ route('admin.courses.show', $course->id) }}">
-                                                    <button class="btn btn-sm btn-info edit-item-btn">
-                                                        <span class="ri-eye-line"></span>
-                                                    </button>
-                                                </a>
-                                            </div>
-                                        </td>
+                                                <td>
+                                                    <div class="edit">
+                                                        <a href="{{ route('admin.courses.show', $course->id) }}">
+                                                            <button class="btn btn-sm btn-info edit-item-btn">
+                                                                <span class="ri-eye-line"></span>
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                </td>
 
 
-                                    </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
-                            <div class="noresult" style="display: none">
-                                <div class="text-center">
-                                    <lord-icon src="https://cdn.lordicon.com/msoeawqm.json" trigger="loop"
-                                               colors="primary:#121331,secondary:#08a88a"
-                                               style="width:75px;height:75px"></lord-icon>
-                                    <h5 class="mt-2">Sorry! No Result Found</h5>
-                                    <p class="text-muted mb-0">We've searched more than 150+ Orders We did not find
-                                        any
-                                        orders for you search.</p>
-                                </div>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
+                            {{ $courses->appends(request()->query())->links() }}
                         </div>
-
-                        {{ $courses->links() }}
                     </div>
                 </div><!-- end card -->
             </div>
@@ -237,7 +223,7 @@
 @push('page-scripts')
     <script>
         var routeUrlFilter = "{{ route('admin.courses.index') }}";
-        $(document).on('click', '#resetFilter', function () {
+        $(document).on('click', '#resetFilter', function() {
             window.location = routeUrlFilter;
         });
     </script>

@@ -2,7 +2,7 @@
 
 @push('page-css')
     <link rel="stylesheet" href="{{ asset('vendor/laraberg/css/laraberg.css') }}">
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 @endpush
 
 @section('content')
@@ -34,7 +34,7 @@
                             </h4>
                             <div class="form-check form-switch">
                                 <input class="form-check-input" type="checkbox" name="is_hot" value="1"
-                                       id="isHotSwitch" @checked($post->is_hot)>
+                                    id="isHotSwitch" @checked($post->is_hot)>
                                 <label class="form-check-label" for="isHotSwitch">
                                     Bài viết hot 🔥
                                 </label>
@@ -44,38 +44,36 @@
                             <div class="col-md-12 mb-2">
                                 <label class="form-label">Tiêu đề</label>
                                 <input type="title" class="form-control mb-2" placeholder="Nhập tiêu đề..."
-                                       value="{{ $post->title }}" name="title">
+                                    value="{{ $post->title }}" name="title">
                                 @error('title')
-                                <span class="text-danger mt-2">{{ $message }}</span>
+                                    <span class="text-danger mt-2">{{ $message }}</span>
                                 @enderror
                             </div>
                             <div class="col-md-12 mb-2">
                                 <label class="form-label">Hình ảnh mới</label>
                                 <input type="file" name="thumbnail" id="imageInput" accept="image/*"
-                                       class="form-control">
+                                    class="form-control">
                                 <img class="mt-2" id="imagePreview"
-                                     style="display: none; max-width: 100%; max-height: 300px;">
+                                    style="display: none; max-width: 100%; max-height: 300px;">
                                 @error('thumbnail')
-                                <span class="text-danger mt-2">{{ $message }}</span>
+                                    <span class="text-danger mt-2">{{ $message }}</span>
                                 @enderror
                             </div>
                             <div class="col-md-12 mb-2">
                                 <div class="d-flex justify-content-between mb-2">
                                     <label class="form-label">Mô tả bài viết</label>
                                     <button type="button" class="btn btn-sm btn-primary" id="openAiModal"
-                                            data-bs-toggle="modal" data-bs-target="#aiModal">
+                                        data-bs-toggle="modal" data-bs-target="#aiModal">
                                         Sử dụng AI
                                     </button>
                                 </div>
-                                <textarea id="ckeditor-classic" name="description" class="form-control" id="" cols="30"
-                                          rows="10">{{ $post->description }}</textarea>
+                                <textarea id="ckeditor-classic" name="description" class="form-control" id="" cols="30" rows="10">{{ $post->description }}</textarea>
                             </div>
                             <div class="col-md-12 mb-2">
                                 <label for="formGroupExampleInput">Nội dung</label>
-                                <textarea class="mb-3" id="laraberg" name="content"
-                                          hidden>{{ $post->content }}</textarea>
+                                <textarea class="mb-3" id="laraberg" name="content" hidden>{{ $post->content }}</textarea>
                                 @error('content')
-                                <span class="text-danger">{{ $message }}</span>
+                                    <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
                         </div>
@@ -104,22 +102,22 @@
                             <div class="col-md-12 mb-2">
                                 <label class="form-label">Trạng thái</label>
                                 <div class="input-group d-flex justify-content-around">
-                                    <input type="radio" name="status" value="draft" @checked($post->status == "draft")>
+                                    <input type="radio" name="status" value="draft" @checked($post->status == 'draft')>
                                     Draft
-                                    <input type="radio" name="status"
-                                           value="pending" @checked($post->status == "pending")> Pending
-                                    <input type="radio" name="status"
-                                           value="published" @checked($post->status == "published")> Published
-                                    <input type="radio" name="status"
-                                           value="private" @checked($post->status == "private")> Private
+                                    <input type="radio" name="status" value="pending" @checked($post->status == 'pending')>
+                                    Pending
+                                    <input type="radio" name="status" value="published" @checked($post->status == 'published')>
+                                    Published
+                                    <input type="radio" name="status" value="private" @checked($post->status == 'private')>
+                                    Private
                                 </div>
                             </div>
                             <div class="col-md-12 mb-2">
                                 <label class="form-label">Ngày xuất bản</label>
                                 <div class="input-group">
                                     <input type="datetime-local" name="published_at" id="datepicker-publish-input"
-                                           class="form-control" placeholder="yy/mm/dd hh:mm" data-provider="flatpickr"
-                                           data-date-format="Y/m/d" data-enable-time value="{{ $post->published_at }}">
+                                        class="form-control" placeholder="yy/mm/dd hh:mm" data-provider="flatpickr"
+                                        data-date-format="Y/m/d" data-enable-time value="{{ $post->published_at }}">
                                 </div>
                             </div>
                         </div>
@@ -133,7 +131,7 @@
                         <div class="card-body">
                             <div class="col-md-12 mb-2">
                                 <select class="select2-categories form-control" name="categories"
-                                        data-placeholder="Chọn danh mục">
+                                    data-placeholder="Chọn danh mục">
                                     @foreach ($categories as $category)
                                         <option value="{{ $category->id }}"
                                             {{ $category->id == $post->category_id ? 'selected' : '' }}>
@@ -153,7 +151,7 @@
                         <div class="card-body">
                             <div class="col-md-12 mb-2">
                                 <select class="select2-tags form-control" name="tags[]" data-placeholder="Chọn tags"
-                                        multiple="multiple">
+                                    multiple="multiple">
                                     @foreach ($tags as $tag)
                                         <option value="{{ $tag->name }}"
                                             {{ in_array($tag->id, $tagIds ?: []) ? 'selected' : '' }}>
@@ -189,11 +187,11 @@
                         <li class="list-group-item ai-option" data-type="audio">Giọng nói</li>
                     </ul>
                     <textarea class="bg-dark form-control text-white rounded resize-horizontal"
-                              style="display: none;margin-top: 15px; height: 250px;"
-                              id="ai-content"></textarea>
+                        style="display: none;margin-top: 15px; height: 250px;" id="ai-content"></textarea>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary isClosed" data-bs-dismiss="modal"  id="isClosed" >Đóng</button>
+                    <button type="button" class="btn btn-secondary isClosed" data-bs-dismiss="modal"
+                        id="isClosed">Đóng</button>
                     <button type="button" class="btn btn-primary" id="aiConfirmBtn">Xác nhận
                     </button>
                 </div>
@@ -212,25 +210,25 @@
 
     <script src="{{ asset('vendor/laraberg/js/laraberg.js') }}"></script>
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             let editorInstance;
 
             Laraberg.init('laraberg');
 
-            $('#imageInput').on('change', function (e) {
+            $('#imageInput').on('change', function(e) {
                 const file = e.target.files[0];
                 if (file && file.type.startsWith('image/')) {
                     const reader = new FileReader();
-                    reader.onload = function () {
+                    reader.onload = function() {
                         $('#imagePreview').attr('src', reader.result).show();
                     };
                     reader.readAsDataURL(file);
-                }else {
+                } else {
                     $('#imagePreview').hide();
                 }
             });
 
-            $('form').on('submit', function () {
+            $('form').on('submit', function() {
                 var content = Laraberg.getContent('laraberg');
                 $('textarea[name="content"]').val(content);
             });
@@ -252,13 +250,13 @@
                 })
                 .catch(console.error);
 
-            $('#openAiModal').click(function () {
+            $('#openAiModal').click(function() {
                 $('#ai-options').show();
                 $('#ai-content').hide();
                 $('#aiConfirmBtn').prop('disabled', true);
             });
 
-            $('.ai-option').click(function () {
+            $('.ai-option').click(function() {
                 $('.ai-option').removeClass('bg-primary text-white').prop('disabled', false);
                 $(this).addClass('bg-primary text-white');
                 $('.ai-option').not(this).prop('disabled', true);
@@ -293,11 +291,11 @@
                         type,
                         title: prompt
                     },
-                    success: function (response) {
+                    success: function(response) {
                         const aiText = response.data;
                         let index = 0;
                         $('#ai-content').html('');
-                        const interval = setInterval(function () {
+                        const interval = setInterval(function() {
                             if (index < aiText.length) {
                                 $('#ai-content').append(aiText.charAt(index));
                                 index++;
@@ -308,7 +306,7 @@
                             }
                         }, 50);
                     },
-                    error: function () {
+                    error: function() {
                         $('#ai-content').html('<p>Không thể tải dữ liệu từ AI, vui lòng thử lại!</p>');
                         $('.ai-option').prop('disabled', false);
                         $('#isClosed').prop('disabled', false);
@@ -320,7 +318,7 @@
                 $('.ai-option').removeClass('bg-primary text-white').prop('disabled', false);
             }
 
-            $('#aiConfirmBtn').click(function () {
+            $('#aiConfirmBtn').click(function() {
                 const aiText = $('#ai-content').text();
                 if (editorInstance) {
                     editorInstance.setData(aiText);
@@ -329,7 +327,7 @@
                 resetAiOptions();
             });
 
-            $('#aiModal').on('hidden.bs.modal', function () {
+            $('#aiModal').on('hidden.bs.modal', function() {
                 resetAiOptions();
             });
         });

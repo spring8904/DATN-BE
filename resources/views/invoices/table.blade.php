@@ -4,35 +4,49 @@
             <thead class="table-light">
                 <tr>
                     <th>STT</th>
-                    <th>Người mua</th>
                     <th>Mã khóa học</th>
-                    <th>Tên khóa học</th>
+                    <th>Người mua</th>
+                    <th>Khoá học</th>
+                    <th>Người hướng dẫn</th>
                     <th>Tổng thanh toán</th>
                     <th>Trạng thái</th>
                     <th>Ngày mua</th>
-                    <th>Ngày xác nhận mua</th>
+                    <th>Thao tác</th>
                 </tr>
             </thead>
             <tbody class="list">
-                @foreach ($invoices as $invoice)
-                    <tr>
-                        <td>{{ $loop->index + 1 }}</td>
-                        <td><span class="text-danger fw-bold">{{ $invoice->user->name }}</span>
-                        </td>
-                        <td>{{ $invoice->course->code }}</td>
-                        <td>{{ Str::limit($invoice->course->name, 40) }}</td>
-                        <td>{{ number_format($invoice->final_total) }} VND</td>
-                        <td>
-                            <span class="badge bg-primary">Hoàn thành</span>
-                        </td>
-                        <td>
-                            {!! $invoice->created_at ?\Carbon\Carbon::parse($invoice->created_at)->format('d/m/Y') : '<span class="btn btn-sm btn-soft-warning">Trống</span>' !!}
-                        </td>
-                        <td>
-                            {!! $invoice->updated_at ?\Carbon\Carbon::parse($invoice->updated_at)->format('d/m/Y') : '<span class="btn btn-sm btn-soft-warning">Không thay đổi</span>' !!}
-                        </td>
-                    </tr>
-                @endforeach
+            @foreach ($invoices as $invoice)
+                <tr>
+                    <td>{{ $loop->index + 1 }}</td>
+                    <td>{{ $invoice->code }}</td>
+                    <td><span class="text-danger fw-bold">{{ $invoice->user->name ?? '' }}</span>
+                    </td>
+                    <td>
+                        <img style="width: 70px; "
+                             src="{{ $invoice->course->thumbnail }}"
+                             class="object-fit-cover rounded me-2" alt="">
+                        <span>
+                            {{ Str::limit($invoice->course->name ?? 'Không có tên', 40) }}
+                        </span>
+                    </td>
+                    <td>
+                        {{ $invoice->course->user->name ?? ''}}
+                    </td>
+                    <td>{{ number_format($invoice->final_total ?? 0) }} VND</td>
+                    <td>
+                        <span class="badge bg-primary">Hoàn thành</span>
+                    </td>
+                    <td>{{ $invoice->created_at ? \Carbon\Carbon::parse($invoice->created_at)->format('d/m/Y') : '' }}
+                    </td>
+                   <td>
+                       <a href="">
+                           <button class="btn btn-sm btn-info edit-item-btn">
+                               <span class="ri-eye-line"></span>
+                           </button>
+                       </a>
+                   </td>
+                </tr>
+            @endforeach
             </tbody>
         </table>
     </div>

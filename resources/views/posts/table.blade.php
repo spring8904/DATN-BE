@@ -64,10 +64,10 @@
                         <td class="customer_name">{{ $post->id }}</td>
                         <td class="email">{{ $post->title }}</td>
                         <td>
-                            <img class="img-thumbnail" src="{{ $post->thumbnail }}" alt="Hình đại diện" width="100">
+                            <img class="img-thumbnail" src="{{ $post->thumbnail ?? '' }}" alt="Hình đại diện" width="100">
                         </td>
-                        <td class="text-danger fw-bold">{{ $post->user->name }}</td>
-                        <td>{{ $post->category->name }}</td>
+                        <td class="text-danger fw-bold">{{ $post->user->name ?? ''}}</td>
+                        <td>{{ $post->category->name ?? '' }}</td>
                         <td class="status col-1">
                             @if ($post->status === 'published')
                                 <span class="badge bg-success w-75">
@@ -89,7 +89,7 @@
                         </td>
                         @if (!empty($post_deleted_at))
                             <td>
-                                {{ optional(\Carbon\Carbon::parse($post->deleted_at))->format('d/m/Y') ?? 'NULL' }}
+                                {{ $post->deleted_at ? \Carbon\Carbon::parse($post->deleted_at)->format('d/m/Y') : '' }}
                             </td>
                         @else
                             <td>
