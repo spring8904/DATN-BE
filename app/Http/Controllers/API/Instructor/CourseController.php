@@ -487,7 +487,7 @@ class CourseController extends Controller
             $lessons = $chapter->lessons()->get();
 
             foreach ($lessons as $lesson) {
-                if(empty($lesson->title) || empty($lesson->content)) {
+                if(empty($lesson->title) ) {
                     $errors[] = "Bài học giảng {$lesson->title} trong chương
                      '{$chapter->title}' thiếu tiêu đề hoặc nội dung";
 
