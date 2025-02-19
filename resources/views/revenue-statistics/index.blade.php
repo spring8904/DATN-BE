@@ -53,7 +53,7 @@
                                             </div>
                                             <h4 class="fs-22 fw-semibold ff-secondary">
                                                 <span class="counter-value" data-target="559.25">
-                                                    {{ number_format($totalRevenue) ?? '' }}
+                                                    {{ number_format($totalRevenue ?? 0) }}
                                                 </span>
                                             </h4>
                                         </div>
@@ -267,7 +267,7 @@
                                                         </td>
                                                         <td>
                                                             <h5 class="fs-14 mb-0">
-                                                                {{ $topInstructor->total_enrolled_students }}
+                                                                {{ $topInstructor->total_enrolled_students ?? '' }}
                                                             </h5>
                                                         </td>
                                                         <td>
@@ -445,7 +445,7 @@
                                                             </div>
                                                         </td>
                                                         <td>{{ $topUser->total_courses_purchased }}</td>
-                                                        <td>{{ number_format($topUser->total_spent) }}</td>
+                                                        <td>{{ number_format($topUser->total_spent ?? 0) }}</td>
                                                         <td>{{ $topUser->last_purchase_date }}</td>
                                                     </tr>
                                                 @endforeach

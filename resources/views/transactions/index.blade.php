@@ -199,12 +199,12 @@
                                         @foreach ($transactions as $transaction)
                                             <tr>
                                                 <td>{{ $loop->index + 1 }}</td>
-                                                <td>{{ $transaction->transaction_code ?? '' }}</td>
+                                                <td>{{ $transaction->transaction_code ?? 'Không có thông tin' }}</td>
                                                 <td><span
-                                                        class="text-primary fw-bold">{{ $transaction->invoice->user->name ?? '' }}</span>
+                                                        class="text-primary fw-bold">{{ $transaction->invoice->user->name ?? 'Không có thông tin'}}</span>
                                                 </td>
-                                                <td>{{ $transaction->invoice->user->email ?? '' }}</td>
-                                                <td>{{ number_format($transaction->amount) }} VND</td>
+                                                <td>{{ $transaction->invoice->user->email ?? 'Không có thông tin' }}</td>
+                                                <td>{{ number_format($transaction->amount) ?? 0 }} VND</td>
                                                 <td>
                                                     @if ($transaction->type === 'invoice')
                                                         <span class="badge bg-success w-50">
@@ -231,7 +231,7 @@
                                                         </span>
                                                     @endif
                                                 </td>
-                                                <td>{{ $transaction->created_at }}
+                                                <td>{{ $transaction->created_at ?? '' }}
                                                 </td>
                                                 <td>
                                                     <a

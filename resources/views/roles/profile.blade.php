@@ -16,7 +16,7 @@
                 <div class="card-body p-4">
                     <div class="text-center">
                         <div class="profile-user position-relative d-inline-block mx-auto  mb-4">
-                            <img src="{{Auth::user()->avatar}}" class="rounded-circle avatar-xl img-thumbnail user-profile-image" alt="user-profile-image">
+                            <img src="{{Auth::user()->avatar ?? ''}}" class="rounded-circle avatar-xl img-thumbnail user-profile-image" alt="user-profile-image">
                             <div class="avatar-xs p-0 rounded-circle profile-photo-edit">
                                 <input id="profile-img-file-input" type="file" class="profile-img-file-input">
                                 <label for="profile-img-file-input" class="profile-photo-edit avatar-xs">
@@ -26,7 +26,7 @@
                                 </label>
                             </div>
                         </div>
-                        <h5 class="fs-16 mb-1">{{Auth::user()->name}}</h5>
+                        <h5 class="fs-16 mb-1">{{Auth::user()->name ?? ''}}</h5>
                     </div>
                 </div>
             </div>

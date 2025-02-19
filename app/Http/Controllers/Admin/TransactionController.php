@@ -13,7 +13,7 @@ class TransactionController extends Controller
     public function index(Request $request)
     {
         try {
-            $title = 'Quản lý thanh toán';
+            $title = 'Giao dịch thanh toán';
             $subTitle = 'Giao dịch thanh toán';
 
             $queryTransactions = Transaction::query()

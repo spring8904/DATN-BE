@@ -96,7 +96,7 @@ class SendRequestController extends Controller
 
                 case 'approved':
                     DB::rollBack();
-                    return $this->respondBadRequest('Khóa học đã được duyệt, không thể gửi yêu cầu');
+                    return $this->respondError('Khóa học đã được duyệt, không thể gửi yêu cầu');
 
                 case 'rejected':
                     $approvable->status = 'pending';

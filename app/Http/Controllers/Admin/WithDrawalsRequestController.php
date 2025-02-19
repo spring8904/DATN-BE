@@ -16,7 +16,7 @@ class WithDrawalsRequestController extends Controller
     public function index(Request $request)
     {
         try {
-            $title = 'Quản lý thanh toán';
+            $title = 'Yêu cầu rút tiền';
             $subTitle = 'Yêu cầu rút tiền';
 
             $queryWithdrawals = WithdrawalRequest::query()->latest('id');

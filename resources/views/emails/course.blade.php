@@ -12,7 +12,7 @@
     <h1>Khóa học: {{ $course->name }}</h1>
     <p>Yêu cầu gửi khóa học của bạn đã được chấp nhận và đang chờ duyệt.</p>
     <p><strong>Mô tả khóa học:</strong> {{ $course->description }}</p>
-    <p><strong>Ngày gửi:</strong> {{ $course->created_at->format('d-m-Y H:i') }}</p>
+    <p><strong>Ngày gửi:</strong> {{ $course->created_at ? $course->created_at->format('d-m-Y H:i') : '' }}</p>
 </div>
 </body>
 </html>

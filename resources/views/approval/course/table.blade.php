@@ -19,13 +19,13 @@
                 @foreach ($approvals as $approval)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
-                        <td>{{ \Illuminate\Support\Str::limit($approval->course->name, 50) }}</td>
+                        <td>{{ \Illuminate\Support\Str::limit($approval->course->name ?? 'Không có tên', 50) }}</td>
                         <td>{{ $approval->course->user->name }}</td>
                         <td>
                             <img style="height: 80px" src="{{ $approval->course->thumbnail }}"
                                 alt="" class="w-100 object-fit-cover">
                         </td>
-                        <td>{{ number_format($approval->course->price) }}</td>
+                        <td>{{ number_format($approval->course->price ?? 0) ?? '' }}</td>
                         <td>{!!  $approval->request_date ? \Carbon\Carbon::parse($approval->request_date)->format('d/m/Y') : '<span class="btn btn-sm btn-soft-warning">Chưa kiểm duyệt</span>' !!}</td>
                         <td>
                             @if ($approval->status == 'pending')

@@ -1,5 +1,4 @@
 @extends('layouts.app')
-@section('title', $title)
 @push('page-css')
     <link href="{{ asset('assets/css/custom.css') }}" rel="stylesheet" type="text/css" />
 @endpush
@@ -16,7 +15,7 @@
                         <ol class="breadcrumb m-0">
                             <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
                             <li class="breadcrumb-item active"><a
-                                    href="{{ route('admin.invoices.index') }}">{{ $subTitle }}</a></li>
+                                    href="{{ route('admin.invoices.index') }}">{{ $subTitle ?? '' }}</a></li>
                         </ol>
                     </div>
 
@@ -153,24 +152,24 @@
                                         <tr>
                                             <td>{{ $loop->index + 1 }}</td>
                                             <td>{{ $invoice->code }}</td>
-                                            <td><span class="text-danger fw-bold">{{ $invoice->user->name }}</span>
+                                            <td><span class="text-danger fw-bold">{{ $invoice->user->name ?? '' }}</span>
                                             </td>
                                             <td>
                                                 <img style="width: 70px; "
                                                      src="{{ $invoice->course->thumbnail }}"
                                                      class="object-fit-cover rounded me-2" alt="">
                                                 <span>
-                                                    {{ Str::limit($invoice->course->name, 40) }}
+                                                    {{ Str::limit($invoice->course->name ?? 'Không có tên', 40) }}
                                                 </span>
                                             </td>
                                             <td>
                                                 {{ $invoice->course->user->name ?? ''}}
                                             </td>
-                                            <td>{{ number_format($invoice->final_total) }} VND</td>
+                                            <td>{{ number_format($invoice->final_total ?? 0) }} VND</td>
                                             <td>
                                                 <span class="badge bg-primary">Hoàn thành</span>
                                             </td>
-                                            <td>{{ optional(\Carbon\Carbon::parse($invoice->created_at))->format('d/m/Y') ?? 'NULL' }}
+                                            <td>{{ $invoice->created_at ? \Carbon\Carbon::parse($invoice->created_at)->format('d/m/Y') : '' }}
                                             </td>
                                            <td>
                                                <a href="">
