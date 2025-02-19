@@ -77,7 +77,7 @@ class UserController extends Controller
                     'certificates' => !empty($uploadedCertificates)
                         ? json_encode($uploadedCertificates)
                         : $profile->certificates,
-                    'bio' => $this->prepareBioData($request->bio),
+                    'bio' => $request->bio ? $this->prepareBioData($request->bio, $profile) : $profile->bio,
                 ]);
             }
 
@@ -120,37 +120,52 @@ class UserController extends Controller
         return [];
     }
 
-    private function prepareBioData($bioData)
+    private function prepareBioData($bioData, $profile)
     {
         if ($bioData) {
             $bio = [];
+            $profile = !empty($profile->bio) ? json_decode($profile->bio,true) : '';
 
             if (isset($bioData['facebook'])) {
                 $bio['facebook'] = $bioData['facebook'];
+            }else{
+                if($profile && !empty($profile['facebook'])) $bio['facebook'] = $profile['facebook'];
             }
 
             if (isset($bioData['instagram'])) {
                 $bio['instagram'] = $bioData['instagram'];
+            }else{
+                if($profile && !empty($profile['instagram'])) $bio['instagram'] = $profile['instagram'];
             }
 
             if (isset($bioData['github'])) {
                 $bio['github'] = $bioData['github'];
+            }else{
+                if($profile && !empty($profile['github'])) $bio['github'] = $profile['github'];
             }
 
             if (isset($bioData['linkedin'])) {
                 $bio['linkedin'] = $bioData['linkedin'];
+            }else{
+                if($profile && !empty($profile['linkedin'])) $bio['linkedin'] = $profile['linkedin'];
             }
 
             if (isset($bioData['twitter'])) {
                 $bio['twitter'] = $bioData['twitter'];
+            }else{
+                if($profile && !empty($profile['twitter'])) $bio['twitter'] = $profile['twitter'];
             }
 
             if (isset($bioData['youtube'])) {
                 $bio['youtube'] = $bioData['youtube'];
+            }else{
+                if($profile && !empty($profile['youtube'])) $bio['youtube'] = $profile['youtube'];
             }
 
             if (isset($bioData['website'])) {
                 $bio['website'] = $bioData['website'];
+            }else{
+                if($profile && !empty($profile['website'])) $bio['website'] = $profile['website'];
             }
 
             return json_encode($bio);

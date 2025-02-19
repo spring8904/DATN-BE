@@ -186,14 +186,12 @@
                 },
                 success: function(response) {
                     $("#transaction-container").html(response.systemFunds);
+                    
                     if (data.search) {
                         $("#load-more").hide();
                     } else {
                         $("#load-more").show();
                     }
-                },
-                error: function(xhr, status, error) {
-                    $("#load-more").text("Lỗi! Vui lòng thử lại.");
                 },
             });
         }

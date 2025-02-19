@@ -223,7 +223,7 @@
                                             <td><span class="text-danger">{{ $withdrawal->account_number ?? 'Không có thông tin' }}</span>
                                             </td>
                                             <td>{{ \Illuminate\Support\Str::limit($withdrawal->bank_name ?? 'Không có thông tin',40) }}</td>
-                                            <td>{{ number_format($withdrawal->amount) }} VND</td>
+                                            <td>{{ number_format($withdrawal->amount ?? 0) }} VND</td>
                                             <td>
                                                 @if ($withdrawal->status === 'completed')
                                                     <span class="badge bg-success w-100">
