@@ -375,9 +375,7 @@
                                                                 $approval->user->profile->certificates ?? '[]',
                                                                 true,
                                                             );
-                                                            $certificates = is_array($certificates)
-                                                                ? $certificates
-                                                                : [];
+                                                            $certificates = is_array($certificates) ? $certificates : [];
                                                         @endphp
                                                         @if (!empty($certificates))
                                                             @foreach ($certificates as $certificate)
