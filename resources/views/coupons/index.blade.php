@@ -245,9 +245,9 @@
                                                         </span></td>
                                                 @endif
 
-                                                <td class="date">{{ $coupon->start_date }}</td>
-                                                <td class="date">{{ $coupon->expire_date }}</td>
-                                                <td class="date">{{ $coupon->used_count }}</td>
+                                                <td class="date">{{ $coupon->start_date ?? '' }}</td>
+                                                <td class="date">{{ $coupon->expire_date ?? '' }}</td>
+                                                <td class="date">{{ $coupon->used_count ?? 0 }}</td>
                                                 <td>
                                                     <div class="d-flex gap-2">
                                                         <div class="remove">
@@ -279,17 +279,6 @@
                                         @endforeach
                                     </tbody>
                                 </table>
-                                <div class="noresult" style="display: none">
-                                    <div class="text-center">
-                                        <lord-icon src="https://cdn.lordicon.com/msoeawqm.json" trigger="loop"
-                                            colors="primary:#121331,secondary:#08a88a"
-                                            style="width:75px;height:75px"></lord-icon>
-                                        <h5 class="mt-2">Sorry! No Result Found</h5>
-                                        <p class="text-muted mb-0">We've searched more than 150+ Orders We did not find
-                                            any
-                                            orders for you search.</p>
-                                    </div>
-                                </div>
                             </div>
 
                             {{ $coupons->appends(request()->query())->links() }}

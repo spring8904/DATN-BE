@@ -412,11 +412,11 @@
                     'Không xác định';
 
                 const notificationItem = `
-        <div id="notification-${notification.id}" data-notification-id=${notification.id} class="text-reset notification-item d-block dropdown-item notification-check">
+        <div id="notification-${notification.id}" class="text-reset notification-item d-block dropdown-item notification-check" data-notification-id=${notification.id} data-isChecked=${isChecked}>
             <div class="d-flex">
                 <img src="${thumbnail}" class="me-3 rounded-circle avatar-xs" alt="user-pic">
                 <div class="flex-grow-1">
-                    <a href="${url || '#'}" class="stretched-link">
+                    <a href="${url || '#'}" class="stretched-link-${notification.id}">
                         <h6 class="mt-0 mb-1 fs-13 fw-semibold">${title}</h6>
                     </a>
                     <div class="fs-13 text-muted">
@@ -455,21 +455,21 @@
             $(document).on('click', '.notification-check', function(e) {
                 e.preventDefault();
                 const notificationId = $(this).data('notification-id');
+                const isChecked = $(this).data('ischecked');
+                
+                const readed = "{{ now() }}";
+                const urlRedirect = $(`.stretched-link-${notificationId}`).attr('href');
 
-                const isChecked = $(this).prop('checked');
-                const urlRedirect = $('.stretched-link').attr('href');
-
-                if (!notificationId) {
+                if (isChecked || !notificationId) {
                     window.location.href = urlRedirect;
                     return;
                 }
                 const url = `/admin/notifications/${notificationId}`;
 
                 console.log(urlRedirect, url, notificationId);
-
-
+                
                 const data = {
-                    read_at: isChecked
+                    read_at: readed
                 };
 
                 $.ajax({

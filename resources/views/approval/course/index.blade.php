@@ -239,7 +239,7 @@
                                     @foreach ($approvals as $approval)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ \Illuminate\Support\Str::limit($approval->course->name, 50) }}</td>
+                                            <td>{{ \Illuminate\Support\Str::limit($approval->course->name ?? 'Không có tên', 50) }}</td>
                                             <td>{{ $approval->course->user->name ?? '' }}</td>
                                             <td>
                                                 <img style="height: 80px" src="{{ $approval->course->thumbnail }}"

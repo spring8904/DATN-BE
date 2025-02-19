@@ -74,7 +74,7 @@
                         <div class="mb-3">
                             <label class="form-label">Danh mục:</label>
                             <select class="select2-categories form-control" multiple="multiple" disabled>
-                                <option selected>{{ $post->category->name }}</option>
+                                <option selected>{{ $post->category->name ?? '' }}</option>
                             </select>
                         </div>
                         <div class="mb-3">
@@ -95,11 +95,11 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Ngày tạo bài:</label>
-                            <p class="text-muted">{{ $post->created_at->format('d/m/Y H:i') }}</p>
+                            <p class="text-muted">{{ $post->created_at ? $post->created_at->format('d/m/Y H:i') : '' }}</p>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Ngày chỉnh sửa:</label>
-                            <p class="text-muted">{{ $post->updated_at->format('d/m/Y H:i') }}</p>
+                            <p class="text-muted">{{ $post->updated_at ? $post->updated_at->format('d/m/Y H:i') : '' }}</p>
                         </div>
                     </div>
                 </div>

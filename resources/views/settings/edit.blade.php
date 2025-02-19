@@ -43,7 +43,7 @@
                         <div class="col-md-12">
                             <label for="key" class="form-label">Key setting</label>
                             <input type="text" class="form-control mb-2" name="key" id="key"
-                                placeholder="Nhập key setting" value="{{ $setting->key }}">
+                                placeholder="Nhập key setting" value="{{ $setting->key ?? '' }}">
                             @error('key')
                                 <span class="text-danger mt-2">{{ $message }}</span>
                             @enderror
@@ -51,7 +51,7 @@
                         <div class="col-md-12">
                             <label for="inputValue" class="form-label">Giá trị</label>
                             <input type="value" class="form-control mb-2" name="value" id="inputValue"
-                                placeholder="Nhập giá trị" value="{{ $setting->value }}">
+                                placeholder="Nhập giá trị" value="{{ $setting->value ?? '' }}">
                             @error('value')
                                 <span class="text-danger mt-2">{{ $message }}</span>
                             @enderror

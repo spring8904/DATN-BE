@@ -64,8 +64,8 @@
                         </th>
                         <td class="id"><a
                                 class="fw-medium link-primary">{{ $loop->index + 1 }}</a></td>
-                        <td class="customer_name">{{ $user->name }}</td>
-                        <td class="email">{{ $user->email }}</td>
+                        <td class="customer_name">{{ $user->name ?? 'Chưa có thông tin' }}</td>
+                        <td class="email">{{ $user->email ?? 'Chưa có thông tin' }}</td>
                         <td class="phone">{{ $user->profile->phone ?? 'Chưa có thông tin' }}</td>
                         <td>
                             <div class="form-check form-switch form-switch-warning">
@@ -94,21 +94,20 @@
                                 $roleName =
                                     $roleUser['name'] === 'deleted'
                                         ? $user->roles->first()?->name
-                                        : $roleUser['name'];
-                                $badgeColor = match ($roleName) {
-                                    'admin' => 'bg-danger',
-                                    'member' => 'bg-primary',
-                                    'instructor' => 'bg-warning',
-                                    default => 'bg-primary',
-                                };
-                            @endphp
+                                        : $roleUser['name'] ?? 'member';
+
+                                $badgeColor = Arr::get(
+                                    config('roles.colors'),
+                                    $roleName,
+                                    'bg-primary',
+                            ); @endphp
                             <span class="badge {{ $badgeColor }} w-100">
                                 {{ Str::ucfirst($roleName) }}
                             </span>
                         </td>
                         @if ($roleUser['name'] !== 'deleted')
                             <td>
-                                {{ optional(\Carbon\Carbon::parse($user->created_at))->format('d/m/Y') ?? 'NULL' }}
+                                {{ optional($user->created_at)->format('d/m/Y') ?? 'NULL' }}
                             </td>
                         @endif
                         <td>
@@ -130,7 +129,7 @@
                                     </a>
                                 </div>
                             @else
-                                {{ optional(\Carbon\Carbon::parse($user->deleted_at))->format('d/m/Y') ?? 'NULL' }}
+                                {{ optional($user->deleted_at)->format('d/m/Y') ?? 'NULL' }}
                             @endif
                         </td>
                     </tr>
