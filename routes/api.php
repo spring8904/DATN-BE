@@ -149,10 +149,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
             #============================== ROUTE POST =============================
             Route::prefix('posts')->as('posts.')->group(function () {
-                Route::get('/', [\App\Http\Controllers\API\Instructor\PostController::class, 'index']);
-                Route::get('/{post}', [\App\Http\Controllers\API\Instructor\PostController::class, 'getPostBySlug']);
-                Route::post('/', [\App\Http\Controllers\API\Instructor\PostController::class, 'store']);
-                Route::put('/{post}', [\App\Http\Controllers\API\Instructor\PostController::class, 'update']);
+                Route::get('/', [PostController::class, 'index']);
+                Route::get('/{post}', [PostController::class, 'getPostBySlug']);
+                Route::post('/', [PostController::class, 'store']);
+                Route::put('/{post}', [PostController::class, 'update']);
             });
         });
 

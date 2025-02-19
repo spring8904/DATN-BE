@@ -156,6 +156,7 @@ class UserController extends Controller
     public function changePassword(Request $request)
     {
         try {
+            
 
         } catch (\Exception $e) {
             $this->logError($e, $request->all());
