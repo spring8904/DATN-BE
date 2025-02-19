@@ -349,5 +349,9 @@ Route::prefix('admin')->as('admin.')
             ->as('chats.')
             ->group(function () {
                 Route::get('/chat-realtime', [ChatController::class, 'index'])->name('index');
+                Route::post('/chat-realtime',[ChatController::class, 'createGroupChat'])->name('create');
+                Route::get('/get-group-info', [ChatController::class, 'getGroupInfo'])->name('getGroupInfo');
+                Route::post('/send-message', [ChatController::class, 'sendGroupMessage'])->name('sendGroupMessage');
+                Route::get('/get-messages/{conversationId}', [ChatController::class, 'getGroupMessages'])->name('getGroupMessages');
             });    
     });
