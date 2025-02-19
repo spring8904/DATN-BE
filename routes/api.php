@@ -47,7 +47,11 @@ Route::prefix('auth')->as('auth.')->group(function () {
     Route::get('google', [GoogleController::class, 'redirectToGoogle']);
     Route::get('google/callback', [GoogleController::class, 'handleGoogleCallback']);
 });
-Route::get('/transactions/vnpay-callback', [TransactionController::class, 'vnpayCallback']);
+
+Route::get('/vnpay-callback', [TransactionController::class, 'vnpayCallback']);
+Route::get('/reset-password/{token}', function ($token) {
+    return view('emails.auth.reset-password', ['token' => $token]);
+})->middleware('guest')->name('password.reset');
 #============================== ROUTE SEARCH =============================
 Route::prefix('search')
     ->group(function () {
@@ -55,6 +59,7 @@ Route::prefix('search')
     });
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/vnpay-payment', [TransactionController::class, 'createVNPayPayment']);
 
     Route::prefix('auth')->as('auth.')->group(function () {
         Route::post('logout', [AuthController::class, 'logout']);
@@ -77,16 +82,15 @@ Route::middleware('auth:sanctum')->group(function () {
 
         #============================== ROUTE NOTIFICATION =============================
         Route::prefix('notifications')
-            ->group(function () {});
+            ->group(function () {
+            });
+    });
 
-        #============================== ROUTE WISH LIST =============================
-        Route::prefix('wish-lists')->as('wish-lists.')->group(function () {
-            Route::get('/', [WishListController::class, 'index']);
-            Route::post('/', [WishListController::class, 'store']);
-            Route::delete('/{wishListID}', [WishListController::class, 'destroy']);
-            
-        });
-        
+    #============================== ROUTE WISH LIST =============================
+    Route::prefix('wish-lists')->as('wish-lists.')->group(function () {
+        Route::get('/', [WishListController::class, 'index']);
+        Route::post('/', [WishListController::class, 'store']);
+        Route::delete('/{wishListID}', [WishListController::class, 'destroy']);
     });
 
     #============================== ROUTE TRANSACTION =============================
@@ -99,7 +103,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     #============================== ROUTE LEARNING =============================
     Route::prefix('learning-path')
-        ->group(function () {});
+        ->group(function () {
+        });
 
     #============================== ROUTE INSTRUCTOR MANAGE =============================
     Route::prefix('instructor')
@@ -107,7 +112,8 @@ Route::middleware('auth:sanctum')->group(function () {
         ->as('instructor.')
         ->group(function () {
             Route::prefix('statistics')
-                ->group(function () {});
+                ->group(function () {
+                });
 
             Route::prefix('manage')
                 ->group(function () {
@@ -117,9 +123,12 @@ Route::middleware('auth:sanctum')->group(function () {
                             Route::get('/', [CourseController::class, 'index']);
                             Route::get('/{course}', [CourseController::class, 'getCourseOverView']);
                             Route::post('/', [CourseController::class, 'store']);
-                            Route::put('/{course}/contentCourse', [CourseController::class, 'updateContentCourse']);
+                            Route::put('/{course}/courseOverView', [CourseController::class, 'updateCourseOverView']);
+                            Route::put('/{course}/courseObjective', [CourseController::class, 'updateCourseObjectives']);
                             Route::delete('/{course}', [CourseController::class, 'deleteCourse']);
                             Route::get('/{slug}/chapters', [CourseController::class, 'getChapters']);
+                            Route::get('/{slug}/validate-course', [CourseController::class, 'validateCourse']);
+                            Route::get('/{slug}/check-course-complete', [CourseController::class, 'checkCourseComplete']);
                         });
 
                     #============================== ROUTE CHAPTER =============================
@@ -142,6 +151,28 @@ Route::middleware('auth:sanctum')->group(function () {
                             Route::put('/{chapterId}/{lesson}', [LessonController::class, 'updateTitleLesson']);
                             Route::put('/{chapterId}/{lesson}/content', [LessonController::class, 'updateContentLesson']);
                             Route::delete('/{chapterId}/{lesson}', [LessonController::class, 'deleteLesson']);
+
+                            Route::post('/{chapterId}/store-lesson-video', [\App\Http\Controllers\API\Instructor\LessonVideoController::class, 'storeLessonVideo']);
+                            Route::post('/{chapterId}/store-lesson-quiz', [\App\Http\Controllers\API\Instructor\QuizController::class, 'storeLessonQuiz']);
+
+                            Route::prefix('quiz')
+                                ->group(function () {
+                                    Route::get('download-quiz-form', [\App\Http\Controllers\API\Instructor\QuizController::class, 'downloadQuizForm']);
+                                    Route::get('{quiz}/show-quiz', [\App\Http\Controllers\API\Instructor\QuizController::class, 'showQuiz']);
+                                    Route::get('{question}/show-quiz-question', [\App\Http\Controllers\API\Instructor\QuizController::class, 'showQuestion']);
+                                    Route::post('{quiz}/store-quiz-question-multiple', [\App\Http\Controllers\API\Instructor\QuizController::class, 'storeQuestionMultiple']);
+                                    Route::post('{quiz}/store-quiz-question-single', [\App\Http\Controllers\API\Instructor\QuizController::class, 'storeQuestionSingle']);
+                                    Route::post('{quiz}/import-quiz-question', [\App\Http\Controllers\API\Instructor\QuizController::class, 'importQuiz']);
+                                    Route::put('{question}/update-quiz-question', [\App\Http\Controllers\API\Instructor\QuizController::class, 'updateQuestion']);
+                                    Route::delete('{question}/delete-quiz-question', [\App\Http\Controllers\API\Instructor\QuizController::class, 'deleteQuestion']);
+                                });
+
+                            Route::post('/{chapterId}/store-lesson-document', [DocumentController::class, 'storeLessonDocument']);
+                            Route::put('/{documentID}', [DocumentController::class, 'update']);
+
+                            Route::post('/{chapterId}/store-lesson-coding', [\App\Http\Controllers\API\Instructor\LessonCodingController::class, 'storeLessonCoding']);
+                            Route::get('/{lesson}/{coding}/coding-exercise', [\App\Http\Controllers\API\Instructor\LessonCodingController::class, 'getCodingExercise']);
+                            Route::put('/{lesson}/{coding}/coding-exercise', [\App\Http\Controllers\API\Instructor\LessonCodingController::class, 'updateCodingExercise']);
                         });
                 });
 
@@ -164,17 +195,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{note}', [NoteController::class, 'destroy']);
     });
 
-    #============================== ROUTE DOCUMENT =============================
-    Route::prefix('documents')->as('documents.')->group(function () {
-        Route::get('/{lessonID}/document-lesson', [DocumentController::class, 'index']);
-        Route::get('/{documentID}', [DocumentController::class, 'show']);
-        Route::post('/', [DocumentController::class, 'store']);
-        Route::put('/{documentID}', [DocumentController::class, 'update']);
-        Route::delete('/{documentID}', [DocumentController::class, 'destroy']);
-    });
-
     #============================== ROUTE COUPON =============================
-    Route::prefix('coupons')->as('coupons.')->group(function () {});
+    Route::prefix('coupons')->as('coupons.')->group(function () {
+    });
 
     #============================== ROUTE TRANSACTION =============================
     Route::prefix('transactions')->as('transactions.')->group(function () {
@@ -186,11 +209,16 @@ Route::middleware('auth:sanctum')->group(function () {
 
     #============================== ROUTE CHAT =============================
     Route::prefix('chats')
-        ->group(function () {});
+        ->group(function () {
+        });
 
     #============================== ROUTE COMMENT =============================
     Route::prefix('comments')
         ->group(function () {
+            Route::post('/', [CommentController::class, 'store']);
+            Route::put('/{id}', [CommentController::class, 'update']);
+            Route::delete('/{id}', [CommentController::class, 'destroy']);
+            Route::get('/{commentableId}/{commentableType}', [CommentController::class, 'index']);
         });
 
     #============================== ROUTE RATING =============================
@@ -217,6 +245,11 @@ Route::middleware('auth:sanctum')->group(function () {
 #============================== ROUTE COURSE =============================
 Route::prefix('courses')
     ->group(function () {
+        Route::get('/discounted', [CommonCourseController::class, 'getDiscountedCourses']);
+        Route::get('/free', [CommonCourseController::class, 'getFreeCourses']);
+        Route::get('/popular', [CommonCourseController::class, 'getPopularCourses']);
+        Route::get('/top-categories-with-most-courses', [CommonCourseController::class, 'getTopCategoriesWithMostCourses']);
+        Route::get('/{slug}', [CommonCourseController::class, 'getCourseDetail']);
     });
 
 #============================== ROUTE BANNER =============================
@@ -246,3 +279,12 @@ Route::prefix('qa-systems')->group(function () {
 Route::prefix('mux-upload')->group(function () {
     Route::post('video', [\App\Http\Controllers\Api\Instructor\HandleVideoController::class, 'handleUpload']);
 });
+
+#============================== ROUTE VERIFY MAIL =================================
+Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
+    ->middleware(['signed', 'throttle:6,1'])
+    ->name('verification.verify');
+
+Route::post('/email/resend', [VerificationController::class, 'resend'])
+    ->middleware(['auth', 'throttle:6,1'])
+    ->name('verification.resend');

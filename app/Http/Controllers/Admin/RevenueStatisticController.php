@@ -5,18 +5,23 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Invoice;
+use App\Models\SystemFund;
 use App\Models\User;
-use Carbon\Carbon;
+use Cloudinary\Transformation\FillTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class RevenueStatisticController extends Controller
 {
+    use FillTrait;
     public function index(Request $request)
     {
         $title = 'Thống kê doanh thu';
+        $year = now()->year;
 
-        $totalRevenue = Invoice::query()->sum('final_total');
+        $totalRevenue = SystemFund::query()->sum('total_amount');
+        $totalProfit = SystemFund::query()->sum('retained_amount');
+
         $totalCourse = Course::query()
             ->where('status', 'approved')
             ->count();
@@ -25,8 +30,6 @@ class RevenueStatisticController extends Controller
                 $query->where('name', 'instructor');
             })
             ->count();
-
-        $year = now()->year;
 
         $topInstructors = User::query()
             ->join('courses', 'users.id', '=', 'courses.user_id')
@@ -86,18 +89,30 @@ class RevenueStatisticController extends Controller
             ->orderByDesc('total_revenue')
             ->limit(10)
             ->paginate(5);
-            $lastYear = Carbon::now()->subYear()->year;
-        $monthlyRevenue = DB::table('invoices')
+
+        $querySystem_Funds = DB::table('system_funds')
             ->select(
-                DB::raw('MONTH(invoices.created_at) as month'),
-                DB::raw('SUM(invoices.final_total) as total_revenue')
+                DB::raw('MONTH(created_at) as month'),
+                DB::raw('SUM(total_amount) as total_revenue'),
+                DB::raw('SUM(retained_amount) as total_profit')
             )
-            ->whereYear('invoices.created_at', '=', $lastYear)
-            ->where('status','completed')
-            ->groupBy(DB::raw('MONTH(invoices.created_at)'))
-            ->orderBy('month')
-            ->get();
-            
+            ->groupBy(DB::raw('MONTH(created_at)'))
+            ->orderBy('month');
+
+        $querySumRevenueProfit = DB::table('system_funds')
+            ->select(
+                DB::raw('SUM(total_amount) as total_revenue'),
+                DB::raw('SUM(retained_amount) as total_profit')
+            );
+
+        list($querySystem_Funds, $querySumRevenueProfit) = $this->getFilterDataChart($request, $querySystem_Funds, $querySumRevenueProfit);
+
+        $system_Funds =  $querySystem_Funds->get();
+
+        $sumRevenueProfit = $querySumRevenueProfit->first();
+
+        // dd($sumRevenueProfit,$system_Funds);
+
         if ($request->ajax()) {
             return response()->json([
                 'top_courses_table' => view('revenue-statistics.includes.top_courses', compact('topCourses'))->render(),
@@ -106,18 +121,37 @@ class RevenueStatisticController extends Controller
                 'pagination_links_courses' => $topCourses->links()->toHtml(),
                 'pagination_links_instructors' => $topInstructors->links()->toHtml(),
                 'pagination_links_users' => $topUsers->links()->toHtml(),
+                'apexCharts' => $system_Funds,
+                'sumRevenueProfit' => $sumRevenueProfit,
             ]);
         }
 
         return view('revenue-statistics.index', compact([
             'title',
             'totalRevenue',
+            'totalProfit',
             'totalCourse',
             'totalInstructor',
             'topInstructors',
             'topCourses',
             'topUsers',
-            'monthlyRevenue'
+            'system_Funds',
+            'sumRevenueProfit',
         ]));
+    }
+
+    private function getFilterDataChart(Request $request, $querySystem_Funds, $querySumRevenueProfit)
+    {
+        $created_at = $request->input('created_at');
+
+        if (!empty($created_at)) {
+            $querySystem_Funds->where('created_at', '>=', $created_at);
+            $querySumRevenueProfit->where('created_at', '>=', $created_at);
+        }else{
+            $querySystem_Funds->where('created_at', '<=', now());
+            $querySumRevenueProfit->where('created_at', '<=', now());
+        }
+
+        return [$querySystem_Funds, $querySumRevenueProfit];
     }
 }

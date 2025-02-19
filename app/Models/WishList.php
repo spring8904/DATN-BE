@@ -20,7 +20,7 @@ class WishList extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function course()
+    public function courses()
     {
         return $this->belongsTo(Course::class, 'course_id');
     }

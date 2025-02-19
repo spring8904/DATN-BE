@@ -9,6 +9,7 @@ use App\Http\Requests\API\Auth\SigninInstructorRequest;
 use App\Http\Requests\API\Auth\SinginUserRequest;
 use App\Http\Requests\API\Auth\SingupUserRequest;
 use App\Http\Requests\API\Auth\VerifyEmailRequest;
+use App\Mail\Auth\ForgotPasswordEmail;
 use App\Mail\Auth\VerifyEmail;
 use App\Models\Education;
 use App\Models\Profile;
@@ -31,12 +32,12 @@ class AuthController extends Controller
 {
     use LoggableTrait, ApiResponseTrait;
 
-    public function forgotPassword(ForgotPassWordRequest $forgotPassWordRequest)
+    public function forgotPassword(ForgotPassWordRequest $request)
     {
-        try {
-            //code...
-            $status = Password::sendResetLink($forgotPassWordRequest->only('email'));
+         // Kiểm tra email hợp lệ
+    $request->validated();
 
+<<<<<<< HEAD
             if ($status === Password::RESET_LINK_SENT) {
                 return response()->json([
                     'success' => true,
@@ -45,11 +46,27 @@ class AuthController extends Controller
             }
         } catch (\Exception $e) {
             $this->logError($e);
+=======
+    $user = User::where('email', $request->email)->first();
 
-            return response()->json([
-                'message' => 'Không thể gửi liên kết đặt lại mật khẩu. Vui lòng thử lại.',
-            ], 400);
-        }
+    if (!$user) {
+        return response()->json(['message' => 'Email không tồn tại'], 404);
+    }
+>>>>>>> 673f16aae0d2926e4f0771ddbf4faf931b97fb67
+
+    // Tạo token reset ngẫu nhiên
+    $token = Str::random(60);
+    
+    // Tạo URL đặt lại mật khẩu (không dùng bảng password_resets)
+    $verificationUrl = url('/reset-password?token=' . $token . '&email=' . urlencode($user->email));
+
+    // Gửi email
+    Mail::to($user->email)->send(new ForgotPasswordEmail($verificationUrl));
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Email đặt lại mật khẩu đã được gửi!',
+    ]);
     }
 
     public function resetPassword(ResetPasswordRequest $request)
@@ -111,8 +128,6 @@ class AuthController extends Controller
     {
         try {
             DB::beginTransaction();
-
-            $validated = $request->validated();
 
             $data = $request->only(['name', 'email', 'password', 'repassword']);
             $data['avatar'] = 'https://res.cloudinary.com/dvrexlsgx/image/upload/v1732148083/Avatar-trang-den_apceuv_pgbce6.png';

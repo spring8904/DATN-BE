@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
@@ -141,7 +142,7 @@ class UserController extends Controller
 
             DB::commit();
 
-            $routeUserByRole = $request->role === 'admin' ? 'admins'
+            $routeUserByRole = $request->role === 'employee' ? 'employees'
                 : ($request->role === 'instructor' ? 'instructors' : 'clients');
 
             return redirect()->route('admin.' . $routeUserByRole . '.index')->with('success', 'Thêm mới thành công');
@@ -151,7 +152,6 @@ class UserController extends Controller
             if (isset($urlAvatar) && filter_var($urlAvatar, FILTER_VALIDATE_URL)) {
                 $this->deleteImage($urlAvatar, self::FOLDER);
             }
-
 
             $this->logError($e);
 
@@ -461,7 +461,7 @@ class UserController extends Controller
 
             if ($user->trashed()) {
                 $user->forceDelete();
-                
+
                 if (
                     isset($avatar) && !empty($avatar)
                     && filter_var($avatar, FILTER_VALIDATE_URL)
@@ -498,7 +498,7 @@ class UserController extends Controller
         $roles = [
             'clients' => ['name' => 'member', 'actor' => 'khách hàng', 'role_name' => 'clients'],
             'instructors' => ['name' => 'instructor', 'actor' => 'người hướng dẫn', 'role_name' => 'instructors'],
-            'admins' => ['name' => 'admin', 'actor' => 'quản trị viên', 'role_name' => 'admins'],
+            'employees' => ['name' => 'employee', 'actor' => 'nhân viên', 'role_name' => 'employees'],
             'deleted' => ['name' => 'deleted', 'actor' => 'thành viên đã xóa', 'role_name' => 'users.deleted']
         ];
 
@@ -518,7 +518,7 @@ class UserController extends Controller
             'profile_phone_user' => null,
         ];
 
-        $query = $this->filterTrait($filters, $request,$query);
+        $query = $this->filterTrait($filters, $request, $query);
 
         return $query;
     }

@@ -24,22 +24,20 @@ class DocumentRequest extends FormRequest
         return [
             'title' => 'nullable|string|max:255',
             'content' => 'nullable|string',
-            'document_file' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
-            'document_url' => 'nullable|url',
+            'document_file' => 'nullable|file|mimes:pdf,doc,docx,xls,ppt,png,jpg,jpeg',
+            'document_url' => 'nullable|url|required_without:document_file',
         ];
     }
+
     public function messages()
     {
         return [
             'title.string' => 'Tiêu đề phải là chuỗi ký tự.',
             'title.max' => 'Tiêu đề không được vượt quá 255 ký tự.',
-
             'content.string' => 'Nội dung phải là chuỗi ký tự.',
-
-            'document_file.file' => 'Tệp tài liệu phải là một tệp hợp lệ.',
-            'document_file.mimes' => 'Tệp tài liệu phải có định dạng pdf, doc hoặc docx.',
-            'document_file.max' => 'Dung lượng tệp không được vượt quá 2MB.',
-            
+            'document_file.required' => 'Vui lòng tải lên tài liệu.',
+            'document_file.mimes' => 'Tài liệu phải có định dạng pdf, doc, docx, xls, ppt, png, jpg, jpeg.',
+            'document_url.required_without' => 'URL tài liệu là bắt buộc khi không tải lên tệp tài liệu.',
             'document_url.url' => 'URL tài liệu không hợp lệ.',
         ];
     }

@@ -70,8 +70,8 @@
                     </li>
                     @can('super_admin.view')
                         <li class="nav-item">
-                            <a href="{{ route('admin.admins.index') }}" class="nav-link">
-                                Danh sách quản trị viên </a>
+                            <a href="{{ route('admin.employees.index') }}" class="nav-link">
+                                Danh sách nhân viên </a>
                         </li>
                     @endcan
                     @can('user.create')
@@ -241,6 +241,9 @@
             </a>
             <a class="nav-link menu-link" href="{{ route('admin.qa-systems.index') }}">
                 <i class="ri-question-line"></i> <span data-key="t-authentication">QA System</span>
+            </a>
+            <a class="nav-link menu-link" href="{{ route('admin.chats.index') }}">
+                <i class="ri-question-line"></i> <span data-key="t-authentication">Chat</span>
             </a>
         </li>
 

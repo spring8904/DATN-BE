@@ -82,22 +82,30 @@ class TransactionController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
     public function createVNPayPayment(Request $request)
     {
         try {
+            $user = Auth::user();
+
+            if (!$user) {
+                return $this->respondForbidden('Vui lòng đăng nhập để mua khóa học');
+            }
+
             $validated = $request->validate([
-                'amount' => 'required|numeric|min:1000',
-                'order_info' => 'required|string',
+                'amount' => 'required|numeric',
             ]);
 
-            $vnp_TmnCode = config('vnpay.vnp_TmnCode');
-            $vnp_HashSecret = config('vnpay.vnp_HashSecret');
-            $vnp_Url = config('vnpay.vnp_Url');
-            $vnp_ReturnUrl = config('vnpay.vnp_ReturnUrl');
+            $amount = number_format($validated['amount'], 0, '', '');
+
+            $vnp_TmnCode = env('VNPAY_TMN_CODE');
+            $vnp_HashSecret = env('VNPAY_HASH_SECRET');
+            $vnp_Url = env('VNPAY_URL');
+            $vnp_ReturnUrl = env('VNPAY_RETURN_URL');
 
             $vnp_TxnRef = Str::random(10);
-            $vnp_OrderInfo = $validated['order_info'];
-            $vnp_Amount = $validated['amount'] * 100;
+            $vnp_OrderInfo = 'Thanh toán khoá học';
+            $vnp_Amount = $amount * 100;
             $vnp_Locale = 'vn';
             $vnp_IpAddr = request()->ip();
 
@@ -137,11 +145,7 @@ class TransactionController extends Controller
                 $vnp_Url .= 'vnp_SecureHash=' . $vnpSecureHash;
             }
 
-            return response()->json([
-                'status' => true,
-                'message' => 'Tạo URL thanh toán thành công',
-                'payment_url' => $vnp_Url,
-            ], Response::HTTP_OK);
+            return $this->respondOk('Tạo link thanh toán thành công', $vnp_Url);
         } catch (\Exception $e) {
             $this->logError($e, $request->all());
 
@@ -152,86 +156,80 @@ class TransactionController extends Controller
     public function vnpayCallback(Request $request)
     {
         try {
-            $vnp_HashSecret = config('vnpay.vnp_HashSecret');
-            $inputData = $request->all();
-            $parts = explode('-', json_encode($inputData['vnp_OrderInfo']));
-            $invoiceId = trim(end($parts), '"');
+            $vnp_HashSecret = env('VNPAY_HASH_SECRET');
+            $frontendUrl = env('FE_URL') . "my-courses";
 
+            $inputData = $request->all();
             $vnp_SecureHash = $inputData['vnp_SecureHash'];
             unset($inputData['vnp_SecureHash']);
             ksort($inputData);
-            $hashData = "";
-            foreach ($inputData as $key => $value) {
-                $hashData .= urlencode($key) . "=" . urlencode($value) . '&';
-            }
 
-            $hashData = rtrim($hashData, '&');
+            $hashData = urldecode(http_build_query($inputData));
             $secureHash = hash_hmac('sha512', $hashData, $vnp_HashSecret);
-            $hashData = rtrim($hashData, '&');
 
-            if ($secureHash === $vnp_SecureHash) {
-                if ($inputData['vnp_ResponseCode'] == '00') {
-                    DB::beginTransaction();
-
-                    $invoice = Invoice::where('id', $invoiceId)->first();
-
-                    $invoice->update(['status' => 'Đã thanh toán']);
-
-                    $course = Course::find($invoice->course_id);
-
-                    $discount = null;
-
-                    if (!empty($invoice->coupon_code)) {
-                        $discount = Coupon::query()->where([
-                            'code' => $invoice->coupon_code,
-                            'status' => '1'
-                        ])->first();
-                    }
-
-                    CourseUser::create([
-                        'user_id' => $invoice->user_id,
-                        'course_id' => $course->id,
-                        'enrolled_at' => now(),
-                    ]);
-
-                    $transaction = Transaction::create([
-                        'transaction_code' => $inputData['vnp_TxnRef'],
-                        'user_id' => $invoice->user_id,
-                        'amount' => $inputData['vnp_Amount'] / 100,
-                        'transactionable_id' => $invoice->id,
-                        'transactionable_type' => Invoice::class,
-                        'status' => 'Giao dịch thành công',
-                        'type' => 'invoice',
-                    ]);
-
-                    $this->finalBuyCourse($invoice->user_id, $course, $transaction, $discount, $inputData['vnp_Amount'] / 100);
-
-                    DB::commit();
-
-                    return response()->json([
-                        'status' => true,
-                        'message' => 'Thanh toán thành công',
-                    ], Response::HTTP_OK);
-                } else {
-                    return response()->json([
-                        'status' => false,
-                        'message' => 'Thanh toán thất bại',
-                    ], Response::HTTP_BAD_REQUEST);
-                }
-            } else {
-                Log::info('khong hơp le');
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Chữ ký không hợp lệ',
-                ], Response::HTTP_BAD_REQUEST);
+            if ($secureHash !== $vnp_SecureHash) {
+                return redirect()->away($frontendUrl . "?error=invalid_hash");
             }
-        } catch (\Exception $e) {
-            $this->logError($e);
 
-            return response()->json([
-                'status' => false,
-                'message' => 'Lỗi xử lý callback từ VNPAY',
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            // Nếu thanh toán không thành công
+            if ($inputData['vnp_ResponseCode'] != '00') {
+                return redirect()->away($frontendUrl . "?vnp_ResponseCode=" . $inputData['vnp_ResponseCode']);
+            }
+
+            DB::beginTransaction();
+
+            // Giả sử vnp_OrderInfo chứa user_id và course_id
+            $parts = explode('-', json_encode($inputData['vnp_OrderInfo']));
+            $userId = trim($parts[0], '"'); // Lấy user_id
+            $courseId = trim($parts[1], '"'); // Lấy course_id
+
+            $user = User::find($userId);
+            $course = Course::find($courseId);
+
+            if (!$user || !$course) {
+                return redirect()->away($frontendUrl . "?error=invalid_data");
+            }
+
+            // Kiểm tra mã giảm giá (nếu có)
+            $discount = null;
+            if (!empty($inputData['vnp_OrderInfo']['coupon_code'])) {
+                $discount = Coupon::where(['code' => $inputData['vnp_OrderInfo']['coupon_code'], 'status' => '1'])->first();
+            }
+
+            // Tạo hóa đơn (invoice)
+            $invoice = Invoice::create([
+                'user_id' => $userId,
+                'course_id' => $courseId,
+                'amount' => $inputData['vnp_Amount'] / 100,
+                'status' => 'Đã thanh toán',
+                'coupon_code' => $discount ? $discount->code : null,
+            ]);
+
+            // Thêm học viên vào khóa học
+            CourseUser::create([
+                'user_id' => $userId,
+                'course_id' => $courseId,
+                'enrolled_at' => now(),
+            ]);
+
+            // Lưu giao dịch
+            $transaction = Transaction::create([
+                'transaction_code' => $inputData['vnp_TxnRef'],
+                'user_id' => $userId,
+                'amount' => $inputData['vnp_Amount'] / 100,
+                'transactionable_id' => $invoice->id,
+                'transactionable_type' => Invoice::class,
+                'status' => 'Giao dịch thành công',
+                'type' => 'invoice',
+            ]);
+
+            DB::commit();
+
+            return redirect()->away(env('FE_URL') . "my-courses?vnp_TxnRef=" . $inputData['vnp_TxnRef']);
+        } catch (\Exception $e) {
+            \Log::error("VNPAY Callback Error: " . $e);
+            DB::rollBack();
+            return redirect()->away($frontendUrl . "?error=server_error");
         }
     }
 
@@ -375,6 +373,8 @@ class TransactionController extends Controller
             'user_id' => $userID,
             'total_amount' => $finalAmount,
             'retained_amount' => $finalAmount * self::adminRate,
+            'type' => 'commission_received',
+            'description' => 'Tiền hoa hồng nhận được từ việc bán khóa học: '. $course->name,
         ]);
 
         User::role('admin')->each(function ($manager) use ($course, $userID) {

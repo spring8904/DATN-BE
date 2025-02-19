@@ -4,32 +4,48 @@ namespace App\Http\Controllers\API\Common;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\WishList\StoreWishListRequest;
+use App\Models\Course;
 use App\Models\WishList;
+use App\Traits\ApiResponseTrait;
+use App\Traits\LoggableTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class WishListController extends Controller
 {
+    use LoggableTrait, ApiResponseTrait;
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
         try {
-
             $user = Auth::user();
 
-            $wishLists = WishList::query()
-                ->where('user_id', $user->id)
-                ->with('courses')
+            $courses = Course::query()
+                ->with([
+                    'category',
+                    'wishLists',
+                    'user',
+                    'chapters' => function ($query) {
+                        $query->withCount('lessons');
+                    },
+                ])
+                ->withCount([
+                    'chapters',
+                    'lessons'
+                ])
+                ->whereHas('wishLists', function ($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                })
                 ->get();
 
-            if ($wishLists->isEmpty()) {
+            if ($courses->isEmpty()) {
                 return $this->respondNotFound('Không có dữ liệu');
             }
 
-            return $this->respondOk('Danh sách người dùng', $wishLists);
+            return $this->respondOk('Danh sách khoá học yêu thích của người dùng:' . $user->name, $courses);
         } catch (\Exception $e) {
             $this->logError($e);
 
@@ -42,31 +58,23 @@ class WishListController extends Controller
      */
     public function store(StoreWishListRequest $request)
     {
-        //
         try {
-
             $user = Auth::user();
 
-            // Kiểm tra nếu đã tồn tại trong danh sách yêu thích
             $existingWishList = WishList::where('user_id', $user->id)
                 ->where('course_id', $request->course_id)
                 ->exists();
 
             if ($existingWishList) {
-                return response()->json(['message' => 'Khóa học này đã có trong danh sách yêu thích'], 409);
+                return $this->respondError('Khóa học đã tồn tại trong danh sách yêu thích');
             }
 
-            // Thêm khóa học vào danh sách yêu thích
-
-            $wishList = WishList::create([
+            $wishList = WishList::query()->firstOrCreate([
                 'user_id' => $user->id,
                 'course_id' => $request->course_id,
             ]);
 
-            return response()->json([
-                'message' => 'Khóa học đã được thêm  vào danh sách yêu thích',
-                'wishList' => $wishList
-            ], 201);
+            return $this->respondCreated('Đã thêm khóa học vào danh sách yêu thích', $wishList);
         } catch (\Exception $e) {
             $this->logError($e);
 
@@ -75,42 +83,25 @@ class WishListController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
-        //
         try {
-
             $user = Auth::user();
 
-            $wishList = WishList::where('user_id', $user->id)
-                ->find($id);
-                
+            $wishList = WishList::query()
+                ->where('user_id', $user->id)
+                ->where('course_id', $id)
+                ->first();
+
             if (!$wishList) {
-                return response()->json(['message' => 'Không tìm thấy mục yêu thích'], 404);
+                return $this->respondNotFound('Không tìm thấy khóa học trong danh sách yêu thích');
             }
 
             $wishList->delete();
 
-            return response()->json(['message' => 'Đã xóa khóa học khỏi danh sách yêu thích'], 200);
-
+            return $this->respondOk('Đã xóa khóa học khỏi danh sách yêu thích');
         } catch (\Exception $e) {
             $this->logError($e);
 

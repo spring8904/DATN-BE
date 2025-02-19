@@ -15,8 +15,8 @@ class SystemFund extends Model
         'user_id',
         'total_amount',
         'retained_amount',
-        'release_date',
-        'status',
+        'type',
+        'description'
     ];
 
     public function transaction()
