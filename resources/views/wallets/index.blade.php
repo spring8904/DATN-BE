@@ -111,7 +111,7 @@
                                                                 <div class="col-11">
                                                                     <h6 class="mb-1 text-success">
                                                                         {{ $systemFund->type == 'commission_received' ? '+' : '-' }}
-                                                                        {{ number_format($systemFund->total_amount) }}
+                                                                        {{ number_format($systemFund->total_amount ?? 0) }}
                                                                         VND
                                                                     </h6>
                                                                     <p class="text-muted mb-0">
@@ -186,14 +186,12 @@
                 },
                 success: function(response) {
                     $("#transaction-container").html(response.systemFunds);
+                    
                     if (data.search) {
                         $("#load-more").hide();
                     } else {
                         $("#load-more").show();
                     }
-                },
-                error: function(xhr, status, error) {
-                    $("#load-more").text("Lỗi! Vui lòng thử lại.");
                 },
             });
         }

@@ -1,5 +1,4 @@
 @extends('layouts.app')
-@section('title', $title)
 @push('page-css')
     <link href="{{ asset('assets/css/custom.css') }}" rel="stylesheet" type="text/css"/>
 @endpush
@@ -11,12 +10,12 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0">Yêu cầu rút tiền</h4>
+                    <h4 class="mb-sm-0">{{ $title ?? '' }}</h4>
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
                             <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
                             <li class="breadcrumb-item active"><a
-                                    href="{{ route('admin.withdrawals.index') }}">{{ $subTitle }}</a></li>
+                                    href="{{ route('admin.withdrawals.index') }}">{{ $subTitle ?? '' }}</a></li>
                         </ol>
                     </div>
 
@@ -220,11 +219,11 @@
                                     @foreach ($withdrawals as $withdrawal)
                                         <tr>
                                             <td>{{ $loop->index + 1 }}</td>
-                                            <td>{{ $withdrawal->account_holder }}</td>
-                                            <td><span class="text-danger">{{ $withdrawal->account_number }}</span>
+                                            <td>{{ $withdrawal->account_holder ?? 'Không có thông tin' }}</td>
+                                            <td><span class="text-danger">{{ $withdrawal->account_number ?? 'Không có thông tin' }}</span>
                                             </td>
-                                            <td>{{ \Illuminate\Support\Str::limit($withdrawal->bank_name,40) }}</td>
-                                            <td>{{ number_format($withdrawal->amount) }} VND</td>
+                                            <td>{{ \Illuminate\Support\Str::limit($withdrawal->bank_name ?? 'Không có thông tin',40) }}</td>
+                                            <td>{{ number_format($withdrawal->amount ?? 0) }} VND</td>
                                             <td>
                                                 @if ($withdrawal->status === 'completed')
                                                     <span class="badge bg-success w-100">
@@ -240,7 +239,7 @@
                                                         </span>
                                                 @endif
                                             </td>
-                                            <td>{{ $withdrawal->request_date ? \Carbon\Carbon::parse($withdrawal->request_date)->format('d/m/Y') : 'NULL' }}
+                                            <td>{!! $withdrawal->request_date ? \Carbon\Carbon::parse($withdrawal->request_date)->format('d/m/Y') : '<span class="btn btn-sm btn-soft-warning">Không có thông tin</span>' !!}
                                             </td>
                                             <td>{!! $withdrawal->completed_date ? \Carbon\Carbon::parse($withdrawal->completed_date)->format('d/m/Y') : '<span class="btn btn-sm btn-soft-warning">Chưa xác nhận</span>' !!}
                                             </td>

@@ -19,8 +19,7 @@ class NotificationController extends Controller
 
             $count = $request->query('count', 10);
 
-            $notifications = $user->notifications()->latest()->take($count)
-                ->orderByRaw('read_at IS NULL DESC, created_at DESC')->get();
+            $notifications = $user->notifications()->take($count)->get();
 
             $unreadNotificationsCount = $user->unreadNotifications()->count();
 

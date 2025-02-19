@@ -29,9 +29,6 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h4 class="card-title mb-0">Danh sách settings</h4>
-                        @if (session()->has('success') && session()->get('success') == true)
-                            <span class="badge bg-primary text-end">Thao tác thành công</span>
-                        @endif
                     </div>
                     <!-- end card header -->
                     <div class="card-body">
@@ -88,11 +85,11 @@
                                                 </th>
                                                 <td class="id"><a
                                                         class="fw-medium link-primary">#{{ $setting->id }}</a></td>
-                                                <td class="customer_name">{{ $setting->key }}</td>
-                                                <td class="email">{{ $setting->value }}</td>
+                                                <td class="customer_name">{{ $setting->key ?? '' }}</td>
+                                                <td class="email">{{ $setting->value ?? ''}}</td>
                                                 <td>{{ $setting->created_at != null ? date_format($setting->created_at, 'd/m/Y') : 'NULL' }}
                                                 </td>
-                                                <td>{{ $setting->updated_at != null ? date_format($setting->created_at, 'd/m/Y') : 'NULL' }}
+                                                <td>{{ $setting->updated_at != null ? date_format($setting->updated_at, 'd/m/Y') : 'NULL' }}
                                                 </td>
                                                 <td>
                                                     <div class="d-flex gap-2">

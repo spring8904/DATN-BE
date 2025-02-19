@@ -16,7 +16,7 @@ class InvoiceController extends Controller
     public function index(Request $request)
     {
         try {
-            $title = 'Quản lý thanh toán';
+            $title = 'Khóa học đã bán';
             $subTitle = 'Khóa học đã bán';
 
             $queryInvoice = Invoice::query()

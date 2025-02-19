@@ -206,7 +206,7 @@
                                                             InActive
                                                         </span></td>
                                                 @endif
-                                                <td class="date">{{ $coupon->used_count }}</td>
+                                                <td class="date">{{ $coupon->used_count ?? 0 }}</td>
                                                 <td class="date">{{ $coupon->deleted_at }}</td>
                                             </tr>
                                         @endforeach

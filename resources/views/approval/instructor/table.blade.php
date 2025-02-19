@@ -17,8 +17,8 @@
                 @foreach ($approvals as $approval)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
-                        <td>{{ $approval->user->name }}</td>
-                        <td>{{ $approval->user->email }}</td>
+                        <td>{{ $approval->user?->name }}</td>
+                        <td>{{ $approval->user?->email }}</td>
                         <td>{!! $approval->request_date
                             ? \Carbon\Carbon::parse($approval->request_date)->format('d/m/Y')
                             : '<span class="btn btn-sm btn-soft-warning">Chưa kiểm duyệt</span>' !!}</td>
@@ -32,7 +32,7 @@
                             @endif
                         </td>
                         <td>
-                            {!! $approval->approver->name ?? '<span class="btn btn-sm btn-soft-warning">Chưa kiểm duyệt</span>' !!}
+                            {!! $approval->approver?->name ?? '<span class="btn btn-sm btn-soft-warning">Chưa kiểm duyệt</span>' !!}
                         </td>
                         <td>
                             {!! $approval->approved_at

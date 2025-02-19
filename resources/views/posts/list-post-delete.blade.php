@@ -9,12 +9,12 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0">{{ $title }}</h4>
+                    <h4 class="mb-sm-0">{{ $title ?? '' }}</h4>
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
                             <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                            <li class="breadcrumb-item active"><a href="">{{ $subTitle }}</a></li>
+                            <li class="breadcrumb-item active"><a href="">{{ $subTitle ?? '' }}</a></li>
                         </ol>
                     </div>
 
@@ -28,7 +28,7 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h4 class="card-title mb-0">{{ $subTitle }}</h4>
+                        <h4 class="card-title mb-0">{{ $subTitle ?? '' }}</h4>
                         <div class="d-flex gap-2">
                             <button class="btn btn-sm btn-primary" id="toggleAdvancedSearch">
                                 Tìm kiếm nâng cao
@@ -134,15 +134,16 @@
                                 <div class="col-sm">
                                     <div class="d-flex justify-content-sm-end">
                                         <div class="search-box ms-2">
-                                            <input type="text" name="search_full" id="searchFull" class="form-control search"
-                                                placeholder="Tìm kiếm..." data-search value="{{ request()->input('search_full') ?? '' }}">
+                                            <input type="text" name="search_full" id="searchFull"
+                                                class="form-control search" placeholder="Tìm kiếm..." data-search
+                                                value="{{ request()->input('search_full') ?? '' }}">
                                             <button id="search-full" class="ri-search-line search-icon m-0 p-0 border-0"
                                                 style="background: none;"></button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        
+
                             <div class="table-responsive table-card mt-3 mb-1">
                                 <table class="table align-middle table-nowrap" id="customerTable">
                                     <thead class="table-light">
@@ -168,14 +169,15 @@
                                                             value="{{ $post->id }}">
                                                     </div>
                                                 </th>
-                        
+
                                                 <td class="customer_name">{{ $post->id }}</td>
                                                 <td class="email">{{ $post->title }}</td>
                                                 <td>
-                                                    <img class="img-thumbnail" src="{{ $post->thumbnail }}" alt="Hình đại diện" width="100">
+                                                    <img class="img-thumbnail" src="{{ $post->thumbnail ?? '' }}"
+                                                        alt="Hình đại diện" width="100">
                                                 </td>
-                                                <td class="text-danger fw-bold">{{ $post->user->name }}</td>
-                                                <td>{{ $post->category->name }}</td>
+                                                <td class="text-danger fw-bold">{{ $post->user->name ?? '' }}</td>
+                                                <td>{{ $post->category->name ?? '' }}</td>
                                                 <td class="status col-1">
                                                     @if ($post->status === 'published')
                                                         <span class="badge bg-success w-75">
@@ -196,14 +198,14 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    {{ optional(\Carbon\Carbon::parse($post->deleted_at))->format('d/m/Y') ?? 'NULL' }}
+                                                    {{ $post->deleted_at ? \Carbon\Carbon::parse($post->deleted_at)->format('d/m/Y') : '' }}
                                                 </td>
                                             </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
                             </div>
-                        
+
                             <div class="row justify-content-end">
                                 {{ $posts->appends(request()->query())->links() }}
                             </div>
