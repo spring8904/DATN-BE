@@ -3,21 +3,29 @@
 namespace App\Http\Controllers\API\Instructor;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\API\Lessons\StoreQuestionMultipleRequest;
 use App\Http\Requests\API\Lessons\StoreQuestionRequest;
 use App\Http\Requests\API\Lessons\StoreQuizLessonRequest;
+use App\Http\Requests\API\Lessons\UpdateQuestionRequest;
+use App\Imports\QuizImport;
 use App\Models\Chapter;
 use App\Models\Lesson;
 use App\Models\Question;
 use App\Models\Quiz;
 use App\Traits\ApiResponseTrait;
 use App\Traits\LoggableTrait;
+use App\Traits\UploadToCloudinaryTrait;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 
 class QuizController extends Controller
 {
-    use LoggableTrait, ApiResponseTrait;
+    use LoggableTrait, ApiResponseTrait, UploadToCloudinaryTrait;
+
+    const FOLDER_QUIZ = 'quiz';
 
     public function storeLessonQuiz(StoreQuizLessonRequest $request, string $chapterId)
     {
@@ -50,7 +58,7 @@ class QuizController extends Controller
                 'chapter_id' => $chapter->id,
                 'title' => $data['title'],
                 'slug' => $data['slug'],
-                'type' => 'video',
+                'type' => 'quiz',
                 'lessonable_type' => Quiz::class,
                 'lessonable_id' => $quiz->id,
                 'order' => $data['order'],
@@ -68,7 +76,7 @@ class QuizController extends Controller
         }
     }
 
-    public function storeQuestion(StoreQuestionRequest $request, string $quizId)
+    public function storeQuestionMultiple(StoreQuestionMultipleRequest $request, string $quizId)
     {
         try {
             DB::beginTransaction();
@@ -106,12 +114,11 @@ class QuizController extends Controller
                         }
                     }
                 }
-                $this->respondCreated('Tạo bài trắc nghiệm thành công', $quiz);
-
-                DB::commit();
             }
-        } catch
-        (\Exception $e) {
+            DB::commit();
+
+            return $this->respondCreated('Tạo bài trắc nghiệm thành công', $quiz);
+        } catch (\Exception $e) {
             DB::rollBack();
 
             $this->logError($e);
@@ -120,10 +127,161 @@ class QuizController extends Controller
         }
     }
 
+    public function storeQuestionSingle(StoreQuestionRequest $request, string $quizId)
+    {
+        try {
+            $data = $request->validated();
+
+            $quiz = Quiz::query()->find($quizId);
+
+            if (!$quiz) {
+                return $this->respondNotFound('Không tìm thấy bài học');
+            }
+
+            if ($request->hasFile('image')) {
+                $data['image'] = $this->uploadImage($data['image'], self::FOLDER_QUIZ);
+            }
+
+            $question = Question::query()->updateOrCreate(
+                [
+                    'quiz_id' => $quiz->id,
+                    'question' => $data['question'],
+                ],
+                [
+                    'image' => $data['image'] ?? null,
+                    'answer_type' => $data['answer_type'],
+                    'description' => $data['description'] ?? null,
+                ]
+            );
+
+            if (isset($data['options']) && is_array($data['options'])) {
+                foreach ($data['options'] as $option) {
+                    $question->answers()->create([
+                        'answer' => $option['answer'],
+                        'is_correct' => $option['is_correct'] ?? false,
+                    ]);
+                }
+            }
+
+            return $this->respondCreated('Tạo bài trắc nghiệm thành công', $quiz);
+        } catch (\Exception $e) {
+            $this->logError($e);
+
+            return $this->respondServerError('Không thể tạo câu hỏi, vui lòng thử lại');
+        }
+    }
+
+    public function showQuiz(string $quizId)
+    {
+        try {
+            $quiz = Quiz::query()->with('questions.answers')->find($quizId);
+
+            if (!$quiz) {
+                return $this->respondNotFound('Không tìm thấy bài trắc nghiệm');
+            }
+
+            return $this->respondSuccess('Lấy thông tin bài trắc nghiệm thành công', $quiz);
+        } catch (\Exception $e) {
+            $this->logError($e);
+
+            return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại sau');
+        }
+    }
+
+    public function showQuestion(string $questionId)
+    {
+        try {
+            $question = Question::query()->with('answers')->find($questionId);
+
+            if (!$question) {
+                return $this->respondNotFound('Không tìm thấy câu hỏi');
+            }
+
+            return $this->respondSuccess('Thông tin câu hỏi: ' . $questionId, $question);
+        } catch (\Exception $e) {
+            $this->logError($e);
+
+            return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại sau');
+        }
+    }
+
+    public function updateQuestion(UpdateQuestionRequest $request, $questionId)
+    {
+        try {
+            $data = $request->all();
+
+            $question = Question::query()->find($questionId);
+
+            if (!$question) {
+                return $this->respondNotFound('Không tìm thấy câu hỏi');
+            }
+
+            $question->update([
+                'question' => $data['question'] ?? null,
+                'image' => $data['image'] ?? null,
+                'answer_type' => $data['answer_type'] ?? null,
+                'description' => $data['description'] ?? null,
+            ]);
+
+            $question->answers()->delete();
+
+            if (isset($data['options']) && is_array($data['options'])) {
+                foreach ($data['options'] as $option) {
+                    $question->answers()->create([
+                        'answer' => $option['answer'] ?? null,
+                        'is_correct' => $option['is_correct'] ?? false,
+                    ]);
+                }
+            }
+
+            return $this->respondOk('Cập nhật câu hỏi thành công', $question);
+        } catch (\Exception $e) {
+
+            $this->logError($e, $request->all());
+            return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại sau');
+        }
+    }
+
+    public function deleteQuestion($questionId)
+    {
+        try {
+            $question = Question::query()->find($questionId);
+
+            if (!$question) {
+                return $this->respondNotFound('Không tìm thấy câu hỏi');
+            }
+
+            $question->answers()->delete();
+            $question->delete();
+
+            return $this->respondSuccess('Xóa câu hỏi thành công');
+        } catch (\Exception $e) {
+            $this->logError($e);
+
+            return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại sau');
+        }
+    }
+
+    public function importQuiz(Request $request, string $quizId)
+    {
+        try {
+            $request->validate([
+                'file' => 'required|mimes:xlsx,xls,csv'
+            ]);
+
+            Excel::import(new QuizImport($quizId), $request->file('file'));
+
+            return $this->respondOk('Import câu hỏi thành công');
+        } catch (\Exception $e) {
+            $this->logError($e);
+            return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại sau');
+        }
+    }
+
     public function downloadQuizForm()
     {
         try {
-            $file = public_path('storage/csv/QuizFormCourseMeLy.csv');
+            $file = public_path('storage/csv/quiz_import_template.xlsx');
 
             if (!file_exists($file)) {
                 return $this->respondNotFound('Không tìm thấy file mẫu');
@@ -136,4 +294,5 @@ class QuizController extends Controller
             return $this->respondServerError('Có lỗi xảy ra, vui lòng thử lại sau');
         }
     }
+
 }
