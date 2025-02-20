@@ -155,6 +155,9 @@ Route::middleware('auth:sanctum')->group(function () {
                             Route::delete('/{chapterId}/{lesson}', [LessonController::class, 'deleteLesson']);
 
                             Route::post('/{chapterId}/store-lesson-video', [\App\Http\Controllers\API\Instructor\LessonVideoController::class, 'storeLessonVideo']);
+                            Route::get('/{chapterId}/{lesson}/show-lesson', [\App\Http\Controllers\API\Instructor\LessonVideoController::class, 'getLessonVideo']);
+                            Route::put('/{chapterId}/{lesson}/update-lesson-video', [\App\Http\Controllers\API\Instructor\LessonVideoController::class, 'updateLessonVideo']);
+
                             Route::post('/{chapterId}/store-lesson-quiz', [\App\Http\Controllers\API\Instructor\QuizController::class, 'storeLessonQuiz']);
 
                             Route::prefix('quiz')
