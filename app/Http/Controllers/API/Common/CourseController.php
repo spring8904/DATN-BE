@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Course;
 use App\Traits\ApiResponseTrait;
 use App\Traits\LoggableTrait;
+use Illuminate\Http\Request;
 
 class CourseController
 {
@@ -147,7 +148,7 @@ class CourseController
         }
     }
 
-    public function getCourseDetail(string $slug)
+    public function getCourseDetail(Request $request, string $slug)
     {
         try {
             $course = Course::query()
@@ -174,6 +175,8 @@ class CourseController
             if (!$course) {
                 return $this->respondNotFound('Không có dữ liệu');
             }
+
+            $course->increment('views');
 
             return $this->respondOk('Chi tiết khoá học: ' . $course->name, $course);
         } catch (\Exception $e) {
