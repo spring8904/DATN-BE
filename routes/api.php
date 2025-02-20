@@ -58,7 +58,14 @@ Route::prefix('search')
         Route::get('/', [SearchController::class, 'search']);
     });
 
+
 Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/broadcasting/auth', function () {
+        return response()->json(['message' => 'Broadcasting Auth']);
+    });
+
+    Route::post('/send-notification', [\App\Http\Controllers\NotificationController::class, 'sendNotification']);
+
     Route::post('/vnpay-payment', [TransactionController::class, 'createVNPayPayment']);
 
     Route::prefix('auth')->as('auth.')->group(function () {
@@ -172,8 +179,9 @@ Route::middleware('auth:sanctum')->group(function () {
                                     Route::delete('{question}/delete-quiz-question', [\App\Http\Controllers\API\Instructor\QuizController::class, 'deleteQuestion']);
                                 });
 
+                            Route::get('/{chapterId}/{lesson}/lesson-document', [DocumentController::class, 'getLessonDocument']);
                             Route::post('/{chapterId}/store-lesson-document', [DocumentController::class, 'storeLessonDocument']);
-                            Route::put('/{documentID}', [DocumentController::class, 'update']);
+                            Route::put('/{chapterId}/{lesson}/update-lesson-document', [DocumentController::class, 'updateLessonDocument']);
 
                             Route::post('/{chapterId}/store-lesson-coding', [\App\Http\Controllers\API\Instructor\LessonCodingController::class, 'storeLessonCoding']);
                             Route::get('/{lesson}/{coding}/coding-exercise', [\App\Http\Controllers\API\Instructor\LessonCodingController::class, 'getCodingExercise']);
