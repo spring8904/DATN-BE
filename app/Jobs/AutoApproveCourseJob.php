@@ -57,7 +57,10 @@ class AutoApproveCourseJob implements ShouldQueue
                     'approver_id' => null,
                 ]);
 
-                $this->course->update(['status' => 'rejected']);
+                $this->course->update([
+                    'status' => 'rejected',
+                    'visibility' => 'private',
+                ]);
 
                 $this->course->user->notify(new CourseRejectedNotification($this->course));
 

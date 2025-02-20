@@ -116,8 +116,8 @@ class CourseValidatorService
 
         if ($quiz) {
             $questions = Question::where('quiz_id', $quiz->id)->get();
-            if ($questions->count() < 3 || $questions->count() > 5) {
-                $errors[] = "Bài kiểm tra '{$lessonTitle}' trong chương '{$chapterTitle}' phải có từ 3 đến 5 câu hỏi. Hiện tại có {$questions->count()} câu.";
+            if ($questions->count() < 1 || $questions->count() > 5) {
+                $errors[] = "Bài kiểm tra '{$lessonTitle}' trong chương '{$chapterTitle}' phải có từ 1 đến 5 câu hỏi. Hiện tại có {$questions->count()} câu.";
             }
         }
 

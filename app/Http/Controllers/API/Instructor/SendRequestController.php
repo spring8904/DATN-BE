@@ -37,11 +37,11 @@ class SendRequestController extends Controller
                 return $this->respondNotFound('Bạn không có quyền truy cập');
             }
 
-//            $errors = CourseValidatorService::validateCourse($course);
-//
-//            if (!empty($errors)) {
-//                return $this->respondValidationFailed('Khoá học chưa đạt yêu cầu kiểm duyệt', $errors);
-//            }
+            $errors = CourseValidatorService::validateCourse($course);
+
+            if (!empty($errors)) {
+                return $this->respondValidationFailed('Khoá học chưa đạt yêu cầu kiểm duyệt', $errors);
+            }
 
             $status = $course->status;
 
@@ -49,7 +49,6 @@ class SendRequestController extends Controller
                 'approvable_id' => $course->id,
                 'approvable_type' => Course::class
             ]);
-//            dd($approvable);
 
             DB::beginTransaction();
 
@@ -109,7 +108,9 @@ class SendRequestController extends Controller
                     $approvable->status = 'pending';
                     $approvable->request_date = now();
                     $approvable->save();
-                    $course->update(['status' => 'pending']);
+                    $course->update([
+                        'status' => 'pending',
+                    ]);
 
                     $managers = User::query()->role([
                         'admin',
