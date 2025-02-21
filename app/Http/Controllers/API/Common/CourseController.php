@@ -7,6 +7,9 @@ use App\Models\Course;
 use App\Traits\ApiResponseTrait;
 use App\Traits\LoggableTrait;
 use Illuminate\Http\Request;
+use Illuminate\Redis\Connections\PredisConnection;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redis;
 
 class CourseController
 {
@@ -169,12 +172,23 @@ class CourseController
                 ->where('slug', '=', $slug)
                 ->where('visibility', '=', 'public')
                 ->where('status', '=', 'approved')
-                ->where('slug', '=', $slug)
                 ->first();
 
             if (!$course) {
                 return $this->respondNotFound('Không có dữ liệu');
             }
+
+//            $user = auth('sanctum')->user();
+//            $isCourseOwner = $user && $user->id === $course->user_id;
+//
+//            if (!$isCourseOwner) {
+//                $cacheKey = "course:{$course->id}:views:{$user->id}";
+//
+//                if (!Redis::exists($cacheKey)) {
+//                    $course->increment('views');
+//                    Redis::setex($cacheKey, 3600, true);
+//                }
+//            }
 
             $course->increment('views');
 
