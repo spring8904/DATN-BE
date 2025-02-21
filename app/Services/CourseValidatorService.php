@@ -102,8 +102,13 @@ class CourseValidatorService
         $errors = [];
         $video = Video::find($videoId);
 
-        if ($video && $video->duration < 1200) {
-            $errors[] = "Bài giảng '{$lessonTitle}' trong chương '{$chapterTitle}' có video dưới 20 phút.";
+        if (!$video) {
+            $errors[] = "Bài giảng '{$lessonTitle}' trong chương '{$chapterTitle}' không có video.";
+            return $errors;
+        }
+
+        if ($video->duration < 900) {
+            $errors[] = "Bài giảng '{$lessonTitle}' trong chương '{$chapterTitle}' có video dưới 15 phút.";
         }
 
         return $errors;

@@ -53,87 +53,51 @@ class SendRequestController extends Controller
             DB::beginTransaction();
 
             switch ($status) {
+                case 'rejected':
                 case 'draft':
                     $approvable->status = 'pending';
                     $approvable->request_date = now();
                     $approvable->save();
                     $course->update(['status' => 'pending']);
+                    break;
 
-                    $course->update([
-                        'status' => 'pending',
-                    ]);
-
-                    $managers = User::query()->role([
-                        'admin',
-                    ])->get();
-
-                    foreach ($managers as $manager) {
-                        $manager->notify(new CourseSubmittedNotification($course));
-                    }
-
-                    DB::commit();
-
-                    AutoApproveCourseJob::dispatch($course)->delay(now()->addSeconds(20));
-
-                    return $this->respondCreated('Gửi yêu cầu thành công');
                 case 'pending':
                     $approvable->delete();
                     $course->update(['status' => 'draft']);
+                    break;
 
-                    $managers = User::query()->role([
-                        'admin',
-                    ])->get();
-
-                    foreach ($managers as $manager) {
-                        $manager->notifications()
-                            ->whereJsonContains('data->course_id', $course->id)
-                            ->whereJsonContains('data->type', 'register_course')
-                            ->delete();
-                    }
-
-                    foreach ($managers as $manager) {
-                        $manager->notify(new CourseSubmittedNotification($course));
-                    }
-
-                    DB::commit();
-
-                    AutoApproveCourseJob::dispatch($course)->delay(now()->addSeconds(20));
-
-                    return $this->respondOk('Hủy yêu cầu kiểm duyệt thành công');
                 case 'approved':
                     DB::rollBack();
                     return $this->respondError('Khóa học đã được duyệt, không thể gửi yêu cầu');
 
-                case 'rejected':
-                    $approvable->status = 'pending';
-                    $approvable->request_date = now();
-                    $approvable->save();
-                    $course->update([
-                        'status' => 'pending',
-                    ]);
-
-                    $managers = User::query()->role([
-                        'admin',
-                    ])->get();
-
-                    foreach ($managers as $manager) {
-                        $manager->notifications()
-                            ->whereJsonContains('data->course_id', $course->id)
-                            ->whereJsonContains('data->type', 'register_course')
-                            ->delete();
-                    }
-
-                    foreach ($managers as $manager) {
-                        $manager->notify(new CourseSubmittedNotification($course));
-                    }
-
-                    DB::commit();
-
-                    AutoApproveCourseJob::dispatch($course)->delay(now()->addSeconds(20));
-                    return $this->respondCreated('Gửi lại yêu cầu kiểm duyệt thành công');
                 default:
                     DB::rollBack();
                     return $this->respondBadRequest('Trạng thái khóa học không hợp lệ');
+            }
+
+            if ($status === 'draft' || $status === 'rejected') {
+                $managers = User::query()->role(['admin'])->get();
+
+                foreach ($managers as $manager) {
+                    $manager->notify(new CourseSubmittedNotification($course));
+                }
+
+                AutoApproveCourseJob::dispatch($course)->delay(now()->addSeconds(20));
+
+                DB::commit();
+                return $this->respondOk('Gửi yêu cầu thành công');
+            } elseif ('pending') {
+                $managers = User::query()->role(['admin'])->get();
+
+                foreach ($managers as $manager) {
+                    $manager->notifications()
+                        ->whereJsonContains('data->course_id', $course->id)
+                        ->whereJsonContains('data->type', 'register_course')
+                        ->delete();
+                }
+
+                DB::commit();
+                return $this->respondOk('Hủy yêu cầu kiểm duyệt thành công');
             }
         } catch (\Exception $e) {
             DB::rollBack();
